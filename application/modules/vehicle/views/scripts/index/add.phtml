@@ -166,8 +166,6 @@ function getallSubModel(model_id){
                       <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true"><?php echo $tr->translate('Vehicle Infomation')?></a></li>
                         <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false"><?php echo $tr->translate('Price And Photo')?></a></li>
-                        <li role="presentation" class=""><a href="#tab_content3" role="tab" id="vehicle-tab" data-toggle="tab" aria-expanded="false"><?php echo $tr->translate('Vehicle Rental Price')." (".$tr->translate('Duration').")";?></a></li>
-                        <li role="presentation" class=""><a href="#tab_content4" role="tab" id="vehicle-price-tab" data-toggle="tab" aria-expanded="false"><?php echo $tr->translate('Vehicle Rental Price')." (".$tr->translate('Location').")"?></a></li>
                       </ul>
                       <div id="myTabContent" class="tab-content">
 	                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
@@ -421,23 +419,6 @@ function getallSubModel(model_id){
 					                   		<input dojoType="dijit.form.DateTextBox" constraints="{datePattern:'dd/MM/yyyy'}" value="now" class="fullside" id="discount_todate" name="discount_todate" value="" type="text">
 					                    </div>
 					                </div>
-					                <div class="title_form_blog" style=" margin: 0;">
-						              	<h4><span><input dojoType="dijit.form.CheckBox" class="fullside" id="is_sale" name="is_sale" value="" type="checkbox"></span><?php echo $tr->translate("Vehicle for Sale");?></h4>
-						              </div>
-					                 <div class="form-group" style=" background: #f6f9ff;  padding: 15px 0;">
-					               		<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
-					               			
-					               			<?php echo $tr->translate("Price");?>
-					                   	</label>
-					                    <div class="col-md-3 col-sm-3 col-xs-12">
-					                   		<input dojoType="dijit.form.TextBox" class="fullside" id="sale_price" name="sale_price" value="" type="text">
-					                    </div>
-					                	 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Description Car Sales");?> 
-					                   	</label>
-					                    <div class="col-md-3 col-sm-3 col-xs-12">
-					                   		 <input dojoType="dijit.form.TextBox" class="fullside" id="desc_sale" name="desc_sale" value="" type="text" style="height:60px;">
-					                    </div>
-					                </div>
 			                	</div>
 			                	<div class="col-md-4 col-sm-4 col-xs-12">
 			                		<div class="text-center">
@@ -465,51 +446,6 @@ function getallSubModel(model_id){
 									</div>
 			                	</div>
 	                        </div>
-	                        
-	                        <div role="tabpanel" class="tab-pane fade " id="tab_content3" aria-labelledby="vehicle-tab">
-	                        	<div class="title_form_blog">
-				               		<h4><span><input dojoType="dijit.form.CheckBox" checked="checked" class="fullside" id="add_rent_price" name="add_rent_price" onChange="CheckisRent();" type="checkbox"></span> <?php echo $tr->translate('Vehicle Rental Price')?></h4>
-				               	</div>
-	                        	<div class="form-group">
-				                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Tax')?>
-				                   </label>
-				                   <div class="col-md-4 col-sm-4 col-xs-12">
-				                    	<select name="tax" id="tax" dojoType="dijit.form.FilteringSelect" class="fullside"> 
-										<?php if(!empty($this->rs_tax))foreach ($this->rs_tax as $key=> $row){?>
-											<option value="<?php echo $row['id'];?>"><?php echo $row['title'];?></option>
-										<?php }?>
-										</select>
-				                   </div>
-				                </div>
-				                 <div class="form-group">
-				                	<div style="clear: both;"></div>
-									<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
-									<div  id="store_record"></div>
-									<input iconClass="dijitIconClear" type="button" onClick="addPockage();" label="Add Record" dojoType="dijit.form.Button"/>
-				                </div>
-	                        </div>
-	                        <div role="tabpanel" class="tab-pane fade " id="tab_content4" aria-labelledby="vehicle-price-tab">
-	                        	<div class="title_form_blog">
-				               		<h4><span><input dojoType="dijit.form.CheckBox" checked="checked" class="fullside" id="add_rent_price_location" name="add_rent_price_location" onChange="CheckisRentLocation();" type="checkbox"></span> <?php echo $tr->translate('Vehicle Rental Price')?></h4>
-				               	</div>
-				               	<div class="form-group">
-				                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Tax')?>
-				                   </label>
-				                   <div class="col-md-4 col-sm-4 col-xs-12">
-				                    	<select name="car_rent_price_tax" id="car_rent_price_tax" dojoType="dijit.form.FilteringSelect" class="fullside"> 
-											<?php if(!empty($this->rs_tax))foreach ($this->rs_tax as $key=> $row){?>
-												<option value="<?php echo $row['id'];?>"><?php echo $row['title'];?></option>
-											<?php }?>
-										</select>
-				                   </div>
-				                </div>
-				                <div class="form-group">
-				                	<div style="clear: both;"></div>
-									<input type="hidden" dojoType="dijit.form.TextBox" id="record_row_rent" name="record_row_rent" />
-									<div  id="store_record_rent"></div>
-									<input iconClass="dijitIconClear" type="button" onClick="addPockageRent();" label="Add Record" dojoType="dijit.form.Button"/>
-				                </div>
-				            </div>
                       </div>
                     </div>
 	       		</div>
@@ -662,36 +598,8 @@ dojo.require("dojo.NodeList-manipulate");
 require(["dojo/ready"], function(ready){
 	ready(function(){
 		addRow();
-		addNewRecord();
-		addNewRecordRent();
-		CheckisRent();
-		CheckisRentLocation();
 	});
 });
-function CheckisRent(){
-	var ids =dijit.byId('record_row').value;
-	if($('#add_rent_price').is(":checked")){
-		if(ids.length=='' || ids.length==null){
-		}else{
-			var arrays = ids.split(',');
-			for(var i=0;i<arrays.length;i++) {
-				dijit.byId('package_id'+arrays[i]).set('required',true);
-				dijit.byId('price_'+arrays[i]).set('required',true);
-				dijit.byId('extracharge_'+arrays[i]).set('required',true);
-			}
-		}
-	}else{
-		if(ids.length=='' || ids.length==null){
-		}else{
-			var arrays = ids.split(',');
-			for(var i=0;i<arrays.length;i++) {
-				dijit.byId('package_id'+arrays[i]).set('required',false);
-				dijit.byId('price_'+arrays[i]).set('required',false);
-				dijit.byId('extracharge_'+arrays[i]).set('required',false);
-			}
-		}
-	}
-}
 function getPopupFormVehicleType(){
 	vehicle_type = dijit.byId('vehicle_type').get('value');
 	if(vehicle_type==-1){
@@ -901,141 +809,5 @@ function addSubModel(){
 	}
 }
 
-province_option = '<?php echo $this->pro_option;?>';
-function addNewRecord(){
-	dojo.query("#store_record").append('');
-	tmp='<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">';
-	tmp+='<tr style="background:#eee; height:30px; font-size:12px;margin-bottom: 10px;" id="head_title" class="head-title" align="center"></tr>';
-	tmp+='</table>';
-	dojo.query("#store_record").append(tmp);
-	thead='<th><?php echo $tr->translate('NUM');?></th>';
-	thead+='<th><?php echo $tr->translate('Amount Day');?></th>';
-	thead+='<th><?php echo $tr->translate('PRICE');?></th>';
-	thead+='<th><?php echo $tr->translate('Extra Day Price');?></th>';
-	thead+='<th><?php echo $tr->translate('NOTE');?></th>';
-	thead+='<th><?php echo $tr->translate('DELETE');?></th>';
-	fund_title=1;
-	dojo.query("#head_title").append(thead);	
-	dijit.byId('record_row').attr('value','');
-	addPockage();
-}
-r=0;
-function addPockage(){
-	r++;
-	tmp='<tr style="border:1px solid #ccc;" id="row_guide'+r+'">'
-	tmp+="</tr>";
-		dojo.query("#t_amountmoneytype").append(tmp);
-	temp='<td align="center">'+r+'</td>';
-	temp+='<td><select style="width:250px;"  id="package_id'+r+'" name="package_id'+r+'" dojoType="dijit.form.FilteringSelect">'+province_option+'</select></td>';
-	temp+='<td><input style="width:250px;" dojoType="dijit.form.NumberTextBox" class="fullside"  name="price_'+r+'" id="price_'+r+'" value="" type="text"></td>';
-	temp+='<td><input style="width:250px;" dojoType="dijit.form.NumberTextBox" class="fullside" name="extracharge_'+r+'" id="extracharge_'+r+'" value="" type="text"></td>';
-	temp+='<td><input style="width:250px;" dojoType="dijit.form.TextBox" class="fullside" name="note_'+r+'" id="note_'+r+'" value="" type="text"></td>';
-	temp+='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecordPrice('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
-	
-	dojo.html.set(dojo.byId("row_guide"+r),temp, {
-	    parseContent: true,
-	});
-	if(dijit.byId("record_row").get('value')!="") {
-		var ids = dijit.byId("record_row").value;
-		dijit.byId("record_row").attr('value',ids+','+r);
-	} else { dijit.byId("record_row").attr('value',r);}
-	CheckisRent();
-}
-function deleteRecordPrice(index){
-	var ids =dijit.byId('record_row').value;
-	if(ids.length=='' || ids.length==null){
-		dijit.byId('record_row').attr('value','');
-		dojo.query("#row_guide"+ids).remove();
-	}else{
-		var arrays = ids.split(',');
-		for(var i=0;i<arrays.length;i++) {
-			if(arrays[i] == index) arrays.splice(i,1);
-		}
-		var strings = arrays.join(',');
-		dijit.byId('record_row').attr('value',strings);
-		dojo.query("#row_guide"+index).remove();
-	}
-	CheckisRent();
-}
 
-function CheckisRentLocation(){
-	var ids =dijit.byId('record_row_rent').value;
-	if($('#add_rent_price_location').is(":checked")){
-		if(ids.length=='' || ids.length==null){
-		}else{
-			var arrays = ids.split(',');
-			for(var i=0;i<arrays.length;i++) {
-				dijit.byId('rent_price_'+arrays[i]).set('required',true);
-				dijit.byId('from_locaation'+arrays[i]).set('required',true);
-				dijit.byId('to_locaation'+arrays[i]).set('required',true);
-			}
-		}
-	}else{
-		if(ids.length=='' || ids.length==null){
-		}else{
-			var arrays = ids.split(',');
-			for(var i=0;i<arrays.length;i++) {
-				dijit.byId('rent_price_'+arrays[i]).set('required',false);
-				dijit.byId('from_locaation'+arrays[i]).set('required',false);
-				dijit.byId('to_locaation'+arrays[i]).set('required',false);
-				
-			}
-		}
-	}
-}
-location_option = '<?php echo $this->location_option;?>';
-function addNewRecordRent(){
-	dojo.query("#store_record_rent").append('');
-	tmp='<table id="t_amountmoneytype_rent" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">';
-	tmp+='<tr style="background:#eee; height: 30px;margin-bottom: 10px;" id="head_title_rent" class="head-title" align="center"></tr>';
-	tmp+='</table>';
-	dojo.query("#store_record_rent").append(tmp);
-	thead='<th><?php echo $tr->translate('NUM');?></th>';
-	thead+='<th><?php echo $tr->translate('Province');?></th>';
-	thead+='<th><?php echo $tr->translate('To Province');?></th>';
-	thead+='<th><?php echo $tr->translate('PRICE');?></th>';
-	thead+='<th><?php echo $tr->translate('NOTE');?></th>';
-	thead+='<th><?php echo $tr->translate('DELETE');?></th>';
-	fund_title=1;
-	dojo.query("#head_title_rent").append(thead);	
-	dijit.byId('record_row_rent').attr('value','');
-	addPockageRent();
-}
-k=0;
-function addPockageRent(){
-	k++;
-	tmp='<tr style="border:1px solid #ccc;" id="row_guide_rent'+k+'">'
-	tmp+="</tr>";
-		dojo.query("#t_amountmoneytype_rent").append(tmp);
-	temp='<td align="center">'+k+'</td>';
-	temp+='<td><select style="width:260px;"  id="from_locaation'+k+'" name="from_locaation'+k+'" dojoType="dijit.form.FilteringSelect" >'+location_option+'</select></td>';
-	temp+='<td><select style="width:260px;"  id="to_locaation'+k+'" name="to_locaation'+k+'" dojoType="dijit.form.FilteringSelect" >'+location_option+'</select></td>';
-	temp+='<td><input style="width:250px;" dojoType="dijit.form.NumberTextBox" class="fullside"  name="rent_price_'+k+'" id="rent_price_'+k+'" value="" type="text" ></td>';
-	temp+='<td><input style="width:250px;" dojoType="dijit.form.TextBox" class="fullside"  name="rent_note_'+k+'" id="rent_note_'+k+'" value="" type="text" ></td>';
-	temp+='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecordRent('+k+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';
-	dojo.html.set(dojo.byId("row_guide_rent"+k),temp, {
-	    parseContent: true,
-	});
-	if(dijit.byId("record_row_rent").get('value')!="") {
-		var ids = dijit.byId("record_row_rent").value;
-		dijit.byId("record_row_rent").attr('value',ids+','+k);
-	} else { dijit.byId("record_row_rent").attr('value',k);}
-	CheckisRentLocation();
-}
-function deleteRecordRent(index){
-	var ids =dijit.byId('record_row_rent').value;
-	if(ids.length=='' || ids.length==null){
-		dijit.byId('record_row_rent').attr('value','');
-		dojo.query("#row_guide_rent"+ids).remove();
-	}else{
-		var arrays = ids.split(',');
-		for(var i=0;i<arrays.length;i++) {
-			if(arrays[i] == index) arrays.splice(i,1);
-		}
-		var strings = arrays.join(',');
-		dijit.byId('record_row_rent').attr('value',strings);
-		dojo.query("#row_guide_rent"+index).remove();
-	}
-	CheckisRentLocation();
-}
 </script>

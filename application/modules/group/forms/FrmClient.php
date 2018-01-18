@@ -515,34 +515,6 @@ $district->setValue($data['district']);
 				'dojoType'=>'dijit.form.TextBox',
 				'class'=>'fullside',
 		));
-		
-		$normalprice = new Zend_Dojo_Form_Element_NumberTextBox('cnormalprice');
-		$normalprice->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
-		$otprice = new Zend_Dojo_Form_Element_NumberTextBox('cotprice');
-		$otprice->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
-		$pnormalprice = new Zend_Dojo_Form_Element_NumberTextBox('pnormalprice');
-		$pnormalprice->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
-		$potprice = new Zend_Dojo_Form_Element_NumberTextBox('potprice');
-		$potprice->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
 	
 		$photo=new Zend_Form_Element_File('photo');
 		$photo->setAttribs(array(
@@ -553,25 +525,12 @@ $district->setValue($data['district']);
 				'class'=>'fullside',
 		));
 		
-		$experience=new Zend_Dojo_Form_Element_TextBox('experience');
+		$experience=new Zend_Dojo_Form_Element_Textarea('experience');
 		$experience->setAttribs(array(
-				'dojoType'=>'dijit.form.TextBox',
+				'dojoType'=>'dijit.form.Textarea',
 				'class'=>'fullside',
 		));
 		
-		$publicholiday=new Zend_Dojo_Form_Element_NumberTextBox('poblicholiday_price');
-		$publicholiday->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
-		$weekend_price=new Zend_Dojo_Form_Element_NumberTextBox('weekend_price');
-		$weekend_price->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
 		
 		$experience_num=new Zend_Dojo_Form_Element_NumberTextBox('experience_number');
 		$experience_num->setAttribs(array(
@@ -580,20 +539,6 @@ $district->setValue($data['district']);
 				'required'=>true
 		));
 		
-		$p_popublicholiday=new Zend_Dojo_Form_Element_NumberTextBox('ppoblicholiday_price');
-		$p_popublicholiday->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
-		$p_weekend=new Zend_Dojo_Form_Element_NumberTextBox('pweekend_price');
-		$p_weekend->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-	
 		$_id = new Zend_Form_Element_Hidden("id");
 		
 		$_desc = new Zend_Dojo_Form_Element_TextBox('desc');
@@ -609,16 +554,6 @@ $district->setValue($data['district']);
 		$opt = array(1=>"Active",0=>"Deactive");
 		$_status->setMultiOptions($opt);
 		
-		$_type = new Zend_Dojo_Form_Element_FilteringSelect('type');
-		$_type->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside',));
-// 		$_status_opt = array(
-// 				1=>$this->tr->translate("Guide"),
-// 				2=>$this->tr->translate("Driver"),
-// 				3=>$this->tr->translate("Both")
-// 		);
-		$_status_opt = array();
-	    $_status_opt = $db->getVewOptoinTypeByType(8,1,null,1);	
-		$_type->setMultiOptions($_status_opt);
 		
 		$address = new Zend_Dojo_Form_Element_TextBox('home');
 		$address->setAttribs(array(
@@ -694,40 +629,24 @@ $district->setValue($data['district']);
 				'class'=>'fullside',
 				'style'=>'color:red;'
 		));
-		
-		///////////////////////
-		
-		$citynormalprice = new Zend_Dojo_Form_Element_NumberTextBox('citynormalprice');
-		$citynormalprice->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
-		
-		
-		$cityweekendprice = new Zend_Dojo_Form_Element_NumberTextBox('cityweekendprice');
-		$cityweekendprice->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
-		$cityotprice = new Zend_Dojo_Form_Element_NumberTextBox('cityotprice');
-		$cityotprice->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
-		$citypublic = new Zend_Dojo_Form_Element_NumberTextBox('citypublicprice');
-		$citypublic->setAttribs(array(
-				'dojoType'=>'dijit.form.NumberTextBox',
-				'class'=>'fullside',
-				'required'=>true
-		));
-		
 		$_id_no = new Zend_Form_Element_Hidden('id');
+		
+		$_vehicle = new Zend_Dojo_Form_Element_FilteringSelect('vehicle');
+		$_vehicle->setAttribs(array(
+				'dojoType'=>'dijit.form.FilteringSelect',
+				'class'=>'fullside',
+				'onChange'=>'getVehicleInfo();',
+		));
+		$option = array("0"=>$this->tr->translate("SELECT_VEHICLE"));
+		if($data!=null){
+			$result = $db->getVehicleAvailableList($data['vehicle_id']);
+		}else{
+		$result = $db->getVehicleAvailableList();
+		}
+		if(!empty($result))foreach($result AS $row){
+			$option[$row['id']]=$row['name'];
+		}
+		$_vehicle->setMultiOptions($option);
 		
 		if($data!=null){
 			$_id_no->setValue($data['id']);
@@ -740,7 +659,7 @@ $district->setValue($data['district']);
 			$nationality->setValue($data['nationality']);
 			$national_id->setValue($data['doc_number']);
 			$_desc->setValue($data['lang_note']);
-			$_type->setValue($data['position_type']);
+// 			$_type->setValue($data['position_type']);
 			$id_card->setValue($data['id_card']);
 			$issued_date->setValue($data['issue_date']);
 			$expired_date->setValue($data['expired_date']);
@@ -755,26 +674,19 @@ $district->setValue($data['district']);
 			$district->setValue($data['district']);
 			$province->setValue($data['province_id']);
 			
-			$pnormalprice->setValue($data['p_normalprice']);
-			$p_weekend->setValue($data['p_weekendprice']);
-			$p_popublicholiday->setValue($data['p_holidayprice']);
-			$potprice->setValue($data['p_otprice']);
-
-			$normalprice->setValue($data['c_normalprice']);
-			$weekend_price->setValue($data['c_weekendprice']);
-			$publicholiday->setValue($data['c_holidayprice']);
-			$otprice->setValue($data['c_otprice']);
-			
-			$citypublic->setValue($data['citypublicprice']);
-			$cityweekendprice->setValue($data['cityweekendprice']);
-			$cityotprice->setValue($data['cityotprice']);
-			$citynormalprice->setValue($data['citynormalprice']);
 			$_status->setValue($data['status']);
-                        $monthly_price->setValue($data["monthly_price"]);
+			$_vehicle->setValue($data['vehicle_id']);
 		}
-		$this->addElements(array($monthly_price,$citypublic,$cityotprice,$citynormalprice,$cityweekendprice,$province,$expired_date,$issued_date,$registered_date,$id_card,$district,$commune,$streetnum,$groupnum,$p_popublicholiday,$p_weekend,$experience,$publicholiday,$weekend_price,$pnormalprice,$potprice,$normalprice,$otprice,$lang,$address,$_type,$nationality,$_id,$photo,$national_id,
+		$this->addElements(array(
+				$province,$expired_date,$issued_date,$registered_date,$id_card,$district,$commune,$streetnum,$groupnum,
+				$lang,
+				$address,
+				$experience,
+				$nationality,$_id,$photo,$national_id,
 				$_email,$_namekh,$_nameen,$_sex,$_id_no,
-				$_phone,$_desc,$_status,$_clientno,$_dob,$att_file,$pob));
+				$_phone,$_desc,$_status,$_clientno,$_dob,$att_file,$pob,
+				$_vehicle
+				));
 		return $this;
 	
 	}	

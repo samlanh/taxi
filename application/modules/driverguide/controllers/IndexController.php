@@ -3,6 +3,7 @@ class Driverguide_indexController extends Zend_Controller_Action {
     public function init()
     {    	
      /* Initialize action controller here */
+    	$this->tr= Application_Form_FrmLanguages::getCurrentlanguage();
     	header('content-type: text/html; charset=utf8');
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
 	}
@@ -47,12 +48,9 @@ class Driverguide_indexController extends Zend_Controller_Action {
 				$id= $db->addDriver($data);
 				if(isset($data['save_new'])){
 					$this->_redirect("/driverguide/index/add");
-// 					Application_Form_FrmMessage::message("ការ​បញ្ចូល​ជោគ​ជ័យ !");
-					
 				}
 				else{
 					$this->_redirect("/driverguide");
-// 					Application_Form_FrmMessage::Sucessfull("INSERT_SUCCESSS","/group/index");
 				}
 		
 			}catch (Exception $e){
@@ -60,17 +58,12 @@ class Driverguide_indexController extends Zend_Controller_Action {
 				Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 			}
 		}
-		
 		$db = new Application_Model_DbTable_DbGlobal();
 		$client_type = $db->getclientdtype();
-		array_unshift($client_type,array(
-		'id' => -1,
-		'name' => '---Add New ---',
-		) );
+		array_unshift($client_type,array('id' => -1,'name' => $this->tr->translate("ADD_NEW"),) );
 		$this->view->clienttype = $client_type;
 		
 		$fm = new Group_Form_FrmClient();
-		
 		$frm = $fm->FrmaddGuide();
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_client = $frm;
@@ -85,7 +78,6 @@ class Driverguide_indexController extends Zend_Controller_Action {
 			try{
 					$id= $db_model->updateDriver($data);
 					$this->_redirect("/driverguide");
-// 					Application_Form_FrmMessage::Sucessfull("EDIT_SUCCESSS","/driverguide");
 		
 			}catch (Exception $e){
 				Application_Form_FrmMessage::message("Application Error");
@@ -97,7 +89,7 @@ class Driverguide_indexController extends Zend_Controller_Action {
 		$client_type = $db->getclientdtype();
 		array_unshift($client_type,array(
 				'id' => -1,
-				'name' => '---Add New ---',
+				'name' => '$this->tr->translate("ADD_NEW")',
 		) );
 		$this->view->clienttype = $client_type;
 		
@@ -112,6 +104,15 @@ class Driverguide_indexController extends Zend_Controller_Action {
 		$frm = $fm->FrmaddGuide($row);
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_client = $frm;
+	}
+	function getvehicleAction(){
+		if($this->getRequest()->isPost()){
+			$data = $this->getRequest()->getPost();
+			$db_com = new Driverguide_Model_DbTable_DbDriver();
+			$id = $db_com->getvehicleinfo($data['vehicle']);
+			print_r(Zend_Json::encode($id));
+			exit();
+		}
 	}
 }
 

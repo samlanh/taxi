@@ -94,13 +94,13 @@ class Vehicle_indexController extends Zend_Controller_Action {
 		//select store mark
 		$db = new Application_Model_DbTable_DbGlobal();
 		$model = $db->getAllMake();
-		array_unshift($model, array ( 'id' => -1, 'name' => 'បន្ថែម​អ្នក​ទទួល​ថ្មី') );
+		array_unshift($model, array ( 'id' => -1, 'name' =>$tr->translate("ADD_NEW")) );
 		$this->view->all_make=$model;
 		$this->view->rs_tax =$db->getAllTax();
 		
-		$dbGC = new Application_Model_GlobalClass();
-		$this->view->pro_option = $dbGC->getAllPackageDayOption();
-		$this->view->location_option = $dbGC->getAllLocationOption();
+// 		$dbGC = new Application_Model_GlobalClass();
+// 		$this->view->pro_option = $dbGC->getAllPackageDayOption();
+// 		$this->view->location_option = $dbGC->getAllLocationOption();
 	}
 	function editAction(){
 		if($this->getRequest()->isPost()){
@@ -126,8 +126,8 @@ class Vehicle_indexController extends Zend_Controller_Action {
 		$rows_engin=$db->getAllEnGince();
 		$this->view->rows_engine=$rows_engin;
 		
-		$this->view->rows = $db->getVehiclePriceById($id);//get car rental price by package
-		$this->view->row_carprice=$db->getCarpriceById($id);// get Price Rental Vehicle By Location to Location
+// 		$this->view->rows = $db->getVehiclePriceById($id);//get car rental price by package
+// 		$this->view->row_carprice=$db->getCarpriceById($id);// get Price Rental Vehicle By Location to Location
 		
 		$rows_enginAsName=$db->getAllEnGinceAsname();
 		array_unshift($rows_enginAsName, array ( 'id' => 0, 'name' => $tr->translate("Choose Horse Power")), array ( 'id' => -1, 'name' => $tr->translate("ADD_NEW")) );
@@ -151,13 +151,13 @@ class Vehicle_indexController extends Zend_Controller_Action {
 		//select store mark
 		$db = new Application_Model_DbTable_DbGlobal();
 		$model = $db->getAllMake();
-		array_unshift($model, array ( 'id' => -1, 'name' => 'បន្ថែម​អ្នក​ទទួល​ថ្មី') );
+		array_unshift($model, array ( 'id' => -1, 'name' => $tr->translate("ADD_NEW")) );
 		$this->view->all_make=$model;
 		$this->view->rs_tax =$db->getAllTax();
 		
-		$dbGC = new Application_Model_GlobalClass();
-		$this->view->pro_option = $dbGC->getAllPackageDayOption();
-		$this->view->location_option = $dbGC->getAllLocationOption();
+// 		$dbGC = new Application_Model_GlobalClass();
+// 		$this->view->pro_option = $dbGC->getAllPackageDayOption();
+// 		$this->view->location_option = $dbGC->getAllLocationOption();
 		
 	}
 	function getSubModelAction(){
