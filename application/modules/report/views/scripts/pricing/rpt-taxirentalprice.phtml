@@ -1,0 +1,113 @@
+<?php $filter = $this->frm_search;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+
+?>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("Taxi Rental Price");?></title>
+<form method="post">
+	
+	</form>
+<div class="row">
+	<div class="x_panel " >
+		<div style="min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+			<div id="divPrint" style="width: 100%;">
+				<style>
+					.style{
+						line-height: 20px;font-size: 10px !important;
+						font-family: 'Khmer OS Battambang';
+					}
+					th{padding: 5px;}
+					tr.header {
+					    font-weight: bold;
+					    line-height: 14px;
+					    font-size: 12px;
+					    background: #eee;
+					    text-align: center;
+					}
+					tr.header td {
+					    padding: 5px;
+					}
+				</style>
+				<table style="font-family: 'Khmer OS Content'; width:100%;">
+					<tr>
+				    	<td align="center">
+				    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+				            	<tr>
+				                	<td width="20%"></td>
+				                	<td width="60%" valign="top">
+				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Taxi Rental Price Report");?></h2>
+				                	<h2 style="text-align:center; font-size:13px;"><?php echo date("d-M-Y",strtotime($this->list_end_date['start_date'])).' '.$tr->translate('TO').' ';echo date("D-d-M-Y",strtotime($this->list_end_date['end_date']));?></h2>
+				                	</td>
+				                    <td width="20%"></td>
+				                </tr> 
+				                <tr>
+				                	<td colspan="3">
+						              </td>
+						           </tr>   
+				            </table>
+				        </td>
+				    </tr>
+				    <tr>
+				    	<td>
+				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+				                 <tr class="header">
+				                    <th>&nbsp;<?php echo $tr->translate("No");?>&nbsp;</th>
+				                     <th><?php echo $tr->translate("Reffer");?></th>
+				                    <th><?php echo $tr->translate("Frame No");?></th>
+				                    <th><?php echo $tr->translate("Licence Plate");?></th>
+				                    <th><?php echo $tr->translate("Make");?></th>
+				                    <th><?php echo $tr->translate("Model");?></th>
+				                    <th><?php echo $tr->translate("Sub Model");?></th>
+				                    <th><?php echo $tr->translate("From Location");?></th>
+				                    <th><?php echo $tr->translate("To Location");?></th>
+				                    <th><?php echo $tr->translate("Distance");?></th>
+				                    <th><?php echo $tr->translate("Rate");?></th>
+				                    <th><?php echo $tr->translate("Price");?></th>
+				                    <th><?php echo $tr->translate("Discount Trip");?></th>
+				                    <th><?php echo $tr->translate("Round Trip");?></th>
+				                    <th><?php echo $tr->translate("Tax");?></th>
+				                    <th><?php echo $tr->translate("Status");?></th>
+				                    
+				                </tr>
+				               <?php 
+				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
+				              
+									<tr align="center" style="line-height: 18px; background: #fff;">
+										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+										<td align="left" >&nbsp;<?php echo $row['reffer']; ?>&nbsp;</td>
+										<td align="left">&nbsp;<?php echo $row['frame_no'];?>&nbsp;</td>
+										<td>&nbsp;<?php echo $row['licence_plate'];?>&nbsp;</td>
+										<td>&nbsp;<?php echo $row['make'];?>&nbsp;</td>
+										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['model']; ?></span>&nbsp;</td>	
+										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo $row['sub_model'] ?>&nbsp;</td>
+										<td align="left">&nbsp;<?php echo $row['from_location'];?>&nbsp;</td>
+										<td align="left">&nbsp;<?php echo $row['to_location'];?>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['distance'];?></td>	
+										<td>&nbsp;<?php echo $row['rate'];?>&nbsp;</td>
+										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['price']; ?></span>&nbsp;</td>	
+										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo number_format($row['discount_trip'],2) ?>%&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['round_trip']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['tax'] ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['status'].'%'; ?>&nbsp;</td>
+											
+									</tr>
+								<?php }?>
+				            </table>
+				            <br />
+				               <table align="center" width="100%">
+								   <tr style="font-size: 12px;">
+								        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+								        <th></th>
+								        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+								   </tr>
+							</table>
+				    	</td>
+				    </tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

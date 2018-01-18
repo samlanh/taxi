@@ -1,0 +1,122 @@
+<?php $filter = $this->frm_search;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+$frm=$this->frm;
+?>
+<script>
+dojo.require("dijit.form.DateTextBox");
+</script>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("Guide Info");?></title>
+
+<div class="row">
+	<div class="x_panel " >
+		<form method="post">
+			<div class="form-group">
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('adv_search');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('status');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('btn_search');?></div>
+			</div>
+		</form>
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+			<div id="divPrint" style="width: 100%;">
+				<style>
+				.style{
+					line-height: 20px;font-size: 10px !important;
+					font-family: 'Khmer OS Battambang';
+				}
+				th{padding: 5px;}
+				tr.header {
+				    font-weight: bold;
+				    line-height: 14px;
+				    font-size: 12px;
+				    background: #eee;
+				}
+				tr.header td {
+				    padding: 10px;
+				}
+				</style>
+				<table style="font-family: 'Khmer OS Content'; width:100%;">
+					<tr>
+				    	<td align="center">
+				    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+				            	<tr>
+				                	<td width="20%"></td>
+				                	<td width="60%" valign="top">
+				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Guide/Driver Info Report");?></h2>
+				                	</td>
+				                    <td width="20%"></td>
+				                </tr> 
+				                <tr>
+				                	<td colspan="3">
+						              </td>
+						           </tr>   
+				            </table>
+				        </td>
+				    </tr>
+				    <tr>
+				    	<td>
+				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:10px; white-space: nowrap;" width="100%" cellspacing="0">
+				                 <tr class="header">
+				                    <th >&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</th>
+				                    <th ><?php echo $tr->translate("Driver Id");?></th>
+				                    <th ><?php echo $tr->translate("First Name");?></th>
+				                    <th ><?php echo $tr->translate("Last Name");?></th>
+				                    <th ><?php echo $tr->translate("Sex");?></th>
+				                    <th ><?php echo $tr->translate("Tel");?></th>
+				                    <th ><?php echo $tr->translate("Doc No");?></th>
+				                    <th ><?php echo $tr->translate("Dob");?></th>
+				                    <th ><?php echo $tr->translate("Pob");?></th>
+				                    <th ><?php echo $tr->translate("Nationality");?></th>
+				                    <th ><?php echo $tr->translate("Group");?></th>
+				                    <th ><?php echo $tr->translate("Home");?></th>
+				                    <th ><?php echo $tr->translate("Street");?></th>
+				                    <th ><?php echo $tr->translate("Commune");?></th>
+				                    <th ><?php echo $tr->translate("District");?></th>
+				                    <th ><?php echo $tr->translate("Province");?></th>
+				                    <th><?php echo $tr->translate("Guide/Driver");?></th>
+				                    <th><?php echo $tr->translate("Experience");?></th>
+				                    <th ><?php echo $tr->translate("Status");?></th>
+				                </tr>
+				               <?php 
+				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
+								<tr align="center" style="line-height: 18px; background: #fff;">
+									<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+									<td align="left" >&nbsp;<?php echo $row['driver_id']; ?>&nbsp;</td>
+									<td align="left">&nbsp;<?php echo $row['first_name'];?>&nbsp;</td>
+									<td align="left">&nbsp;<?php echo $row['last_name'];?>&nbsp;</td>
+									<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['sex'];?></td>	
+									<td>&nbsp;<?php echo $row['tel'];?>&nbsp;</td>
+									<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['doc_name'].','.$row['doc_number']; ?></span>&nbsp;</td>	
+									<td align="left"><span style="line-height:15px;">&nbsp;<?php echo date("d/m/Y",strtotime($row['dob'])); ?></span>&nbsp;</td>	
+									<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo $row['pob'] ?>&nbsp;</td>
+									<td style="white-space:nowrap;">&nbsp;<?php echo $row['nationality']; ?>&nbsp;</td>
+									<td style="white-space:nowrap;">&nbsp;<?php echo $row['group_num'] ?>&nbsp;</td>
+									<td style="white-space:nowrap;">&nbsp;<?php echo $row['home_num']; ?>&nbsp;</td>
+									<td>&nbsp;<?php echo $row['street'];?>&nbsp;</td>
+									<td>&nbsp;<?php echo $row['commune'];?>&nbsp;</td>
+									<td style="white-space:nowrap;" >&nbsp;<?php echo $row['district'];?>&nbsp;</td>
+									<td style="white-space:nowrap;" >&nbsp;<?php echo $row['province_name'];?>&nbsp;</td>
+									<td align="center" style="font-size:8px;">&nbsp;<?php if($row['type']==1){echo "Guide";}else if($row['type']==2){echo "Driver";}else {echo "Both";} ?>&nbsp;</td>	
+									<td style="white-space:nowrap;" >&nbsp;<?php echo $row['lang_note'];?>&nbsp;</td>
+									<td align="left" style="font-size:8px;">&nbsp;<?php echo $row['status']; ?>&nbsp;</td>	
+								</tr>
+								<?php } ?>
+				            </table>
+				            <br />
+				               <table align="center" width="100%">
+								   <tr style="font-size: 12px;">
+								        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+								        <th></th>
+								        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+								   </tr>
+							</table>
+				    	</td>
+				    </tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

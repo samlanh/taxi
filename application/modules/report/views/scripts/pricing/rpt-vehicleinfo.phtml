@@ -1,0 +1,135 @@
+<?php $filter = $this->frm_search;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+$frm=$this->frm;
+?>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("Vehicle Infomation Report");?></title>
+<form method="post">
+	
+	</form>
+<div class="row">
+	<div class="x_panel " >
+		<form method="post">
+			<div class="form-group">
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('adv_search');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('status');?></div>
+				<div class="col-md-1 col-sm-1 col-xs-12"></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('btn_search');?></div>
+			</div>
+		</form>
+		<div style=" min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+			<div id="divPrint" style="width: 100%;">
+				<style>
+					.style{
+						line-height: 20px;font-size: 10px !important;
+						font-family: 'Khmer OS Battambang';
+					}
+					th{padding: 5px;}
+					tr.header {
+					    font-weight: bold;
+					    line-height: 14px;
+					    font-size: 12px;
+					    background: #eee;
+					    text-align: center;
+					}
+					tr.header td {
+					    padding: 5px;
+					}
+				</style>
+				<table style="font-family: 'Khmer OS Content'; width:100%;">
+					<tr>
+				    	<td align="center">
+				    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+				            	<tr>
+				                	<td width="20%"></td>
+				                	<td width="60%" valign="top">
+				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Report Vehicle Information");?></h2>
+				                	</td>
+				                    <td width="20%"></td>
+				                </tr> 
+				                <tr>
+				                	<td colspan="3">
+				                		<table width="100%">
+				                			<tr >
+				                				<td  style="font-size: 11px;">
+				                				</td>
+				                				<td width="65%"></td>
+				                				
+				                			</tr>
+							               
+						                </table>
+						              </td>
+						           </tr>   
+				            </table>
+				        </td>
+				    </tr>
+				    <tr>
+				    	<td>
+				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:9px; white-space: nowrap;" width="100%" cellspacing="0">
+				                  <tr class="header">
+				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
+				                    <td><?php echo $tr->translate("Vehicle Ref");?></td>
+				                    <td><?php echo $tr->translate("Frame No");?></td>
+				                    <td><?php echo $tr->translate("Licence Plate");?></td>
+				                    <td><?php echo $tr->translate("Make");?></td>
+				                    <td><?php echo $tr->translate("Model");?></td>
+				                    <td><?php echo $tr->translate("Sub Model");?></td>
+				                    <td><?php echo $tr->translate("Year");?></td>
+				                    <td><?php echo $tr->translate("Color");?></td>
+				                    <td><?php echo $tr->translate("Max Weight");?></td>
+				                    <td><?php echo $tr->translate("Org Cost");?></td>
+				                    <td><?php echo $tr->translate("Seats");?></td>
+				                    <td><?php echo $tr->translate("Classis No");?></td>
+				                    <td><?php echo $tr->translate("Engine");?></td>
+				                    <td><?php echo $tr->translate("Engine Number");?></td>
+				                    <td><?php echo $tr->translate("Transmission");?></td>
+				                    <td><?php echo $tr->translate("Vehicle Type");?></td>
+				                    <td><?php echo $tr->translate("Type");?></td>
+				                    <td><?php echo $tr->translate("Steering");?></td>
+				                    <td><?php echo $tr->translate("Status");?></td>
+				                    
+				                </tr>
+				               <?php 
+				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
+									<tr align="center" style="line-height: 18px; background: #fff;">
+										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+										<td  align="left">&nbsp;<?php echo $row['reffer']; ?>&nbsp;</td>
+										<td align="left">&nbsp;<?php echo $row['frame_no'];?>&nbsp;</td>
+										<td>&nbsp;<?php echo $row['licence_plate'];?>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['make'];?></td>	
+										<td>&nbsp;<?php echo $row['model'];?>&nbsp;</td>
+										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['sub_model']; ?></span>&nbsp;</td>	
+										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo $row['year'] ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['color']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['max_weight']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['org_cost']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['seat_amount']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['chassis_no']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['engine']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['engine_number']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['transmission']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['car_type']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['type']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['steering']; ?>&nbsp;</td>
+										<td style="white-space:nowrap;">&nbsp;<?php echo $row['status']; ?>&nbsp;</td>
+									</tr>
+								<?php }?>
+				            </table>
+				            <br />
+				               <table align="center" width="100%">
+								   <tr style="font-size: 12px;">
+								        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+								        <th></th>
+								        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+								   </tr>
+							</table>
+				    	</td>
+				    </tr>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>

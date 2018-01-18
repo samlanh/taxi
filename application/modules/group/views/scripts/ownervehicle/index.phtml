@@ -1,0 +1,12 @@
+<?php 
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+echo $this->headTitle($tr->translate("OWNERVEHICLE"));
+?>
+<div class="row">
+	<div class="x_panel" >
+		 <div class="blog_form_title">
+		 	<h4><i class="fa fa-users" aria-hidden="true"></i> <?php echo $tr->translate("OWNERVEHICLE")?></h4>
+		 </div>
+		<?php echo $this->list;?>
+	</div>
+</div>

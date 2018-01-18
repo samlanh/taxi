@@ -1,0 +1,307 @@
+<?php 
+	$rs = $this->rs;
+	$o_sex="";
+	if($rs["o_sex"]==1){
+		$o_sex ="Mr.";
+	}else{$o_sex ="Mrs.";}
+	
+	$sex="";
+	if($rs["sex"]==1){
+		$sex ="Mr.";
+	}else{$sex ="Mrs.";}
+	
+	if($rs["passport_name"] == "" OR $rs["passport_name"]==null){
+		$id_card = $rs["card_name"];
+		$issue_date = $rs["card_issuedate"];
+		$exp_date = $rs["card_expireddate"];
+	}else if($rs["card_name"]=="" OR $rs["card_name"]==null){
+		$id_card = $rs["passport_name"];
+		$issue_date = $rs["pass_issuedate"];
+		$exp_date = $rs["pass_expireddate"];
+	}else{
+		$id_card = $rs["card_name"];
+		$issue_date = $rs["card_issuedate"];
+		$exp_date = $rs["card_expireddate"];
+	}
+		
+	if($rs["o_passport"] == "" OR $rs["o_passport"]==null){
+		$o_id_card = $rs["o_card_name"];
+		$o_issue_date = $rs["o_card_issuedate"];
+		$o_exp_date = $rs["o_card_expireddate"];
+	}else if($rs["card_name"]=="" OR $rs["card_name"]==null){
+		$o_id_card = $rs["o_passport"];
+		$o_issue_date = $rs["o_pass_issuedate"];
+		$o_exp_date = $rs["o_pass_expireddate"];
+	}else{
+		$o_id_card = $rs["o_card_name"];
+		$o_issue_date = $rs["o_card_issuedate"];
+		$o_exp_date = $rs["o_card_expireddate"];
+	}
+	
+	$barcode = $rs["re_no"];
+	$url_barcode = $this->url(array("module"=>"agreement","controller"=>"carsale","action"=>"generate-barcode","product_code"=>$barcode),null,true);
+	$url_invoice = $this->url(array("module"=>"agreement","controller"=>"carsale","action"=>"reciept","id"=>$rs["id"]),null,true);
+	
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate("RECEIPT OF SALE"));
+?>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<style>
+#footer{display: none;}
+table{
+	font-family: 'Khmer OS Siemreap';
+	font-size: 11px;
+}
+ .padd tr td{ 
+	font-family: 'Khmer OS Siemreap';
+	font-size: 11px;
+ }
+table.padd td h4 {
+    font-size: 12px;
+}
+</style>	
+<script type="text/javascript">
+function doPrint() {
+	//getLabel();
+	window.frames["print_frame"].document.body.innerHTML=dojo.byId('divPrint').innerHTML;
+    window.frames["print_frame"].window.focus();
+    window.frames["print_frame"].window.print();
+}
+function preview()
+{ 
+  var disp_setting="toolbar=no,status=no,resizable=no,location=no,directories=yes,menubar=no,"; 
+      disp_setting+="scrollbars=no,width=794, height=700, left=0, top=0"; 
+  var content_vlue = document.getElementById("divPrint").innerHTML; 
+  
+  var docprint=window.open("","",disp_setting); 
+   docprint.document.open(); 
+   docprint.document.write('<html><head>'); 
+   docprint.document.write('</head><div style=" font-size:12px !important; margin:0px; font-family:arial;"><style>table th {font-size:12px !important;} table td{font-size:12px !important;}</style><center>');          
+   docprint.document.write(content_vlue);          
+   docprint.document.write('</center></div></html>'); 
+   docprint.document.close(); 
+   docprint.focus(); 
+}
+function exportExcel(){
+	window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#exportExcel').html()));
+    e.preventDefault();
+}
+
+var total = '<?php echo $rs["amout_paid"]?>';
+var balance = '<?php echo $rs["balance"]?>';
+$('document').ready(function(){
+	money_khmer=read_money_in_khmer(total);
+	money_us = read_money_in_english(total);
+	document.getElementById('amount_in_khmer').innerHTML  = money_khmer+"​ ដុល្លា | "+money_us+" Dollar";
+
+	money_khmer1=read_money_in_khmer(balance);
+	money_us1 = read_money_in_english(balance);
+	document.getElementById('balance_inword').innerHTML  = money_khmer1+"​ ដុល្លា | "+money_us1+" Dollar";
+	});
+</script>
+<script type="text/javascript"  src="<?php echo $this->baseUrl();?>/js/convertion.js"></script>
+<iframe name="print_frame" width="0" height="0" frameborder="0" src=about:blank></iframe>
+<div class="row">
+	<div class="x_panel">
+		<div class="x_content">
+				<a class="btn btn-app" href="#" title="<?php echo $tr->translate("Preview");?>" onclick="preview();">
+	  				<i class="fa fa-search-plus"></i> <?php echo $tr->translate("Preview");?>
+				</a>
+				<a class="btn btn-app" href="#" title="<?php echo $tr->translate("Print");?>" onclick="doPrint();">
+	                <i class="fa fa-print"></i> <?php echo $tr->translate("Print");?>
+				</a>
+	            <a class="btn btn-app" href="#"  title="Export"  onclick="exportExcel();">
+	                <i class="fa fa-file-excel-o"></i> <?php echo $tr->translate("Excel");?>
+	            </a>
+		</div>
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<div id="print" style="border: 1px dotted #000;background: #fff; margin: 0 auto;height: 29.7cm;width:21cm">
+				<div id="divPrint">
+					<table class="maintable" style="background:#fff; margin: 0 auto; width: 100%; padding: 0 0.2cm; font-family: 'Khmer OS Siemreap';">
+						<tbody>
+						<tr>
+							<td style="width: 30%;"><img style="width: 120px" src="<?php echo $this->baseUrl();?>/images/car1.jpg" /></td>
+							<td style="width: 40%;" align="center"><span style=" font-family:Courier New; font-size:22px ; font-weight: 900 !important;color:#04AE18">KINGDOM OF CAMBODIA<br /><span style="font-size:18px;">NATION RELIGION KING</span><br /><span style="font-size:18px;"><strong style="font: 21px bold, 'Webdings'"></strong></span></span></td>
+							<td style="text-align: right;width: 30%;"><img style="width: 157px" src="<?php echo $this->baseUrl();?>/images/car2.jpg" /></td>
+						</tr>
+						<tr>
+							<td style="color:#04AE18;"><img style="width: 100%;" src="<?php echo $url_barcode;?>"/></td>
+							<td></td>
+							<td style="color:#04AE18;" align="right"><strong style=" font:18px bold, Courier New;">RECEIPT OF SALE</strong></td>
+						</tr>
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Vehicle’s Owner Information - ពត៌មានម្ចាស់រថយន្ត</strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%" align="center" style=" white-space:nowrap; border-collapse: collapse;">
+									<tr style="height: 20px; ">
+										<td width="20%" style="border-bottom: 1px solid #000;">I. &nbsp;<strong>&nbsp;<?php echo $o_sex.$rs["o_f_name"]." ".$rs["o_l_name"];?></strong></td>
+										<td width="20%">&nbsp;Date of Birth: </td>
+										<td width="20%"  style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<?php echo $rs["o_dob"]?></strong></td>
+										<td width="20%" style="border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: solid 1px #fff;">&nbsp;ID Card/Passport No.:</td>
+										<td width="20%" style="border-bottom: 1px solid #000;"><strong>&nbsp;<?php echo $o_id_card?></strong></td>
+									</tr>
+									<tr>
+										<td>&nbsp;Issued On: </td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<?php echo $o_issue_date?></strong></td>
+										<td style="border-bottom: #fff solid 1px;">&nbsp;Issued By:</td>
+										<td  colspan="2" style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;</strong></td>
+									</tr>
+									<tr>
+										<td>&nbsp;Received the amount of US$ </td>
+										<td style="border-bottom: #000 solid 1px; color:red; font-weight: 700">&nbsp;<?php echo $rs["amout_paid"]?></td>
+										<td>&nbsp;In Word:</td>
+										<td colspan="2" width="30%" style="border-bottom: #000 solid 1px;color:red; font-weight: 700">&nbsp;<span id="amount_in_khmer"></span></td>
+									</tr>
+									<tr>
+										<td colspan="3">&nbsp;<?php if ($rs["pay_type"]==2){?><img alt="" src="<?php echo $this->baseUrl();?>/images/ticks.png"><?php }else{?><img alt="" src="<?php echo $this->baseUrl();?>/images/untick.png"><?php }?> Pre-Purchasing Deposit</td>
+										<td colspan="2">&nbsp;<?php if ($rs["pay_type"]==1){?><img alt="" src="<?php echo $this->baseUrl();?>/images/ticks.png"><?php }else{?><img alt="" src="<?php echo $this->baseUrl();?>/images/untick.png"><?php }?> Buying the Vehicle with the following details: &nbsp;US$<?php echo $rs["total_price"]?></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Vehicle’s Information - ពត៌មានរថយន្ត</strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<div style="border: solid 1px #000;">
+									<table class="padd" width="100%" align="center" style=" white-space:nowrap; border-collapse: collapse;">
+										<tr style="height: 20px; ">
+											<td width="25%">&nbsp;ឆ្នាំផលិត | Year:</td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["year"]?></td>
+											<td width="25%">&nbsp;លេខតូ | Frame No.: </td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["frame_no"]?></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ម៉ាក | Make:</td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["make"]?></td>
+											<td width="25%">&nbsp;សាក់ស៊ី | Chassis No.: </td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["chassis_no"]?></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ម៉ូដែល | Model:</td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["model"]?></td>
+											<td width="25%">&nbsp;លេខម៉ាស៊ីន | Engine No.: </td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["engine_number"]?></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ម៉ូដែលបន្ទាប់ | Sub-model:</td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["sub_model"]?></td>
+											<td width="25%">&nbsp;ចំនួនភ្លៅ | No Of Axles: </td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["of_axlex"]?></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ប្រភេទ | Type:</td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["car_type"]?></td>
+											<td width="25%">&nbsp;ចំនួនស៊ីឡាំង | No. of Cylinders: </td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["of_cylinder"]?></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ពណ៌ | Color:</td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["color"]?></td>
+											<td width="25%">&nbsp;ទំហំស៊ីឡាំង | Cylinder Size: </td>
+											<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["cylinders_dip"]?></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;កម្លាំង | Horse Power:</td>
+											<td class="center" width="25%" colspan="2">&nbsp;<?php echo $rs["hors_power"]?></td>
+											<td width="25%">&nbsp;ស្លាកលេខ | Plaque No.: </td>
+											<td class="center" width="25%" colspan="2">&nbsp;<?php echo $rs["licence_plate"]?></td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Buyer’s Information - ពីភាគី អ្នកទិញ</strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%" align="center" style=" white-space:nowrap; border-collapse: collapse;">
+									<tr style="height: 20px; ">
+										<td width="25%" style="border-bottom: 1px solid #000;">I&nbsp;<strong>&nbsp; &nbsp;<?php echo $sex.$rs["first_name"]." ".$rs["last_name"]?></strong></td>
+										<td >&nbsp;Date of Birth: </td> 
+										<td width="15%" style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<?php echo $rs["dob"]?></strong></td>
+										<td style="border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: solid 1px #fff;">&nbsp;ID Card/Passport No.:</td>
+										<td width="25%" style="border-bottom: 1px solid #000;"><strong>&nbsp;<?php echo $id_card?></strong></td>
+									</tr>
+									<tr>
+										<td>&nbsp;Issued On: </td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<?php echo $issue_date?></strong></td>
+										<td style="border-bottom: #fff solid 1px;">&nbsp;Issued By:</td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;</strong></td>
+										<td colspan="2" style="border-bottom: #fff solid 1px;">&nbsp;</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Special Statement - សេចក្តីបញ្ជាក់ </strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%" align="center" style="white-space:nowrap; border-collapse: collapse;">
+									<tr>
+										<td>&nbsp;The balance amount of US$:</td>
+										<td style="border-bottom: 1px solid #000;color:red;font-weight: 700">&nbsp;<?php echo $rs["balance"]?></td>
+										<td>&nbsp;In Word:</td>
+										<td style="border-bottom: 1px solid #000;color:red;font-weight: 700">&nbsp;<span id="balance_inword"></span></td>
+									</tr>
+									<tr>
+										<td width="10%">&nbsp;will be settled on: </td>
+										<td width="35%" style="border-bottom: 1px solid #000;">&nbsp;<?php echo $rs["date_full_pay"]?></td>
+										<td width="10%">&nbsp;at </td>
+										<td width="45%" style="border-bottom: 1px solid #000;">&nbsp;<?php echo $rs["time_full_pay"]?></td>
+									</tr>
+								</table>
+							
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<p><strong style="color:#04AE18;">Special Notice - ចំណាំពិសេស: </strong>If the buyer changes the commitment or promise, the above-mentioned deposit won’t be refunded!</p>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%"  align="center" style="white-space:nowrap; border-collapse: collapse;">
+									<tr align="center">
+										<td colspan="3" width="10%">&nbsp;</td>
+										<td width="35%">&nbsp;Date: <?php echo date_format(date_create($rs["date"]), "l,F jS, Y")?></td>
+									</tr>
+									<tr align="center">
+										<td width="25%">&nbsp;Right Thumbprint of the Buyer</td>
+										<td colspan="2">&nbsp;</td>
+										<td>&nbsp;Right Thumbprint of the Vehicle’s Owner</td>
+									</tr>
+									<tr align="center">
+										<td colspan="4">&nbsp;</td>
+									</tr>
+									<tr align="center">
+										<td colspan="4">&nbsp;</td>
+									</tr>
+									<tr align="center">
+										<td style="border-bottom: 1px solid #000;"></td>
+										<td colspan="2">&nbsp;</td>
+										<td style="border-bottom: 1px solid #000;"></td>
+									</tr>
+									<tr align="center">
+										<td width="25%"><h4><?php echo $sex.$rs["first_name"]." ".$rs["last_name"]?></h4></td>
+										<td width="25%">&nbsp;</td>
+										<td width="25%">&nbsp;</td>
+										<td><h4><?php echo $o_sex.$rs["o_f_name"].$rs["o_l_name"]?></h4></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>

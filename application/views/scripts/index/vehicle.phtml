@@ -1,0 +1,406 @@
+<?php 
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+
+$session_lang=new Zend_Session_Namespace('lang');
+$currentlang = $session_lang->lang_id;
+
+$vehicle = $this->vehicledetail;
+
+$image = explode(",", $vehicle['images_list']);
+?>
+	<!--// Main Content \\-->
+		<div class="automobile-main-content">
+
+			<!--// Main Section \\-->
+			<div class="automobile-main-section">
+				<div class="container">
+					<div class="row">
+
+                        <!--// SideBaar \\-->
+                        <aside class="col-md-3">
+
+                            <!--// Widget Car_Info \\-->
+                            <div class="widget widget_car_info">
+                                <ul class="widget-car-info-list">
+                                    <li><h6 class="automobile-color">Condition:<span> Used</span></h6></li>
+                                    <li><h6 class="automobile-color">Transmission:<span> 6-Speed Manual</span></h6></li>
+                                    <li><h6 class="automobile-color">Drivetrain:<span> AWD</span></h6></li>
+                                    <li><h6 class="automobile-color">Engine:<span> 3.6L V6</span></h6></li>
+                                    <li><h6 class="automobile-color">Interior Color:<span> Beige</span></h6></li>
+                                    <li><h6 class="automobile-color">Mileage:<span> 67.988 Miles</span></h6></li>
+                                    <li><h6 class="automobile-color">Exterior Color:<span> Black</span></h6></li>
+                                    <li><h6 class="automobile-color">MPG:<span> 19 City / 27 Highway</span></h6></li>
+                                    <li><h6 class="automobile-color">Fuel:<span> Gasoline</span></h6></li>
+                                </ul>
+                                <div class="widget-car-info-view">
+                                    <a href="listing-detail.html"><i class="icon-tool-2"></i>Listed for <strong>2 days.</strong></a>
+                                    <a href="listing-detail.html"><i class="icon-eye"></i><strong>38 people </strong> viewed it.</a>
+                                </div>
+                            </div>
+                            <!--// Widget Car_Info \\-->
+
+                            <!--// Widget Email \\-->
+                            <div class="widget widget_email">
+                                <div class="automobile-widget-heading"><h2>Email This Seller</h2><i class="fa fa-angle-down"></i></div>
+                                <form>
+                                    <ul>
+                                        <li>
+                                            <label>All fields are required*</label>
+                                            <textarea placeholder="Hello! I'm interested in the 2004 Audi 360 Spider you have listed on Accelerator.com for $56.900. I would like to know more about it. Thanks!"></textarea>
+                                        </li>
+                                        <li>
+                                            <label>First Name:</label>
+                                            <input type="text" value="" onblur="if(this.value == '') { this.value =''; }" onfocus="if(this.value =='') { this.value = ''; }">
+                                        </li>
+                                        <li>
+                                            <label>Last Name:</label>
+                                            <input type="text" value="" onblur="if(this.value == '') { this.value =''; }" onfocus="if(this.value =='') { this.value = ''; }">
+                                        </li>
+                                        <li>
+                                            <label>E-mail Address:</label>
+                                            <input type="text" value="" onblur="if(this.value == '') { this.value =''; }" onfocus="if(this.value =='') { this.value = ''; }">
+                                        </li>
+                                        <li>
+                                            <label>Phone:</label>
+                                            <input type="text" value="" onblur="if(this.value == '') { this.value =''; }" onfocus="if(this.value =='') { this.value = ''; }">
+                                        </li>
+                                        <li>
+                                            <label>ZIP Code:</label>
+                                            <input type="text" value="" onblur="if(this.value == '') { this.value =''; }" onfocus="if(this.value =='') { this.value = ''; }">
+                                        </li>
+                                        <li><input class="automobile-bgcolor" type="submit" value="check availability"></li>
+                                    </ul>
+                                </form>
+                            </div>
+                            <!--// Widget Email \\-->
+
+                            <!--// Widget Useful Links \\-->
+                            <div class="widget widget_useful_links">
+                                <div class="automobile-widget-heading"><h2>Useful Links</h2><i class="fa fa-angle-down"></i></div>
+                                <ul>
+                                    <li>
+                                        <a href="404.html">
+                                            Request More Info
+                                            <i class="icon-null2"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="404.html">
+                                            Schedule a Test Drive
+                                            <i class="icon-null-1"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="404.html">
+                                            Print This Detail
+                                            <i class="icon-printer"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="404.html">
+                                            Send This to a Friend
+                                            <i class="icon-symbol5"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--// Widget Useful Links \\-->
+
+                            <!--// Widget Finance Calculator \\-->
+                            <div class="widget widget_finance_calculator">
+                                <div class="automobile-widget-heading"><h2>Finance Calculator</h2><i class="fa fa-angle-down"></i></div>
+                                <form>
+                                    <ul>
+                                        <li>
+                                            <label>Months:</label>
+                                            <div class="widget-finance-checkbox">
+                                                <input id="finance1" type="checkbox">
+                                                <label for="finance1">24</label>
+                                            </div>
+                                            <div class="widget-finance-checkbox">
+                                                <input id="finance2" type="checkbox">
+                                                <label for="finance2">36</label>
+                                            </div>
+                                            <div class="widget-finance-checkbox">
+                                                <input id="finance3" type="checkbox">
+                                                <label for="finance3">48</label>
+                                            </div>
+                                            <div class="widget-finance-checkbox">
+                                                <input id="finance4" type="checkbox">
+                                                <label for="finance4">60</label>
+                                            </div>
+                                            <div class="widget-finance-checkbox">
+                                                <input id="finance5" type="checkbox">
+                                                <label for="finance5">72</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <label>Interest Rate:</label>
+                                            <input type="text" value="0.0" onblur="if(this.value == '') { this.value ='0.0'; }" onfocus="if(this.value =='0.0') { this.value = ''; }">
+                                            <span>%</span>
+                                        </li>
+                                        <li>
+                                            <label>Price:</label>
+                                            <input type="text" value="0" onblur="if(this.value == '') { this.value ='0'; }" onfocus="if(this.value =='0') { this.value = ''; }">
+                                            <span>$</span>
+                                        </li>
+                                        <li>
+                                            <label>Down Payment:</label>
+                                            <input type="text" value="0" onblur="if(this.value == '') { this.value ='0'; }" onfocus="if(this.value =='0') { this.value = ''; }">
+                                            <span>-</span>
+                                        </li>
+                                        <li>
+                                            <label>Trade-In Value:</label>
+                                            <input type="text" value="0" onblur="if(this.value == '') { this.value ='0'; }" onfocus="if(this.value =='0') { this.value = ''; }">
+                                            <span>-</span>
+                                        </li>
+                                        <li>
+                                            <label>Amount Owed on Trade:</label>
+                                            <input type="text" value="0" onblur="if(this.value == '') { this.value ='0'; }" onfocus="if(this.value =='0') { this.value = ''; }">
+                                            <span>+</span>
+                                        </li>
+                                        <li>
+                                            <label class="finance-submit">
+                                                <input class="automobile-bgcolor" type="submit" value="calculate now">
+                                                <i class="icon-calculator2"></i>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <p>Number of Payment: <span>320</span></p>
+                                            <p>Payment Amount: <span>$104 / month</span></p>
+                                        </li>
+                                    </ul>
+                                </form>
+                            </div>
+                            <!--// Widget Finance Calculator \\-->
+
+                            <!--// Widget Popular Cars \\-->
+                            <div class="widget widget_popular_car">
+                                <div class="automobile-widget-heading"><h2>Finance Calculator</h2><i class="fa fa-angle-down"></i></div>
+                                <ul>
+                                    <li>
+                                        <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/popular-car-img1.jpg" alt=""></a></figure>
+                                        <div class="widget-popular-car-text">
+                                            <h6><a href="listing-detail.html"><span>Used</span> - 2006 Chevrolet TrailBlazer</a></h6>
+                                            <span>$23.909</span>
+                                            <ul class="popular-car-option">
+                                                <li><a href="404.html"><i class="icon-photo"></i>21</a></li>
+                                                <li><a href="404.html"><i class="icon-tool-1"></i>3</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/popular-car-img2.jpg" alt=""></a></figure>
+                                        <div class="widget-popular-car-text">
+                                            <h6><a href="listing-detail.html"><span>Used</span> - 2013 Ford Escape</a></h6>
+                                            <span>$18.600</span>
+                                            <ul class="popular-car-option">
+                                                <li><a href="404.html"><i class="icon-photo"></i>21</a></li>
+                                                <li><a href="404.html"><i class="icon-tool-1"></i>3</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/popular-car-img3.jpg" alt=""></a></figure>
+                                        <div class="widget-popular-car-text">
+                                            <h6><a href="listing-detail.html"><span>Used</span> - GMC Terrainus 2WD SLT</a></h6>
+                                            <span>$32.999 <del>$39.000</del></span>
+                                            <ul class="popular-car-option">
+                                                <li><a href="404.html"><i class="icon-photo"></i>21</a></li>
+                                                <li><a href="404.html"><i class="icon-tool-1"></i>3</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>                                
+                            </div>
+                            <!--// Widget Popular Cars \\-->
+
+                        </aside>
+                        <!--// SideBaar \\-->
+
+						<div class="col-md-9">
+                            <div class="automobile-listing-slider">
+                              <div class="automobile-images-thumb">
+                              	<?php if ($image) foreach ($image as $img){?>
+                                  <div class="automobile-images-thumb-layer"><span><img src="<?php echo $this->baseUrl()."/images/vehicle/".$img;?>" alt=""></span></div>
+                                <?php }?>  
+                                 
+                              </div>
+                              <div class="automobile-images-list">
+                              <?php if ($image) foreach ($image as $img){?>
+                                  <div class="automobile-images-list-layer"><span><img src="<?php echo $this->baseUrl()."/images/vehicle/".$img;?>" alt=""></span></div>
+                               <?php }?>  
+                              </div>
+                            </div>                               
+                            <div class="automobile-vehicle-heading">
+                                <h2>2014 Audi TT RS Roadster<span class="automobile-color">$23,987</span></h2>
+                                <span>+ Sales Tax</span>
+                            </div>
+                            <div class="automobile-vehicle-text">
+                                <div class="automobile-listing-heading"><h2 class="automobile-color">Vehicle Overview</h2></div>
+                                <p>2014 360 Spider 6 speed manual with15k miles. Extremely clean even for the most discerning buyer. Paint and interior is close to perfect. I have clear filmed the full hood, front bumper, fenders, lights and convertible top pad. I have also refinished every switch, lever, steering column, ash tray, HVAC etc in the interior via Sticky No More to bring the interior back to 'new' condition.
+                                </p>
+                                <p>As any Audi, owner will tell you, the interior pieces get sticky around 8-10 years of age which is quite frustrating...no problem here. Timing belt service and tires were done 11/19/2013 at 67.988 miles.</p>
+                            </div>
+                            <div class="automobile-listing-heading"><h2 class="automobile-color">Features & Options</h2></div>
+                            <ul class="automobile-list-style-one">
+                                <li>Adaptive Cruise Control</li>
+                                <li>ParkAssist</li>
+                                <li>Tire Pressure Monitoring</li>
+                                <li>Automatic Climate Control</li>
+                                <li>Reversing Camera</li>
+                                <li>Voice Control System</li>
+                                <li>Floor Mats</li>
+                                <li>Seat Ventilation</li>
+                            </ul>
+                            <div class="automobile-technical-specification">
+                            <div class="automobile-listing-heading"><h2 class="automobile-color">Technical Specifications</h2></div>
+                                <h6>Engine</h6>
+                                <ul class="automobile-car-detail">
+                                    <li>Layout / number of cylinders <span>6</span></li>
+                                    <li>Displacement <span>3.4 l</span></li>
+                                    <li>Engine Layout <span>Mid-engine</span></li>
+                                    <li>Horespower <span>315 hp</span></li>
+                                    <li>@ rpm <span>6,700 rpm</span></li>
+                                    <li>Torque <span>266 lb.-ft.</span></li>
+                                    <li>Compression ratio <span>12.5 : 1</span></li>
+                                </ul>
+                                <h6>Performance</h6>
+                                <ul class="automobile-car-detail">
+                                    <li>Top Track Speed <span>173 mph</span></li>
+                                    <li>0 - 60 mph <span>4.8 s</span></li>
+                                </ul>
+                                <h6>Transmission</h6>
+                                <ul class="automobile-car-detail">
+                                    <li>Manual Gearbox <span>6-speed with dual-mass flywheel and self-adjusting clutch</span></li>
+                                </ul>
+                                <h6>Fuel Consumption</h6>
+                                <ul class="automobile-car-detail">
+                                    <li>City (estimate) <span>32</span></li>
+                                    <li>Highway (estimate) <span>39</span></li>
+                                </ul>
+                            </div>
+                            <div class="automobile-listing-map">
+                            <div class="automobile-listing-heading"><h2 class="automobile-color">Vehicle Location</h2></div>
+                                <div id="map"></div>
+                            </div>
+                            <div class="automobile-section-heading"><h2 class="automobile-color">Recent Listings</h2></div>
+                            <div class="automobile-listing automobile-listing-grid automobile-listing-grid-slider">
+                                <div class="col-md-4 automobile-listing-one">
+                                    <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/listing-grid-img4.jpg" alt=""></a><span>Used car</span></figure>
+                                    <div class="automobile-listing-grid-text">
+                                        <h4><a href="listing-detail.html">2016 Aston Martin V8  Vantage Coupe</a></h4>
+                                        <ul>
+                                            <li>$36.900</li>
+                                            <li>MSRP $33.000</li>
+                                        </ul>
+                                        <div class="automobile-listing-toggle">
+                                            <h6>Mileage:<span> 28,450 Miles</span></h6>
+                                            <a class="btn btn-primary" data-toggle="collapse" href="#collapseText01" aria-expanded="false" aria-controls="collapseText01"><i class="fa fa-angle-down"></i></a>
+                                            <div class="collapse text" id="collapseText01">
+                                                <h6>Specs:</h6>
+                                                <ul>
+                                                    <li>Dual front impact airbags </li>
+                                                    <li>Emergency communication  system</li>
+                                                    <li>Steering wheel mounted A/C  controls</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <span class="automobile-compare-box"><a href="compare.html">Add to Compare</a></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 automobile-listing-one">
+                                    <div class="shape">
+                                        <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/listing-grid-img5.jpg" alt=""></a><span>Used car</span><span class="featured">Featured</span></figure>
+                                    </div>
+                                    <div class="automobile-listing-grid-text">
+                                        <h4><a href="listing-detail.html">2016 Aston Martin V8  Vantage Coupe</a></h4>
+                                        <ul>
+                                            <li>$36.900</li>
+                                            <li>MSRP $33.000</li>
+                                        </ul>
+                                        <div class="automobile-listing-toggle">
+                                            <h6>Mileage:<span> 32,876 Miles</span></h6>
+                                            <a class="btn btn-primary" data-toggle="collapse" href="#collapseText02" aria-expanded="false" aria-controls="collapseText02"><i class="fa fa-angle-down"></i></a>
+                                            <div class="collapse text" id="collapseText02">
+                                                <h6>Specs:</h6>
+                                                <ul>
+                                                    <li>Dual front impact airbags </li>
+                                                    <li>Emergency communication  system</li>
+                                                    <li>Steering wheel mounted A/C  controls</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <span class="automobile-compare-box"><a href="compare.html">Add to Compare</a></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 automobile-listing-one">
+                                    <div class="automobile-listing-slide2">
+                                        <div class="automobile-listing-one-layer">
+                                            <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/listing-grid-img6.jpg" alt=""></a><span>Used car</span></figure>
+                                        </div>
+                                        <div class="automobile-listing-one-layer">
+                                            <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/listing-grid-img12.jpg" alt=""></a><span>Used car</span></figure>
+                                        </div>
+                                        <div class="automobile-listing-one-layer">
+                                            <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/listing-grid-img1.jpg" alt=""></a><span>Used car</span></figure>
+                                        </div>
+                                        <div class="automobile-listing-one-layer">
+                                            <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/listing-grid-img11.jpg" alt=""></a><span>Used car</span></figure>
+                                        </div>    
+                                    </div>
+                                    <div class="automobile-listing-grid-text">
+                                        <h4><a href="listing-detail.html">2016 Aston Martin V8  Vantage Coupe</a></h4>
+                                        <ul>
+                                            <li>$36.900</li>
+                                            <li>MSRP $33.000</li>
+                                        </ul>
+                                        <div class="automobile-listing-toggle">
+                                            <h6>Mileage:<span> 11,560 Miles</span></h6>
+                                            <a class="btn btn-primary" data-toggle="collapse" href="#collapseText03" aria-expanded="false" aria-controls="collapseText03"><i class="fa fa-angle-down"></i></a>
+                                            <div class="collapse text" id="collapseText03">
+                                                <h6>Specs:</h6>
+                                                <ul>
+                                                    <li>Dual front impact airbags </li>
+                                                    <li>Emergency communication  system</li>
+                                                    <li>Steering wheel mounted A/C  controls</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <span class="automobile-compare-box"><a href="compare.html">Add to Compare</a></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 automobile-listing-one">
+                                    <figure><a href="listing-detail.html"><img src="<?php echo $this->baseUrl();?>/templates/extra-images/listing-grid-img15.jpg" alt=""></a><span>Used car</span></figure>
+                                    <div class="automobile-listing-grid-text">
+                                        <h4><a href="listing-detail.html">2016 Aston Martin V8  Vantage Coupe</a></h4>
+                                        <ul>
+                                            <li>$36.900</li>
+                                            <li>MSRP $33.000</li>
+                                        </ul>
+                                        <div class="automobile-listing-toggle">
+                                            <h6>Mileage:<span> 28,450 Miles</span></h6>
+                                            <a class="btn btn-primary" data-toggle="collapse" href="#collapseText04" aria-expanded="false" aria-controls="collapseText04"><i class="fa fa-angle-down"></i></a>
+                                            <div class="collapse text" id="collapseText04">
+                                                <h6>Specs:</h6>
+                                                <ul>
+                                                    <li>Dual front impact airbags </li>
+                                                    <li>Emergency communication  system</li>
+                                                    <li>Steering wheel mounted A/C  controls</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <span class="automobile-compare-box"><a href="compare.html">Add to Compare</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+					</div>
+				</div>
+			</div>
+			<!--// Main Section \\-->
+
+		</div>
+		<!--// Main Content \\-->
+		

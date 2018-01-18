@@ -1,0 +1,93 @@
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate("ADD_OWNERVEHICLE"));
+?>	
+<script type="text/javascript">
+dojo.require("dijit.form.DateTextBox");
+</script>
+<form action="<?php echo $this->url(array('module'=>'group','controller'=>'ownervehicle','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+ 	<script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				loading();
+				return true;
+			} else {
+				return false;
+			}
+	</script>
+ 	<div class="clearfix"></div>
+	<div class="row">
+	 	<div class="col-md-3 col-xs-12 forms_padding">
+	 	</div>
+      	 <div class="col-md-6 col-xs-12 forms_padding">
+	          <div class="x_panel">
+	              <div class="x_title">
+	                 <h2><i class="fa  fa-plus-circle" aria-hidden="true"></i> <?php echo $tr->translate('ADD_OWNERVEHICLE')?></h2>
+	                 <ul class="nav navbar-right panel_toolbox">
+	                    <li>
+	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+	                    </li>
+	               	</ul>
+	               <div class="clearfix"></div>
+	          	</div>
+	       		<div class="x_content">
+	       			<div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Name')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                   		<input dojoType="dijit.form.ValidationTextBox"  type="text" class="fullside" id="owner_name" name="owner_name" required="required">
+	                   </div>
+	                </div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Postition')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                   		<input dojoType="dijit.form.ValidationTextBox" required="required" type="text" name="position" id="position" class="fullside" />
+	                   </div>
+	                </div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('DOB')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                   		<input constraints="{datePattern:'dd/MM/yyyy'}" value="<?php echo date("Y-m-d");?>" dojoType="dijit.form.DateTextBox" required="required" type="text" name="dob" id="dob" class="fullside" />
+	                   </div>
+	                </div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('ID Card')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                   		<input dojoType="dijit.form.ValidationTextBox" required="required" type="text" class="fullside" id="id_card" name="id_card">	
+	                   </div>
+	                </div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Phone Number')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                   		<input dojoType="dijit.form.ValidationTextBox"  type="text" class="fullside" id="hand_phone" name="hand_phone">	
+	                   </div>
+	                </div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('EMAIL')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                   		<input dojoType="dijit.form.ValidationTextBox"  type="text" name="email" id="email" class="fullside" />
+	                   </div>
+	                </div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Insurance Hotline')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                   		<input dojoType="dijit.form.ValidationTextBox"  type="text" class="fullside" id="hotline" name="hotline">
+	                   </div>
+	                </div>
+	                <div class="form-group text-center">
+	                		<input type="reset" value="សំអាត" label="<?php echo $tr->translate('CLEAR');?>" dojoType="dijit.form.Button" iconClass="dijitIconClear"/>
+							<input type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVECLOSE');?>" dojoType="dijit.form.Button" 
+								iconClass="dijitEditorIcon dijitEditorIconSave" />
+							<input type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVENEW');?>" dojoType="dijit.form.Button" 
+								iconClass="dijitEditorIcon dijitEditorIconSave" />
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</form>

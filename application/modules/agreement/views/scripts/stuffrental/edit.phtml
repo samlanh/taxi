@@ -1,0 +1,517 @@
+<?php 
+   $tr = Application_Form_FrmLanguages::getCurrentlanguage();
+   echo $this->headTitle($tr->translate("EDIT_STUFFRENTAL_AGREEMENT"));
+   $rows_owner= $this->rows_owner;
+   $rows_cus=$this->rows_cus;
+   $rsagreement = $this->rs;
+   //print_r($rsagreement);
+?>
+<script type="text/javascript">
+	dojo.require("dojo.html");
+	dojo.require("dojo.data.ItemFileWriteStore");  
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.DateTextBox");
+	require(["dijit/form/CheckBox"]);
+	dojo.ready(function(){
+		getOwner();
+		getBookingInfo();
+	});
+function calculateBalance(){
+	grand_total = dijit.byId('grand_total').get('value');
+	paid_total = dijit.byId('paid_total').get('value');
+	if(paid_total>grand_total){
+		alert("Paid amount must less than or equal Grand Total!");
+		dijit.byId('balance').attr('value','0');
+		dijit.byId('paid_total').attr('value',grand_total);
+	}else{
+	dijit.byId('balance').attr('value',grand_total-paid_total);
+	}
+}
+	//data=dijit.byId('owner_name').get('value');
+	var url_owner = "<?php echo $this->url(array('module'=>'agreement','controller'=>'index','action'=>'get-row-owner'));?>";
+	function getOwner(){
+       name_id=dijit.byId('owner_name').get('value');
+       if(name_id==''){
+    	   dijit.byId('position').attr('value','');
+		   dijit.byId('id_card').attr('value','');
+		   dijit.byId('hand_phone').attr('value','');
+		   dijit.byId('email').attr('value','');
+		   dijit.byId('hotline').attr('value','');
+       }else{
+		dojo.xhrPost({
+		     url: url_owner, 
+		     content : { 
+		     'owner_name':dijit.byId('owner_name').get('value'),
+		  }, 
+		  handleAs:"json",
+		  load: function(data) {
+			 
+		   dijit.byId('position').attr('value',data.position);
+		   dijit.byId('id_card').attr('value',data.id_card);
+		   dijit.byId('hand_phone').attr('value',data.hand_phone);
+		   dijit.byId('email').attr('value',data.email);
+		   dijit.byId('hotline').attr('value',data.hotline);
+		  },
+		  error: function(err) {
+		   alert(err);
+		  alert("Your message could not be sent, please try again!.");         
+		  }
+		 });
+       }
+	}
+var url_customer = "<?php echo $this->url(array('module'=>'agreement','controller'=>'driver','action'=>'get-booking'));?>";
+function getBookingInfo(){
+        booking_id=dijit.byId('booking_id').get('value');
+        getBookingVehicleDetail(booking_id);
+		dojo.xhrPost({
+		     url: url_customer, 
+		     content : { 
+		     "booking_id":booking_id,
+		  }, 
+		  handleAs:"json",
+		  load: function(data) {
+			dijit.byId("customer_id").attr("value",data.customer_id);
+			dijit.byId('incep_date').attr('value',data.pickup_date);
+			dijit.byId('return_date').attr('value',data.return_date);
+			dijit.byId('return_time').attr('value',data.return_time);
+
+			dijit.byId('first_name').attr('value',data.first_name);
+			dijit.byId('last_name').attr('value',data.last_name);
+			
+			dijit.byId('gender').attr('value',data.sex);
+			dijit.byId('dob').attr('value',data.dob);
+			dijit.byId('pob').attr('value',data.pob);
+			dijit.byId('nationality').attr('value',data.nationality);
+			dijit.byId('company').attr('value',data.company_name);
+
+		  },
+		  error: function(err) {
+		  	alert("Your message could not be sent, please try again!.");         
+		  }
+		 });
+}
+r=0;
+var url_vehicle = "<?php echo $this->url(array('module'=>'agreement','controller'=>'stuffrental','action'=>'getproduct'));?>";
+function getBookingVehicleDetail(booking_id){
+	old_booking = dijit.byId('old_booking').get('value');
+		dojo.xhrPost({
+		     url: url_vehicle, 
+		     content : { 
+		     "booking_id":booking_id,
+		  }, 
+		  handleAs:"json",
+		  load: function(data) {
+				temp='';	fund_title=0;thead='';fund_title=0;
+				        total=0;refund=0;
+				 		temp='<table class="table" style="font-size:13px; width:100% !important; " id="table">'
+						temp+='<tr style="background:#f6f4f4;"><th class="text-center"><?php echo $tr->translate("NUM");?></th>';
+						temp+='<th><?php echo $tr->translate("Product Name ");?></th>';
+						temp+='<th><?php echo $tr->translate("Price");?></th>';
+						temp+='<th><?php echo $tr->translate("Disc");?></th>';
+						temp+='<th><?php echo $tr->translate("Total");?></th>';
+						var k=0;
+				for(i=0;i<data.length;i++){
+			        r++; k++;
+			        total=total+parseFloat(data[i].total);
+			        refund=refund+parseFloat(data[i].refund_deposit);
+			        
+					    temp+='<tr><td align="center">'+k+'</td>';
+						temp+='<td align="left">'+data[i].item_name+'</td>';
+						temp+='<td align="center">'+data[i].price+'</td>';
+						temp+='<td align="center">'+data[i].VAT+'</td>';
+						temp+='<td align="center">'+data[i].total+'</td></tr>';
+				 }
+				 dijit.byId('rental_fee').attr('value',total);
+				 dijit.byId('refundable').attr('value',refund);
+				 dijit.byId('grand_total').attr('value',refund+total);
+				 dijit.byId('paid_total').attr('value',refund+total);
+				 //dijit.byId('balance').attr('value',refund+total);
+				 dijit.byId('balance').attr('value','0');
+				 
+				temp+='</table>';
+				dojo.byId('lbl_driver').innerHTML = temp;
+
+				 if(booking_id==old_booking){
+					    dijit.byId("customer_id").attr("value",'<?php echo $rsagreement['customer_id']; ?>');
+					    dijit.byId('agreement_date').attr('value','<?php echo $rsagreement['agreement_date'];?>');
+						dijit.byId('agreement_code').attr('value','<?php echo $rsagreement['agreement_code'];?>');
+						dijit.byId('incep_date').attr('value','<?php echo $rsagreement['start_date']; ?>');
+						dijit.byId('return_date').attr('value','<?php echo $rsagreement['finish_date']; ?>');
+						dijit.byId('period').attr('value','<?php echo $rsagreement['period']; ?>');
+						dijit.byId('rental_fee').attr('value','<?php echo $rsagreement['rental_fee']; ?>');
+						dijit.byId('refundable').attr('value','<?php echo $rsagreement['refundable'];?>');
+						
+						dijit.byId('grand_total').attr('value','<?php echo $rsagreement['grand_total'];?>');
+						dijit.byId('paid_total').attr('value','<?php echo $rsagreement['paid_amount'];?>');
+						dijit.byId('balance').attr('value','<?php echo $rsagreement['due_amount'];?>');
+						
+				 }
+		  },
+		  error: function(err) {
+			  alert(err);
+		  	alert("Your message could not be sent, please try again!.");         
+		  }
+		 });
+	}
+
+function calCulateDay(){
+			incep_date = dijit.byId('incep_date').get('value');
+			return_date = dijit.byId('return_date').get('value');
+		    oneDay = 24*60*60*1000;
+			day=return_date - incep_date;
+		    total_duration = Math.round(day/oneDay)+1;
+			dijit.byId('period').attr('value',total_duration);
+			period_value=dijit.byId('period').get('value');
+			if(period_value<0){
+				alert('Please checked day again !');
+				dijit.byId('period').attr('value','0');
+				dijit.byId('incep_date').attr('value',return_date);
+			}
+	}
+function setAgreementRef(){
+	lastagreement = dijit.byId('lastagreement').get('value');
+	prefix_code=dijit.byId('prefix_code').get('value');
+	release_date = dijit.byId("agreement_date").get('value');
+	 var a = new Date(release_date);
+	 mm = a.getMonth()+1;
+	
+	 var dd = a.getDate();
+	  if(dd<10){
+	   dd = "0"+dd;
+	 }
+	  if(mm<10){
+	   mm = "0"+mm;
+	 }
+	 var y = a.getYear();
+	 var agreement_code = prefix_code+'-'+ y + '-'+ mm + '-'+dd+'-'+lastagreement ;
+	 dijit.byId('agreement_code').attr('value',agreement_code);
+}
+	function CalculateDate(){
+		amount_day = dijit.byId('period').get('value');
+		if(isNaN(amount_day)){
+			dijit.byId('period').focus();
+		}
+		if(amount_day==''){
+			dijit.byId('period').focus();
+		}
+		
+		else{
+			start_date = dijit.byId("incep_date").value;
+			var a = new Date(start_date);
+				var mm = a.getMonth() + 1;
+			var dd = a.getDate()+parseInt(amount_day);
+			 if(dd<10){
+				 dd = "0"+dd;
+			}
+			 if(mm<10){
+				 mm = "0"+mm;
+			}
+			var y = a.getFullYear();
+			var return_date = y + '-'+ mm + '-'+dd ;
+			dijit.byId('return_date').attr('value',return_date);
+	   }
+		   
+	}
+	function depositPrice(){
+		dorla=dijit.byId('dorla').get('value');
+		amount_price=dijit.byId('amount_price').get('value');
+		deposit=dijit.byId('deposit').get('value');
+		total_net_pay=dorla+amount_price+deposit;
+		dijit.byId('total_net_pay').attr('value',total_net_pay);
+	}
+	function grandTotal(){
+		rentalfee = dijit.byId('rental_fee').get('value');
+		amount_f_d=dijit.byId('refundable').get('value');
+		grand_total = (rentalfee+amount_f_d);
+		dijit.byId('grand_total').attr('value',grand_total);
+		paid_amount = dijit.byId('paid_total').attr('value',grand_total);
+		dijit.byId('balance').attr('value',0);
+	}
+</script>
+<form id='add_driver'  action="<?php echo $this->url(array('module'=>'agreement','controller'=>'stuffrental','action'=>'edit')); ?>" enctype="multipart/form-data" dojoType="dijit.form.Form" method="post">
+	<script type="dojo/method" event="onSubmit">			
+		if(this.validate()) {
+			loading();
+			return true;
+		} else {
+			return false;
+		}
+	</script>
+	<div class="clearfix"></div>
+	<div class="row">
+		<div class="col-md-12 col-xs-12 forms_padding">
+			<div class="x_panel">
+				<div class="x_title">
+	                 <h2><i class="fa fa-file-text" aria-hidden="true"></i> <?php echo $tr->translate('EDIT_STUFFRENTAL_AGREEMENT')?></h2>
+	               <div class="clearfix"></div>
+	          	</div>
+	       		<div class="x_content">
+	       			<div class="col-md-5 col-sm-5 col-xs-12">
+		       		   	<div class="clearfix"></div>
+		       		   	<div class="title_form_blog">
+		               		<h4>I. <?php echo $tr->translate("Party A (Ownder)")?></h4>
+		          		</div>
+		          		<div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Name')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<select name="owner_name" id="owner_name" dojoType="dijit.form.FilteringSelect" class="fullside" onchange="getOwner();">
+								    <option value=""><?php echo $tr->translate('Select Name')?></option>
+								    <?php foreach ($rows_owner As  $rs){?>
+								    <option value="<?php echo $rs['id'];?>" <?php if($this->rs['ownder_id']==$rs['id']){echo'selected="selected"';}?>><?php echo $rs['owner_name'];?></option>
+								    <?php }?>
+								</select>
+								<input type="hidden" name="old_booking" dojoType="dijit.form.TextBox" id="old_booking" value="<?php echo $rsagreement['booking_id']; ?>" />
+								<input type="hidden" dojoType="dijit.form.TextBox" name="customer_id" id="customer_id" value="" />
+		                   </div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Position')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox" required="required" type="text" name="position" id="position" class="fullside" />
+		                   </div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('ID Card')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.NumberTextBox" required="required" type="text" class="fullside" id="id_card" name="id_card">
+		                   </div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Hand Phone')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"  type="text" class="fullside" id="hand_phone" name="hand_phone">
+		                   </div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Email')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"  type="text" name="email" id="email" class="fullside" />
+		                   </div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Insurance Hotline')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"  type="text" class="fullside" id="hotline" name="hotline">
+		                   </div>
+		                </div>
+		                <div class="title_form_blog">
+		               		<h4>II. <?php echo $tr->translate("Party B (Hereinafter refer to as a Rental)")?></h4>
+		          		</div>
+		          		<div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Booking Number')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+								<select name="booking_id" id="booking_id" dojoType="dijit.form.FilteringSelect" class="fullside"  onchange="getBookingInfo();">
+								   <option value=''><?php echo $tr->translate('Selected Booking Number')?></option>
+								   <?php foreach ($this->rsbooking as $rs){?>
+								    <option value="<?php echo $rs['id'];?>" <?php if($rsagreement['booking_id']==$rs['id']){echo'selected="selected"';}?>><?php echo $rs['booking_no'];?></option>
+								    <?php }?>
+								</select>
+	                  		 </div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('First Name')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"   type="text" name="first_name" id="first_name" class="fullside">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Last Name')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"   type="text" name="last_name" id="last_name" class="fullside">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Gender')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<select name="gender" id="gender" dojoType="dijit.form.FilteringSelect" class="fullside"  >
+									<option value="1">Male</option>
+									<option value="2">Female</option>
+								</select>
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('DOB')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.DateTextBox"   type="text" name="dob" id="dob" class="fullside">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('POB')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"   type="text" name="pob" id="pob" class="fullside">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Nationality')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"   type="text" name="nationality" id="nationality" class="fullside">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Company/Org')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"   type="text" name="company" id="company" class="fullside">
+	                  		</div>
+		                </div>
+		                
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('VAT No(Owner)')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"   type="text" name="vat_owner" id="vat_owner" class="fullside">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('VAT No(Customer)')?>
+		                   </label>
+		                   <div class="col-md-8 col-sm-8 col-xs-12">
+		                    	<input dojoType="dijit.form.ValidationTextBox"   type="text" name="vat_customer" id="vat_customer" class="fullside">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                	<label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">
+		                		<input dojoType="dijit.form.CheckBox" type="checkbox" <?php if ($this->rs['is_passport']==1){?>checked="checked"<?php }?> id="passport" name="passport" />&nbsp;<?php echo $tr->translate('Passport')?>&nbsp;
+		                	</label>
+		                	<label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">
+		                		<input dojoType="dijit.form.CheckBox" type="checkbox" id="idcard" name="idcard" <?php if ($this->rs['is_idcard']==1){?>checked="checked"<?php }?> />&nbsp;<?php echo $tr->translate('ID Card')?>&nbsp;
+		                	</label>
+		                	<label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">
+		                		<input dojoType="dijit.form.CheckBox" type="checkbox" id="familybook" name="familybook" <?php if ($this->rs['is_familybook']==1){?>checked="checked"<?php }?> />&nbsp;<?php echo $tr->translate('Family Book')?>&nbsp;
+		                	</label>
+		                </div>
+		          	</div>
+		          	<div class="col-md-7 col-sm-7 col-xs-12">
+		          		<div class="clearfix"></div>
+		          		<div class="title_form_blog">
+		               		<h4>III. <?php echo $tr->translate("Special Notices")?></h4>
+		          		</div>
+		          		<div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">2. <?php echo $tr->translate('Articles')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.TextBox"  type="text" class="fullside" id="article" name="article" value="<?php echo $rsagreement['art1_id']; ?>">
+	                  		</div>
+	                  	   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('To')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.TextBox"  type="text" class="fullside" name="toart1_id"  value="<?php echo $rsagreement['toart1_id']; ?>" />
+	                  		</div>
+		                </div>
+		                <div class="title_form_blog">
+		               		<h4>IV. <?php echo $tr->translate("Agreement Information")?></h4>
+		          		</div>
+		          		<div class="form-group">
+		          			<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Agreement Date')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input onchange="setAgreementRef();" dojoType="dijit.form.DateTextBox" value="<?php echo date("Y-m-d");?>"  type="text" class="fullside" id="agreement_date" name="agreement_date" >
+	                  		</div>
+		          		</div>
+		          		<div class="form-group">
+		          			<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Agreement Ref')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                   		<input type="hidden" dojoType="dijit.form.TextBox" name="prefix_code" id="prefix_code" value="<?php echo $this->prefixed;?>" />
+								<input type="hidden" dojoType="dijit.form.TextBox" name="lastagreement" id="lastagreement" value="<?php echo $this->lastagreement;?>" />
+								<input readonly="readonly" dojoType="dijit.form.TextBox" value="<?php echo $this->agreement_ref;?>"  type="text" class="fullside" id="agreement_code" name="agreement_code" >
+	                  		</div>
+		          		</div>
+		          		 <div class="title_form_blog">
+		               		<h4>V. <?php echo $tr->translate("Product Information")?></h4>
+		          		</div>
+		          		<div class="form-group">
+		          			<label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Product Information')?>
+		                   </label>
+		               </div>
+		               <div class="form-group">
+		               		<div class="col-md-12 col-sm-12 col-xs-12">
+		               			<div id="lbl_driver"></div>
+		               		</div>
+		               </div>
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Starting Date')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.DateTextBox"  type="text"  id="incep_date" class="fullside"  name="incep_date" value="now" onchange="calCulateDay();">
+	                  		</div>
+	                  	   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Finishing Date')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.DateTextBox"  type="text" class="fullside" name="return_date" id="return_date" value="now" onchange="calCulateDay();">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Return Time')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.TextBox"  type="text" class="fullside" name="return_time" id="return_time" value="" onchange="calCulateDay();">
+	                  		</div>
+	                  	   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Amount Day')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input readonly="readonly" dojoType="dijit.form.NumberTextBox" required="true" type="text" class="fullside" id="period" name="period" value='' onkeyup="CalculateDate();"  >
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label style="color: red;" class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Retal Fee')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.NumberTextBox"  type="text" name="rental_fee" class="fullside" id="rental_fee" value="" onkeyup="grandTotal();">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label style="color: red;" class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Refundable Deposit')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.NumberTextBox"  type="text" class="fullside" id="refundable" name="refundable" onkeyup="grandTotal();">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label style="color: red;" class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Grand Total')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.NumberTextBox" readonly="readonly"  type="text" class="fullside" name="grand_total" id="grand_total">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Paid Amount')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.NumberTextBox"  type="text" name="paid_total" id="paid_total" class="fullside" value="" onkeyup="calculateBalance();">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Due Amount')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<input dojoType="dijit.form.NumberTextBox" type="text" class="fullside" id="balance" name="balance">
+	                  		</div>
+		                </div>
+		                <div class="form-group">
+		                	<input dojoType="dijit.form.Button" type="submit" id="btn_save_close" name="btn_save_close" label="<?php echo $tr->translate('SAVECLOSE');?>"  value="submit" >									
+		                </div>
+		          	</div>
+		       </div>
+		   </div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+function showReciept(){
+		dijit.byId('pop_make').show();
+}
+</script>

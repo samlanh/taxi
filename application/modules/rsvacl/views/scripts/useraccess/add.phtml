@@ -1,0 +1,143 @@
+<style>
+fieldset.fifthy {	
+	border-right: 0px;
+	width: 30%;
+}
+fieldset.fifthy table{
+	padding-right: 1px;
+}
+table.user td{
+	vertical-align: top;   
+}
+</style>       
+
+<?php $rs=$this->rs;
+	
+	  $acl=($this->acl=='')? array():$this->acl;
+	  $acl_name=($this->acl_name=='')? array(): $this->acl_name;
+	  $tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	  $df=$this->data;
+?>
+<title><?php echo $tr->translate("USERACCESS")?></title>
+ <div class="title_left">
+ 	<h3><?php echo $tr->translate("USERACCESS")?></h3>
+ </div>
+ <div class="clearfix"></div>
+ <div class="row">
+       <div class="col-md-12 col-xs-12">
+          <div class="x_panel">
+              <div class="x_title">
+                 <h2><?php echo $tr->translate("MODULE_ASSIGNMENT");?></h2>
+                 <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+               	</ul>
+               <div class="clearfix"></div>
+          	</div>
+          	<div class="x_content">
+               <br />
+               <div class="form-group">
+                   <label class="control-label col-md-4 col-sm-4 col-xs-4" for="first-name"><?php echo $tr->translate('USER_TYPE')?><span class="required">*</span>
+                   </label>
+                   <div class="col-md-4 col-sm-4 col-xs-4">
+                    	<input type="text" required="true" name="user_type" id="user_type" placeholder="User Type" 
+										dojoType="dijit.form.ValidationTextBox" value="<?php echo $this->rs[0]['user_type'];?>"
+										missingMessage="Invalid User type!" class='fullside' disabled/>
+                   </div>
+                </div>
+            </div>
+             <div class="x_title">
+                 <h2><?php echo $tr->translate("Search option");?></h2>
+               <div class="clearfix"></div>
+          	</div>
+          	<div class="x_content">
+               <br />
+               <form name="frmsearch" action="" method="post">
+               <div class="form-group">
+                   <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('MODULE')?><span class="required">*</span>
+                   </label>
+                   <div class="col-md-4 col-sm-4 col-xs-4">
+                    	<select name="fmod" id="fmod" class='fullside' required="true" missingMessage="Invalid Parent Name!" dojoType="dijit.form.FilteringSelect"><?php echo $this->optoin_mod;?></select>
+                   </div>
+                   <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('CONTROLLER')?><span class="required">*</span>
+                   </label>
+                   <div class="col-md-4 col-sm-4 col-xs-4">
+                    	<select name="fcon" id="fcon" class='fullside' required="true" missingMessage="Invalid Parent Name!" dojoType="dijit.form.FilteringSelect"><?php echo $this->optoin_con;?></select>
+                   </div>
+                </div>
+                <div class="form-group">
+                   <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('ACTIONS')?><span class="required">*</span>
+                   </label>
+                   <div class="col-md-4 col-sm-4 col-xs-4">
+                    	<select name="fact" id="fact" class='fullside' required="true" missingMessage="Invalid Parent Name!" dojoType="dijit.form.FilteringSelect"><?php echo $this->optoin_act;?></select>
+                   </div>
+                   <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('STATUS')?><span class="required">*</span>
+                   </label>
+                   <div class="col-md-4 col-sm-4 col-xs-4">
+                    	<select name="fstatus" id="fstatus" class='fullside' required="true" missingMessage="Invalid Parent Name!" dojoType="dijit.form.FilteringSelect"><?php echo $this->optoin_status;?></select>
+                   </div>
+                </div>
+                <div class="form-group">
+                   <div class="col-md-4 col-sm-4 col-xs-4">
+                    	<input type="submit" value="Search" name="btsave" label="<?php echo $tr->translate("SEARCH");?>" title="<?php echo $tr->translate("SEARCH");?>" dojoType="dijit.form.Button"/>
+                   </div>
+                </div>
+                </form>
+            </div>
+        </div>
+     </div>
+ </div>
+<div class="clearfix"></div>
+<div class="row">
+      <div class="col-md-12 col-xs-12">
+         <div class="x_panel">
+             <div class="x_title">
+                <h2><i class="fa fa-plus-circle" aria-hidden="true"></i> <?php echo $tr->translate('Module/Controller/Action Assignment')?></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                   <li>
+                   	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                   </li>
+             	</ul>
+             <div class="clearfix"></div>
+         	</div>
+          	<div class="x_content">
+               <br />
+               <?php echo $this->list;?>
+            </div>
+         </div>
+      </div>
+   </div>
+<style>
+	.pointer{
+		cursor: pointer;	
+	}
+</style>
+<script>
+$(function(){		
+	$('#fmod').val('<?php echo $df['fmod']?>');
+	$('#fcon').val('<?php echo $df['fcon']?>');
+	$('#fact').val('<?php echo $df['fact']?>');
+	$('#fstatus').val('<?php echo $df['fstatus']?>');
+});
+	function changeStatus(id, user_type){
+		url = "<?php echo BASE_URL;?>/rsvacl/useraccess/update-status";
+		status = "no";
+		none_src = "<?php echo BASE_URL?>/images/icon/none.png";
+		tick_src = "<?php echo BASE_URL?>/images/icon/tick.png";
+
+		if( $("#img_" + id).attr("src") == tick_src){
+			status = "yes";
+		}
+		
+		$.post( url, { 'acl_id': id, 'status': status, 'user_type_id':user_type},
+	      function( data ) {
+			 img_src = none_src;
+	         if(data == "yes"){
+				img_src = tick_src;
+	         }	         
+	         $("#img_" + id).attr("src", img_src);
+	      }
+	    );
+	}
+</script>

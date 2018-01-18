@@ -1,0 +1,121 @@
+<?php 
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	$rss = $this->row_booking;
+	$frm = $this->frms;
+?>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("Car Rental Booking Report");?></title>
+</head>
+
+<body>
+	
+<div class="row">
+	<div class="x_panel " >
+		<form method="post">
+			<div class="form-group">
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('adv_search');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('book_no');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('customer');?></div>
+				
+			</div>
+			<div class="form-group">
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('pickup_date');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('return_date');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('status');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button></div>
+			</div>
+		</form>
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+			<div id="divPrint" style="width: 100%;">
+					<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+		            	<tr>
+		                	<td width="20%"></td>
+		                	<td width="60%" valign="top">
+		                	<h2 style="text-align:center; font-size:13px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+		                	<h2 style="text-align:center; font-size:13px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Car Rental Booking Report");?></h2>
+		                	</td>
+		                    <td width="20%"></td>
+		                </tr> 
+		                <tr>
+		                	<td colspan="3">
+				              </td>
+				           </tr>   
+		            </table>
+		            <style>
+						tr.header {
+						    font-weight: bold;
+						    line-height: 14px;
+						    font-size: 12px;
+						    background: #eee;
+						}
+						tr.header td {
+						    padding: 5px;
+						}
+		            </style>
+					<table width="100%" border="1" style="border-collapse:collapse;font-size:10px; white-space: nowrap;" bordercolor="black">
+				    	<tr class="header">
+				        	<td style="font-family:'Khmer MEF2'"><?php echo $tr->translate("NUM");?></th>
+				            <td><?php echo $tr->translate("Booking No.");?></td>
+				            <td><?php echo $tr->translate("Booking Date");?></td>
+				            <td><?php echo $tr->translate("Pickup Date");?></td>
+				            <td><?php echo $tr->translate("Return Date");?></td>
+				            <td><?php echo $tr->translate("Pickup Location");?></td>
+				            <td><?php echo $tr->translate("Return Location");?></td>
+				            <td><?php echo $tr->translate("Customer Id");?></td>
+				            <td><?php echo $tr->translate("Customer Name");?></td>
+				            <td><?php echo $tr->translate("Booking Fee");?></td>
+				            <td><?php echo $tr->translate("Total VAT");?></td>
+				            <td><?php echo $tr->translate("Refundable Deposit");?></td>
+				            <td><?php echo $tr->translate("Paid Amount");?></td>
+				            <td><?php echo $tr->translate("Payment Type");?></td>
+				            <!-- <td><?php //echo $tr->translate("Status");?></td> -->
+				        </tr>
+				      <?php if($rss){ $i =0 ;foreach ($rss as $rs){ $i++;
+				      	$paymenttype ="";
+				      	if ($rs["payment_type"]==1){
+				      		$paymenttype ="VISA CARD";
+				      	}else if ($rs["payment_type"]==2){
+				      		$paymenttype ="WESTERN UNION";
+				      	}else if ($rs["payment_type"]==3){
+				      		$paymenttype ="ACLEDA";
+				      	}else if ($rs["payment_type"]==4){
+				      		$paymenttype ="CASH PAY";
+				      	}
+				      ?>
+				      <tr align="center" style="line-height: 18px; background: #fff;">
+				        	<td><?php echo $i;?></td>
+				            <td><a target="_blank" style="color: #333;" href="<?php echo $this->baseUrl();?>/report/pricing/viewbooking/id/<?php echo $rs["id"]?>">&nbsp;<?php echo $rs["booking_no"]?>&nbsp;</a></td>
+				            <td><a target="_blank" style="color: #333;" href="<?php echo $this->baseUrl();?>/report/pricing/viewbooking/id/<?php echo $rs["id"]?>">&nbsp;<?php echo $rs["date_book"]?>&nbsp;</a></td>
+				             <td><a target="_blank" style="color: #333;" href="<?php echo $this->baseUrl();?>/report/pricing/viewbooking/id/<?php echo $rs["id"]?>">&nbsp;<?php echo $rs["pickup_date"]?>&nbsp;</a></td>
+				            <td><a target="_blank" style="color: #333;" href="<?php echo $this->baseUrl();?>/report/pricing/viewbooking/id/<?php echo $rs["id"]?>">&nbsp;<?php echo $rs["return_date"]?>&nbsp;</a></td>
+				            <td><a target="_blank" style="color: #333;" href="<?php echo $this->baseUrl();?>/report/pricing/viewbooking/id/<?php echo $rs["id"]?>">&nbsp;<?php echo $rs["pickup_lc"]?>&nbsp;</a></td>
+				            <td><a target="_blank" style="color: #333;" href="<?php echo $this->baseUrl();?>/report/pricing/viewbooking/id/<?php echo $rs["id"]?>">&nbsp;<?php echo $rs["return_lc"]?>&nbsp;</a></td>
+				            <td><a target="_blank" style="color: #333;" href="<?php echo $this->baseUrl();?>/report/pricing/viewbooking/id/<?php echo $rs["id"]?>">&nbsp;<?php echo $rs["customercode"]?>&nbsp;</a></td>
+				            <td><a target="_blank" style="color: #333;" href="<?php echo $this->baseUrl();?>/report/pricing/viewbooking/id/<?php echo $rs["id"]?>">&nbsp;<?php echo $rs["customer"]?>&nbsp;</a></td>
+				            <td>&nbsp;<?php echo number_format($rs["total_fee"],2);?>&nbsp;</td>
+				            <td>&nbsp;<?php echo number_format($rs["total_vat"],2)?>&nbsp;</td>
+				            <td>&nbsp;<?php echo number_format($rs["total_refund_deposit"],2)?>&nbsp;</td>
+				            <td>&nbsp;<?php echo number_format($rs["total_paymented"],2); ?>&nbsp;</td>
+				            <td>&nbsp;<?php echo $paymenttype; ?></td>
+				            <!-- <td><?php //echo $rs["payment_type"]; ?></td> -->
+				        </tr>
+				        <?php } }?>
+				    </table>
+				    <br />
+	               <table align="center" width="100%">
+					   <tr style="font-size: 12px;">
+					        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+					        <th></th>
+					        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+					   </tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+dojo.require("dijit.form.DateTextBox");
+</script>

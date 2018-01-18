@@ -1,0 +1,128 @@
+<?php 
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	$rs = $this->row;
+	$rs_detail = $this->row_detail;
+	$frm = $this->frms;
+// 	print_r($rs_detail);
+?>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("RETURN_BOOKING");?></title>
+</head>
+<body>
+<style type="text/css">
+      .wrapp{ width: 100%; height: 100%;}
+      .h_left{width:40%;float:left;}
+      .h_right{width:40%;float:right;}
+      .conten{margin-top:20px;}
+      table tr .totalbr{
+			border: 1px solid #000;
+		}	
+.header ul li{line-height: 20px;}
+			
+    </style>
+<fieldset><legend>Return Booking</legend>
+<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc;">
+<div class="wrapp" style="width: 21cm;height:29.7cm; margin: 0 auto; border:1px dotted #000; padding: 20px;">
+<div id="divPrint" style="width: 100%;">
+    <div class="header_tow">
+    <form action="" method="post">
+	    <div>
+	         <table style="width: 30%; float:right;" cellspacing="5">
+	            <tr>
+	                <td  valign="top" style="width:33%;font-weight: bold; text-align: right;" width="33%"><a href="<?php $this->baseUrl();?>/booking/return"><button dojoType="dijit.form.Button">Cancel</button></a></td>
+	                <td valign="top" style="font-weight: bold;text-align:right;" width="33%"><button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave" type="submit">Return</button></td>
+	            </tr>
+	         </table>
+	    </div>
+    </form>
+           <table id="exportExcel" style="border-collapse:collapse;font-size: 12px;"  width="100%">
+				    <tbody>
+					<tr>
+						<th valign="top" width="50%">
+							<table style="border-collapse:collapse;font-size: 12px; width:75% ;text-align: left; border:1px solid #000;padding:5px;white-space: nowrap;font-family:Arial, Helvetica, sans-serif !important; ">
+								<tr><td colspan="2" style="border-bottom:1px solid #ccc;text-align: left;background-color:blue;color:rgb(254, 250, 250);text-align: center;"><strong>&nbsp;Customer Information</strong></td></tr>
+						        <tr><td width="100px">&nbsp;Customer Name:&nbsp;</td><td style="color:blue"><strong><?php echo $rs['first_name']."-".$rs["last_name"]?></strong></td></tr>
+						        <tr><td width="100px">&nbsp;Gender: </td><td style="color:blue"><?php echo ($rs['sex']==1)?"Male":"Female";?></td></tr>
+						        <tr><td >&nbsp;Phone No: </td><td style="color:blue"><?php echo $rs['phone'];?></td> </tr>
+						        <tr><td >&nbsp;E-mail: </td><td style="color:blue"><?php echo $rs['email'];?></td></tr>
+					            <tr><td >&nbsp;Address: </td><td style="color:blue"><?php //echo $rs['phone']?></td> </tr>
+					            <tr><td >&nbsp;Flight No.:</td><td style="color:blue"><?php echo $rs['fly_no']?></td></tr>
+					            <tr><td >&nbsp;Destination:</td><td style="color:blue"><?php echo $rs['fly_destination']?></td></tr>
+				       	 	</table>
+				        </th>
+						<th align="right">
+							<table style="border-collapse:collapse;font-size: 12px; width:75% ;text-align: left; border:1px solid #000;padding:5px;white-space: nowrap;font-family:Arial, Helvetica, sans-serif !important;" >
+						        <tr><td colspan="2" style="border-bottom:1px solid #ccc;text-align: left;background-color:blue;color:rgb(254, 250, 250);text-align: center;"><strong>&nbsp;Reservation Information</strong></td></tr>
+						        <tr><td >&nbsp;Booking Number:</td><td style="color:blue;"><?php echo $rs['booking_no']?></td></tr>
+						        <tr><td >&nbsp;Booking Date </td><td style="color:blue;"><?php echo date("d/M/Y",strtotime($rs['date_book']))?></td> </tr>
+						        <tr><td >&nbsp;Pickup Date :</td><td style="color:blue;"><?php echo date("d/M/Y",strtotime($rs['pickup_date']))?>-<?php echo $rs['pickup_time'];?></td></tr>
+					            <tr><td >&nbsp;Return Date </td><td style="color:blue;"><?php echo date("d/M/Y",strtotime($rs['return_date']))?>-<?php echo $rs['return_time'];?></td> </tr>
+					            <tr><td >&nbsp;Pickup Location :</td><td style="color: blue;"><?php echo $rs['pickup_location']?></td></tr>
+				       	 		<tr><td >&nbsp;Return Location :</td><td style="color: blue;"><?php echo $rs['dropoff_location']?></td></tr>
+				       	 		<?php $difer = date_diff(date_create($rs['pickup_date']), date_create($rs['return_date']));?>
+				       	 		<tr><td >&nbsp;Total Day($):</td><td style="color: blue;"><?php echo $difer->format("%a%")+1;?></td></tr>
+				       	 	</table>
+						</th>
+					</tr>
+				   </tbody>
+			</table>
+    </div>
+    <div class="conten" style="border-top:2px solid #000; margin-top: 10px;">
+        <table style="border-collapse:collapse;font-size: 12px;margin-top:10px;float: left; border:1px solid #000;font-family:Arial, Helvetica, sans-serif;font-weight: bold; white-space: nowrap;" border="1"  width="100%">
+		  <tr style="background:#D6D6D6; height:25px;" >
+		     <th class="totalbr">No.</th>
+		     <th class="totalbr" >Items Description</th> 
+		     <th class="totalbr">Qty</th>
+		     <th class="totalbr" width="120">Price/Day</th>
+		     <th class="totalbr">VAT</th>
+		     <th class="totalbr">Total</th>
+		  </tr>
+		  <?php $refund_deposit=0; foreach($rs_detail AS $i => $rows){?>
+		  <tr style="height: 25px; color: blue;">
+		     <td class="totalbr" align="center">&nbsp;<?php echo $i+1;?></td>
+		     <td class="totalbr" align="center">&nbsp;<?php echo $rows['item_name'];?></td>
+		     <td class="totalbr" align="right" width="110px">&nbsp;<?php echo number_format($rows['rent_num'],2);?>&nbsp;</td>
+		     <td class="totalbr" align="right" width="110px">&nbsp;$ <?php echo number_format($rows['price'],2);?>&nbsp;</td>
+		     <th class="totalbr" width="110px"><?php echo number_format($rows['VAT'],0);?>%</th>
+		     <th class="totalbr" width="110px" align="right">$ <?php echo number_format($rows['total'],2);?></th>
+		     <?php $refund_deposit = $refund_deposit+$rows['refund_deposit']?>
+		  </tr>
+		  <?php }?>
+		  <tr height="25px">
+			  <td style="border:none;border-left:1px solid #fff;" colspan="3"></td>
+			  <td class="totalbr" colspan="2">&nbsp;Rental Fee:</td>
+			  <td style="color:blue;"class="totalbr" align="right">&nbsp;$ <?php echo number_format($rs['total_fee'],2);?>&nbsp;</td>
+		  </tr>
+		  <tr height="25px">
+			  <td style="border:none;border-left:1px solid #fff;" colspan="3"></td>
+			  <td class="totalbr" colspan="2">&nbsp;Amount Paid:</td>
+			  <td style="color:blue;"class="totalbr" align="right">&nbsp;$ <?php echo number_format($rs['total_paymented'],2);?>&nbsp;</td>
+		  </tr>
+		  <tr height="25px">
+			  <td style="border:none;border-left:1px solid #fff;" colspan="3"></td>
+			  <td class="totalbr" colspan="2">&nbsp;Refundabale Deposit:</td>
+			  <td style="color:blue;"class="totalbr" align="right">&nbsp;&nbsp;$ <?php echo number_format($refund_deposit,2)?></td>
+		  </tr>
+		  <tr height="25px">
+			  <td style="border:none;border-left:1px solid #fff;" colspan="3"></td>
+			  <td class="totalbr" colspan="2">&nbsp;Net Total:</td>
+			  <td style="color:blue;"class="totalbr" align="right">&nbsp;&nbsp;$ <?php echo number_format($rs['total_fee']+$refund_deposit,2);?></td>
+		  </tr>
+		  <tr height="30px">
+			  <td style="border:none;border-left:1px solid #fff;border-bottom:1px solid #fff;" colspan="3"></td>
+			  <td class="totalbr" colspan="2">&nbsp;Due Total:</td>
+			  <td style="color:blue; background:#DAD9D9;font-weight: bolder; font-size: 16px;"class="totalbr" align="right">&nbsp;&nbsp;$ <?php echo number_format($rs['total_fee']+$refund_deposit-$rs['total_paymented'],2);?></td>
+		  </tr>
+	   </table>
+    </div>
+    <br />
+  </div>
+</div>
+</div>
+</fieldset>
+<script>
+dojo.require("dijit.form.DateTextBox");
+</script>

@@ -1,0 +1,8 @@
+<?php 
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+?>
+<title><?php echo $tr->translate("LABEL")?></title>
+ <div class="title_left">
+ 	<h3><?php echo $tr->translate("LABEL")?></h3>
+ </div>
+<?php echo $this->list;?>

@@ -1,0 +1,73 @@
+
+<?php 
+	$cancel_url=$this->url(array(
+			'module'=>'rsvacl',
+			'controller'=>'usertype',
+			'action'=>'index',
+		));
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+?>
+<title><?php echo $tr->translate('EDIT_USER_TYPE');?></title>
+ <div class="title_left">
+ 	<h3><i class="fa fa-user" aria-hidden="true"></i> <?php echo $tr->translate("USER_TYPE")?></h3>
+ </div>
+<form class="form-horizontal form-label-left" action="" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">										
+			if(this.validate()) {			
+				loading();						
+				return true;
+			}
+			return false;
+	</script>
+	<div class="clearfix"></div>
+	<div class="row">
+		<div class="col-md-2 col-xs-12"></div>
+       <div class="col-md-8 col-xs-12">
+          <div class="x_panel">
+              <div class="x_title">
+                 <h2><i class="fa fa-edit" aria-hidden="true"></i> <?php echo $tr->translate('EDIT_USER_TYPE')?></h2>
+                 <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+               	</ul>
+               <div class="clearfix"></div>
+          	</div>
+          	<div class="x_content">
+               <br />
+               <div class="form-group">
+                   <label class="control-label col-md-4 col-sm-4 col-xs-4" for="first-name"><?php echo $tr->translate('USER_TYPE')?><span class="required">*</span>
+                   </label>
+                   <div class="col-md-8 col-sm-8 col-xs-8">
+                    	<input type="text" required="true" name="user_type" id="user_type" placeholder="User Type" 
+											dojoType="dijit.form.ValidationTextBox" value="<?php echo $this->usertype['user_type'];?>"
+											missingMessage="Invalid User type!" class='fullside'/>
+                   </div>
+                </div>
+                <div class="form-group">
+                   <label class="control-label col-md-4 col-sm-4 col-xs-4" for="first-name"><?php echo $tr->translate('PARENT_NAME')?><span class="required">*</span>
+                   </label>
+                   <div class="col-md-8 col-sm-8 col-xs-8">
+                    	<select onchange="disabledAgent(this.value);" class='fullside' name="parent_id" required="true" id="parent_id" 
+						 missingMessage="Invalid Parent Name!" dojoType="dijit.form.FilteringSelect"> 
+						 	<?php foreach ($this->usertype_list as $key => $ust) : ?>
+								<option value="<?php echo $key;?>"  <?php if($this->usertype['parent_id'] == $key) echo 'selected';?> ><?php echo $ust;?></option>
+							<?php endforeach;?>																																
+						</select> 
+                   </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="ln_solid"></div>
+                 <div class="form-group">
+                     <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-4">
+                          	<input type="button" value="GO_BACK" label="<?php echo $tr->translate('GO_BACK');?>" id="back" dojoType="dijit.form.Button" 
+						iconClass="dijitIconUndo" onclick="window.location = '<?php echo $this->url(array('module'=>'rsvacl','controller'=>"usertype",'action'=>'index'),null,true); ?>';" />
+						<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>						
+                     </div>
+                </div>
+             </div>
+         </div>
+      </div>
+   </div>
+	<input type="hidden" name="user_type_id" value="<?php echo $this->user_edit['id'];?>" />
+</form>

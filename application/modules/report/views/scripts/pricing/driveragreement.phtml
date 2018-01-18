@@ -1,0 +1,234 @@
+<?php $rs = $this->row;
+    $vehicle = $this->vehicle;
+?>
+<div class="print" style="border: 1px dotted #000; width:24cm;padding: 1cm;  ">
+	<div class="wrapper" id="divPrint" style="font-family:Calibri !important;">
+    <style type="text/css">
+		.wrapper{ height:auto; font-family:Calibri !important; font-weight: 600;}
+		.wrapper tr{height: 22px;}
+        .bhar{font-size: 20px;}
+		td.border {
+			border-bottom: 1px dashed cadetblue;
+			border-top: none;
+			border-left: none;
+			border-right: none;
+		}
+		div #rpt_print{font-size:12px !important; margin:0 auto;}
+		.style{
+				line-height: 20px;font-size: 11px !important;
+				font-family: 'Khmer OS Battambang';
+			}
+			th{padding: 5px;}
+			.color{ color: #023FB3;}
+			.fontsize14{font-size: 12px;}
+		 
+		 .fontsize{ font-size:10px !important; margin:0 auto;}
+		  .paddingleft{padding-left:10px; }
+	</style>
+	
+	<table  width="100%" style="border-collapse:collapse;font-size: 12px;margin-top:10px;float: left;white-space: nowrap;font-family:Calibri !important;margin-top: 50px;" >
+            <tr height="20">
+				<td colspan="12" style="text-align:center; font-size: 18px;"><strong><span class="bhar">D</span>RIVER&nbsp;<span class="bhar">R</span>ENTAL&nbsp; <span class="bhar">A</span>GREEMENT &nbsp;</strong></td>
+			</tr>
+			<tr >
+			    <td colspan="4" class="fontsize14"><strong>I. &nbsp;&nbsp;Party A (Hereinafter refers to as the " Owner ")</strong></td>
+				<td colspan="3"></td>
+				<td colspan="5"  align="right"><span style="padding-left: 50px;"></span>Ref. No.:<strong style="color:red;font-size:14px;"> <?php echo $rs['agreement_code'];?></strong></td>
+			</tr>
+			<tr>
+			    <td width="50px" class="paddingleft">Name :</td><td style="color:#023FB3;"><?php echo $rs['owner_name'];?></td>
+			    <td width="50px">Title:</td><td class="color" ><?php echo $rs['position'];?></td>
+			    <td width="50px">ID Card:</td><td class="color"><?php echo $rs['id_card'];?></td>
+			    <td width="50px">Hand Phone:</td><td class="color"><?php echo $rs['hand_phone'];?></td>
+			    <td width="50px">ID Card:</td><td class="color"><?php echo $rs['id_card'];?></td>
+			    <td width="50px">Ins Hotline:</td><td class="color"><?php echo $rs['hotline'];?></td>
+			</tr>
+        </table >
+        <table width="100%" style="border-collapse:collapse;font-size: 12px;margin-top:10px;font-family:Calibri !important" >
+            <tr>
+			     <td colspan="8" class="fontsize14"><strong>II.&nbsp;&nbsp;Party B (Hereinafter refers to as the " Renter ")</strong></td>
+			</tr>
+			<tr style="">
+			     <td >&nbsp;&nbsp;</td>
+				  <td width="150px" style="white-space: nowrap;">&nbsp;&nbsp;Customer Information </td>
+				  <td  style="text-align: center;"></td>
+				  <td width="150px">Local Address</td>
+				  <td></td>
+				  <td width="160px">International Address</td>
+				  <td rowspan="7" colspan="2" align="right" valign="top" width="70px">
+				  	<div style="width:100%; text-align: right;">
+					    <img style="width:100px;border: 1px solid #000;text-align:right ;min-height: 120px; margin-bottom: 2px;" src="<?php echo $this->baseUrl()."/images/".$rs['photo'];?>" />
+					    <img style="width: 107px; height:20px; margin-right:-5px;text-align:right;" src="<?php echo $this->url(array('module'=>'report','controller'=>'pricing','action'=>'generatebarcode'), null, true)."/generatebarcode/".$rs['agreement_code'];?> " />
+				    </div>
+				  </td>
+			</tr>
+			<tr>
+				  <td class="paddingleft" style="white-space: nowrap;">Customer Name</td><td class="color">&nbsp;<?php echo $rs['first_name']." ".$rs['last_name'];?></td>
+				  <td>&nbsp;Address</td><td class="color">&nbsp;<?php echo (empty($rs['group_num'])? "" : $rs['group_num'].',').$rs['house_num'].','.$rs['street'];?></td>
+				  <td>&nbsp;Address Line 1</td><td class="color">&nbsp;<?php echo $rs['address1'];?></td>
+			</tr>
+			<tr>
+				  <td class="paddingleft">Title:</td><td class="color">&nbsp;<?php echo $rs['occupation'];?></td>
+				  <td>&nbsp;Commune:</td><td class="color">&nbsp;<?php echo $rs['commune'];?></td>
+				  <td>&nbsp;Address Line 2:</td><td class="color">&nbsp;<?php echo $rs['address2'];?></td>
+			</tr>
+			<tr>
+				  <td class="paddingleft">DOB:</td><td class="color">&nbsp;<?php echo date("d-m-Y",strtotime($rs['dob']));?></td>
+				  <td>&nbsp;District:</td><td class="color">&nbsp;<?php echo $rs['district'];?></td>
+				  <td>&nbsp;City:</td><td class="color">&nbsp;<?php echo $rs['i_city'];?></td>
+			</tr>
+			<tr>
+				  <td class="paddingleft">POB:</td><td class="color">&nbsp;<?php echo $rs['pob'];?></td>
+				  <td>&nbsp;Province</td><td class="color">&nbsp;<?php echo $rs['province_name'];?></td>
+				  <td>&nbsp;Zip Code:</td><td class="color">&nbsp;<?php echo $rs['i_zipcode'];?></td>
+			</tr>
+			<tr>
+				  <td class="paddingleft">Nationality:</td><td class="color">&nbsp;<?php echo $rs['nationality'];?></td>
+				  <td>&nbsp;HP No:</td><td class="color">&nbsp;<?php echo $rs['phone'];?></td>
+				  <td>&nbsp;State/Province/Region:</td><td class="color">&nbsp;<?php echo $rs['i_state'];?></td>
+			</tr>
+			<tr>
+				  <td class="paddingleft">Com/Org:</td><td class="color">&nbsp;<?php echo $rs['company_name'];?></td>
+				  <td >&nbsp;E-mail:</td><td class="color">&nbsp;<?php echo $rs['email'];?></td>
+				  <td>&nbsp;Country:</td><td class="color">&nbsp;<?php echo $rs['country_name'];?></td>
+			</tr>
+			</table>
+			<table width="100%" style="border-collapse:collapse;font-size: 12px;margin-top:10px;font-family:Calibri !important" >
+			 <tr>
+			     <td colspan="8" class="fontsize14"><strong>III.&nbsp;&nbsp; Documents Deposit Information</strong></td>
+			</tr>
+			<tr>
+				  <td class="paddingleft" width="97px" style="white-space: nowrap;">1. Original Passport:
+				  </td>
+				  <td width="150px"><label class="color">&nbsp;<?php echo !empty($rs['is_passport'])?"Yes":"No"?></label></td>
+				  <td width="20px">&nbsp;No.:</td>
+				  <td class="color" width="150px">&nbsp;<?php echo $rs['passport_name'];?></td>
+				  <td style="text-align: right;" width="140px">&nbsp;Date Of Issue:</td><td class="color" style="white-space: nowrap;">&nbsp;<?php echo date("d-m-Y",strtotime($rs['pass_issuedate']));?></td>
+				  <td style="text-align: right;white-space: nowrap; " >&nbsp;Date Of Expire:</td><td class="color" style="white-space: nowrap;">&nbsp;<?php echo date("d-m-Y",strtotime($rs['pass_expireddate']));?></td>
+			</tr>
+			<tr>
+				  <td class="paddingleft">2. Original ID Card :</td>
+				  <td><label class="color">&nbsp;<?php echo !empty($rs['is_idcard'])?"Yes":"No"?></label>&nbsp;</td>
+				  <td >&nbsp;No.:</td><td class="color">&nbsp;<?php echo $rs['card_name'];?></td>
+				  <td style="text-align: right;">&nbsp;Date Of Issue:</td><td class="color" style="white-space: nowrap;">&nbsp;<?php echo date("d-m-Y",strtotime($rs['card_issuedate']));?></td>
+				  <td style="text-align: right;">&nbsp;Date Of Expire:</td><td class="color" style="white-space: nowrap;">&nbsp;<?php echo date("d-m-Y",strtotime($rs['card_expireddate']));?></td>
+			</tr>
+			<tr>
+				  <td class="paddingleft">3. Family Book : 
+				  </td>
+				  <td><label class="color">&nbsp;<?php echo !empty($rs['is_familybook'])?"Yes":"No"?></label></td>
+				  <td >&nbsp;No.:</td><td class="color">&nbsp;<?php echo $rs['ftb'];?></td>
+				  <td style="text-align: right;">&nbsp;Date Of Issue:</td><td class="color" style="white-space: nowrap;">&nbsp;<?php echo date("d-m-Y",strtotime($rs['ftb_issuedate']));?></td>
+				  <td style="text-align: right;">&nbsp;Date Of Expire:</td><td class="color" style="white-space: nowrap;">&nbsp;<?php echo date("d-m-Y",strtotime($rs['ftb_expireddate']));?></td>
+			</tr>
+        </table>
+        <table  border="1" width="100%" style="border-collapse:collapse;font-size: 12px;margin-top:10px;font-family:Calibri !important;white-space: nowrap;border: 1px solid #000;"  >
+            <tr>
+                <td colspan="7" class="fontsize14" style="border: 1px solid #fff; border-bottom: 1px solid #000;"><strong>IV.&nbsp;&nbsp;Driver Information</strong></td>
+            </tr>
+             <tr>
+            	<td align="center">No.</td>
+            	<td align="center">Driver Name</td>
+            	<td align="center">Title</td>
+            	<td align="center">DOB</td>
+            	<td align="center">POB</td>
+            	<td align="center">Nationality</td>
+            	<td align="center">Address</td>
+            </tr>
+            <?php if($this->driverrows)foreach($this->driverrows as $i => $driver){?>
+            <tr>
+            	<td><?php echo $i+1;?></td>
+            	<td><?php echo $driver['first_name'].$driver['last_name']?></td>
+            	<td><?php //echo $driver['']?></td>
+            	<td><?php echo $driver['dob']?></td>
+            	<td><?php //echo $driver['pob']?></td>
+            	<td><?php echo $driver['nationality']?></td>
+            	<td><?php echo $driver['home_num'].",".$driver['street'].",".$driver['commune'].",".$driver['district']?></td>
+            </tr>
+            <?php }?>
+            
+            <tr>
+                <td colspan="8" class="fontsize14" style="border: 1px solid #fff; border-top:1px solid #000;"><strong>V. Rental Period Information and Payment Mode(All the related payment must be paid in advance)</strong></td>
+            </tr>
+        </table>
+        <table width="100%" style="border-collapse:collapse;font-size: 12px;margin-top:10px;font-family:Calibri !important;border:1px solid #000;" border="1px;">
+            <tr style="text-align:center;">
+                <th colspan="2" class="bordertd">&nbsp;Rental Period Information</th>
+                <th class="bordertd">&nbsp;Items Description</th>
+                <th class="bordertd">&nbsp;U Price</th>
+                <th class="bordertd">&nbsp;Total</th>
+                <th class="bordertd">&nbsp;Remarks</th>
+            </tr>
+             <tr>
+                <td class="bordertd" align="right">&nbsp;The period of :&nbsp;</td>
+                <td class="bordertd color" >&nbsp;<?php echo $rs['period'];?> day(s)</td>
+                <td class="bordertd">&nbsp;1. Driver Rental </td>
+                <td class="bordertd color" align="right">&nbsp;$&nbsp;<?php //echo $rs['price_perday']?></td>
+                <td class="bordertd color" align="right">&nbsp;$&nbsp;<?php echo $rs['rental_fee']?>&nbsp;</td>
+                <td class="bordertd">&nbsp;</td>
+            </tr>
+             <tr>
+                <td class="bordertd" align="right">&nbsp;Inception Date : &nbsp;</td>
+                <td class="bordertd color" >&nbsp;<?php echo date("d-m-Y",strtotime($rs['start_date']));?></td>
+                <td class="bordertd">&nbsp;2. Refundable Deposit </td>
+                <td class="bordertd color" align="right">&nbsp;$&nbsp;<?php //echo $rs['refundable'];?></td>
+                <td class="bordertd color" align="right">&nbsp;$&nbsp;<?php echo $rs['refundable'];?>&nbsp;</td>
+                <td class="bordertd">&nbsp;</td>
+            </tr>
+             <tr>
+                <td class="bordertd" align="right">&nbsp;Return Date : &nbsp;</td>
+                <td class="bordertd color">&nbsp;<?php echo date("d-m-Y",strtotime($rs['return_date']));?></td>
+                <td class="bordertd">&nbsp;3. Value Added Tax (VAT)</td>
+                <td class="bordertd color" align="right">&nbsp;$&nbsp;<?php //echo $rs['longdist_acc']; ?></td>
+                <td class="bordertd color" align="right">&nbsp;$&nbsp;<?php //echo $rs['longdist_acc']; ?></td>
+                <td class="bordertd">&nbsp;</td>
+            </tr>
+            <tr>
+            	<td class="bordertd" colspan="3" style="border:1px solid #fff;border-top:1px solid #000;border-right: 1px solid #000;">&nbsp;&nbsp;&nbsp;</td>
+                <td class="bordertd">&nbsp;&nbsp;&nbsp;Grand Total : </td>
+                <td style="background: rgb(212, 210, 210)" class="bordertd color" align="right">$&nbsp;<?php echo number_format($rs['grand_total'],2);?>&nbsp;</td>
+                <td class="bordertd">&nbsp;</td>
+            </tr>
+        </table>
+        <table width="100%" style="border-collapse:collapse;font-size: 12px;margin-top:10px;font-family:Calibri !important;">
+            
+            <tr>
+                <td colspan="8" class="fontsize14"><strong>VI. <span style="font-size:15px; ">T</span>ERMS AND <span style="font-size:15px; ">C</span>ONDITION</strong></td>
+            </tr>
+            <tr>
+            	<td colspan="2"><p style="padding: 5px;border: 1px solid #000;height: 55px;font-size: 9px;">1. If the length of the agreement is last more than 3 months both the parties cannot break the agreement earlier .in this case, the Rnter wishes to break the agreement earlier, the deposite of <u class="color">US$ <?php echo number_format($rs['refundable'],2);?></u> won't be refunded.</p></td>
+            	<td colspan="2"><p style="padding: 5px;border: 1px solid #000;height: 55px; margin-left: 5px;font-size: 9px;">2. For more details, Please turnover to the back page(s) of the agreement and read carefully from article <span class="color"><?php echo $rs['art1_id'];?></span> to <span class="color"><?php echo $rs['toart1_id'];?></span> and the rest.</p></td>
+            	<td colspan="2"><p style="padding: 5px;border: 1px solid #000;height: 55px; margin-left: 5px;font-size: 9px;">3. The above statement having been agreed between the signatories who have them declared to understand all clauses.</p></td>
+            	<td colspan="2"><p style="padding: 5px;border: 1px solid #000;height: 55px;margin-left: 5px;font-size: 9px;">4. If the Renter wishes to extend some more days of stay or use the Driver, the Renter must agree to pay extra at the daily rate. <span class="color"><?php //echo $rs['art2_id'];?></span> to <span class="color"><?php //echo $rs['toart2_id'];?></span> .If YES ,you are under the articles <span class="color"><?php //echo $rs['art3_id'];?></span> to <span class="color"><?php //echo $rs['toart3_id'];?></span></p></td>
+            </tr>
+             <tr>
+                <td colspan="5" class="fontsize14"><strong></strong></td>
+           		<td colspan="3" align="center">កាលបរិច្ឆេទ / Date: <font color="red" style="font-size: 14px;"><?php echo date("d M Y",strtotime($rs['agreement_date']));?></font></td>
+            </tr>
+           
+            
+        </table>
+        <div>
+         <table style="width: 100%; white-space: nowrap;font-family:Calibri !important;" cellspacing="5">
+            <tr  style="height: 70px;">
+                <td style="width:33%;color: rgb(28, 108, 198);font-weight: bold; text-align: center;" valign="top" >Renter's</td>
+                <td style="width:33%;color: rgb(28, 108, 198);text-align:center;font-weight: bold;" valign="top">Owner's Witness</td>
+                <td style="font-weight: bold;text-align:center; color: rgb(28, 108, 198);text-align:center;font-weight: bold;" valign="top">
+                Signature/Name of Owner </td>
+            </tr>
+             <tr height="30">
+                <td style="color: rgb(28, 108, 198);font-weight: bold;text-align: center;" valign="top">
+                	<p style=" width:50%; border-top:1px solid rgb(28, 108, 198);text-align: center;margin: 0 auto;"></p>
+                <?php echo $rs['first_name']." ".$rs['last_name'];?></td>
+                <td style="color: rgb(28, 108, 198);text-align:center;font-weight: bold;" valign="top">
+                	<p style=" width:50%; border-top:1px solid rgb(28, 108, 198);text-align: center;margin: 0 auto;"></p>
+                	<?php echo $rs['witness'];?>
+                </td>
+                <td style="text-align:center;color: rgb(28, 108, 198);font-weight: bold;" valign="top">
+                <p style=" width:50%; border-top:1px solid rgb(28, 108, 198);text-align: center;margin: 0 auto;"></p>
+                LYNA TAN (Mrs)</td>
+            </tr>
+         </table>
+       </div>
+	</div>
+	</div>

@@ -1,0 +1,124 @@
+<?php $filter = $this->frm_search;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+$frm=$this->frm;
+?>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("Guide/Driver Info Report");?></title>
+<script>
+dojo.require("dijit.form.DateTextBox");
+</script>
+<div class="row">
+	<div class="x_panel " >
+		<form method="post">
+			<div class="form-group">
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('adv_search');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('btn_search');?></div>
+			</div>
+		</form>
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+			<div id="divPrint" style="width: 100%;">
+				<style>
+				.style{
+					line-height: 20px;font-size: 10px !important;
+					font-family: 'Khmer OS Battambang';
+				}
+				th{padding: 5px;}
+				tr.header {
+				    font-weight: bold;
+				    line-height: 14px;
+				    font-size: 12px;
+				    background: #eee;
+				    text-align: center;
+				}
+				tr.header td {
+				    padding: 2px;
+				}
+				</style>
+
+				<table style="font-family: 'Khmer OS Content'; width:100%;">
+					<tr>
+				    	<td align="center">
+				    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+				            	<tr>
+				                	<td width="20%"></td>
+				                	<td width="60%" valign="top">
+				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Guide/Driver Price Report");?></h2>
+				                	<!-- <h2 style="text-align:center; font-size:13px;"><?php //echo date("d-M-Y",strtotime($this->list_end_date['start_date'])).' '.$tr->translate('TO').' ';echo date("D-d-M-Y",strtotime($this->list_end_date['end_date']));?></h2> -->
+				                	</td>
+				                    <td width="20%"></td>
+				                </tr> 
+				            </table>
+				        </td>
+				    </tr>
+				    <tr>
+				    	<td>
+				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+				                 <tr class="header">
+				                    <td rowspan="2">&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
+				                    <td rowspan="2"><?php echo $tr->translate("Driver Id");?></td>
+				                    <td rowspan="2"><?php echo $tr->translate("First Name");?></td>
+				                    <td rowspan="2"><?php echo $tr->translate("Last Name");?></td>
+				                    <td rowspan="2"><?php echo $tr->translate("Sex");?></td>
+				                    <td rowspan="2"><?php echo $tr->translate("Tel");?></td>
+				                    <td colspan="4"><?php echo $tr->translate("Aroun City Price");?></td>
+				                    <td colspan="4"><?php echo $tr->translate("Province Price");?></td>
+				                    <td colspan="4"><?php echo $tr->translate("City Tour Price");?></td>
+				                    <td rowspan="2"><?php echo $tr->translate("Status");?></td>
+				                </tr>
+				                <tr class="header">
+				                	<td><?php echo $tr->translate("Normal");?></td>
+				                	<td><?php echo $tr->translate("Weekend");?> </td>
+				                	<td><?php echo $tr->translate("Public");?> </td>
+				                	<td><?php echo $tr->translate("OT Price");?></td>
+				                	<td><?php echo $tr->translate("Normal");?></td>
+				                	<td><?php echo $tr->translate("Weekend");?> </td>
+				                	<td><?php echo $tr->translate("Public");?> </td>
+				                	<td><?php echo $tr->translate("OT Price");?></td>
+				                	<td><?php echo $tr->translate("Normal");?></td>
+				                	<td><?php echo $tr->translate("Weekend");?> </td>
+				                	<td><?php echo $tr->translate("Public");?> </td>
+				                	<td><?php echo $tr->translate("OT Price");?></td>
+				                </tr>
+				               <?php 
+				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
+									<tr align="center" style="line-height: 18px; background: #fff;">
+									<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+									<td align="left">&nbsp;<?php echo $row['driver_id']; ?>&nbsp;</td>
+									<td align="left">&nbsp;<?php echo $row['first_name'];?>&nbsp;</td>
+									<td align="left">&nbsp;<?php echo $row['last_name'];?>&nbsp;</td>
+									<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['sex'];?></td>	
+									<td>&nbsp;<?php echo $row['tel'];?>&nbsp;</td>
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['c_normalprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['c_weekendprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['c_holidayprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['c_otprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['p_normalprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['p_weekendprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['p_holidayprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['p_otprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['citynormalprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['cityweekendprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['citypublicprice'],2); ?>&nbsp;</td>	
+									<td align="right" style="font-size:8px;">&nbsp;<?php echo number_format($row['cityotprice'],2); ?>&nbsp;</td>	
+									<td align="center" style="font-size:8px;">&nbsp;<?php echo $row['status']; ?>&nbsp;</td>	
+									</tr>
+								<?php } ?>
+				            </table>
+				            <br />
+				               <table align="center" width="100%">
+								   <tr style="font-size: 12px;">
+								        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+								        <th></th>
+								        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+								   </tr>
+							</table>
+				    	</td>
+				    </tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,258 @@
+<?php 
+	$tr=Application_Form_FrmLanguages::getCurrentlanguage();
+	$base_url = Application_Form_FrmMessage::getUrl("/");
+	$request=Zend_Controller_Front::getInstance()->getRequest();
+	$action=$request->getActionName();
+	$controller=$request->getControllerName();
+	$module=$request->getModuleName();
+	
+	$session_user=new Zend_Session_Namespace('authcar');
+	$username = $session_user->first_name;
+	$them_style = 'soria'; //$session_user->theme_style;
+	
+	$session_lang=new Zend_Session_Namespace('lang');
+	
+	$lang_id = $session_lang->lang_id;//for creat session
+	
+	if(empty($lang_id)){
+		
+		$session_lang->lang_id=2;
+	}
+?>
+<?php if($module!='default'){
+	$dbuser = new Application_Model_DbTable_DbUsers();
+	$userinfo="";
+	$session_user=new Zend_Session_Namespace('authcar');
+	if (empty($session_user->user_id)){
+		//Zend_Controller_Front::getInstance()->getBaseUrl()."/";
+		Application_Form_FrmMessage::redirectUrl("/");
+		exit();
+	}
+	$userinfo = $dbuser->getUserInfomation($session_user->user_id);
+	?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+<?php if($module!='home'){ 
+	?>
+	
+<?php }?>
+<?php if($module!='home'){?>
+	    <link rel="stylesheet" type="text/css" href="<?php echo $base_url;?>js/dojo-1.6.1/dijit/themes/<?php echo $them_style."/".$them_style?>.css" />
+       <?php //if($action=='index'){?>
+       <?php  } ?>
+	<?php //}?>
+	<!-- export library -->
+	<?php if($module=='report'){?>
+	 <script type="text/javascript" src="<?php echo $this->baseUrl();?>/tableexport/tableExport.js"></script>
+	<script type="text/javascript" src="<?php echo $this->baseUrl();?>/tableexport/jquery.base64.js"></script>
+	<script type="text/javascript" src="<?php echo $this->baseUrl();?>/tableexport/html2canvas.js"></script>
+	<script type="text/javascript" src="<?php echo $this->baseUrl();?>/tableexport/jspdf/libs/sprintf.js"></script>
+	<script type="text/javascript" src="<?php echo $this->baseUrl();?>/tableexport/jspdf/jspdf.js"></script>
+	<script type="text/javascript" src="<?php echo $this->baseUrl();?>/tableexport/jspdf/libs/base64.js"></script> 
+	<?php } ?>	
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link href="<?php echo $this->baseUrl();?>/admin/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="<?php echo $this->baseUrl();?>/admin/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress 
+    <link href="<?php //echo $this->baseUrl();?>/admin/vendors/nprogress/nprogress.css" rel="stylesheet">-->
+
+      <link href="<?php echo $this->baseUrl();?>/admin/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom Theme Style -->
+    <link href="<?php echo $this->baseUrl();?>/admin/build/css/custom.min.css" rel="stylesheet">
+    <style>
+		.fullside {
+		    width: 100%;
+		    height: 30px;
+		}
+		.dijitArrowButtonInner, .dijitIconSearch {
+		    margin-top: 6px !important;
+		}
+		.dijitTextBox, .dijitValidationTextBox, .dijitInputField, .dijitInputContainer, .dijitInputInner, dijitReset, .dijitRight, .dijitButtonNode, .dijitArrowButton, .dijitDownArrowButton, .dijitArrowButtonContainer {
+		    height: 28px;
+		}
+    </style>
+  </head>
+ <!-- jQuery -->
+    <script src="<?php echo $this->baseUrl();?>/admin/vendors/jquery/dist/jquery.min.js"></script>
+    
+    <!-- Bootstrap -->
+    <script src="<?php echo $this->baseUrl();?>/admin/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick 
+    <script src="<?php //echo $this->baseUrl();?>/admin/vendors/fastclick/lib/fastclick.js"></script>-->
+    <!-- NProgress 
+    <script src="<?php //echo $this->baseUrl();?>/admin/vendors/nprogress/nprogress.js"></script>-->
+	
+	<?php if ($action=="index"){?>
+	<script src="<?php echo $this->baseUrl();?>/admin/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="<?php echo $this->baseUrl();?>/admin/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <?php }elseif ($module=="rsvacl" AND $controller=="useraccess" AND $action=="add"){?>
+    <script src="<?php echo $this->baseUrl();?>/admin/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="<?php echo $this->baseUrl();?>/admin/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <?php }else{?>
+    <?php }?>
+    
+	<script src="<?php echo $base_url;?>js/dojo-1.6.1/dojo/dojo.js"  djConfig="isDebug: true,parseOnLoad: true"></script>
+	<script>dojoConfig = {parseOnLoad: true}</script>
+	<script>
+		require(["dijit/form/Form","dijit/form/FilteringSelect","dijit/form/Button"]);
+    </script>
+    <link rel="shortcut icon" href="<?php echo $base_url;?>images/icon.ico" type="image/x-icon"/>
+  <body class="nav-md <?php echo $them_style;?>">
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="<?php echo $this->baseUrl()."/menu-manager/menu-items";?>" class="site_title"><i class="fa fa-paw"></i> <span><img src="<?php echo $this->baseurl();?>/images/camapplogo.png" alt="<?php echo $tr->translate("CAM APP TECHNOLOGY")?>"></span></a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <!-- menu profile quick info -->
+            <div class="profile clearfix">
+              <div class="profile_pic">
+              <?php if (!empty($userinfo['profile_img'])){$imagepro="/images/profile/".$userinfo['profile_img'];}else{$imagepro="/images/user.png";}?>
+                <img src="<?php echo $this->baseUrl().$imagepro;?>" alt="..." class="img-circle profile_img">
+              </div>
+              <div class="profile_info">
+                <span><?php echo $tr->translate("WELCOME")?>,</span>
+                <h2><?php echo $username;?></h2>
+              </div>
+            </div>
+            <!-- /menu profile quick info -->
+            <br />
+            <?php echo $this->render('menuleft.phtml')?> 
+            <!-- page content -->
+		        <div class="right_col" role="main">
+		          <div class="">
+		            <div class="page-title">
+		              <?php 
+		              		$db = new Application_Model_DbTable_DbUsers();
+	            			$rs = $db->getAccessUrl($module,$controller,$action);
+	            			if(!empty($rs) OR $action=='changepassword'){
+	            				?>
+	            				<?php if($module=='report' AND $controller=='index' AND $action=='index'){?>
+            					<?php }else if ($module=='report'){?>
+									<div class="x_panel">
+										<div class="x_content">
+												<a class="btn btn-app" href="#" title="<?php echo $tr->translate("Preview");?>" onclick="preview();">
+									  				<i class="fa fa-search-plus"></i> <?php echo $tr->translate("Preview");?>
+												</a>
+												<a class="btn btn-app" href="#" title="<?php echo $tr->translate("Print");?>" onclick="doPrint();">
+									                <i class="fa fa-print"></i> <?php echo $tr->translate("Print");?>
+												</a>
+									            <a class="btn btn-app" href="#"  title="Export"  onclick="exportExcel();">
+									                <i class="fa fa-file-excel-o"></i> <?php echo $tr->translate("Excel");?>
+									            </a>
+										</div>
+									</div>
+								<?php }?>
+							<?php 
+	            				echo $this->layout()->content;
+	            			}else{
+	            				echo $this->render('pagenotfund.phtml');
+	            			}
+							?>
+		            </div>
+		           </div>
+		          </div>
+		          <div class="clearfix"></div>
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+           Developed By <a href="http://cam-app.com/">Cam App Technology</a>
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+      </div>
+    </div>
+
+  
+    
+   
+    <!-- Custom Theme Scripts -->
+    <script src="<?php echo $this->baseUrl();?>/admin/build/js/custom.min.js"></script>
+	<iframe name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>
+	<div class="overlay">
+		<div class="overlay-load">
+			<div class="overlay-msg">
+		    </div>
+		</div>
+	</div>
+	<script>
+		function loading(){
+		    document.getElementsByClassName("overlay")[0].style.display="block";
+		}
+		function toggleFullScreen(elem) {
+			// ## The below if statement seems to work better ## if ((document.fullScreenElement && document.fullScreenElement !== null) || (document.msfullscreenElement && document.msfullscreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+			if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
+				if (elem.requestFullScreen) {
+					elem.requestFullScreen();
+				} else if (elem.mozRequestFullScreen) {
+					elem.mozRequestFullScreen();
+				} else if (elem.webkitRequestFullScreen) {
+					elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+				} else if (elem.msRequestFullscreen) {
+					elem.msRequestFullscreen();
+				}
+			} else {
+				if (document.cancelFullScreen) {
+					document.cancelFullScreen();
+				} else if (document.mozCancelFullScreen) {
+					document.mozCancelFullScreen();
+				} else if (document.webkitCancelFullScreen) {
+					document.webkitCancelFullScreen();
+				} else if (document.msExitFullscreen) {
+					document.msExitFullscreen();
+				}
+			}
+		}
+	</script>
+<?php }else{
+		echo $this->render('headerfront.phtml');
+		echo $this->layout()->content;
+		echo $this->render('footerfront.phtml');
+}?>
+
+<?php if($module=='report' AND $controller!='index'){?>
+<script type="text/javascript">
+function doPrint() {
+	window.frames["print_frame"].document.body.innerHTML=dojo.byId('divPrint').innerHTML;
+    window.frames["print_frame"].window.focus();
+    window.frames["print_frame"].window.print();
+    hideDialog();
+}
+function hideleft(){
+	(dojo.style("leftmenu","display") == "none") ? 'show':'hide'();
+}
+function preview()
+{ 
+  var disp_setting="toolbar=no,status=no,resizable=no,location=no,directories=yes,menubar=no,"; 
+      disp_setting+="scrollbars=no,width=1100, height=700, left=100, top=25"; 
+  var content_vlue = document.getElementById("divPrint").innerHTML; 
+  var docprint=window.open("","",disp_setting); 
+   docprint.document.open(); 
+   docprint.document.write('<html><head>'); 
+   docprint.document.write('</head><div style=" font-size:16px !important; margin:0px; font-family:Verdana;"><style>table th {font-size:14px !important;} table td{font-size:12px !important;}</style><center>');          
+   docprint.document.write(content_vlue);          
+   docprint.document.write('</center></div></html>'); 
+   docprint.document.close(); 
+   docprint.focus(); 
+}
+function exportExcel(){
+	window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#exportExcel').html()));
+    e.preventDefault();
+}
+</script>
+<?php }?>
+</html>

@@ -1,0 +1,156 @@
+<?php 
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$request=Zend_Controller_Front::getInstance()->getRequest();
+echo $this->headTitle($tr->translate("VEHICLEPRICE"));
+ $status = $request->getParam('search_status');
+ if(empty($status)) $status=-1;
+ $make=$request->getParam('make');
+ $model=$request->getParam('model');
+ $submodel=$request->getParam('submodel');
+?>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
+<script type="text/javascript">
+dojo.require("dojo.data.ItemFileWriteStore");  
+
+var make_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->all_make));?> );
+dojo.ready(function(){
+new dijit.form.FilteringSelect({
+    store: make_store,
+    autoComplete: true,                        
+    required: true,
+    id: "make",
+    name: "make",    
+    placeHolder:"Selected Make",       
+    class: 'fullside',   
+    value:'<?php echo $make; ?>',       
+    onChange: function() {  
+    		make_id=dijit.byId('make').get('value');
+    		//alert(make_id);
+    		getallModel(make_id);
+    }
+}, "make");
+//model controll
+	new dijit.form.FilteringSelect({
+	   // store: make_store,
+	    autoComplete: true,                        
+	    required: true,
+	    id: "model",
+	    name: "model",  
+	    placeHolder:"Selected Model",
+	    value:'<?php echo $model; ?>',         
+	    class: 'fullside',            
+	    onChange: function() {  
+	    	      model_id=dijit.byId('model').get('value');
+	    	      //alert(model_id);
+		    	   getallSubModel(model_id);
+		    	   dijit.byId('submodel').attr('value','');
+	    }
+	}, "model");
+	getallModel('<?php echo $make; ?>');
+	
+//submodel controll
+	new dijit.form.FilteringSelect({
+	   // store: make_store,
+	    autoComplete: true,                        
+	    required: true,
+	    id: "submodel",
+	    name: "submodel",     
+	    placeHolder:"Selected Submodel",      
+	    class: 'fullside',            
+	    onChange: function() {  
+	    }
+	}, "submodel");
+	}); 
+var model_store  = getDataStorefromJSON('id','name', <?php print_r(array())?> );
+var url_getmake = '<?php echo $this->url(array('module'=>'vehicle','controller'=>'submodel','action'=>'get-model')); ?>';
+function getallModel(make_id){
+	if(make_id==''){
+	      return false;
+		}
+		dojo.xhrPost({
+			url:url_getmake,
+			content:{
+				'make_id':make_id
+				},
+			handleAs:"json",
+			load: function(data) {
+				model_store  = getDataStorefromJSON('id','name', data);
+			    dijit.byId('model').set('store',model_store);   
+			    dijit.byId('model').attr('value','<?php echo $model; ?>');
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+}
+var submodel_store  = getDataStorefromJSON('id','name', <?php print_r(array())?> );
+var url_getsubmodel = '<?php echo $this->url(array('module'=>'vehicle','controller'=>'index','action'=>'get-sub-model')); ?>';
+function getallSubModel(model_id){
+	if(model_id==''){
+	      return false;
+		}
+		dojo.xhrPost({
+			url:url_getsubmodel,
+			content:{
+				'model_id':model_id
+				},
+			handleAs:"json",
+			load: function(data) {
+				//alert(data);
+				submodel_store  = getDataStorefromJSON('id','name', data);
+			    dijit.byId('submodel').set('store',submodel_store);  
+			    dijit.byId('submodel').attr('value','<?php echo $submodel; ?>'); 
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+}
+</script>
+<div class="row">
+	<div class="x_panel" >
+		 <div class="blog_form_title">
+		 	<h4><i class="fa fa-car" aria-hidden="true"></i> <?php echo $tr->translate("VEHICLEPRICE")?></h4>
+		 </div>
+		<form id="list" name="list" action="<?php echo $this->url(array('module'=>'driverguide','controller'=>'vehicleprice','action'=>'index')); ?>" dojoType="dijit.form.Form" method="post">
+		   <div class="clearfix"></div>
+		  	  <div class="form-group">
+				  <div class="col-md-2 col-xs-12 mg-10">
+				  	<input dojoType="dijit.form.TextBox" class="fullside" id="adv_search" name="adv_search" value="<?php echo $request->getParam('adv_search');?>" placeholder="<?php echo $this->translate("Search");?>" type="text" >
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+				  	<input id="make" />
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+				  	<input id="model" />
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+				  	<input id="submodel" />
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <div class="col-md-2 col-xs-12 mg-10">
+				  		<select tabindex="22" name="type" id="type" dojoType="dijit.form.FilteringSelect" class="fullside">
+				  			<option value="-1" ><?php echo $tr->translate("CHOOSE_TYPE")?></option>
+					         <?php foreach ($this->rows_type as $rs){?>
+					         <option value="<?php echo $rs['id'];?>" <?php if ($request->getParam('type')==$rs['id']){echo 'selected="selected"';}?> ><?php echo $rs['type'];?> </option>
+					         <?php }?>
+						</select>
+				  </div>
+				 <div class="col-md-2 col-xs-12 mg-10">
+				  	<select name="search_status" id="search_status" dojoType="dijit.form.FilteringSelect" class="fullside">
+		                <option value="-1" <?php if($status==-1){ echo"selected='selected'";} ?>><?php echo $tr->translate("Status All")?></option>
+		                <?php if (!empty($this->status_view)) foreach ($this->status_view as $rss){?>
+					    <option value="<?php echo $rss['key_code'];?>" <?php if($rss['key_code']==$request->getParam('search_status')){ echo"selected='selected'";} ?> ><?php echo $rss['name_en'];?></option>
+					    <?php }?>
+						</select>
+				  </div>
+				  <div class="col-md-1 col-xs-12 mg-10">
+				  	<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
+				  </div>
+			</div>
+			  
+		</form>
+		<?php echo $this->list;?>
+	</div>
+</div>

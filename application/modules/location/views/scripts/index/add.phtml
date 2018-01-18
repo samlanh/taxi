@@ -1,0 +1,84 @@
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate('Add Province')); 
+?>
+<?php  $province= $this->frm_province;?>
+<style>
+.cke_contents{ height: 200px !important;}
+</style>
+<script src="<?php echo $this->baseUrl();?>/ckeditor/ckeditor.js"></script>
+<script src="<?php echo $this->baseUrl();?>/ckeditor/samples/sample.js"></script>
+<link href="<?php echo $this->baseUrl();?>/ckeditor/samples/sample.css" rel="stylesheet">
+<form id="add_province" action="<?php echo $this->url(array('module'=>'location','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data">
+	 <script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				loading();
+				return true;
+			} else {
+				return false;
+			}
+	</script>
+	<div class="clearfix"></div>
+	<div class="row">
+		 <div class="col-md-2 col-xs-12 forms_padding"></div>
+      	 <div class="col-md-8 col-xs-12 forms_padding">
+          <div class="x_panel">
+              <div class="x_title">
+                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('ADD_PROVINCE')?></h2>
+                 <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+               	</ul>
+               <div class="clearfix"></div>
+               <div class="x_content">
+	               <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("Province Name KH")?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                    	<?php echo $province->getElement("kh_province");?>
+	                   </div>
+	                </div>
+	                 <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("Province Name EN")?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                    	<?php echo $province->getElement("en_province");?>
+	                   </div>
+	                </div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("Photo")?>
+	                   </label>
+	                   <div class="col-md-3 col-sm-3 col-xs-12">
+	                    	<input type="file" name="photo" id="photo" />
+	                   </div>
+	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("STATUS")?>
+	                   </label>
+	                   <div class="col-md-3 col-sm-3 col-xs-12">
+	                    	<?php echo $province->getElement("status");?>
+	                   </div>
+	                </div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("DESCRIPTION")?>
+	                   </label>
+	                </div>
+	                <div class="form-group">
+	                   <div class="col-md-12 col-sm-12 col-xs-12">
+	                    	<textarea class="ckeditor"   height="400px" style="min-height:60px;" id="note" name="note"></textarea>
+	                   </div>
+	                </div>
+          	</div>
+          </div>
+       </div>
+       <div class="clearfix"></div>
+	     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+	     	<input type="reset" value="សំអាត" label="<?php echo $tr->translate('CLEAR');?>"dojoType="dijit.form.Button" iconClass="dijitIconClear"/>
+				<input type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVECLOSE');?>" dojoType="dijit.form.Button" 
+					iconClass="dijitEditorIcon dijitEditorIconSave" />
+				<input type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVENEW');?>" dojoType="dijit.form.Button" 
+					iconClass="dijitEditorIcon dijitEditorIconSave" />
+	     </div>
+    </div>
+    <div class="col-md-2 col-xs-12 forms_padding"></div>
+  </div>
+</form>

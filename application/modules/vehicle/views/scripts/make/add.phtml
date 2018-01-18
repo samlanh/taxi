@@ -1,0 +1,116 @@
+<?php 
+     $url_save = $this->url(array('module'=>'vehicle','controller'=>'make','action'=>'add'));
+     $tr=Application_Form_FrmLanguages::getCurrentlanguage();
+     $status_view=$this->status_view;
+?>
+<title><?php echo $tr->translate("Add Make")?></title>
+<style>
+.account-image {
+    border: solid 1px #eee;
+}
+.image-box {
+    display: inherit;
+    position: relative;
+    text-align: center;
+}
+.image-box img {
+    width: 150px;
+    border-radius: 60%;
+    height: 150px;
+    margin-top: 10px;
+    border: solid 1px #eee;
+}
+.button_browse span {
+    line-height: 33px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.form-groupsa {
+    margin-bottom: 5px;
+}
+</style>
+<form id="add_province" action="<?php echo $url_save;?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data">
+	 <script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				loading();
+				return true;
+			} else {
+				return false;
+			}
+	</script>
+	<div class="clearfix"></div>
+	<div class="row">
+	 	<div class="col-md-3 col-xs-12 forms_padding">
+	 	</div>
+      	 <div class="col-md-6 col-xs-12 forms_padding">
+	          <div class="x_panel">
+	              <div class="x_title">
+	                 <h2><i class="fa  fa-plus-circle" aria-hidden="true"></i> <?php echo $tr->translate('Add Make')?></h2>
+	                 <ul class="nav navbar-right panel_toolbox">
+	                    <li>
+	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+	                    </li>
+	               	</ul>
+	               <div class="clearfix"></div>
+	          	</div>
+	       		<div class="x_content">
+		       		<div class="form-groupsa">
+			       		<div class="col-md-8 col-sm-8 col-xs-12">
+			       			<div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Make Name')?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<input dojoType="dijit.form.ValidationTextBox" class="fullside" id="make" name="make" value="" type="text" required="required">
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('STATUS')?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<select name="status" id="status" dojoType="dijit.form.FilteringSelect" required="true" missingMessage="Invalid Module!" class="fullside">
+									    <?php foreach ($status_view as $rs){?>
+									    <option value="<?php echo $rs['key_code'];?>" label="Active"><?php echo $rs['name_en'];?></option>
+									    <?php }?>
+									</select>
+			                   </div>
+			                </div>
+			             </div>
+			             <div class="col-md-4 col-sm-4 col-xs-12">
+		       				<div class="form-group">
+			               		<div class="account-image">
+									<div class="image-box">
+										<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/noavailable.png';?>" alt=""  />
+									</div>
+									<div class="button_browse">
+									<div id='preview'></div>	
+											<span>Upload <span ><i class="fa fa-camera" aria-hidden="true"></i></span></span>
+											<input class="btn_borwse_image fullside" type="file" id="photo" name="photo"  onchange="loadFile(event)"/>
+									</div>
+								</div>
+							</div>
+						</div>
+			         </div>
+	                <div class="clearfix"></div>
+			       	<div class="ln_solid"></div>
+				     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+				        <input type="reset" style="color:#000;" label="<?php echo $tr->translate('CLEAR');?>" dojoType="dijit.form.Button" 
+								iconClass="dijitIconClear" /> 
+						<input type="submit" value="SAVE_CLOSE" label="<?php echo $tr->translate('SAVECLOSE');?>" style="color:#000;" id="save_close" dojoType="dijit.form.Button" name="save_close"
+							iconClass="dijitEditorIcon dijitEditorIconSave" /> 
+						<input type="submit" value="SAVE_NEW" label="<?php echo $tr->translate('SAVENEW');?>" id="save_new" style="color:#000;" dojoType="dijit.form.Button" name="save_new"
+							iconClass="dijitEditorIcon dijitEditorIconSave"/>					
+				    </div>
+	       		</div>
+	       	</div>
+	       	
+	     </div>
+	     <div class="col-md-3 col-xs-12 forms_padding">
+	 	</div>
+	 </div>
+</form> 
+<script>
+var loadFile = function(event) {
+    var output = document.getElementById('profile_wiew');
+    output.src = URL.createObjectURL(event.target.files[0]);
+  };
+</script>

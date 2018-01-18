@@ -1,0 +1,14 @@
+<?php 
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+?>
+<title><?php echo $tr->translate("CITYTOURPRICE")?></title>
+<div class="row">
+	<div class="x_panel" >
+		 <div class="blog_form_title">
+		 	<h4><i class="fa fa-car" aria-hidden="true"></i> <?php echo $tr->translate("CITYTOURPRICE")?></h4>
+		 </div>
+			<?php 
+			  echo $this->list;
+			?>
+	</div>
+</div>

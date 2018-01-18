@@ -1,0 +1,35 @@
+<?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate("CUSTOMERTYPE"));
+?>	
+<?php $frm =  $this->frm_search;
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.FilteringSelect');
+</script>
+<div class="row">
+	<div class="x_panel" >
+		 <div class="blog_form_title">
+		 	<h4><i class="fa fa-users" aria-hidden="true"></i> <?php echo $tr->translate("CUSTOMERTYPE")?></h4>
+		 </div>
+		<form id="list" name="list" action="" dojoType="dijit.form.Form" method="post">
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("title");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement('status_search');?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
+		  		</div>
+		  	</div>
+		<?php echo $this->list;?>
+		</form>
+	</div>
+</div>

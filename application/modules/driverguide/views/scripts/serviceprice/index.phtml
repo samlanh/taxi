@@ -1,0 +1,43 @@
+<?php 
+	$tr=Application_Form_FrmLanguages::getCurrentlanguage();
+?>
+<title><?php echo $tr->translate("SERVICEPRICE");?>Service Price</title>
+
+ <div class="x_panel">
+   	<div class="x_content">
+    	<table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+			 <thead>
+				  <tr>
+				    <th><?php echo $tr->translate("NUM");?></th>
+				    <th><?php echo $tr->translate("Service Title");?></th>
+				    <th><?php echo $tr->translate("Photo");?></th>
+				    <th><?php echo $tr->translate("PRICE");?></th>
+				    <th><?php echo $tr->translate("STATUS");?></th>
+				  </tr>
+			  </thead>
+			   <tbody>
+			  <?php 
+			  $imgnone = $this->baseUrl()."/images/icon/apply2.png";
+			  $imgntow = $this->baseUrl()."/images/icon/cross.png";
+				if(!empty($this->row_service))foreach ($this->row_service as $key =>$row){
+					if ($row['status']==1){
+					     $img="<img src='".$imgnone."'/>";	
+					}else{
+				         $img="<img src='".$imgntow."'/>";
+					} 
+			 ?>
+			
+			  <tr align="center">
+			  	<td  align="center"><?php echo $key+1;?></td>
+			  	<td style="text-align:left;">&nbsp;<a href="<?php echo $this->baseUrl().'/driverguide/serviceprice/edit/id/'.$row['id'];?>"><?php echo $row['service_title'];?></a></td>
+			    <td style="text-align: center;" ><a href="<?php echo $this->baseUrl().'/driverguide/serviceprice/edit/id/'.$row['id'];?>"><img src="<?php echo $this->baseUrl().'/images/'.$row['photo'];?>"  style="max-height:50px;"/></a></td>
+			    <td style="text-align:left;">&nbsp;<a href="<?php echo $this->baseUrl().'/driverguide/serviceprice/edit/id/'.$row['id'];?>"><?php echo $row['price'];?></a></td>
+			  	<td style="padding:1px;"><?php echo $img;?></td>
+			  </tr>
+	  <?php 
+		}
+		?>
+		</tbody>
+	</table>
+	</div>
+	</div>

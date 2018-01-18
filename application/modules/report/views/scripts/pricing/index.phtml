@@ -1,0 +1,59 @@
+  <?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();
+  // report
+  $rpt_guideinfo=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-guideinfo'), null, true);
+  $rpt_guideprice=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-guideprice'), null, true);
+  
+  $vehicle_info=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-vehicleinfo'), null, true);
+  $vehicle_rentalprice=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'vehicle-rentalprice'), null, true);
+  $rpt_taxirentalprice=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-taxirentalprice'), null, true);
+  $rpt_citytour=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-citytourirentalprice'), null, true);
+  $rpt_serviceprice=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-service-price'), null, true);
+  $carrentalpickup=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-carrentalpickup'), null, true);
+  $vehicle=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-vehicle'), null, true);
+  $booikng=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'booking'), null, true);
+  $vehicle_agreement=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'vehicleagreement'), null, true);
+  $product_agreement=$this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-productagreement'), null, true);
+  
+  ?>
+  <style>
+  ul.link-rpt li a {
+	color: #FFFFFF;
+    height: 50px;
+    width: 180px;
+    display: block;
+    padding: 10px;
+    background: #9206A2;
+    font-family: calibri,Arial, Helvetica, sans-serif;
+    text-align: center;
+    word-wrap: break-word;
+  	font-weight: bold;
+  } 
+    ul.link-rpt li {
+	float:left; margin:10px;
+    list-style: none;
+    border:1px solid #B1B0AF;
+    word-wrap: break-word;
+    
+  } 
+  .dijitReset, .dijitInline  ,.dijitButton {
+	width: 200px !important;
+  }
+  </style>
+  <div style="background:#ccc; width: 100%;">
+  	<ul class="link-rpt">
+  		<li><a href="<?php echo $rpt_guideinfo;?>"><?php echo $tr->translate('Guide/Driver Info Report');?></a></li>
+  		<li><a href="<?php echo $rpt_guideprice;?>"><?php echo $tr->translate('Guide/Driver Price Report');?></a></li>
+  		<li><a href="<?php echo $vehicle_info;?>"><?php echo $tr->translate('Vehicle Infomation Report');?></a></li>
+  		<li><a href="<?php echo $vehicle_rentalprice;?>"><?php echo $tr->translate('Vehicle Rental Price Report');?></a></li>
+  		<li><a href="<?php echo $rpt_taxirentalprice;?>"><?php echo $tr->translate('Taxi Rental Price Report');?></a></li>
+  		<li><a href="<?php echo $rpt_citytour;?>"><?php echo $tr->translate('City Tour Rental Price Report');?></a></li>
+  		<li><a href="<?php echo $rpt_serviceprice;?>"><?php echo $tr->translate('Service Price Report');?></a></li>
+  		<li><a href="<?php echo $carrentalpickup;?>"><?php echo $tr->translate('Car Rental Pickup Report');?></a></li>
+  		<li><a href="<?php echo $booikng;?>"><?php echo $tr->translate('Booking Report');?></a></li>
+  		<li><a href="<?php echo $this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-vehicleagreement'), null, true);;?>"><?php echo $tr->translate('Vehicle Agreement');?></a></li>
+  		<li><a href="<?php echo $this->url(array('module'=>'report','controller'=>'pricing','action'=>'rpt-driveragreement'), null, true);;?>"><?php echo $tr->translate('Driver Agreement');?></a></li>
+  		<li><a href="<?php echo $product_agreement;?>"><?php echo $tr->translate('Product Agreement');?></a></li>
+  		<li><a href="<?php echo $product_agreement;?>"><?php echo $tr->translate('City Tour Agreement');?></a></li>
+  	</ul>
+  </div>
+  <div style="clear: both;"></div>

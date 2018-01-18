@@ -1,0 +1,473 @@
+<?php 
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+echo $this->headTitle($tr->translate("EDIT RECEIPT OF SALE"));
+	$sale_no = $this->sale_no;
+	$rs = $this->rs;
+$o_sex="";
+	if($rs["o_sex"]==1){
+		$o_sex ="Mr.";
+	}else{$o_sex ="Mrs.";}
+	
+	$sex="";
+	if($rs["sex"]==1){
+		$sex ="Mr.";
+	}else{$sex ="Mrs.";}
+	
+	if($rs["passport_name"] == "" OR $rs["passport_name"]==null){
+		$id_card = $rs["card_name"];
+		$issue_date = $rs["card_issuedate"];
+		$exp_date = $rs["card_expireddate"];
+	}else if($rs["card_name"]=="" OR $rs["card_name"]==null){
+		$id_card = $rs["passport_name"];
+		$issue_date = $rs["pass_issuedate"];
+		$exp_date = $rs["pass_expireddate"];
+	}else{
+		$id_card = $rs["card_name"];
+		$issue_date = $rs["card_issuedate"];
+		$exp_date = $rs["card_expireddate"];
+	}
+		
+	if($rs["o_passport"] == "" OR $rs["o_passport"]==null){
+		$o_id_card = $rs["o_card_name"];
+		$o_issue_date = $rs["o_card_issuedate"];
+		$o_exp_date = $rs["o_card_expireddate"];
+	}else if($rs["card_name"]=="" OR $rs["card_name"]==null){
+		$o_id_card = $rs["o_passport"];
+		$o_issue_date = $rs["o_pass_issuedate"];
+		$o_exp_date = $rs["o_pass_expireddate"];
+	}else{
+		$o_id_card = $rs["o_card_name"];
+		$o_issue_date = $rs["o_card_issuedate"];
+		$o_exp_date = $rs["o_card_expireddate"];
+	}
+	$barcode = $rs["re_no"];
+	$url_barcode = $this->url(array("module"=>"agreement","controller"=>"carsale","action"=>"generate-barcode","product_code"=>$barcode),null,true);
+	$url_invoice = $this->url(array("module"=>"agreement","controller"=>"carsale","action"=>"reciept","id"=>$rs["id"]),null,true);
+?>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<style>
+#footer{display: none;}
+table{
+	font-family: 'Khmer OS Siemreap';
+	font-size: 11px;
+}
+ .padd tr td{ 
+	font-family: 'Khmer OS Siemreap';
+	font-size: 11px;
+ }
+</style>
+<script type="text/javascript"  src="<?php echo $this->baseUrl();?>/js/convertion.js"></script>	
+<script type="text/javascript">
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.Textarea");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.CheckBox");
+</script>
+<script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				 if(dijit.byId('record_row').get('value')==''){
+                    alert('Can not submit without record !');
+                    return false;
+                 }
+				return true;
+			} else {
+				return false;
+			}
+	</script>
+<script type="text/javascript">
+function doPrint() {
+	//getLabel();
+	window.frames["print_frame"].document.body.innerHTML=dojo.byId('divPrint').innerHTML;
+    window.frames["print_frame"].window.focus();
+    window.frames["print_frame"].window.print();
+}
+function preview()
+{ 
+  var disp_setting="toolbar=no,status=no,resizable=no,location=no,directories=yes,menubar=no,"; 
+      disp_setting+="scrollbars=no,width=794, height=700, left=0, top=0"; 
+  var content_vlue = document.getElementById("print").innerHTML; 
+  
+  var docprint=window.open("","",disp_setting); 
+   docprint.document.open(); 
+   docprint.document.write('<html><head>'); 
+   docprint.document.write('</head><div style=" font-size:12px !important; margin:0px; font-family:arial;"><style>table th {font-size:12px !important;} table td{font-size:12px !important;}</style><center>');          
+   docprint.document.write(content_vlue);          
+   docprint.document.write('</center></div></html>'); 
+   docprint.document.close(); 
+   docprint.focus(); 
+}
+function exportExcel(){
+	window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#exportExcel').html()));
+    e.preventDefault();
+}
+require(["dojo/ready"], function(ready){
+	ready(function(){
+		getPaid(1);
+		var total= '<?php echo $rs["amout_paid"]?>';
+	
+		var balance = '<?php echo $rs["balance"]?>';
+		money_khmer = read_money_in_khmer(total);
+		money_us = read_money_in_english(total);
+		document.getElementById('amount_in_khmer').innerHTML  = money_khmer+"​ ដុល្លា | "+money_us+" Dollar";
+	
+		money_khmer1 = read_money_in_khmer(balance);
+		money_us1 = read_money_in_english(balance);
+		document.getElementById('balance_inword').innerHTML  = money_khmer1+"​ ដុល្លា | "+money_us1+" Dollar";
+	});
+});
+</script>
+<iframe name="print_frame" width="0" height="0" frameborder="0" src=about:blank></iframe>
+		<div style="clear:both;"></div>
+<style>
+div#divPrint table.maintable {
+    display: block;
+    position: relative;
+}
+</style>
+<form action="" method="post">
+<div class="row">
+	<div class="x_panel">
+		<div style="border: 1px dotted #000;background: #fff; margin: 0 auto;height: 29.7cm;width:21cm">
+				<div id="divPrint">
+					<table class="maintable" style="background:#fff; margin: 0 auto; width: 100%; padding: 0 0.2cm; ">
+						<tr>
+							<td style="width: 30%;"><img style="width: 120px" src="<?php echo $this->baseUrl();?>/images/car1.jpg" /></td>
+							<td style="width: 40%;" align="center"><span style=" font-family:Courier New; font-size:22px ; font-weight: 900 !important;color:#04AE18">KINGDOM OF CAMBODIA<br /><span style="font-size:18px;">NATION RELIGION KING</span><br /><span style="font-size:18px;"><strong style="font: 21px bold, 'Webdings'"></strong></span></span></td>
+							<td style="text-align: right;width: 30%;"><img style="width: 157px" src="<?php echo $this->baseUrl();?>/images/car2.jpg" /></td>
+						</tr>
+						<tr>
+							<td style="color:#04AE18;"><img style="width: 100%;" src="<?php echo $url_barcode;?>"/></td>
+							<td></td>
+							<td style="color:#04AE18;" align="right"><strong style=" font:18px bold, Courier New;">RECEIPT OF SALE</strong></td>
+						</tr>
+						
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Price Info - ពត៌មានតម្លៃ</strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%" align="center" style=" white-space:nowrap; border-collapse: collapse;">
+									<tr>
+										<td style="">Invoice No Reference:<input type="hidden" name="old_sale_id" value="<?php echo $rs["sale_id"]?>"></td>
+										<td style="">
+											<select style="width: 100%" name="refer" id="refer" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside" onChange="getInvoice()">
+												<option value="0">- - - Choose Invoice No - - -</option>
+													<?php foreach ($sale_no as $rss){
+														$check ="";
+														if($rss["id"] == $rs["sale_id"]){
+															$check="selected='selected'";
+														}
+													?>
+												<option value="<?php echo $rss["id"];?>" <?php echo $check;?>><?php echo $rss["ag_code"]?></option>
+													<?php }?>
+											</select>
+										</td>
+										<td style="text-align: right;padding-right:8px;">Full Paid:</td>
+										<td><input type="radio"  id="pay_type" name="pay_type" <?php if($rs["pay_type"]==1){ echo 'checked="checked"';}?> value="1" onClick="getPaid(1)"></td>
+										<td style="text-align: right;padding-right:8px;">Books:</td>
+										<td><input type="radio" id="pay_type" name="pay_type" value="2" onClick="getPaid(2)" <?php if($rs["pay_type"]==2){ echo 'checked="checked"';}?>></td>
+									</tr>
+									<tr style="height: 20px; ">
+										<td>Total Amount:<input type="hidden" name="old_price" value="<?php echo $rs["total_price"]?>"></td>
+										<td><input dojoType="dijit.form.NumberTextBox" type="text" readonly="readonly" id="total" name="total" value="<?php echo $rs["total_price"]?>"></td>
+										<td style="text-align: right;padding-right:8px;">Total Paid Amount:</td>
+										<td><input dojoType="dijit.form.NumberTextBox" type="text" id="paid_amount" name="paid_amount" onKeyup="doBalance();" value="<?php echo $rs["amout_paid"]?>"></td>
+										<td style="text-align: right;padding-right:8px;">Balance:</td>
+										<td><input dojoType="dijit.form.NumberTextBox" type="text" id="balance" name="balance" value="<?php echo $rs["balance"]?>"></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Vehicle’s Owner Information - ពត៌មានម្ចាស់រថយន្ត</strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%" align="center" style=" white-space:nowrap; border-collapse: collapse;">
+									<tr style="height: 20px; ">
+										<td width="20%" style="border-bottom: 1px solid #000;">I. &nbsp;<strong>&nbsp;<span id="o_name"> <?php echo $rs["o_f_name"]." ".$rs["o_l_name"];?></span></strong></td>
+										<td width="20%">&nbsp;Date of Birth: </td>
+										<td width="20%"  style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<span id="o_dob"><?php echo $rs["o_dob"]?></span></strong></td>
+										<td width="20%" style="border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: solid 1px #fff;">&nbsp;ID Card/Passport No.:</td>
+										<td width="20%" style="border-bottom: 1px solid #000;"><strong>&nbsp;<span id="o_card_id"><?php echo $o_id_card?></span></strong></td>
+									</tr>
+									<tr>
+										<td>&nbsp;Issued On: </td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<span id="o_card_issue"><?php echo $o_issue_date?></span></strong></td>
+										<td style="border-bottom: #fff solid 1px;">&nbsp;Issued By:</td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<span id="o_card_exp"></span></strong></td>
+										<td colspan="2" style="border-bottom: #fff solid 1px;">&nbsp;</td>
+									</tr>
+									<tr>
+										<td>&nbsp;Received the amount of US$ </td>
+										<td style="border-bottom: #000 solid 1px;">&nbsp;<span id="recieve_amount"><?php echo $rs["amout_paid"]?></span></td>
+										<td>&nbsp;In Word:</td>
+										<td colspan="2" width="30%" style="border-bottom: #000 solid 1px;">&nbsp;<span id="amount_in_khmer"></span></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Vehicle’s Information - ពត៌មានរថយន្ត</strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<div style="border: solid 1px #000;">
+									<table class="padd" width="100%" align="center" style=" white-space:nowrap; border-collapse: collapse;">
+										<tr style="height: 20px; ">
+											<td width="25%">&nbsp;ឆ្នាំផលិត Year:</td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="year"><?php echo $rs["year"]?></span></td>
+											<td width="25%">&nbsp;លេខតួ Frame No.: </td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="frame_no"><?php echo $rs["frame_no"]?></span></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ម៉ាក Make:</td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="make"><?php echo $rs["make"]?></span></td>
+											<td width="25%">&nbsp;សាក់ស៊ី Chassis No.: </td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="chassis_no"><?php echo $rs["chassis_no"]?></span></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ម៉ូដែល Model:</td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="model"><?php echo $rs["model"]?></span></td>
+											<td width="25%">&nbsp;លេខម៉ាស៊ីន Engine No.: </td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="engine_no"><?php echo $rs["engine_number"]?></span></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ម៉ូដែលបន្ទាប់ Sub-model:</td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="sub_model"><?php echo $rs["sub_model"]?></span></td>
+											<td width="25%">&nbsp;ចំនួនភ្លៅ No Of Axles: </td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="axles"><?php echo $rs["of_axlex"]?></span></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ប្រភេទ Type:</td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="car_type"><?php echo $rs["car_type"]?></span></td>
+											<td width="25%">&nbsp;ចំនួនស៊ីឡាំង No. of Cylinders: </td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="cylin_no"><?php echo $rs["of_cylinder"]?></span></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;ពណ៌ Color:</td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="color"><?php echo $rs["color"]?></span></td>
+											<td width="25%">&nbsp;ទំហំស៊ីឡាំង Cylinder Size: </td>
+											<td width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<span id="cylin_num"><?php echo $rs["cylinders_dip"]?></span></td>
+										</tr>
+										<tr>
+											<td width="25%">&nbsp;កម្លាំង Horse Power:</td>
+											<td width="25%" colspan="2">&nbsp;<span id="power"><?php echo $rs["hors_power"]?></span></td>
+											<td width="25%">&nbsp;លាកលេខ Plaque No.: </td>
+											<td width="25%" colspan="2">&nbsp;<span id="plaque_no"><?php echo $rs["licence_plate"]?></span></td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Buyer’s Information - ពីភាគី អ្នកទិញ</strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%" align="center" style=" white-space:nowrap; border-collapse: collapse;">
+									<tr style="height: 20px; ">
+										<td>&nbsp;I. </td>
+										<td width="25%" style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<span id="name"><?php echo $sex.$rs["first_name"]?></span></strong></td>
+										<td >&nbsp;Date of Birth: </td>
+										<td width="25%" style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<span id="dob"><?php echo $rs["dob"]?></span></strong></td>
+										<td style="border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: solid 1px #fff;">&nbsp;ID Card/Passport No.:</td>
+										<td width="25%" style="border-bottom: 1px solid #000;"><strong>&nbsp;<span id="card_id"><?php echo $id_card?></span></strong></td>
+									</tr>
+									<tr>
+										<td>&nbsp;Issued On: </td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<span id="card_issue"><?php echo $issue_date?></span></strong></td>
+										<td style="border-bottom: #fff solid 1px;">&nbsp;Issued By:</td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<strong>&nbsp;<span id="card_exp"></span></strong></td>
+										<td colspan="2" style="border-bottom: #fff solid 1px;">&nbsp;</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" align="left"><strong style="color:#04AE18;">Special Statement - សេចក្តីបញ្ជាក់ </strong></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%" align="center" style="white-space:nowrap; border-collapse: collapse;">
+									<tr>
+										<td>&nbsp;The balance amount of US$:</td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<span id="balance_amount"><?php echo $rs["balance"]?></span></td>
+										<td>&nbsp;In Word:</td>
+										<td style="border-bottom: 1px solid #000;">&nbsp;<span id="balance_inword"></span></td>
+									</tr>
+									<tr style="line-height: 50px;">
+										<td width="10%">&nbsp;will be settled on: </td>
+										<td width="30%" style="">&nbsp;<input type="text" dojoType="dijit.form.DateTextBox" name="date_will_paid" value="<?php echo $rs["date_full_pay"]?>"></td>
+										<td width="10%">&nbsp;at </td>
+										<td width="45%" style="">&nbsp;<input type="text" name="time_paid" dojoType="dijit.form.TextBox" value="<?php echo $rs["time_full_pay"]?>"></td>
+									</tr>
+								</table>
+							
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<p><strong style="color:#04AE18;">Special Notice - ចំណាំពិសេស: </strong>If the buyer changes the commitment or promise, the above-mentioned deposit won’t be refunded!</p>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<table class="padd" width="100%"  align="center" white-space:nowrap; border-collapse: collapse;">
+									<tr align="center">
+										<td colspan="4">
+											<table>
+												<tr align="center">
+													<td>
+														<input type="submit" dojoType="dijit.form.Button" value="save" name="save" label="Save" iconClass="dijitEditorIcon dijitEditorIconSave"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</div>	
+			</div>
+		</div>	
+	</div>
+</form>
+<script>
+var url_vehicle = '<?php echo $this->url(array('module'=>'agreement','controller'=>'carsale','action'=>'getinvoice'));?>';
+function getInvoice(){
+	reffer=dijit.byId('refer').get('value');
+	dojo.xhrPost({
+	     url: url_vehicle, 
+	     content : { 
+	     "reffer":reffer,
+	  }, 
+	  handleAs:"json",
+	  load: function(data) {
+// 		  alert(data.make);
+		  if(data.passport_name == "" || data.passport_name==null){
+				id_card = data.card_name;
+				issue_date = data.card_issuedate;
+				exp_date = data.card_expireddate;
+			}else if(data.card_name=="" || data.card_name==null){
+				id_card = data.passport_name;
+				issue_date = data.pass_issuedate;
+				exp_date = data.pass_expireddate;
+			}else{
+				id_card = data.card_name;
+				issue_date = data.card_issuedate;
+				exp_date = data.card_expireddate;
+			}
+			
+		  if(data.o_passport == "" || data.o_passport==null){
+				o_id_card = data.o_card_name;
+				o_issue_date = data.o_card_issuedate;
+				o_exp_date = data.o_card_expireddate;
+			}else if(data.card_name=="" || data.card_name==null){
+				o_id_card = data.o_passport;
+				o_issue_date = data.o_pass_issuedate;
+				o_exp_date = data.o_pass_expireddate;
+			}else{
+				o_id_card = data.o_card_name;
+				o_issue_date = data.o_card_issuedate;
+				o_exp_date = data.o_card_expireddate;
+			}
+		document.getElementById("make").innerHTML = data.make;
+		document.getElementById("model").innerHTML = data.model;
+		document.getElementById("sub_model").innerHTML = data.sub_model;
+		document.getElementById("year").innerHTML = data.year;
+		document.getElementById("frame_no").innerHTML = data.frame_no;
+		document.getElementById("chassis_no").innerHTML = data.chassis_no;
+		document.getElementById("engine_no").innerHTML = data.engine_number;
+		document.getElementById("axles").innerHTML = data.of_axlex;
+		document.getElementById("car_type").innerHTML = data.car_type;
+		document.getElementById("cylin_no").innerHTML = data.of_cylinder;
+		document.getElementById("color").innerHTML = data.color;
+		document.getElementById("power").innerHTML = data.hors_power;
+		document.getElementById("cylin_num").innerHTML = data.cylinders_dip;
+		document.getElementById("plaque_no").innerHTML = data.licence_plate;
+		
+		document.getElementById("o_name").innerHTML = data.o_f_name+" "+data.o_l_name;
+		document.getElementById("o_dob").innerHTML = data.o_dob;
+		
+		document.getElementById("o_card_id").innerHTML = o_id_card;
+		document.getElementById("o_card_issue").innerHTML = o_issue_date;
+		document.getElementById("o_card_issue").innerHTML = o_exp_date;
+
+		document.getElementById("card_id").innerHTML = id_card;
+		document.getElementById("card_issue").innerHTML = issue_date;
+		document.getElementById("card_issue").innerHTML = exp_date;
+
+		
+		document.getElementById("name").innerHTML = data.first_name+" "+data.last_name;
+		document.getElementById("dob").innerHTML = data.dob;
+		dijit.byId('total').attr('value',data.balance);
+		dijit.byId('paid_amount').attr('value',data.balance);
+		dijit.byId('balance').attr('value',0);
+
+		
+
+		money_khmer = read_money_in_khmer(data.total_price);
+		money_us = read_money_in_english(data.total_price);
+		document.getElementById('amount_in_khmer').innerHTML  = money_khmer+"​ ដុល្លា | "+money_us+" Dollar";
+		document.getElementById('recieve_amount').innerHTML  = data.total_price;
+
+		total_balance = '0'; 
+		money_khmer1 = read_money_in_khmer(total_balance);
+		money_us1 = read_money_in_english(total_balance);
+		document.getElementById('balance_inword').innerHTML  = money_khmer1+"​ ដុល្លា | "+money_us1+" Dollar";
+
+		document.getElementById('balance_amount').innerHTML  = total_balance;
+		getPaid(1);
+	  },
+	  error: function(err) {
+	  	alert(err);         
+	  }
+	 });
+}
+function doBalance(){
+	paid = dijit.byId('paid_amount').get('value');
+	total = dijit.byId('total').get('value');
+	//balance = parseFloat(total)-parseFloat(paid);
+	//dijit.byId('balance').attr('value',balance);
+
+	if(paid>total){
+		balance=0;
+		dijit.byId('paid_amount').attr('value',total);
+		paid = total;
+	}else{
+	balance = parseFloat(total)-parseFloat(paid);
+	dijit.byId('balance').attr('value',balance);
+	}
+	
+	total_paid = paid.toString(); 
+	money_khmer = read_money_in_khmer(total_paid);
+	money_us = read_money_in_english(total_paid);
+	document.getElementById('amount_in_khmer').innerHTML  = money_khmer+"​ ដុល្លា | "+money_us+" Dollar";
+	document.getElementById('recieve_amount').innerHTML  = paid;
+
+	total_balance = balance.toString(); 
+	money_khmer1 = read_money_in_khmer(total_balance);
+	money_us1 = read_money_in_english(total_balance);
+	document.getElementById('balance_inword').innerHTML  = money_khmer1+"​ ដុល្លា | "+money_us1+" Dollar";
+
+	document.getElementById('balance_amount').innerHTML  = balance;
+
+	
+//moneyInword();
+}
+function getPaid(type){
+	if(type==1){
+		//dijit.byId('paid_amount').attr('readonly',true);
+		dijit.byId('paid_amount').set('readonly',true);
+	}else{
+		//dijit.byId('paid_amount').attr('readonly',false);
+		dijit.byId('paid_amount').set('readonly',false);
+	}
+}
+
+</script>

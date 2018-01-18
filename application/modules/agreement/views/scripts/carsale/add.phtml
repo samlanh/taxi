@@ -1,0 +1,557 @@
+<?php 
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate("CARSALE"));
+	$rs_customer = $this->rs_customer;
+	$rs_vechicle = $this->rs_vechicle;
+	$barcode = $this->agreement_code;
+	$url_barcode = $this->url(array("module"=>"agreement","controller"=>"carsale","action"=>"generate-barcode","product_code"=>$barcode),null,true);
+?>
+<style>
+
+.fixed_lable{ 
+	min-width: 80px; float: left;margin: 3px 5px;
+}
+.fixed_value{ 
+	min-width: 155px; background:#fff; float: left;margin: 1px 5px;
+	padding:0px 3px;border:1px solid #ccc; min-height: 30px;
+}
+.font_size{font-size:12px;}
+.right{text-align: right;padding-right:10px}
+.table{
+	background: rgb(109, 2, 122) none repeat scroll 0% 0%;
+border-radius: 5px;
+padding: 5px;
+font-size: 11px;
+color:white;
+}
+</style>
+<script type="text/javascript">
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.Textarea");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.CheckBox");
+</script>
+ 	<script type="dojo/method" event="onSubmit">			
+		if(this.validate()) {
+			 if(dijit.byId('record_row').get('value')==''){
+                 alert('Can not submit without record !');
+                 return false;
+            }
+			loading();
+			return true;
+		} else {
+			return false;
+		}
+	</script>
+<form id="billsale" action="" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data">
+	<div class="clearfix"></div>
+	<div class="row">
+		<div class="col-md-12 col-xs-12 forms_padding">
+			<div class="x_panel">
+				<div class="x_title">
+	                 <h2><i class="fa fa-file-text" aria-hidden="true"></i> <?php echo $tr->translate('BILL OF SALE')?></h2>
+	               <div class="clearfix"></div>
+	          	</div>
+	       		<div class="x_content">
+	       				<div class="clearfix"></div>
+		       		   	<div class="form-group">
+		       		   		<div class="col-md-4 col-sm-4 col-xs-12" style="color:#04AE18;">
+		       		   		</div>
+		       		   		<div class="col-md-4 col-sm-4 col-xs-12" >
+		       		   		</div>
+		                   <label class="control-label col-md-4 col-sm-4 col-xs-12 text-right"  style="color:red;" for="first-name">Ref. No.: <?php echo $barcode;?>
+		                   </label>
+		                </div>
+		                <div class="form-group">
+		               		 <div class="col-md-8 col-sm-8 col-xs-12" >
+		               		 <img src="<?php echo $url_barcode;?>"/>
+		       		   		</div>
+		                	<div class="col-md-4 col-sm-4 col-xs-12" >
+		               			<select name="opt_type" id="opt_type" dojoType="dijit.form.FilteringSelect" class="fullside" onchange="getOwner();">
+								    <option value=""><?php echo $tr->translate('Choose Operation Type')?></option>
+								    <option value="1">Sale Vehicle</option>
+									<option value="2">Buy Vehicle</option>
+								</select>
+		               		</div>
+		                </div>
+		                 <div class="col-md-7 col-sm-7 col-xs-12" >
+			                <div class="title_form_blog">
+			               		<h4><?php echo $tr->translate('ពត៌មានអ្នកលក់ VENDOR’S INFORMATION')?></h4>
+			          		</div>
+			          		<div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Vendor’s Name")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                    	<select style="width: 100%" name="ven_name" id="ven_name" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside" onChange="getVendor()">
+										<option value="0"><?php echo $tr->translate('Choose Vendor')?></option>
+										<?php foreach ($rs_customer as $rs){?>
+										<option value="<?php echo $rs["id"];?>"><?php echo $rs["first_name"]." ".$rs["last_name"]?></option>
+										<?php }?>
+									</select>
+			                   </div>
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Gender")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<select style="width: 100%" name="sex" id="sex" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside">
+										<option value="1">Male</option>
+										<option value="2">Female</option>
+									</select>
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Age")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="age" id="age"/>
+			                   </div>
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Nationality")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="nation" id="nation" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Current Occupation")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="occupation" id="occupation" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Organization")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="organization" id="organization"/>
+			                   </div>
+			                </div>
+			                 <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Passport | ID No")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="passport" id="passport" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Cell Phone No")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="phone" id="phone" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Email")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="email" id="email" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Current Address")?>
+			                   </label>
+			                   <div class="col-md-9 col-sm-9 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.Textarea" name="address" id="address" />
+			                   </div>
+			                </div>
+			                 <div class="title_form_blog">
+			               		<h4><?php echo $tr->translate("BUYER’S INFORMATION")?></h4>
+			          		</div>
+			          		<div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Customer's Name")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<select style="width: 100%" name="cus_name" id="cus_name" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside" onChange="getCustomer();">
+										<option value="0"><?php echo $tr->translate("Choose customer")?></option>
+										<?php foreach ($rs_customer as $rs){?>
+										<option value="<?php echo $rs["id"];?>"><?php echo $rs["first_name"]." ".$rs["last_name"]?></option>
+										<?php }?>
+									</select>
+			                   </div>
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Gender")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<select style="width: 100%" name="cus_sex" id="cus_sex" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside">
+											<option value="1">Male</option>
+											<option value="2">Female</option>
+										</select>
+			                   </div>
+			                </div>
+			                
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Age")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="cus_age" id="cus_age" />
+			                   </div>
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Nationality")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="cus_nation" id="cus_nation" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Current Occupation")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="cus_occupation" id="cus_occupation" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Organization")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="cus_organization" id="cus_organization"  />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Passport | ID No")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="cus_passport" id="cus_passport" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Cell Phone No")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="cus_phone" id="cus_phone" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Email")?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.TextBox" name="cus_email" id="cus_email" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo $tr->translate("Current Address")?>
+			                   </label>
+			                   <div class="col-md-9 col-sm-9 col-xs-12">
+			                   		<input style="width: 100%" dojoType="dijit.form.Textarea" name="cus_address" id="cus_address" />
+			                   </div>
+			                </div>
+		                </div>
+		                <div class="col-md-5 col-sm-5 col-xs-12" >
+		                	<div class="title_form_blog">
+			               		<h4><?php echo $tr->translate("WITNESS’S INFORMATION")?></h4>
+			          		</div>
+			          		<div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("Buyer's Witness Name")?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<input style="width: 100%" dojoType="dijit.form.TextBox" name="buyer_witness" id="buyer_witness" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("Seller's Witness Name")?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<input style="width: 100%" dojoType="dijit.form.TextBox" name="seller_witness" id="seller_witness" required="true" />
+			                   </div>
+			                </div>
+		                	<div class="title_form_blog">
+			               		<h4><?php echo $tr->translate("Vehicle's Price information")?></h4>
+			          		</div>
+			          		<div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Sale Price')?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<input dojoType="dijit.form.NumberTextBox" name="sale_price" id="sale_price" required="true" value="0" onKeyup="doTotal()" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Discout In US')?> $
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<input dojoType="dijit.form.NumberTextBox" type="text" name="discount" id="discount" value="0" onKeyup="doTotal()">
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Sale Tax')?> (%)
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<input dojoType="dijit.form.NumberTextBox" type="text" name="tax" id="tax" value="0" onKeyup="doTotal();">
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Total')?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<input dojoType="dijit.form.NumberTextBox" type="text" name="total" id="total" value="0" onKeyup="doTotal()">
+			                   </div>
+			                </div>
+			                <div class="title_form_blog">
+			               		<h4><?php echo $tr->translate("Other information")?></h4>
+			          		</div>
+			          		<div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">1. <?php echo $tr->translate('Imported tax paid')?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<select name="tax_paid" id="tax_paid" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside" onChange="getAllVehicle(2);">
+										<option value="1">Yes</option>
+										<option value="2">No</option>
+									</select>
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">2. <?php echo $tr->translate('Annual Road Tax')?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<select name="road_tax" id="road_tax" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside" onChange="getAllVehicle(2);">
+										<option value="1">Yes</option>
+										<option value="2">No</option>
+									</select>
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">3. <?php echo $tr->translate('Certificate Of Vehicle')?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<select name="certificate_vehicle" id="certificate_vehicle" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside" onChange="getAllVehicle(2);">
+										<option value="1">Yes</option>
+										<option value="2">No</option>
+									</select>
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">4. <?php echo $tr->translate('ID Card')?>
+			                   </label>
+			                   <div class="col-md-8 col-sm-8 col-xs-12">
+			                    	<select name="id_card" id="id_card" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside" onChange="getAllVehicle(2);">
+										<option value="1">Yes</option>
+										<option value="2">No</option>
+									</select>
+			                   </div>
+			                </div>
+	                   </div>
+	                   <div class="clearfix"></div>
+	                   <div class="col-md-12 col-sm-12 col-xs-12">
+	                   		<div class="title_form_blog">
+			               		<h4><?php echo $tr->translate("VEHICLE’S INFORMATION")?></h4>
+			          		</div>
+			          		<div class="form-group">
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Reffer No")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<select name="reffer" id="reffer" dojoType="dijit.form.FilteringSelect" required="true"  class="fullside" onChange="getVehicle();">
+										<option value="0"><?php echo $tr->translate("Choose Reffer No")?></option>
+										<?php foreach ($rs_vechicle as $rs){?>
+										<option value="<?php echo $rs["id"];?>"><?php echo $rs["reffer"];?></option>
+										<?php }?>
+									</select>
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ប្រភេទ Type")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="car_type" id="car_type" required="true" />
+			                   </div>
+			                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("លេខតួ Frame No")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="frame_no" id="frame_no" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                 	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ឆ្នាំផលិត Year")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="create_year" id="create_year" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ពណ៌ Color")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="car_color" id="car_color"  required="true"/>
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("សាក់ស៊ី Chassis No")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="chassis_no" id="chassis_no" required="true" />
+			                   </div>
+			                </div>
+			                
+			                <div class="form-group">
+			                 	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ម៉ាក Make")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="make" id="make" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("កម្លាំង Horse Power")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="car_power" id="car_power" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("លេខម៉ាស៊ីន Engine No")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="engine_no" id="engine_no" required="true" />
+			                   </div>
+			                </div>
+									
+			                <div class="form-group">
+			                 	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ម៉ូដែល Model")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="model" id="model" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ចំនួនស៊ីឡាំង No. of Cylinders")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="cylinders_no" id="cylinders_no" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ចំនួនភ្លៅ No Of Axles")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="no_of_axlex" id="no_of_axlex" required="true" />
+			                   </div>
+			                </div>
+			                <div class="form-group">
+			                 	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ម៉ូដែលបន្ទាប់ Sub-model")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="sub_model" id="sub_model" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ទំហំស៊ីឡាំង  Cylinder Size")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="cylinder_size" id="cylinder_size" required="true" />
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("ស្លាកលេខ  Plaque No")?>
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-12">
+			                   		<input style="width: 100%" dojotype="dijit.form.TextBox" name="plaque_no" id="plaque_no" required="true" />
+			                   </div>
+			                </div>
+	                   </div>
+	                   <div class="clearfix"></div>
+	                   <div class="ln_solid"></div>
+	                   <div class="form-group text-center">
+	                   		<input type="reset" style="color:#000;" label="<?php echo $tr->translate('CLEAR');?>" dojoType="dijit.form.Button" 
+									iconClass="dijitIconClear" /> 
+	                   		<input type="submit" dojoType="dijit.form.Button" value="save" name="save" label="<?php echo $tr->translate('SAVE');?>" iconClass="dijitEditorIcon dijitEditorIconSave"/>
+	                   </div>
+	       		</div>
+	      	</div>
+	    </div>
+	</div>
+</form>
+<script type="text/javascript">
+var url_customer = '<?php echo $this->url(array('module'=>'agreement','controller'=>'carsale','action'=>'getcustomer'));?>';
+	function getVendor(){
+		cu_id=dijit.byId('ven_name').get('value');
+		dojo.xhrPost({
+		     url: url_customer, 
+		     content : { 
+		     "cu_id":cu_id,
+		  }, 
+		  handleAs:"json",
+		  load: function(data) {
+			dijit.byId("sex").attr("value",data.sex);
+			dijit.byId('occupation').attr('value',data.occupation);
+			dijit.byId('organization').attr('value',data.company_name);
+			dijit.byId('address').attr('value',data.address1);
+
+			dijit.byId('passport').attr('value',data.passport_name);
+			dijit.byId('nation').attr('value',data.nationality);
+			
+			dijit.byId('phone').attr('value',data.phone);
+			dijit.byId('email').attr('value',data.email);
+			if(data.dob!=""){
+				dijit.byId('age').attr('value',getAge(data.dob));
+			}
+			dijit.byId('address').attr('value',data.group_num+'|'+data.house_num+'| Street '+data.street+'| Shangkat '+data.commune+'| Khan '+data.district+'| '+data.province);
+// 			calCulateDay();
+// 			getBookingVehicleDetail(booking_id);
+		  },
+		  error: function(err) {
+		  	alert("Your message could not be sent, please try again!.");         
+		  }
+		 });
+	}
+
+	
+	function getCustomer(){
+		cu_id=dijit.byId('cus_name').get('value');
+		dojo.xhrPost({
+		     url: url_customer, 
+		     content : { 
+		     "cu_id":cu_id,
+		  }, 
+		  handleAs:"json",
+		  load: function(data) {
+			dijit.byId("cus_sex").attr("value",data.sex);
+			dijit.byId('cus_occupation').attr('value',data.occupation);
+			dijit.byId('cus_organization').attr('value',data.company_name);
+			dijit.byId('cus_address').attr('value',data.address1);
+
+			dijit.byId('cus_passport').attr('value',data.passport_name);
+			dijit.byId('cus_nation').attr('value',data.nationality);
+			
+			dijit.byId('cus_phone').attr('value',data.phone);
+			dijit.byId('cus_email').attr('value',data.email);
+			if(data.dob!=""){
+				dijit.byId('cus_age').attr('value',getAge(data.dob));
+			}
+			dijit.byId('cus_address').attr('value',data.group_num+'|'+data.house_num+'| Street '+data.street+'| Shangkat '+data.commune+'| Khan '+data.district+'| '+data.province);
+// 			calCulateDay();
+// 			getBookingVehicleDetail(booking_id);
+		  },
+		  error: function(err) {
+		  	alert("Your message could not be sent, please try again!.");         
+		  }
+		 });
+	}
+	function getAge(dateString) 
+	{
+	    var today = new Date();
+	    var birthDate = new Date(dateString);
+	    var age = today.getFullYear() - birthDate.getFullYear();
+	    var m = today.getMonth() - birthDate.getMonth();
+	    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+	    {
+	        age--;
+	    }
+	    return age;
+	}
+	var url_vehicle = '<?php echo $this->url(array('module'=>'agreement','controller'=>'carsale','action'=>'getvehicle'));?>';
+	function getVehicle(){
+		reffer=dijit.byId('reffer').get('value');
+		dojo.xhrPost({
+		     url: url_vehicle, 
+		     content : { 
+		     "reffer":reffer,
+		  }, 
+		  handleAs:"json",
+		  load: function(data) {
+			dijit.byId("make").attr("value",data.make);
+			dijit.byId('model').attr('value',data.model);
+			dijit.byId('sub_model').attr('value',data.sub_model);
+			dijit.byId('create_year').attr('value',data.year);
+
+			dijit.byId('frame_no').attr('value',data.frame_no);
+			dijit.byId('chassis_no').attr('value',data.chassis_no);
+			
+			dijit.byId('engine_no').attr('value',data.engine_number);
+			dijit.byId('no_of_axlex').attr('value',data.of_axlex);
+
+			dijit.byId('car_type').attr('value',data.car_type);
+			dijit.byId('cylinders_no').attr('value',data.of_cylinder);
+
+			dijit.byId('car_color').attr('value',data.color);
+			dijit.byId('car_power').attr('value',data.hors_power);
+
+			dijit.byId('cylinder_size').attr('value',data.cylinders_dip);
+			dijit.byId('plaque_no').attr('value',data.licence_plate);
+			dijit.byId('sale_price').attr('value',data.sale_price);
+			doTotal();
+// 			calCulateDay();
+// 			getBookingVehicleDetail(booking_id);
+		  },
+		  error: function(err) {
+		  	alert("Your message could not be sent, please try again!.");         
+		  }
+		 });
+	}
+	function doTotal(){
+		//total_tax=0;
+		sale_price = dijit.byId('sale_price').get('value');
+		discount = dijit.byId('discount').get('value');
+		tax = dijit.byId('tax').attr('value');
+		total_tax = (sale_price*tax)/100;
+		total = parseFloat(sale_price)-parseFloat(discount)+parseFloat(total_tax);
+		dijit.byId('total').attr('value',total);
+		
+	}
+</script>

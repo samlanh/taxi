@@ -1,0 +1,140 @@
+<?php 
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+echo $this->headTitle($tr->translate("Vehicle Agreement"));
+$frm = $this->frm;
+?>
+<script type="text/javascript">
+$('document').ready(function(){
+	//dijit.byId('vehicle_ref_no').attr("placeholder", "Month");
+	// $("#vehicle_ref_no").attr("placeholder", "Month");
+	
+});
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.Textarea");
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+
+$(".print").click(function(){
+	//$('.footer_list').hide();
+});
+</script>
+
+<style>
+#divPrint .footer_list{display: block !important;}
+
+</style>
+<div class="row">
+	<div class="x_panel " >
+		<form id="list" name="list" action="<?php echo $this->url(array('module'=>'report','controller'=>'carsale','action'=>'rpt-sale-invoice')); ?>" dojoType="dijit.form.Form" method="post">
+		  <div class="form-group">
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('adv_search');?></div>
+				<label class="control-label col-md-2 col-sm-2 col-xs-12"><?php echo $tr->translate("Booking From");?></label>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('start_date');?></div>
+				<label class="control-label col-md-2 col-sm-2 col-xs-12"><?php echo $tr->translate("To Booking");?></label>
+				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('end_date');?></div>
+				<div class="col-md-2 col-sm-2 col-xs-12"><button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></div>
+		</div>
+			<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+				<div id="divPrint" style="width: 100%;">
+					<style>
+						.style{
+							line-height: 20px;font-size: 10px !important;
+							font-family: 'Khmer OS Battambang';
+							
+						}
+						table #exportExcel{
+							border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;
+						}
+						table #exportExcel tr{
+							border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;
+						}
+						table #exportExcel thead{background: #939BB4; color:white}
+						table #exportExcel tr td{border:1px solid #000; text-align: center;}
+						th{padding: 5px;}
+						table .footer_list{display: none;}
+						tr.header {
+						    font-weight: bold;
+						    line-height: 14px;
+						    font-size: 12px;
+						    background: #eee;
+						}
+						tr.header td {
+						    padding: 5px;
+						}
+						tr td a{
+							color:#000;
+							text-decoration: none;
+						}
+					</style>
+					<table style="font-family: 'Khmer OS Content'; width:100%;">
+						<tr>
+					    	<td align="center">
+					    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+					            	<tr>
+					                	<td width="20%"></td>
+					                	<td width="60%" valign="top">
+					                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+					                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Report Vehicle Sale Invoice");?></h2>
+					                	<h2 style="text-align:center; font-size:14px;"><?php echo date("d-M-Y",strtotime($this->data['start_date'])).' '.$tr->translate('TO').' ';echo date("D-d-M-Y",strtotime($this->data['end_date']));?></h2>
+					                	</td>
+					                    <td width="20%"></td>
+					                </tr> 
+					            </table>
+					        </td>
+					    </tr>
+					    <tr>
+					    	<td>
+					            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+					                <tr class="header">
+						                <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
+					                    <td><?php echo $tr->translate("Agreement Code");?></td>
+					                    <td><?php echo $tr->translate("Year");?></td>
+					                    <td><?php echo $tr->translate("Make");?></td>
+					                    <td><?php echo $tr->translate("Model");?></td>
+					                    <td><?php echo $tr->translate("Sub Model");?></td>
+					                    <td><?php echo $tr->translate("Plaque No");?></td>
+					                    <td><?php echo $tr->translate("Owner Name");?></td>
+					                    <td><?php echo $tr->translate("Contact");?></td>
+					                    <td><?php echo $tr->translate("Buyer");?></td>
+					                    <td><?php echo $tr->translate("Contact");?></td>
+					                    <td><?php echo $tr->translate("Price in US$");?></td>
+					                    <td><?php echo $tr->translate("Balance");?></td>
+					                    <td><?php echo $tr->translate("Date");?></td>
+				                    </tr>
+				                    <?php if (!empty($this->row)) $i=0; foreach ($this->row as $rs){ $i++;?>
+				                    <tr style="line-height: 18px; background: #fff;">
+						                <td align="center">&nbsp;<?php echo $i;?>&nbsp;</td>
+						                <td>&nbsp;<a target="_blank" href="<?php echo $this->baseUrl()."/agreement/carsale/invoice/id/".$rs['id'];?>"><?php echo $rs['ag_code'];?>&nbsp;</a></td>
+						                <td>&nbsp;<?php echo $rs['year'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['make'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['model'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['sub_model'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['licence_plate'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['o_name'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['o_phone'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['name'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['phone'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['total_price'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo $rs['balance'];?>&nbsp;</td>
+						                <td>&nbsp;<?php echo date("d-M-Y",strtotime($rs['date']));?>&nbsp;</td>
+						            </tr>
+				                    <?php }?>
+					                 <?php //echo $this->list;?>
+					            </table>
+					            <br />
+					               <table align="center" width="100%">
+									   <tr style="font-size: 12px;">
+									        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+									        <th></th>
+									        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+									   </tr>
+								</table>
+					    	</td>
+					    </tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

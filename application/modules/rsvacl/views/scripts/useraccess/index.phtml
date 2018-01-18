@@ -1,0 +1,11 @@
+<?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
+<title><?php echo $tr->translate("USERACCESS")?></title>
+ <div class="row">
+	<div class="x_panel" >
+		 <div class="title_left">
+		 	<h3><?php echo $tr->translate("USERACCESS")?></h3>
+		 </div>
+		<?php $url = Application_Form_FrmMessage::getUrl("/rsvacl/useraccess/view-user-access?id=");?>
+		<?php echo $this->list;?>
+	</div>
+</div>

@@ -1,0 +1,358 @@
+<?php 
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+echo $this->headTitle($tr->translate("INVOICE"));
+	$rs = $this->rs;
+	$o_sex="";
+	if($rs["o_sex"]==1){
+		$o_sex ="Mr.";
+	}else{$o_sex ="Mrs.";}
+	
+	$sex="";
+	if($rs["sex"]==1){
+		$sex ="Mr.";
+	}else{$sex ="Mrs.";}
+	
+	if($rs["import_tax"]==1){
+		$import_tax = "Yes";
+	}else {$import_tax="No";}
+	
+	if($rs["annual_road_tax"]==1){
+		$annual_road_tax = "Yes";
+	}else {$annual_road_tax="No";}
+	
+	if($rs["vehicle_sertificate"]==1){
+		$vehicle_sertificate = "Yes";
+	}else {$vehicle_sertificate="No";}
+	
+	if($rs["vehicle_id_card"]==1){
+		$vehicle_id_card = "Yes";
+	}else {$vehicle_id_card="No";}
+	
+	$barcode = $rs["ag_code"];
+	$url_barcode = $this->url(array("module"=>"agreement","controller"=>"carsale","action"=>"generate-barcode","product_code"=>$barcode),null,true);
+	$url_invoice = $this->url(array("module"=>"agreement","controller"=>"carsale","action"=>"addreciept","id"=>$rs["id"]),null,true);
+?>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<script type="text/javascript"  src="<?php echo $this->baseUrl();?>/js/convertion.js"></script>
+<script type="text/javascript">
+function doPrint() {
+	window.frames["print_frame"].document.body.innerHTML=dojo.byId('divPrint').innerHTML;
+    window.frames["print_frame"].window.focus();
+    window.frames["print_frame"].window.print();
+}
+
+function preview()
+{ 
+  var disp_setting="toolbar=no,status=no,resizable=no,location=no,directories=yes,menubar=no,"; 
+      disp_setting+="scrollbars=no,width=794, height=700, left=0, top=0"; 
+  var content_vlue = document.getElementById("print").innerHTML; 
+  
+  var docprint=window.open("","",disp_setting); 
+   docprint.document.open(); 
+   docprint.document.write('<html><head>'); 
+   docprint.document.write('</head><div style=" font-size:12px !important; margin:0px; font-family:arial;"><style>table th {font-size:12px !important;} table td{font-size:12px !important;}</style><center>');          
+   docprint.document.write(content_vlue);          
+   docprint.document.write('</center></div></html>'); 
+   docprint.document.close(); 
+   docprint.focus(); 
+}
+function exportExcel(){
+	
+	//$('#exportExcel').tableExport({type:'excel',escape:'false'});
+	window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#exportExcel').html()));
+    e.preventDefault();
+}
+
+</script>
+<iframe name="print_frame" width="0" height="0" frameborder="0" src=about:blank></iframe>
+<style>
+table.padd td h4 {
+    font-size: 12px;
+}
+div#divPrint table.maintable {
+    display: block;
+    position: relative;
+}
+</style>
+<div class="row">
+	<div class="x_panel">
+		<div class="x_content">
+			<div class="col-md-8 col-sm-8 col-xs-12">
+				<a class="btn btn-app" href="#" title="<?php echo $tr->translate("Preview");?>" onclick="preview();">
+	  				<i class="fa fa-search-plus"></i> <?php echo $tr->translate("Preview");?>
+				</a>
+				<a class="btn btn-app" href="#" title="<?php echo $tr->translate("Print");?>" onclick="doPrint();">
+	                <i class="fa fa-print"></i> <?php echo $tr->translate("Print");?>
+				</a>
+	            <a class="btn btn-app" href="#"  title="Export"  onclick="exportExcel();">
+	                <i class="fa fa-file-excel-o"></i> <?php echo $tr->translate("Excel");?>
+	            </a>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12 text-right">
+            <a class="btn btn-app" href="<?php echo $url_invoice;?>"  title="<?php echo $tr->translate("Make Receipt");?>">
+                <i class="fa fa-file-text"></i> <?php echo $tr->translate("Make Receipt");?>
+            </a>
+            </div>
+		</div>
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<div  id="print" style="border: 1px dotted #000;background: #fff; margin: 0 auto;height: 26cm;width:21cm;">
+				<div id="divPrint" style="padding: 0 !important;margin: 0 auto !important;">
+					<div >
+						<style>
+							#footer{display: none;}
+							table{
+								font-family: 'Khmer OS Siemreap';
+								font-size: 12px;
+							}
+							 .padd tr td{ 
+								font-family: 'Khmer OS Siemreap';
+								font-size: 12px;
+							 }
+							 .td{/*border-bottom: 1px dotted !important;*/}
+							 table tr td{padding: 0 5px;}
+							 table tr td table .tb tr{line-height: 17px !important;}
+							 table tr{line-height: 22px !important;}
+							 table .padd tr td{border:1px solid #000}
+							 table tr td .ln {line-height: 15px !important;}
+							.center{text-align: center;color: #1285DA;font-weight: 900;}
+							.st{width:37.5%}
+							table tr td .td-pad{padding: 1px 4px 0 4px !important;}
+							.td-pad{position:relative;border: 1px solid #F93DE9; border-color: #EC008C;white-space: nowrap;}
+						</style>
+						<table id="exportExcel" class="maintable" style="background:#fff; margin: 0 auto;  padding: 0 0.2cm; ">
+							<tr>
+								<td align="left">
+									<table class="vat" border="0" style="border-collapse: collapse;border-color: #EC008C;">
+										<tr style="line-height: 11px !important;">
+											<td><p style="font-size: 12px; font-weight:800;color:#EC008C">VAT N<sup>o</sup>.:</p></td>
+											<td class="td-pad">1</td>
+											<td class="td-pad">2</td>
+											<td class="td-pad">3</td>
+											<td class="td-pad">4</td>
+											<td style="text-align: center;border:0px !important;">-</td>
+											<td class="td-pad">5</td>
+											<td class="td-pad">6</td>
+											<td class="td-pad">7</td>
+											<td class="td-pad">8</td>
+											<td class="td-pad">9</td>
+											<td class="td-pad">0</td>
+											<td class="td-pad">1</td>
+											<td class="td-pad">2</td>
+											<td class="td-pad">3</td>
+										</tr>
+									</table>
+								</td>
+								<td colspan="2" align="center"><strong style=" color:#04AE18; font:18px bold, Courier New;"><span style="font-family: Khmer OS Muol;font-size: 17px">វិក្ក័យប័ត្រ</span><br />INVOICE</strong></td>
+								<td colspan="" align="right" style="line-height: 15px;">
+									<img style="width: 200px;" alt="" src="<?php echo $url_barcode?>"><br />
+									<strong style=" color:#04AE18; ">Invoice No : <span style="color: red"><?php echo $rs["ag_code"]?></span></strong><br />
+									<strong style=" color:#04AE18;">Invoice Date : <span style="color: red"><?php echo date("l,F jS, Y")?></span></strong>
+								</td>
+							</tr>
+							<tr style=" height: 5px;">
+								<td style="margin-top: 5px; height: 5px;"></td>
+							</tr>
+							<tr>
+								<td width="30%" colspan="2" >
+									<table class="tb" style=" border-collapse: collapse;width:90%;color:#1285DA;">
+										<tr style="text-align: left; border-bottom: 1px solid #1285DA">
+											<td><span style="font-family: Khmer OS Muol;font-size: 13px">ពត៌មានអ្នកលក់</span> | Seller Information</td>
+										</tr>
+										<tr class="td">
+											<td class="ln">
+												<span style="font-weight: 800;font-size:12px;"><?php echo $o_sex.$rs["o_f_name"]." ".$rs["o_l_name"]?></span><br />
+												<?php echo $rs["o_occupation"]?><br />
+												<?php echo $rs["o_home_num"]." | Street ".$rs["o_street"]." | Shangkat ".$rs["o_commune"]." | Khan ".$rs["o_district"]." | ".$rs["o_province"]?><br />
+												លេខទូរស័ព្ទដៃ | Cell Phone No:<?php echo $rs["o_phone"]?><br />
+												អ៊ីម៉ែល | Email:<?php echo $rs["o_email"]?>
+											</td>
+										</tr>
+									</table>
+								</td>
+								<td width="30%" colspan="2" style="text-align: right">
+									<table class="tb" style=" border-collapse: collapse; text-align: right;width:90% !important;float: right;color:#1285DA;">
+										<tr style="text-align: right; border-bottom: 1px solid #1285DA"">
+											<td><span style="font-family: Khmer OS Muol">ពត៌មានអ្នកទិញ</span> | Buyer Information​</td>
+										</tr>
+										<tr class="td">
+											<td class="ln">
+												<span style="font-weight: 800;font-size: 12px;"><?php echo $sex.$rs["first_name"].$rs["last_name"]?></span><br />
+												<?php echo $rs["occupation"]?><br />
+												<?php echo $rs["house_num"]." | Street ".$rs["street"]." | Shangkat".$rs["commune"]." | Khan".$rs["district"]." | ".$rs["provice"]?><br />
+												លេខទូរស័ព្ទដៃ | Cell Phone No:<?php echo $rs["phone"]?><br />
+												អ៊ីម៉ែល | Email:<?php echo $rs["email"]?>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							
+							<tr>
+								<td colspan="4">
+									<hr style="color:#1285DA" />
+										<table class="padd" width="100%" align="center" style=" white-space:nowrap; border-collapse: collapse;margin-top: 5px">
+											<tr style="color:#1285DA;text-align: center; font-size: 13px;">
+												<td colspan="6" align="left" style="border: none !important;font-size: 12px;"><span style="font-family: Khmer OS Muol">ពត៌មានរថយន្ត</span>&nbsp;|&nbsp; VEHICLE'S INFORMATION</td>
+											</tr>
+											<tr style="height: 20px; ">
+												<td width="25%">&nbsp;ឆ្នាំផលិត | Year:</td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["year"]?></td>
+												<td width="25%">&nbsp;លេខតូ | Frame No.: </td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["frame_no"]?></td>
+											</tr>
+											<tr>
+												<td width="25%">&nbsp;ម៉ាក | Make:</td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["make"]?></td>
+												<td width="25%">&nbsp;សាក់ស៊ី | Chassis No.: </td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["chassis_no"]?></td>
+											</tr>
+											<tr>
+												<td width="25%">&nbsp;ម៉ូដែល | Model:</td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["model"]?></td>
+												<td width="25%">&nbsp;លេខម៉ាស៊ីន | Engine No.: </td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["engine_number"]?></td>
+											</tr>
+											<tr>
+												<td width="25%">&nbsp;ម៉ូដែលបន្ទាប់ | Sub-model:</td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["sub_model"]?></td>
+												<td width="25%">&nbsp;ចំនួនភ្លៅ | No Of Axles: </td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["of_axlex"]?></td>
+											</tr>
+											<tr>
+												<td width="25%">&nbsp;ប្រភេទ | Type:</td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["car_type"]?></td>
+												<td width="25%">&nbsp;ចំនួនស៊ីឡាំង | No. of Cylinders: </td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["of_cylinder"]?></td>
+											</tr>
+											<tr>
+												<td width="25%">&nbsp;ពណ៌ | Color:</td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["color"]?></td>
+												<td width="25%">&nbsp;ទំហំស៊ីឡាំង | Cylinder Size: </td>
+												<td class="center" width="25%" colspan="2" style="border-bottom: solid 1px #000;">&nbsp;<?php echo $rs["cylinders_dip"]?></td>
+											</tr>
+											<tr>
+												<td width="25%">&nbsp;កម្លាំង | Horse Power:</td>
+												<td class="center" width="25%" colspan="2">&nbsp;<?php echo $rs["hors_power"]?></td>
+												<td width="25%">&nbsp;ស្លាកលេខ | Plaque No.: </td>
+												<td class="center" width="25%" colspan="2">&nbsp;<?php echo $rs["licence_plate"]?></td>
+											</tr>
+										</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<table width="75%" style=" border-collapse: collapse;float: left">
+										<tr style="color:#1285DA;text-align: left;font-weight: 900">
+											<td colspan="2">ពត៌មានផ្សេងៗ | Other Inforamtion:</td>
+										</tr>
+										<tr class="td">
+											<td class="center"><?php echo $import_tax?></td>
+											<td>ពន្ធនាំចូល | Import Tax Paid:</td>
+										</tr>
+										<tr class="td">
+											<td class="center"><?php echo $annual_road_tax?></td>
+											<td>ពន្ធផ្លូវប្រចាំឆ្នាំ | Annual Road Tax:</td>
+										</tr>
+										<tr class="td">
+											<td class="center"><?php echo $vehicle_sertificate?></td>
+											<td>វិក័យប័ត្រត្រួតពិនិត្យលក្ខណៈបច្ចេកទេសយានយន្ត | Certificate Of Motor Vehicle Technical Inspection:</td>
+										</tr>
+										<tr class="td">
+											<td class="center"><?php echo $vehicle_id_card?></td>
+											<td>កាតគ្រី(កាតសម្គាល់យានយន្ត) | ID Card(Registration Card) of the Vehicle:</td>
+										</tr>
+									</table>
+									<table class="padd" width="25%" align="center" style="text-align:right; white-space:nowrap; border-collapse: collapse; border:1px solid #000;float: right">
+										<tr>
+											<td class="st">Sub Total:</td>
+											<td>US$ <?php echo number_format($rs["sale_price"])?></td>
+										</tr>
+										<tr>
+											<td>Discount:</td>
+											<td>US$ <?php echo number_format($rs["discount"])?></td>
+										</tr>
+										<tr>
+											<td>Sale Tax Rate:</td>
+											<td><?php echo $rs["tax"]?>%</td>
+										</tr>
+										<tr>
+											<td>Sale Tax:</td>
+											<td>US$ <?php echo number_format($rs["sale_price"]*$rs["tax"]/100)?></td>
+										</tr>
+										<tr>
+											<td>Net Total:</td>
+											<td>US$ <?php echo number_format($rs["total_price"])?></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							
+							<tr>
+								<td colspan="4">
+									<table width="100%" style="font-size:11px; white-space:nowrap; border-collapse: collapse;">
+										<tr style="color:#1285DA;text-align: left;font-weight: 900">
+											<td colspan="2">ចំណាំពិសេស - Special Notice: </td>
+										</tr>
+										<tr class="td">
+											<td>បើភាគីអ្នកទិញចង់មានការកែប្រែចិត្ត ភាគីអ្នកលក់មិនអាចត្រឡប់ប្រាក់កក់ជូនវិញបានទេ!</td>
+										</tr>
+										<tr class="td">
+											<td>រថយន្ត ដែលបានរៀបរាប់ខាងលើនឹងត្រូវប្រគល់ជូនទៅឱ្យភាគីអ្នកទិញ បន្ទាប់ពីបានទទួលទឹកប្រាក់គ្រប់ចំនួន។</td>
+										</tr>
+										
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<table class="" width="100%"  align="center" style="color:#1285DA;white-space:nowrap; border-collapse: collapse; border: none !important;">
+										
+										<tr align="center" style="">
+											<td width="25%">&nbsp;ហត្ថលេខា នឹង ឈ្មោះអ្នកលក់ <br />Buyer's Signature</td>
+											<td colspan="2">&nbsp;</td>
+											<td width="25%">&nbsp;ហត្ថលេខា នឹង ឈ្មោះអ្នកទិញ <br />Seller's Signature</td>
+										</tr>
+										<tr align="center">
+											<td colspan="4">&nbsp;</td>
+										</tr>
+										<tr align="center">
+											<td colspan="4">&nbsp;</td>
+										</tr>
+										<tr align="center">
+											<td style="border-bottom: 1px solid #000;"></td>
+											<td colspan="2">&nbsp;</td>
+											<td style="border-bottom: 1px solid #000;"></td>
+										</tr>
+										<tr align="left">
+											<td width="25%"  style="text-align: center;"><h4><?php echo $o_sex.$rs["o_f_name"]." ".$rs["o_l_name"]?></h4></td>
+											<td colspan="2">&nbsp;</td>
+											<td  width="25%" style="text-align: center;"><h4><?php echo $sex.$rs["first_name"]." ".$rs["last_name"]?></h4></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<table width="100%" style="border:1px solid #1285DA;background: rgba(1, 102, 206, 0.28); white-space:nowrap; border-collapse: collapse;font-size:11px;">
+										<tr style="color:#1285DA;text-align: left;">
+											<td colspan="2"><span style="color: red">Notice: </span>
+											អ្នកទិញត្រូវត្រួតពិនិត្យទំនិញឲ្យបានត្រឹមត្រូវមុននឹងចាកចេញ។ ទំនិញទិញហើយមិនអាចប្តូរយកប្រាក់វិញបានឡើយ!</td>
+										</tr>
+										<tr class="td" style="text-align: center;font-weight: 900">
+											<td>អរគុណសំរាប់ការគាំទ្ររបស់លោកអ្នក! ​​​​​​Thank you for your business!</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+					</table>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<form>
+
+</form>

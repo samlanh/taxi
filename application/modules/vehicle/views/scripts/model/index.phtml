@@ -1,0 +1,11 @@
+<?php $tr=Application_Form_FrmLanguages::getCurrentlanguage();
+ echo '<title>'. $tr->translate("MODEL").'</title>';
+?>
+<div class="row">
+	<div class="x_panel" >
+		 <div class="blog_form_title">
+		 	<h4><i class="fa fa-automobile" aria-hidden="true"></i> <?php echo $tr->translate("MODEL")?></h4>
+		 </div>
+		<?php echo $this->list;?>
+	</div>
+</div>

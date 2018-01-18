@@ -1,0 +1,202 @@
+<?php 
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	$rss = $this->row_booking;
+	$frm = $this->frms;
+	
+	$session_user=new Zend_Session_Namespace('authcar');
+	$username = $session_user->user_name;
+?>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("INVOICE");?></title>
+<style type="text/css">
+      .wrapp{ width: 100%; height: 100%;}
+      .h_left{width:40%;float:left;}
+      .h_right{width:40%;float:right;}
+      .conten{margin-top:20px;}
+      table tr .totalbr{
+			border: 1px solid #000;
+		}	
+		 table tr th.totalbr{
+      	text-align: center;
+		}	
+	.header ul li{line-height: 20px;}
+	td.colortext {color:#145c82;}
+</style>
+</head>
+<body>
+<div class="row">
+	<div class="x_panel " >
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc;">
+			<div class="wrapp" style="width: 21cm;height:29.7cm; margin: 0 auto; border:1px dotted #000; padding: 20px;">
+				<div id="divPrint" style="width: 100%;">
+				    <div class="header">
+				    	<ul>
+				    		<li style="list-style:none ;text-align:center;height:25px; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("BRANCH_TITLE");?></li>
+				    		<li style="list-style:none ;text-align:center;height:28px; font-size:16px; font-family:Arial, Helvetica, sans-serif;font-weight: bold;"><?php echo $tr->translate("BRANCH_TITLE");?></li>
+				    		<li style="list-style:none ; text-align:center;height:20px; font-size:16px; font-family:'Khmer MEF2'">វិក័យប័ត្រ<span style="font-size:16px;font-family:Arial, Helvetica, sans-serif !important;font-weight: bold; "> / Invoice</span> </li>
+				    	</ul>
+				    </div>
+				    <div class="header_tow">
+				           <table id="exportExcel" style="border-collapse:collapse;font-size: 12px;"  width="100%">
+							    <tbody>
+								<tr>
+									<th valign="top" width="50%">
+										<table style="border-collapse:collapse;font-size: 12px; width:75% ;text-align: left; border:1px solid #000;padding:5px;white-space: nowrap;" >
+											<tr><td colspan="2" style="border-bottom:1px solid #ccc;background-color: #145c82;color: #fefafa;text-align: center;padding: 2px 0;"><strong>&nbsp;Customer Information</strong></td></tr>
+									        <tr><td width="100px">&nbsp;Customer Name:&nbsp;</td><td class="colortext"><strong><?php echo $this->customer['first_name']?>-<?php echo $this->customer['last_name']?></strong></td></tr>
+									        <tr><td width="100px">&nbsp;Gender: </td><td class="colortext"><?php echo ($this->customer['sex']==1)?"Male":"Female";?></td></tr>
+									        <tr><td >&nbsp;Phone No: </td><td class="colortext"><?php echo $this->customer['phone'];?></td> </tr>
+									        <tr><td >&nbsp;E-mail: </td><td class="colortext"><?php echo $this->customer['email'];?></td></tr>
+								            <tr><td >&nbsp;Address: </td><td class="colortext"><?php //echo $this->customer['phone']?></td> </tr>
+								            <tr><td >&nbsp;Flight No.:</td><td class="colortext"><?php echo $this->customer['fly_no']?></td></tr>
+								            <tr><td >&nbsp;Destination:</td><td class="colortext"><?php echo $this->customer['fly_destination']?></td></tr>
+							       	 	</table>
+							        </th>
+									<th align="right">
+										<table style="border-collapse:collapse;font-size: 12px; width:75% ;text-align: left; border:1px solid #000;padding:5px;white-space: nowrap;" >
+									        <tr><td colspan="2" style="border-bottom:1px solid #ccc;background-color: #145c82;color: #fefafa;text-align: center;padding: 2px 0;"><strong>&nbsp;Reservation Information</strong></td></tr>
+									        <tr><td >&nbsp;Booking Number:</td><td class="colortext"><?php echo $this->customer['booking_no']?></td></tr>
+									        <tr><td >&nbsp;Booking Date </td><td class="colortext"><?php echo date("d/M/Y",strtotime($this->customer['date_book']))?></td> </tr>
+									        <tr><td >&nbsp;Pickup Date :</td><td class="colortext"><?php echo date("d/M/Y",strtotime($this->customer['pickup_date']))?>-<?php echo $this->customer['pickup_time'];?></td></tr>
+								            <tr><td >&nbsp;Return Date </td><td class="colortext"><?php echo date("d/M/Y",strtotime($this->customer['return_date']))?>-<?php echo $this->customer['return_time'];?></td> </tr>
+								            <tr><td >&nbsp;Pickup Location :</td><td class="colortext"><?php echo $this->customer['pickup_location']?></td></tr>
+							       	 		<tr><td >&nbsp;Return Location :</td><td class="colortext"><?php echo $this->customer['dropoff_location']?></td></tr>
+							       	 		<?php $difer = date_diff(date_create($this->customer['pickup_date']), date_create($this->customer['return_date']));?>
+							       	 		<tr><td >&nbsp;Total Day($):</td><td class="colortext"><?php echo $difer->format("%a%")+1;?> / Day</td></tr>
+							       	 	</table>
+									</th>
+								</tr>
+							   </tbody>
+						</table>
+				    </div>
+					<?php $service_charge_label=""; if($this->customer['payment_type']==1){
+				    	$payment = "Credit Card";
+				        $service_charge_label = "(50% of Rental Fee + 3% Service Charge)";
+				    }elseif($this->customer['payment_type']==2){
+						$payment = "Western Unoin";
+				                $service_charge_label = "(50% of Rental Fee)";
+					}elseif($this->customer['payment_type']==3){
+						$payment = "ACLEDA";
+				                 $service_charge_label = "(50% of Rental Fee)";
+					}else{
+						$payment = "Cash pay";
+					}
+				    
+				    ?>
+				    <div class="conten" style="border-top:2px solid #000; margin-top: 10px;">
+				        <table style="border-collapse:collapse;font-size: 12px;margin-top:10px;float: left; border:1px solid #000;font-weight: bold; white-space: nowrap;" border="1"  width="100%">
+						  <tr align="center" style="background:#D6D6D6; height:25px;" >
+						     <th class="totalbr">No.</th>
+						     <th class="totalbr" >Items Description</th> 
+						     <th class="totalbr">Qty</th>
+						     <th class="totalbr" width="120">Price/Day</th>
+						     <th class="totalbr">VAT</th>
+				                     <th class="totalbr">Discount</th>
+						     <th class="totalbr">Total</th>
+						  </tr>
+						  <?php $refund_deposit=0; foreach($this->rows AS $i => $rows){?>
+						  <tr style="height: 25px; color: #145c82;">
+						     <td class="totalbr" align="center">&nbsp;<?php echo $i+1;?></td>
+						     <td class="totalbr" align="left">&nbsp;<?php echo $rows['item_name'];?></td>
+						     <td class="totalbr" align="center" width="110px">&nbsp;<?php echo number_format($rows['rent_num'],2);?>&nbsp;</td>
+						     <td class="totalbr" align="right" width="110px">&nbsp;$ <?php echo number_format($rows['price'],2);?>&nbsp;</td>
+						     <td class="totalbr" width="110px" align="center"><?php echo number_format($rows['VAT'],0);?>%</td>
+	                    	 <td class="totalbr" width="110px" align="center"><?php echo number_format($rows['discount'],0);?>%</td>
+						     <td class="totalbr" width="110px" align="right">$ <?php echo number_format($rows['total'],2);?></td>
+						     <?php $refund_deposit = $refund_deposit+$rows['refund_deposit']?>
+						  </tr>
+						  <?php }?>
+						  <tr height="25px">
+							  <td style="border:none;border-left:1px solid #fff;" colspan="4"></td>
+							  <td class="totalbr" colspan="2">&nbsp;Rental Fee:</td>
+							  <td  class="totalbr colortext" align="right">&nbsp;$ <?php echo number_format($this->customer['total_fee'],2);?>&nbsp;</td>
+						  </tr>
+						  
+						  <tr height="25px">
+							  <td style="border:none;border-left:1px solid #fff;" colspan="4"></td>
+							  <td class="totalbr" colspan="2">&nbsp;Refundabale Deposit:</td>
+							  <td class="totalbr colortext" align="right">&nbsp;&nbsp;$ <?php echo number_format($refund_deposit,2)?></td>
+						  </tr>
+						  <tr height="25px">
+							  <td style="border:none;border-left:1px solid #fff;" colspan="4"></td>
+							  <td class="totalbr" colspan="2">&nbsp;Net Total:</td>
+							  <td class="totalbr colortext" align="right">&nbsp;&nbsp;$ <?php echo number_format($this->customer['total_fee']+$refund_deposit,2);?></td>
+						  </tr>
+				                  <tr height="25px">
+							  <td style="border:none;border-left:1px solid #fff;" colspan="4"></td>
+							  <td class="totalbr" colspan="2">&nbsp;Amount Paid<span style="font-size:10px"><?php echo $service_charge_label; ?></span>:</td>
+							  <td class="totalbr colortext" align="right">&nbsp;$ <?php echo number_format($this->customer['total_paymented'],2);?>&nbsp;</td>
+						  </tr>
+						  <tr height="30px">
+							  <td style="border:none;border-left:1px solid #fff;border-bottom:1px solid #fff;" colspan="4"></td>
+							  <td class="totalbr" colspan="2">&nbsp;Due Total:</td>
+							  <td style="background:#DAD9D9;font-weight: bolder; font-size: 16px;"class="totalbr colortext" align="right">&nbsp;&nbsp;<?php $due_amount =  number_format($this->customer['total_fee']+$refund_deposit-$this->customer['total_paymented'],2); if($due_amount<0){ echo "$(".abs($due_amount).")";}else{ echo "$".$due_amount;}?></td>
+						  </tr>
+					   </table>
+				    </div>
+				    <div>
+				         <table style="width: 100%;" cellspacing="5">
+				            <tr height="100px">
+				                <td  valign="top" style="width:33%;font-weight: bold; text-align: center;" width="33%">Authorized Signature</td>
+				                <td></td>
+				                <td valign="top" style="font-weight: bold;text-align:center;" width="33%">Customer Name</td>
+				            </tr>
+				             <tr height="60">
+				             	<td style="text-align:center;color:#145c82;font-weight: bold; border-top: 1px solid #145c82;">Signature/Name of Owner <br/> <?php echo $this->agreeinfo['owner_name'];?><!--  LYNA TAN (Mrs) --></td>
+				                <td></td>
+				                <td style="color:#145c82;font-weight: bold;border-top: 1px solid #145c82;text-align: center;" valign="top"> Signature/Name of Renter<br /><?php echo $this->customer['first_name']?>-<?php echo $this->customer['last_name']?></td>
+				            </tr>
+				         </table>
+				    </div>
+  				</div>
+			    <div>
+			    	<table style="width: 100%;border-collapse:collapse;font-size: 12px;border:1px solid #000;padding:5px;"  width="100%">
+			            <tr height="30px" style="border-bottom:1px solid #ccc;text-align: left;background-color:#145c82; color:rgb(254, 250, 250);text-align: center;">
+			            	<td colspan="2">Customer Payment Info</td>
+			            </tr>
+			            <tr height="30">
+			            	<td class="totalbr">Payment Type:</td>
+			            	<td class="totalbr" align="center"><?php echo $payment;?></td>
+			            </tr>
+			            <?php if($this->customer['payment_type']==1){?>
+				            <tr height="30">
+				            	<td class="totalbr">Credit Card Name:</td>
+				            	<td class="totalbr"><?php echo $this->customer['visa_name'];?></td>
+				            </tr>
+				            <tr height="30">
+				            	<td class="totalbr">Card No.:</td>
+				            	<td class="totalbr"><?php echo $this->customer['card_id'];?></td>
+				            </tr>
+				            <tr height="30">
+				            	<td class="totalbr">CVV:</td>
+				            	<td class="totalbr"><?php echo $this->customer['secu_code'];?></td>
+				            </tr>
+				            <tr height="30">
+				            	<td class="totalbr">EXP date:</td>
+				            	<td class="totalbr"><?php echo $this->customer['card_exp_date'];?></td>
+				            </tr>
+			            <?php }elseif ($this->customer['payment_type']==2){?>
+			            	<tr height="30">
+				            	<td class="totalbr">MTCN Code:</td>
+				            	<td class="totalbr"><?php echo $this->customer['card_id'];?></td>
+			            	</tr>
+			            <?php }elseif ($this->customer['payment_type']==3){?>
+			            
+			            <?php }else{?>
+			            	<tr height="30">
+				            	<td class="totalbr">Total:</td>
+				            	<td class="totalbr"><?php echo $this->customer['total_paymented'];?></td>
+			            	</tr>
+			            <?php }?>
+			         </table>
+			    </div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+dojo.require("dijit.form.DateTextBox");
+</script>

@@ -1,0 +1,95 @@
+<?php $filter = $this->frm_search;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+?>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("LOAN_DISBURSE");?></title>
+<form method="post">
+</form>
+<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+<div id="divPrint" style="width: 100%;">
+<style>
+.style{
+	line-height: 20px;font-size: 10px !important;
+	font-family: 'Khmer OS Battambang';
+}
+th{padding: 5px;}
+</style>
+<table style="font-family: 'Khmer OS Content'; width:100%;">
+	<tr>
+    	<td align="center">
+    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+            	<tr>
+                	<td width="20%"></td>
+                	<td width="60%" valign="top">
+                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRAND_TITLE");?></label></h2>
+                	<h2 style="text-align:center; font-size:13px; font-family:'Khmer MEF2'"><label></label></h2>
+                	<h2 style="text-align:center; font-size:13px; font-family:'Khmer MEF2'"><?php echo $tr->translate("LOAN_DISBURSE");?></h2>
+                	<h2 style="text-align:center; font-size:13px;"><?php echo date("d-M-Y",strtotime($this->list_end_date['start_date'])).' '.$tr->translate('TO').' ';echo date("D-d-M-Y",strtotime($this->list_end_date['end_date']));?></h2>
+                	</td>
+                    <td width="20%"></td>
+                </tr> 
+                <tr>
+                	<td colspan="3">
+                		<table width="100%">
+                			<tr >
+                				<td  style="font-size: 11px;">
+                					<?php echo $tr->translate("ADDRESS_COMPANY");?>
+									<br /><?php echo $tr->translate("TEL_COMPANY");?>
+                				</td>
+                				<td width="65%"></td>
+                				
+                			</tr>
+			               
+		                </table>
+		              </td>
+		           </tr>   
+            </table>
+        </td>
+    </tr>
+    <tr>
+    	<td>
+            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+                 <tr bgcolor="#ccc" class="style" align="center" style="floafont-weight:bold; line-height: 14px; font-size:12px; padding:5px 0px; ">
+                    <th><?php echo $tr->translate("NUM");?></th>
+                    <th>&nbsp;<?php echo $tr->translate("Reffer");?>&nbsp;</th>
+                    <th><?php echo $tr->translate("Year");?></th>
+                    <th><?php echo $tr->translate("Make ID");?></th>
+                    <th><?php echo $tr->translate("Model ID");?></th>
+                    <th><?php echo $tr->translate("Sub Model");?></th>
+                    <th><?php echo $tr->translate("Type");?></th>
+                    <th><?php echo $tr->translate("Color");?></th>
+                    <th><?php echo $tr->translate("Engine");?></th>
+                    <th><?php echo $tr->translate("Chassis No");?></th>
+                    <th><?php echo $tr->translate("Frame No");?></th>
+                    <th><?php echo $tr->translate("Licence Plate");?></th>
+                    <th><?php echo $tr->translate("Date Buy");?></th>
+                    <th><?php echo $tr->translate("Status");?></th>
+                </tr>
+               <?php 
+               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
+              
+					<tr align="center" style="line-height: 18px;">
+						<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+						<td >&nbsp;<?php echo $row['reffer']; ?>&nbsp;</td>
+						<td>&nbsp;<?php echo $row['year'];?>&nbsp;</td>
+						<td>&nbsp;<?php echo $row['make_id'];?>&nbsp;</td>
+						<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['model_id'];?></td>	
+						<td>&nbsp;<?php echo $row['sub_model'];?>&nbsp;</td>
+						<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['type']; ?></span>&nbsp;</td>	
+						<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo $row['color'] ?>&nbsp;</td>
+						<td style="white-space:nowrap;">&nbsp;<?php echo $row['engine']; ?>&nbsp;</td>
+						<td style="white-space:nowrap;">&nbsp;<?php echo $row['chassis_no']; ?>&nbsp;</td>
+						<td style="white-space:nowrap;">&nbsp;<?php echo $row['frame_no']; ?>&nbsp;</td>
+						<td style="white-space:nowrap;">&nbsp;<?php echo $row['licence_plate']; ?>&nbsp;</td>
+						<td style="white-space:nowrap;">&nbsp;<?php echo $row['date_buy']; ?>&nbsp;</td>
+						<td style="white-space:nowrap;">&nbsp;<?php echo $row['status']; ?>&nbsp;</td>	
+					</tr>
+				<?php }?>
+            </table>
+    	</td>
+    </tr>
+</table>
+</div>
+</div>

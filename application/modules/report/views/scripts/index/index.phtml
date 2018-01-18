@@ -1,0 +1,44 @@
+  <?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();
+  ?>
+  <style>
+  ul.link-rpt li a {
+	color: #FFFFFF;
+    height: 50px;
+    width: 180px;
+    display: block;
+    padding: 10px;
+    background: #156288;
+    text-align: center;
+    word-wrap: break-word;
+  	font-weight: bold;
+  } 
+    ul.link-rpt li {
+	float:left; margin:10px;
+    list-style: none;
+    border:1px solid #B1B0AF;
+    word-wrap: break-word;
+    
+  } 
+  .dijitReset, .dijitInline  ,.dijitButton {
+	width: 200px !important;
+  }
+  </style>
+  <title><?php echo $tr->translate("REPORT_LIST");?></title>
+  <div style="background:#ccc; width: 100%;">
+  	<ul class="link-rpt">
+   	   <?php
+   	   $session_user=new Zend_Session_Namespace('authcar');
+   	   $report_url = $session_user->url_report;
+   	   if(!empty($report_url)){
+   	   foreach($report_url as $url){?>
+   	   <?php if ($url['controller']!="index" OR $url['action']!="index"){
+		   if(!empty($url['label'])){
+		   ?>
+   	   	<li><a href="<?php echo $this->url(array('module'=>$url['module'],'controller'=>$url['controller'],'action'=>$url['action'])); ?>">
+   	   	<?php echo $tr->translate($url['label']);?></a></li>
+	   <?php }}?>
+   	   <?php }
+   	   }?>
+  	</ul>
+  </div>
+  <div style="clear: both;"></div>

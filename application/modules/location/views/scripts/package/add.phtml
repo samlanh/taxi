@@ -1,0 +1,179 @@
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate('Add New Package'));
+	$frm = $this->frm;
+?>	
+<script src="<?php echo $this->baseUrl();?>/ckeditor/ckeditor.js"></script>
+<form id="add_location" action="<?php echo $this->url(array('module'=>'location','controller'=>'package','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data">
+	 <script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				 if(dijit.byId('record_row').get('value')==''){
+                    alert('Can not submit without record !');
+                    return false;
+                 }
+				loading();
+				return true;
+			} else {
+				return false;
+			}
+	</script>
+	<div class="clearfix"></div>
+	<div class="row">
+      	 <div class="col-md-8 col-xs-12 forms_padding">
+          <div class="x_panel">
+              <div class="x_title">
+                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('Add New Package')?></h2>
+                 <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+               	</ul>
+               <div class="clearfix"></div>
+               <div class="x_content">
+               		<div class="form-group">
+	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Package Name')?>
+	                   </label>
+	                   <div class="col-md-4 col-sm-4 col-xs-12">
+	                  		 <?php echo $frm->getElement("location_name");?>
+	                   </div>
+	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Province")?>
+	                   </label>
+	                   <div class="col-md-4 col-sm-4 col-xs-12">
+	                    <?php echo $frm->getElement("province_name");?>
+	                   </div>
+	                </div>
+	                 <div class="form-group">
+	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('STATUS')?>
+	                   </label>
+	                   <div class="col-md-4 col-sm-4 col-xs-12">
+	                   		 <?php echo $frm->getElement("status");?>
+	                   </div>
+	                </div>
+	                 <div class="form-group">
+		                <div class="col-md-12 col-sm-12 col-xs-12">
+		                <?php echo $frm->getElement("note");?>
+		                </div>
+	                </div>
+               </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-xs-12 forms_padding">
+	         <div class="x_panel">
+	              <div class="x_title">
+	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('Destination Location')?></h2>
+	                 <ul class="nav navbar-right panel_toolbox">
+	                    <li>
+	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+	                    </li>
+	               	</ul>
+	               <div class="clearfix"></div>
+	               <div class="x_content">
+	               		<div style="clear: both;"></div>
+						<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
+						<div  id="store_record"></div>
+						<input iconClass="dijitIconClear" type="button" onClick="addPockage();" label="Add Row Destination" dojoType="dijit.form.Button"/>
+	               </div>
+	             </div>
+	          </div>
+        </div>
+        <div class="clearfix"></div>
+	     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+	       <input type="reset" value="សំអាត" label="<?php echo $tr->translate('CLEAR');?>" dojoType="dijit.form.Button" iconClass="dijitIconClear"/>
+			<input type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVECLOSE');?>" dojoType="dijit.form.Button" 
+				iconClass="dijitEditorIcon dijitEditorIconSave" />
+			<input type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVENEW');?>" dojoType="dijit.form.Button" 
+				iconClass="dijitEditorIcon dijitEditorIconSave" />		
+	    </div>
+     </div>
+</form>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
+<script type="text/javascript">
+dojo.require("dijit.form.Textarea");
+dojo.require("dojo.NodeList-manipulate");
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dojo.html");
+require(["dojo/ready"], function(ready){
+	ready(function(){
+		//addNewRecord();
+	});
+});
+//province_option = '<?php //echo $this->pro_option;?>';
+function addNewRecord(){
+	dojo.query("#store_record").append('');
+	tmp='<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">';
+	tmp+='<tr style="background:#eee; font-size: 12px; height: 30px;margin-bottom: 10px;" id="head_title" class="head-title" align="center"></tr>';
+	tmp+='</table>';
+	dojo.query("#store_record").append(tmp);
+	thead='<th>Delete</th>';
+	//thead+='<th>Province Name</th>';
+	thead+='<th>Name of Destination </th>';
+	fund_title=1;
+	dojo.query("#head_title").append(thead);	
+	dijit.byId('record_row').attr('value','');
+	addPockage();
+	
+}
+r=0;
+function addPockage(){
+	r++;
+	
+	tmp='<tr style="border:1px solid #ccc; " id="row_guide'+r+'">'
+	tmp+="</tr>";
+		dojo.query("#t_amountmoneytype").append(tmp);
+		
+	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl(); ?>/images/Delete_16.png"></td>';
+	//temp+='<td><select style="width:300px;" padding-left:5px;"  id="province_id'+r+'" name="province_id'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getLocation('+r+')">'+province_option+'</select></td>';
+	temp+='<td><select style="width:300px;" name="location_id'+r+'" dojoType="dijit.form.FilteringSelect" id="location_id'+r+'"></select></td>';
+	
+		dojo.html.set(dojo.byId("row_guide"+r),temp, {
+	    parseContent: true,
+	     
+	});
+		getLocation(r);
+	if(dijit.byId("record_row").get('value')!="") {
+		var ids = dijit.byId("record_row").value;
+		dijit.byId("record_row").attr('value',ids+','+r);
+	} else { dijit.byId("record_row").attr('value',r);}
+}
+function deleteRecord(index){
+	var ids =dijit.byId('record_row').value;
+	if(ids.length=='' || ids.length==null){
+		dijit.byId('record_row').attr('value','');
+		dojo.query("#row_guide"+ids).remove();
+	}else{
+		var arrays = ids.split(',');
+		for(var i=0;i<arrays.length;i++) {
+			if(arrays[i] == index) arrays.splice(i,1);
+		}
+		var strings = arrays.join(',');
+		dijit.byId('record_row').attr('value',strings);
+		dojo.query("#row_guide"+index).remove();
+	}
+}
+var location_store  = getDataStorefromJSON('id','name', <?php print_r(array());?>);
+var url_getlocation = '<?php echo $this->url(array('module'=>'location','controller'=>'package','action'=>'get-location')); ?>';
+function getLocation(id){
+			province_id = dijit.byId('province_name').get('value');
+			if(province_id==''){
+				return false;
+			}
+			dojo.xhrPost({
+				url:url_getlocation,
+				content:{
+					'province_id':province_id
+					},
+				handleAs:"json",
+				load: function(data) {
+					location_store  = getDataStorefromJSON('id','name', data);
+					dijit.byId('location_id'+id).set('store',location_store);   
+				},
+				error: function(err) {
+				}
+			});
+}
+
+function getNewLocation(){
+	addNewRecord();
+} 
+</script>

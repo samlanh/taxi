@@ -1,0 +1,82 @@
+<?php $frm = $this->frms;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+?>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("Return Booking");?></title>
+<form method="post">
+</form>
+<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+<div id="divPrint" style="width: 100%;">
+<style>
+.style{
+	line-height: 20px;font-size: 10px !important;
+	font-family: 'Khmer OS Battambang';
+}
+th{padding: 5px;}
+</style>
+<script type="text/javascript">
+dojo.require("dijit.form.DateTextBox");
+</script>
+<form action="" method="post">
+<table style="font-family: 'Khmer OS Content'; width:100%;">
+	<tr>
+    	<td align="center">
+    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+            	<tr>
+                	<td width=""><?php echo $tr->translate("Search");?></td>
+                	<td width="" valign="top"><?php echo $frm->getElement("adv_search");?></td>
+                    <td width=""><?php echo $tr->translate("Booking No");?></td>
+                    <td width=""><?php echo $frm->getElement("book_no");?></td>
+                    <td width=""><?php //echo $tr->translate("Book Date");?><?php echo $frm->getElement("btn_search");?></td>
+                	<td width="" valign="top"><?php //echo $frm->getElement("date_book");?></td>
+                </tr> 
+                <tr>
+                	<td width=""><?php //echo $tr->translate("Pickup Date");?></td>
+                	<td width="" valign="top"><?php //echo $frm->getElement("pickup_date");?></td>
+                    <td width=""><?php //echo $tr->translate("Return Date");?></td>
+                    <td width=""><?php //echo $frm->getElement("return_date");?></td>
+                    <td width=""><?php //echo $tr->translate("");?></td>
+                	<td width="" valign="top"><?php //echo $frm->getElement("btn_search");?></td>
+                </tr> 
+            </table>
+        </td>
+    </tr>
+</table>
+</form>
+<br />
+            <table id="exportExcel" border="1"â€‹ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+                 <tr bgcolor="#ccc" class="style" align="center" style="floafont-weight:bold; line-height: 14px; font-size:12px; padding:5px 0px; ">
+                    <th><?php echo $tr->translate("NUM");?></th>
+                    <th>&nbsp;<?php echo $tr->translate("Book No");?>&nbsp;</th>
+                    <th><?php echo $tr->translate("Customer");?></th>
+                    <th><?php echo $tr->translate("Book Date");?></th>
+                    <th><?php echo $tr->translate("Pickup Date");?></th>
+                    <th><?php echo $tr->translate("Return Date");?></th>
+                    <th><?php echo $tr->translate("Deposit");?></th>
+                    <th><?php echo $tr->translate("Totla Fee");?></th>
+                </tr>
+               <?php 
+               if(!empty($this->row_booking)) foreach($this->row_booking as $key =>$row){?>
+              
+					<tr align="center" style="line-height: 18px;">
+						<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+						<td>&nbsp;<a href="<?php echo $this->baseUrl();?>/booking/return/returndetail/id/<?php echo $row["id"];?>"><?php echo $row['booking_no']; ?></a>&nbsp;</td>
+						<td>&nbsp;<a href="<?php echo $this->baseUrl();?>/booking/return/returndetail/id/<?php echo $row["id"];?>"><?php echo $row['customer_name'];?></a>&nbsp;</td>
+						<td>&nbsp;<?php echo $row['date_book'];?>&nbsp;</td>
+						<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['pickup_date'];?></td>	
+						<td>&nbsp;<?php echo $row['return_date'];?>&nbsp;</td>
+						<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo $row['deposite_fee'] ?>&nbsp;</td>
+						<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['total_fee']; ?></span>&nbsp;</td>	
+					</tr>
+				<?php }?>
+            </table>
+            <br />
+               <table align="center" width="100%">
+				   <tr style="font-size: 12px;">
+				        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+				        <th></th>
+				        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+				   </tr>
+			</table>
+</div>
+</div>
