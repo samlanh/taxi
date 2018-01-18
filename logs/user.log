@@ -1,0 +1,2 @@
+[2016-03-10 10:12:30] user name=>admin module=>bookingcontroller name=>:carrentalbooking action =>add error name=>SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'customer_id' cannot be null
+[2016-03-23 09:25:46] user name=>admin module=>bookingcontroller name=>:return action =>returndetail error name=>SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'item_id' cannot be null
