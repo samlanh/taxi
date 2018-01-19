@@ -56,8 +56,12 @@ class Agency_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		//print_r($_data);exit();
 		$photoname = str_replace(" ", "_", $_data['name_en'].'-AGN') . '.jpg';
 		$upload = new Zend_File_Transfer();
+		$part= PUBLIC_PATH . '/images/agent/';
+		if (!file_exists($part)) {
+			mkdir($part, 0777, true);
+		}
 		$upload->addFilter('Rename',
-				array('target' => PUBLIC_PATH . '/images/profile/'. $photoname, 'overwrite' => true) ,'photo');
+				array('target' => $part. $photoname, 'overwrite' => true) ,'photo');
 		$receive = $upload->receive();
 		if($receive){
 			$_data['photo'] = $photoname;

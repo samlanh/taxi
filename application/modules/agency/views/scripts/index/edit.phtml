@@ -2,7 +2,7 @@
 	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
 	echo $this->headTitle($tr->translate('EDIT_AGENCY'));
 	if(!empty($this->row['photo'])){
-		$photo="profile/".$this->row['photo'];
+		$photo="agent/".$this->row['photo'];
 	}else{
 		$photo ="profile.jpg";
 	}
