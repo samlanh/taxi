@@ -4,7 +4,13 @@ echo $this->headTitle($tr->translate('Edit Location'));
 $frm = $this->frm;
 ?>
 <script src="<?php echo $this->baseUrl();?>/ckeditor/ckeditor.js"></script>
-
+<style>
+img.image_view {
+    width: 100px;
+     height: 50px; 
+    padding-bottom: 2px;
+}
+</style>
 <form id="add_location" action="<?php echo $this->url(array('module'=>'location','controller'=>'location','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
 	 <script type="dojo/method" event="onSubmit">			
 			if(this.validate()) {
@@ -40,18 +46,20 @@ $frm = $this->frm;
 	                  	 <?php echo $frm->getElement("province_name");?>
 	                   </div>
 	                </div>
-	                <div class="form-group">
-	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Service Type')?>
+	                <!-- 
+	                	<div class="form-group">
+	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php //echo $tr->translate('Service Type')?>
 	                   </label>
 	                   <div class="col-md-4 col-sm-4 col-xs-12">
-	                   		 <?php echo $frm->getElement("service_type");?>
+	                   		 <?php //echo $frm->getElement("service_type");?>
 	                   </div>
-	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Location Type")?>
+	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php //echo $tr->translate("Location Type")?>
 	                   </label>
 	                   <div class="col-md-4 col-sm-4 col-xs-12">
-	                  	 <?php echo $frm->getElement("location_type");?>
+	                  	 <?php //echo $frm->getElement("location_type");?>
 	                   </div>
 	                </div>
+	                 -->
 	                 <div class="form-group">
 	                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('STATUS')?>
 	                   </label>
@@ -104,9 +112,13 @@ dojo.require("dojo.html");
 require(["dojo/ready"], function(ready){
 	ready(function(){
 		innitialize();
-		checkLocationType();
+		//checkLocationType();
 	});
 });
+function loadImage(index){
+	 var output = document.getElementById('image_view'+index);
+output.src = URL.createObjectURL(event.target.files[0]);
+}
 r=0;
 function innitialize(){
 	dojo.query("#store_record").append('');
@@ -114,9 +126,9 @@ function innitialize(){
 	tmp+='<tr style="background:#eee; font-size: 12px; height: 30px;margin-bottom: 10px;" id="head_title" class="head-title" align="center"></tr>';
 	tmp+='</table>';
 	dojo.query("#store_record").append(tmp);
-	thead='<th>Delete</th>';
-	thead+='<th>Images Name</th>';
-	thead+='<th>Preview Image</th>';
+	thead='<th style="padding: 0 20px;">Delete</th>';
+	thead+='<th style="padding: 0 20px;">Images Name</th>';
+	thead+='<th style="padding: 0 20px;"></th>';
 	fund_title=1;
 	dojo.query("#head_title").append(thead);	
 	dijit.byId('record_row').attr('value','');
@@ -127,10 +139,11 @@ function innitialize(){
 	tmp='<tr style="border:1px solid #ccc; font-size:12px;" id="row_guide'+r+'">'
 	tmp+="</tr>";
 		dojo.query("#t_amountmoneytype").append(tmp);
+
+		temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+		temp+='<td style="text-align: center; padding: 2px 0;" ><img class="image_view" id="image_view'+r+'" src="<?php echo $this->baseUrl().'/images/location/'.$rs['pic_title'];?>" alt=""  /><input type="hidden" dojoType="dijit.form.TextBox" name="old_photoid'+r+'" id="old_photoid'+r+'"  /></td>';
+		temp+='<td><div class="button_browse"><span>Upload <span><i class="fa fa-camera" aria-hidden="true"></i></span></span><input class="btn_borwse_image"  type="file" name="photo'+r+'" id="photo'+r+'" onchange="loadImage('+r+')"></div><input value="<?php echo $rs['pic_title'];?>" type="hidden" dojoType="dijit.form.TextBox" name="old_photo'+r+'" id="old_photo'+r+'"  /></td>';
 		
-	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl()?>/images/Delete_16.png"></td>';
-	temp+='<td><input type="hidden" dojoType="dijit.form.TextBox" name="old_photoid'+r+'" id="old_photoid'+r+'" /></td>';
-	temp+='<td><img style="max-height: 40px;" src="<?php echo $this->baseUrl().'/images/location/'.$rs['pic_title'];?>" /></td>';
 		dojo.html.set(dojo.byId("row_guide"+r),temp, {
 	    parseContent: true,
 	     
@@ -150,8 +163,9 @@ function addNewRecord(){
 	tmp+='<tr style="background:#eee; font-size: 12px; height: 30px;margin-bottom: 10px;" id="head_title" class="head-title" align="center"></tr>';
 	tmp+='</table>';
 	dojo.query("#store_record").append(tmp);
-	thead='<th>Delete</th>';
-	thead+='<th>Images Name</th>';
+	thead='<th style="padding: 0 20px;">Delete</th>';
+	thead+='<th style="padding: 0 20px;">Images Name</th>';
+	thead+='<th style="padding: 0 20px;"></th>';
 	fund_title=1;
 	dojo.query("#head_title").append(thead);	
 	dijit.byId('record_row').attr('value','');
@@ -163,9 +177,9 @@ function addNewSeason(){
 	tmp='<tr style="border:1px solid #ccc; font-size:12px;" id="row_guide'+r+'">'
 	tmp+="</tr>";
 		dojo.query("#t_amountmoneytype").append(tmp);
-		
-	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="/lyna/trunk/public/images/Delete_16.png"></td>';
-	temp+='<td><input type="file" name="photo'+r+'" id="photo'+r+'" /></td>';
+		temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+		temp+='<td style="text-align: center; padding: 2px 0;" ><img class="image_view" id="image_view'+r+'" src="<?php echo $this->baseUrl().'/images/no-image.png';?>" alt=""  /></td>';
+		temp+='<td><div class="button_browse"><span>Upload <span><i class="fa fa-camera" aria-hidden="true"></i></span></span><input class="btn_borwse_image" required="true" type="file" name="photo'+r+'" id="photo'+r+'" onchange="loadImage('+r+')"></div></td>';
 	
 		dojo.html.set(dojo.byId("row_guide"+r),temp, {
 	    parseContent: true,

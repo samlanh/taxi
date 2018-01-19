@@ -15,10 +15,11 @@ class location_LocationController extends Zend_Controller_Action {
 			}else{
 		
 				$search = array(
-						'service_type'=>0,
+// 						'service_type'=>0,
 						'title' => '',
 						'status_search' => -1,
-						'location_type' => -1
+// 						'location_type' => -1
+						'province'=>-1,
 				);
 		
 			}
@@ -27,7 +28,8 @@ class location_LocationController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("Location Name","Province","Service Type","Location Type","Modify Date","STATUS");
+// 			"Service Type","Location Type",
+			$collumns = array("Location Name","Province","Modify Date","STATUS");
 			$link=array(
 					'module'=>'location','controller'=>'location','action'=>'edit',
 			);

@@ -24,32 +24,33 @@ Class Location_Form_FrmLocation extends Zend_Dojo_Form {
 			$option[$row['id']]=$row['name'];
 		}
 		$_Province->setMultiOptions($option);
+		$_Province->setValue(25);
 		
-		$service_rs = $db->getServiceType();
-		$_service_type = new Zend_Dojo_Form_Element_FilteringSelect("service_type");
-		$_arr=array();
-		if(!empty($service_rs))foreach($service_rs AS $row){
-			$_arr[$row['id']]=$row['name'];
-		}
-		$_service_type->setMultiOptions($_arr);
-		$_service_type->setAttribs(array(
-				'dojoType'=>'dijit.form.FilteringSelect',
-				'required'=>'true',
-				'Onchange'=>'checkLocationType();',
-				'class'=>'fullside'));
+// 		$service_rs = $db->getServiceType();
+// 		$_service_type = new Zend_Dojo_Form_Element_FilteringSelect("service_type");
+// 		$_arr=array();
+// 		if(!empty($service_rs))foreach($service_rs AS $row){
+// 			$_arr[$row['id']]=$row['name'];
+// 		}
+// 		$_service_type->setMultiOptions($_arr);
+// 		$_service_type->setAttribs(array(
+// 				'dojoType'=>'dijit.form.FilteringSelect',
+// 				'required'=>'true',
+// 				'Onchange'=>'checkLocationType();',
+// 				'class'=>'fullside'));
 		
-		$location_rs = $db->getAllLocationType();
-		$_location_type = new Zend_Dojo_Form_Element_FilteringSelect("location_type");
-		$_arr_loca=array();
-		if(!empty($location_rs))foreach($location_rs AS $row){
-			$_arr_loca[$row['id']]=$row['name'];
-		}
-		$_location_type->setMultiOptions($_arr_loca);
-		$_location_type->setAttribs(array(
-				'dojoType'=>'dijit.form.FilteringSelect',
-				'required'=>'true',
-				'readonly'=>true,
-				'class'=>'fullside'));
+// 		$location_rs = $db->getAllLocationType();
+// 		$_location_type = new Zend_Dojo_Form_Element_FilteringSelect("location_type");
+// 		$_arr_loca=array();
+// 		if(!empty($location_rs))foreach($location_rs AS $row){
+// 			$_arr_loca[$row['id']]=$row['name'];
+// 		}
+// 		$_location_type->setMultiOptions($_arr_loca);
+// 		$_location_type->setAttribs(array(
+// 				'dojoType'=>'dijit.form.FilteringSelect',
+// 				'required'=>'true',
+// 				'readonly'=>true,
+// 				'class'=>'fullside'));
 		
 		$rs_status = $db->getVewOptoinTypeByType(2);
 		$_status = new Zend_Dojo_Form_Element_FilteringSelect("status");
@@ -71,12 +72,14 @@ Class Location_Form_FrmLocation extends Zend_Dojo_Form {
 		if(!empty($data)){
 			$_location_name->setValue($data['location_name']);
 			$_Province->setValue($data['province_id']);
-			$_service_type->setValue($data['service_type']);
-			$_location_type->setValue($data['locationtype_id']);
+// 			$_service_type->setValue($data['service_type']);
+// 			$_location_type->setValue($data['locationtype_id']);
 			$_status->setValue($data['status']);
 			$note->setValue($data['note']);
 		}
-		$this->addElements(array($_location_name,$_Province,$_service_type,$_location_type, $_status,$note));
+		$this->addElements(array($_location_name,$_Province,
+// 				$_service_type,$_location_type, 
+				$_status,$note));
 		return $this;
 		
 	}

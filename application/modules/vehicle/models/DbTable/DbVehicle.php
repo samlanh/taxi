@@ -87,6 +87,9 @@ class Vehicle_Model_DbTable_DbVehicle extends Zend_Db_Table_Abstract
 	    			'img_front'=>$image_feature,
 	    			
 	    			'user_id'=>$this->getUserId(),
+	    			
+	    			'modify_date'=>date("Y-m-d H:i:s"),
+	    			'create_date'=>date("Y-m-d H:i:s"),
 	    			);
 	    	$id = $this->insert($_arr);
 	    	$db->commit();
@@ -186,6 +189,7 @@ class Vehicle_Model_DbTable_DbVehicle extends Zend_Db_Table_Abstract
 	    			'images_list'=>$image_list,
 	    			'img_front'=>$image_feature,
 	    			'user_id'=>$this->getUserId(),
+	    			'modify_date'=>date("Y-m-d H:i:s"),
 	    			);
 	    	$where='id='.$data['id'];
 	    	$this->update($_arr, $where);

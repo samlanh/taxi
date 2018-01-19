@@ -324,9 +324,6 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 		$session_user=new Zend_Session_Namespace('authcar');
 		return $session_user->user_id;
 	}
-	function getAllCustomer(){
-		return array();
-	}
 	public function getAccessPermission($branch_str='branch_id'){
 		$session_user=new Zend_Session_Namespace('authcar');
 		$branch_id = $session_user->branch_id;
@@ -705,7 +702,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   		return $result;
   	}
   }
-  
+  /* New function  start from 2018-Jan-18*/
   function getVehicleAvailableList($vehicle_id=null){
   	$db = $this->getAdapter();
   	$sql='SELECT v.id,
@@ -727,6 +724,40 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   		$sql.=" AND v.`id` NOT IN (SELECT d.`vehicle_id` FROM `ldc_driver` AS d WHERE d.`status`=1)";
   	}
   	return $db->fetchAll($sql);
+  }
+  public function getNewCarBookingNO(){
+  	$this->_name='ldc_carbooking';
+  	$db = $this->getAdapter();
+  	$row = $this->getSystemSetting('booking_prefix');
+  	$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+  	$acc_no = $db->fetchOne($sql);
+  	$new_acc_no= (int)$acc_no+1;
+  	$acc_no= strlen((int)$acc_no+1);
+  	$pre = ($row['value']);
+  	for($i = $acc_no;$i<4;$i++){
+  		$pre.='0';
+  	}
+  	return $pre.$new_acc_no;
+  }
+  function getAllLocation(){
+  	$db = $this->getAdapter();
+  	$sql = "SELECT id ,location_name as name FROM `ldc_package_location` WHERE status=1  ";
+  	$row =  $db->fetchAll($sql);
+  	return $row;
+  }
+  function getAllCustomers(){
+  	$sql="SELECT c.id,CONCAT(first_name,' ',last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_customer AS c WHERE c.`status`=1 AND c.`first_name` !=''";
+  	return $this->getAdapter()->fetchAll($sql);
+  }
+  public function getAllDriver(){
+  	$db= $this->getAdapter();
+  	$sql="SELECT d.`id`,CONCAT(d.`first_name`,' ',d.`last_name`,'(',d.`driver_id`,')') AS `name`
+ 	FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`first_name`!=''";
+  	return $db->fetchAll($sql);
+  }
+  public function getAllAgency(){
+  	$sql="SELECT c.id,CONCAT(first_name,' ',last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_agency AS c WHERE c.`status`=1 AND c.`first_name` !=''";
+  	return $this->getAdapter()->fetchAll($sql);
   }
 }
 ?>

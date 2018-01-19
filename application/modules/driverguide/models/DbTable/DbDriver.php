@@ -16,7 +16,6 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     	$arrayview = array(1=>"name_en",2=>"name_kh");
     	$sql = "SELECT id,driver_id,first_name,last_name,
     	(SELECT ".$arrayview[$lang]." FROM `ldc_view` WHERE TYPE=1 AND key_code =$this->_name.`sex`) AS sex ,
-    	(SELECT ".$arrayview[$lang]." FROM `ldc_view` WHERE TYPE=8 AND key_code =$this->_name.`position_type`) AS position_type ,
     	tel,dob,pob,nationality,
     	group_num,home_num,street,commune,district,
     	(SELECT ".$array[$lang]." FROM `ldc_province` WHERE `ldc_province`.id=province_id LIMIT 1) AS province_name,
@@ -26,9 +25,9 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     	if($search['status_search']>-1){
     		$where.= " AND $this->_name.`status`= ".$search['status_search'];
     	}
-    	if($search['driver_type']>-1){
-    		$where.= " AND $this->_name.`position_type`= ".$search['driver_type'];
-    	}
+//     	if($search['driver_type']>-1){
+//     		$where.= " AND $this->_name.`position_type`= ".$search['driver_type'];
+//     	}
     	if($search['province']>-1){
     		$where.= " AND $this->_name.`province_id`= ".$search['province'];
     	}
@@ -57,6 +56,7 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     	try{
     		$adapter = new Zend_File_Transfer_Adapter_Http();
     		$part= PUBLIC_PATH.'/images/driverphoto';
+    		$part_p= PUBLIC_PATH.'/images/driverphoto/';
     		if (!file_exists($part)) {
     			mkdir($part, 0777, true);
     		}
@@ -64,10 +64,16 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     		$adapter->receive();
     			
     		$photo = $adapter->getFileInfo();
-    		if(!empty($photo['photo']['name'])){
-    			$_data['photo']=$photo['photo']['name'];
+    		$photoname = str_replace(" ", "_", $_data['name_kh'])."_".str_replace(" ", "_", $_data['name_en']);
+    		if (!empty($photo['photo']['name'])){
+    			$ss = 	explode(".", $photo['photo']['name']);
+    			$new_image_name = $photoname.".".end($ss);
+    			$tmp = $photo['photo']['tmp_name'];
+    			if(move_uploaded_file($tmp, $part_p.$new_image_name)){
+    				$_data['photo'] = $new_image_name;
+    			}
     		}else{
-    			$_data['photo']='';
+    			$_data['photo'] =$_data['old_photo'];
     		}
     		if(!empty($photo['att_file']['name'])){
     			$_data['att_file']=$photo['att_file']['name'];
@@ -121,6 +127,7 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     	try{
 	    	$adapter = new Zend_File_Transfer_Adapter_Http();
 	    	$part= PUBLIC_PATH.'/images/driverphoto';
+	    	$part_p= PUBLIC_PATH.'/images/driverphoto/';
 	    	if (!file_exists($part)) {
 	    		mkdir($part, 0777, true);
 	    	}
@@ -128,12 +135,24 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
 	        $adapter->receive();
 	    	
 	    	$photo = $adapter->getFileInfo();
-	    	if(!empty($photo['photo']['name'])){
+// 	    	if(!empty($photo['photo']['name'])){
 	
-	    		$_data['photo']=$photo['photo']['name'];
+// 	    		$_data['photo']=$photo['photo']['name'];
+// 	    	}else{
+// 	    		$_data['photo']=$_data['old_photo'];
+// 	    	}
+	    	$photoname = str_replace(" ", "_", $_data['name_kh'])."_".str_replace(" ", "_", $_data['name_en']);
+	    	if (!empty($photo['photo']['name'])){
+	    		$ss = 	explode(".", $photo['photo']['name']);
+	    		$new_image_name = $photoname.".".end($ss);
+	    		$tmp = $photo['photo']['tmp_name'];
+	    		if(move_uploaded_file($tmp, $part_p.$new_image_name)){
+	    			$_data['photo'] = $new_image_name;
+	    		}
 	    	}else{
-	    		$_data['photo']=$_data['old_photo'];
+	    		$_data['photo'] =$_data['old_photo'];
 	    	}
+	    	
 	    	if(!empty($photo['att_file']['name'])){
 	    		$_data['att_file']=$photo['att_file']['name'];
 	    	}else{
