@@ -128,7 +128,7 @@ function innitialize(){
 	tmp+="</tr>";
 		dojo.query("#t_amountmoneytype").append(tmp);
 		
-	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="/lyna/trunk/public/images/Delete_16.png"></td>';
+	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl()?>/images/Delete_16.png"></td>';
 	temp+='<td><input type="hidden" dojoType="dijit.form.TextBox" name="old_photoid'+r+'" id="old_photoid'+r+'" /></td>';
 	temp+='<td><img style="max-height: 40px;" src="<?php echo $this->baseUrl().'/images/location/'.$rs['pic_title'];?>" /></td>';
 		dojo.html.set(dojo.byId("row_guide"+r),temp, {

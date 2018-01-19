@@ -291,7 +291,6 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 	}
 	public function getAllAvailableGuide($data,$type=3){ // 1=driver,2=guide,3=both
 		$db= $this->getAdapter();
-	
 		$pickupdate = date("Y-m-d",strtotime($data["pickup_date"]));
 		$returndate = date("Y-m-d",strtotime($data["return_date"]));
 		
@@ -584,19 +583,6 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
    	if($id==null)return $_status;
    	else return $_status[$id];
    }
-   public function getAllDegree($id=null){
-   	$tr= Application_Form_FrmLanguages::getCurrentlanguage();
-   	$opt_degree = array(
-   			''=>$this->tr->translate("----ជ្រើសរើស----"),
-   			1=>$this->tr->translate("Diploma"),
-   			2=>$this->tr->translate("Associate"),
-   			3=>$this->tr->translate("Bechelor"),
-   			4=>$this->tr->translate("Master"),
-   			5=>$this->tr->translate("PhD")
-   	);
-   	if($id==null)return $opt_degree;
-   	else return $opt_degree[$id]; 
-  }
  
   function countDaysByDate($start,$end){
   	$first_date = strtotime($start);
@@ -617,54 +603,6 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 	  	echo $date;
 	  	return $date;
 	  }
-  }
-  public function getClientByMemberId($id){
-  	$sql="SELECT 
-		  `s`.`branch_id`       AS `branch_id`,
-		  `s`.`client_id`       AS `client_id`,
-		  `s`.`house_id`        AS `house_id`,
-		  `s`.`price_before`    AS `price_before`,
-		  `s`.`price_sold`      AS `price_sold`,
-		  `s`.`discount_amount` AS `discount_amount`,
-		  s.discount_percent,
-		  s.agreement_date,
-		  `s`.`admin_fee`       AS `admin_fee`,
-		  `s`.`other_fee`       AS `other_fee`,
-		  `s`.`paid_amount`     AS `paid_amount`,
-		  `s`.`balance`         AS `balance`,
-		  `s`.`create_date`     AS `create_date`,
-		  `s`.`buy_date`        AS `buy_date`,
-		  `s`.`startcal_date`   AS `startcal_date`,
-		  `s`.`first_payment`   AS `first_payment`,
-		  `s`.`validate_date`   AS `validate_date`,
-		  `s`.`end_line`        AS `end_line`,
-		  `s`.`interest_rate`   AS `interest_rate`,
-		  `s`.`total_duration`  AS `total_duration`,
-		  `s`.`payment_id`      AS `payment_id`,
-		  `s`.`staff_id`        AS `staff_id`,
-		  `s`.`comission`       AS `comission`,
-		  `s`.`receipt_no`      AS `receipt_no`,
-		  s.total_installamount,
-  		(SELECT client_number FROM `ln_client` WHERE client_id = s.client_id LIMIT 1) AS client_number,
-  		(SELECT name_kh FROM `ln_client` WHERE client_id = s.client_id LIMIT 1) AS client_name_kh,
-  		(SELECT name_en FROM `ln_client` WHERE client_id = s.client_id LIMIT 1) AS client_name_en,
-  		(SELECT tel FROM `ln_client` WHERE client_id = s.client_id LIMIT 1) AS tel,
-  		(SELECT current_address FROM `ln_client` WHERE client_id = s.client_id LIMIT 1) AS current_address,
-  		(SELECT CONCAT(last_name ,' ',first_name)  FROM `rms_users` WHERE id = s.user_id LIMIT 1) AS user_name,
-	  	  `p`.`land_code`       AS `land_code`,
-		  `p`.`land_address`    AS `land_address`,
-		  `p`.`land_size`       AS `land_size`,
-		  `p`.`street`           AS `stree`,
-	  (SELECT
-	     `ln_properties_type`.`type_nameen`
-	   FROM `ln_properties_type`
-	   WHERE (`ln_properties_type`.`id` = `p`.`property_type`)
-	   LIMIT 1) AS `propertype`
-  		FROM 
-  	   `ln_sale` AS s,`ln_properties` AS p
-  	 WHERE `p`.`id` = `s`.`house_id` AND s.id=$id LIMIT 1 ";
-  	$db=$this->getAdapter();
-  	return $db->fetchRow($sql);
   }
   public function getVewOptoinTypeByType($type=null,$option = null,$limit =null,$first_option =null){
   	$db = $this->getAdapter();
@@ -766,6 +704,29 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	}else{
   		return $result;
   	}
+  }
+  
+  function getVehicleAvailableList($vehicle_id=null){
+  	$db = $this->getAdapter();
+  	$sql='SELECT v.id,
+		CONCAT(m.`title`," ",mo.`title`," ",smo.`title`," (",v.`reffer`,")") AS `name`
+		FROM `ldc_vehicle` AS v,
+		`ldc_make` AS m,
+		`ldc_model` AS mo,
+		`ldc_submodel` AS smo
+		WHERE 
+		v.`make_id` = m.`id` AND
+		v.`model_id` = mo.`id` AND
+		v.`sub_model` = smo.`id` AND
+		v.is_sale !=1 
+		AND v.`status`=1 
+  	';
+  	if (!empty($vehicle_id)){
+  		$sql.=" AND (v.`id` NOT IN (SELECT d.`vehicle_id` FROM `ldc_driver` AS d WHERE d.`status`=1) OR v.`id`=$vehicle_id)";
+  	}else{
+  		$sql.=" AND v.`id` NOT IN (SELECT d.`vehicle_id` FROM `ldc_driver` AS d WHERE d.`status`=1)";
+  	}
+  	return $db->fetchAll($sql);
   }
 }
 ?>

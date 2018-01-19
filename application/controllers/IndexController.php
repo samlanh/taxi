@@ -101,7 +101,7 @@ class IndexController extends Zend_Controller_Action
 						}
 					}
 					
-					Application_Form_FrmMessage::redirectUrl("/menu-manager/menu-items");	
+					Application_Form_FrmMessage::redirectUrl("/vehicle");	
 					exit();
 				}
 				else{					
@@ -115,7 +115,8 @@ class IndexController extends Zend_Controller_Action
 		}
 	}
     protected function sortMenu($menus){
-    	$menus_order = Array ( 'home','menu-manager','booking','agreement','group','vehicle','driverguide','stuff','location','product','report','rsvacl','setting','other');
+    	//'agreement','stuff','product',
+    	$menus_order = Array ( 'home','menu-manager','booking','group','vehicle','driverguide','location','report','rsvacl','setting','other');
     	$temp_menu = Array();
     	$menus=array_unique($menus);
     	foreach ($menus_order as $i => $val){

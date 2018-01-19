@@ -101,27 +101,7 @@ class Application_Model_DbTable_DbVdGlobal extends Zend_Db_Table_Abstract
 		}
 		return $cate_tree_array;
 	}
-	public function getCategoryForProduct($parent = 0, $spacing = '', $cate_tree_array = ''){ // for backend menu item category for menu
-		$db=$this->getAdapter();
-		if (!is_array($cate_tree_array))
-			$cate_tree_array = array();
-		$language = $this->getCurrentLang();
 	
-		$sql="SELECT c.`id`,
-		(SELECT cd.title FROM `vd_category_detail` AS cd WHERE cd.category_id = c.`id` AND cd.languageId=$language LIMIT 1) AS name,
-		c.`parent` FROM `vd_category` AS c WHERE c.`status`=1 AND c.cate_type=1 AND c.`parent`=$parent ORDER BY id ASC";
-		$query = $db->fetchAll($sql);
-		$stmt = $db->query($sql);
-		$rowCount = count($query);
-		$id='';
-		if ($rowCount > 0) {
-			foreach ($query as $row){
-				$cate_tree_array[] = array("id" => $row['id'], "name" => $spacing . $row['name']);
-				$cate_tree_array = $this->getCategory($id=$row['id'], $spacing . ' - ', $cate_tree_array);
-			}
-		}
-		return $cate_tree_array;
-	}
 	public function checkEmailClient($email){ //check email has been use or not
 		$db = $this->getAdapter();
 		$sql='SELECT p.id FROM `vd_client` AS p WHERE p.`status`=1 AND p.`email`='."'$email'";
@@ -132,37 +112,6 @@ class Application_Model_DbTable_DbVdGlobal extends Zend_Db_Table_Abstract
 		else{
 			return 0;
 		}
-	}
-	function getAllClient(){
-		$db=$this->getAdapter();
-		$sql="SELECT c.`id`,c.`user_name` AS name FROM `vd_client` AS c WHERE c.`status`=1";
-		return $db->fetchAll($sql);
-	}
-	public function getRecieptNo(){
-		$this->_name='vd_reciept';
-		$db = $this->getAdapter();
-		$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
-		$acc_no = $db->fetchOne($sql);
-		$new_acc_no= (int)$acc_no+1;
-		$acc_no= strlen((int)$acc_no+1);
-		$pre = "RC";
-		for($i = $acc_no;$i<4;$i++){
-			$pre.='0';
-		}
-		return $pre.$new_acc_no;
-	}
-	public function getCustomerCode(){
-		$this->_name='vd_client';
-		$db = $this->getAdapter();
-		$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
-		$acc_no = $db->fetchOne($sql);
-		$new_acc_no= (int)$acc_no+1;
-		$acc_no= strlen((int)$acc_no+1);
-		$pre = "CUS";
-		for($i = $acc_no;$i<4;$i++){
-			$pre.='0';
-		}
-		return $pre.$new_acc_no;
 	}
 
 	function checkSub($parent){
