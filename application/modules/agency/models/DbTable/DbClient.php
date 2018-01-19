@@ -62,7 +62,7 @@ class Agency_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		if($receive){
 			$_data['photo'] = $photoname;
 		}else{
-			$_data['photo']=!empty($_data['id'])?$_data['id']:"";
+			$_data['photo'] = $_data['old_photo'];
 		}
 		try{
 			$db = new Application_Model_DbTable_DbGlobal();
@@ -104,7 +104,8 @@ class Agency_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 					'i_city'      	=> $_data['i_city'],
 					//'i_province'      => $_data['i_province'],
 					'i_zipcode'     => $_data['i_zipcode'],
-					//'i_phone'      => $_data['i_phone'],
+					'i_phone'       => $_data['i_phone'],
+					'i_state'	    => $_data['state'],
 					//'i_note'	  =>$_data['i_note'],
 					'address1'		=> $_data['address1'],
 					'address2'		=> $_data['address2'],

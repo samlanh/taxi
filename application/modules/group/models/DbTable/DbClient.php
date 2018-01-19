@@ -21,7 +21,7 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 			$_data['photo'] = $photoname;
 		}
 		else{
-			$_data['photo']=!empty($_data['id'])?$_data['id']:"";
+			$_data['photo'] = $_data['old_photo'];
 		}
 		
 		try{
@@ -65,8 +65,11 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 				'i_city'      => $_data['i_city'],
 				//'i_province'      => $_data['i_province'],
 				'i_zipcode'      => $_data['i_zipcode'],
-				//'i_phone'      => $_data['i_phone'],
+				'i_phone'      => $_data['i_phone'],
+				'i_state'	    => $_data['state'],
 				//'i_note'	  =>$_data['i_note'],
+				'address1'		=> $_data['address1'],
+				'address2'		=> $_data['address2'],
 				'status'  => $_data['status'],
 				'date'  => date("Y-m-d"),
 		);
@@ -78,11 +81,14 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 			if (!empty($_data['changepass'])){
 				$_arr['password']=md5($_data['password']);
 			}
+			$_arr['modify_date']=date("Y-m-d H:i:s");
 			$where = 'id = '.$_data['id'];
 			$this->update($_arr, $where);
 			return $_data['id'];
 			 
 		}else{
+			$_arr['create_date']=date("Y-m-d H:i:s");
+			$_arr['modify_date']=date("Y-m-d H:i:s");
 			return  $this->insert($_arr);
 		}
 		}catch(Exception $e){
@@ -147,17 +153,18 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		if(!empty($search['title'])){
 			$s_where = array();
 			$s_search = addslashes(trim($search['title']));
-			$s_where[] = "customer_code LIKE '%{$s_search}%'";
-			$s_where[] = " first_name LIKE '%{$s_search}%'";
-			$s_where[] = " last_name LIKE '%{$s_search}%'";
-			$s_where[] = "phone LIKE '%{$s_search}%'";
-			$s_where[] = "pob LIKE '%{$s_search}%'";
-			$s_where[] = " nationality LIKE '%{$s_search}%'";
-			$s_where[] = " company_name LIKE '%{$s_search}%'";
-			$s_where[] = " group_num LIKE '%{$s_search}%'";
-			$s_where[] = " house_num LIKE '%{$s_search}%'";
-			$s_where[] = " commune LIKE '%{$s_search}%'";
-			$s_where[] = " district LIKE '%{$s_search}%'";
+			$s_search = str_replace(' ', '', $s_search);
+			$s_where[] = "REPLACE(customer_code,' ','')  LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(first_name,' ','')  	 LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(last_name,' ','')  	 LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(phone,' ','')  	     LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(pob,' ','')  			 LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(nationality,' ','')  	 LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(company_name,' ','')   LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(group_num,' ','')  	 LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(house_num,' ','')  	 LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(commune,' ','')  		 LIKE '%{$s_search}%'";
+			$s_where[] = "REPLACE(district,' ','')  	 LIKE '%{$s_search}%'";
 // 			$s_where[] = " province_name LIKE '%{$s_search}%'";
 			$where .=' AND ('.implode(' OR ',$s_where).')';
 		}
