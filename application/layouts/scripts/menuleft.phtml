@@ -10,6 +10,9 @@
 	
 	$session_user=new Zend_Session_Namespace('authcar');
 	$arr_module = $session_user->arr_acl;
+	
+	
+	
 	$username = $session_user->first_name;
 	$userinfo="";
 	if (!empty($session_user->user_id)){
@@ -73,6 +76,10 @@
 				$lblcontroller='RANK_DAY';
 			}
 			
+			if($rs['controller']=='index' AND $rs['module']=='agency' ){
+				$lblcontroller='AGENCY';
+			}
+			
 			if($module!=$rs['module']){
 				$newarray= array($rs['controller']=>$tr->translate(strtoupper($lblcontroller)));
 				$menu[$rs['module']]= $newarray;
@@ -104,6 +111,7 @@
 			'product'=>'<i class="fa fa-cubes" aria-hidden="true"></i>',
 			'location'=>'<i class="fa fa-crosshairs" aria-hidden="true"></i>',
 			'field-manager'=>'<i class="fa fa-window-restore" aria-hidden="true"></i>',
+			'agency'=>'<i class="fa fa-cubes" aria-hidden="true"></i>',
 	);
 	
 	$arr_module = $session_user->arr_module;
@@ -126,6 +134,9 @@
                 		<?php if (!empty($arr_param_menu[$rs])){?>
 	                    <ul class="nav child_menu">
 	                       <?php  foreach ($arr_param_menu[$rs] as $key => $sub){
+	                       	
+	                        
+	                       	
 	                       	$urlsub = $this->url(array('module'=>$rs,'controller'=>$key,'action'=>'index'), null, true);
 	                       	?>
 	                      <li><a href="<?php echo $urlsub;?>"><?php echo $sub;?></a></li>
