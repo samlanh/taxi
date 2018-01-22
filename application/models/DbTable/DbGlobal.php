@@ -703,6 +703,21 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	}
   }
   /* New function  start from 2018-Jan-18*/
+  
+  public function getVewOptoinTypeByTypes($type=null,$limit =null){
+  	$db = $this->getAdapter();
+  	$lang = $this->getCurrentLang();
+  	$array = array(1=>"name_en",2=>"name_kh");
+  	$sql="SELECT id,key_code,".$array[$lang]." AS name ,displayby FROM `ldc_view` WHERE status =1 AND name_en!='' ";//just concate
+  	if($type!=null){
+  		$sql.=" AND type = $type ";
+  	}
+  	if($limit!=null){
+  		$sql.=" LIMIT $limit ";
+  	}
+  	$rows = $db->fetchAll($sql);
+  	return $rows;
+  }
   function getVehicleAvailableList($vehicle_id=null){
   	$db = $this->getAdapter();
   	$sql='SELECT v.id,
@@ -723,6 +738,24 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	}else{
   		$sql.=" AND v.`id` NOT IN (SELECT d.`vehicle_id` FROM `ldc_driver` AS d WHERE d.`status`=1)";
   	}
+  	return $db->fetchAll($sql);
+  }
+  function getVehicleHasDriver(){
+  	$db = $this->getAdapter();
+  	$sql='SELECT v.id,
+  	CONCAT(m.`title`," ",mo.`title`," ",smo.`title`," (",v.`reffer`,")") AS `name`
+  	FROM `ldc_vehicle` AS v,
+  	`ldc_make` AS m,
+  	`ldc_model` AS mo,
+  	`ldc_submodel` AS smo
+  	WHERE
+  	v.`make_id` = m.`id` AND
+  	v.`model_id` = mo.`id` AND
+  	v.`sub_model` = smo.`id` AND
+  	v.is_sale !=1
+  	AND v.`status`=1
+  	';
+  	$sql.=" AND v.`id` IN (SELECT d.`vehicle_id` FROM `ldc_driver` AS d WHERE d.`status`=1)";
   	return $db->fetchAll($sql);
   }
   public function getNewCarBookingNO(){
