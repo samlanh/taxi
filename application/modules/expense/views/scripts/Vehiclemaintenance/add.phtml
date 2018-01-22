@@ -1,0 +1,373 @@
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate('VEHICLE_MAINTENANCE'));
+?>	
+<?php  $frm = $this->frm_client;
+	   $frm_h=$this->frm_h;
+?>
+<style>
+fieldset{border: 1px solid #fff;color: #fff; }
+fieldset table td input ,fieldset table td select{color: #000 !important; }
+
+.form-groupsa {
+    margin-bottom: 5px;
+}
+.account-image {
+    border: solid 1px #eee;
+}
+.image-box {
+    display: inherit;
+    position: relative;
+    text-align: center;
+}
+.image-box img {
+    width: 150px;
+    border-radius: 60%;
+    height: 150px;
+    margin-top: 10px;
+    border: solid 1px #eee;
+}
+.button_browse span {
+    line-height: 33px;
+    font-weight: 600;
+    cursor: pointer;
+}
+</style>
+<div class="clearfix"></div>
+<div class="x_panel">
+	 <div class="blog_form_title">
+	 	<h4><i class="fa fa-plus-circle" aria-hidden="true"></i> <?php echo $tr->translate("ADD_VEHICLE_MAINTENANCE")?></h4>
+	 </div>
+	<form id='add_client' action="" enctype="multipart/form-data" dojoType="dijit.form.Form" method="post">
+		<script type="dojo/method" event="onSubmit">			
+		if(this.validate()) {
+				customer_type = dijit.byId('agency_type').get('value');
+				if(customer_type<1){
+					alert("<?php echo $tr->translate("Please Select Customer Type")?>");
+					dijit.byId('agency_type').focus(); 
+					return false;
+				}
+				loading();
+				return true;
+		}else{
+			return false;
+		}
+	</script>
+		<div class="clearfix"></div>
+		<div class="row">
+	      	 <div class="col-md-8 col-xs-12 forms_padding">
+		          <div class="x_panel">
+		              <div class="x_title">
+		                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('VEHICLE_MAINTENANCE')?></h2>
+		                 <ul class="nav navbar-right panel_toolbox">
+		                    <li>
+		                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+		                    </li>
+		               	</ul>
+		               <div class="clearfix"></div>
+		          	</div>
+		       		<div class="x_content">
+		       			<div class="clearfix"></div>
+		       			<div class="title_form_blog">
+		               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate('PAYMENT_INFO')?></h4>
+		               </div>
+		               <div class="form-groupsa">
+			               </div>
+			               <div class="form-group">
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE_REF_NO")?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm_h->getElement('vehicle_id');?>
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('START_DATE')?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm_h->getElement('start_date');?>
+			                   </div>
+			                </div>
+			                <div class="clearfix"></div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("INVOICE_NO")?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm_h->getElement('invoice');?>
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('CHEQUE_NUM')?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm_h->getElement('cheque_num');?>
+			                   </div>
+			                </div>
+			                <div class="clearfix"></div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("TITLE")?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm_h->getElement('title');?>
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("TOTAL_AMOUNT")?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm_h->getElement('total_amount');?>
+			                   </div>
+			                </div>
+			                <div class="clearfix"></div>
+			                
+			                 <div class="form-group">
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("PAYMENT_TYPE")?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm_h->getElement('payment_method');?>
+			                   </div>
+			                  <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("STATUS")?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm_h->getElement('Stutas');?>
+			                   </div>
+			                </div>
+			                <div class="clearfix"></div>
+			                 <div class="form-group">
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('DESCRIPTION')?>
+			                   </label>
+			                   <div class="col-md-10 col-sm-10 col-xs-12">
+			                    	<?php echo $frm_h->getElement('note_de');?>
+			                   </div>
+			                </div>
+			                <div class="clearfix"></div>
+		                <div class="title_form_blog">
+		               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate("PAYMENT_DETAIL")?></h4>
+		               </div>
+		               <div class="clearfix"></div>
+		               
+		               <div class="form-group">
+			                <div class="col-md-4 col-sm-4 col-xs-12">
+			                	<div style="clear: both;"></div>
+								<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
+								<div  id="store_record"></div>
+								 <input  iconClass="dijitIconClear" type="button" onClick="addPockage();" label="Add Record" dojoType="dijit.form.Button"/>
+			                </div>
+		               </div>
+		                
+		            </div>
+		       	</div>
+		    </div>
+	       <div class="col-md-4 col-xs-12 forms_padding">
+	          <div class="x_panel">
+	              <div class="x_title">
+	                 <h2><i class="fa fa-phone" aria-hidden="true"></i> <?php echo $tr->translate('Other Infomation')?></h2>
+	                 <ul class="nav navbar-right panel_toolbox">
+	                    <li>
+	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+	                    </li>
+	               	</ul>
+	               <div class="clearfix"></div>
+	          	</div>
+	       		<div class="x_content">
+	       		   <div class="clearfix"></div>
+	       		   
+	               <div class="title_form_blog">
+		               		<h4><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate("DRIVER_INFO")?></h4>
+		           </div>
+		             <div class="form-groupsa">
+	               		<div class="col-md-6 col-sm-6 col-xs-12">
+		               		<div class="account-image">
+								<div class="image-box">
+									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<div class="clearfix"></div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-12 col-sm-12 col-xs-12" for="first-name"><?php echo $tr->translate("CUS_CODE")?>
+			                   </label>
+			                </div>
+							 <div class="clearfix"></div>
+		                </div>
+		                 <div class="clearfix"></div>
+	                </div>
+	                 
+	       		   <div class="clearfix"></div>
+	       		   
+	               <div class="title_form_blog">
+		               		<h4><i class="fa  fa-car" aria-hidden="true"></i> <?php echo $tr->translate("VEHICLE_INFO")?></h4>
+		           </div>
+	               <div class="form-groupsa">
+	               		<div class="col-md-6 col-sm-6 col-xs-12">
+		               		<div class="account-image">
+								<div class="image-box">
+									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<div class="clearfix"></div>
+			                <div class="form-group">
+			                   <label class="control-label col-md-12 col-sm-12 col-xs-12" for="first-name"><?php echo $tr->translate("CUS_CODE")?>
+			                   </label>
+			                </div>
+							 <div class="clearfix"></div>
+		                </div>
+		                 <div class="clearfix"></div>
+	               </div>
+	            </div>
+	       	</div>
+	    </div>
+	    <div class="clearfix"></div>
+	     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+	        <input type="reset" style="color:#000;" label="<?php echo $tr->translate('CLEAR');?>" dojoType="dijit.form.Button" 
+					iconClass="dijitIconClear" /> 
+			<input type="submit" value="SAVE_CLOSE" label="<?php echo $tr->translate('SAVECLOSE');?>" style="color:#000;" id="save_close" dojoType="dijit.form.Button" name="save_close"
+				iconClass="dijitEditorIcon dijitEditorIconSave" /> 
+			<input type="submit" value="SAVE_NEW" label="<?php echo $tr->translate('SAVENEW');?>" id="save_new" style="color:#000;" dojoType="dijit.form.Button" name="save_new"
+				iconClass="dijitEditorIcon dijitEditorIconSave"/>					
+	    </div>
+	  </div>
+	</form>
+</div>
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_customertype" title="<?php echo $tr->translate("ADD_CUSTOMERTYPE")?>">
+		<form id='frm_customertype' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table class="height" >
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="custype_title" name="custype_title" value="" type="text"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addCustometType();"/>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+</div>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
+<script type="text/javascript">  
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dojo.data.ItemFileWriteStore");  
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+dojo.require("dijit.form.Textarea"); 
+ 
+function showPopupclientdtype(){
+	dijit.byId('frm_clienttype').show();
+}
+function getPopFormCus(){
+	customer_type = dijit.byId('agency_type').get('value');
+	if(customer_type==-1){
+		dijit.byId("pop_customertype").show();
+	}
+}
+var custype_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->custype));?> );
+var url_customerttype = '<?php echo $this->url(array('module'=>'agency','controller'=>'agencytype','action'=>'addcustomertype')); ?>';
+function addCustometType(){
+	if(dijit.byId('frm_customertype').validate()){
+		dojo.xhrPost({
+			url:url_customerttype,
+			form: dojo.byId("frm_customertype"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data,
+					    name: dijit.byId('custype_title').get('value')
+				};			
+				addDataToSelectbox(dijit.byId('agency_type'), custype_store, Itemmake, data);
+				dijit.byId('frm_customertype').reset();
+				dijit.byId("pop_customertype").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+ 
+</script>
+<script type="text/javascript">
+    dojo.require("dojo.NodeList-manipulate");
+	dojo.require("dojo.html");
+	dojo.require("dijit.form.NumberTextBox");
+require(["dojo/ready"], function(ready){
+	ready(function(){
+		addNewRecord();
+		dijit.byId("payment_method").attr("value",'1');
+	});
+});
+
+province_option = '<?php echo $this->opt_type;?>';
+function addNewRecord(){
+	dojo.query("#store_record").append('');
+	tmp='<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">';
+	tmp+='<tr style="background:#eee; height: 30px;margin-bottom: 10px;" id="head_title" class="head-title" align="center"></tr>';
+	tmp+='</table>';
+	dojo.query("#store_record").append(tmp);
+	thead='<th style="text-align:center;"><?php echo $tr->translate('DELETE');?></th>';
+	thead+='<th 	style="text-align:center;"><?php echo $tr->translate('NUM');?></th>';
+	thead+='<th style="text-align:center;"><?php echo $tr->translate('EXPENSE_TYPE');?></th>';
+	thead+='<th style="text-align:center;"><?php echo $tr->translate('PRICE');?></th>';
+	thead+='<th style="text-align:center;"><?php echo $tr->translate('NOTE');?></th>';
+	fund_title=1;
+	dojo.query("#head_title").append(thead);	
+	dijit.byId('record_row').attr('value','');
+	addPockage();
+}
+
+r=0;
+function addPockage(){
+	r++;
+	tmp='<tr style="border:1px solid #ccc;" id="row_guide'+r+'">'
+	tmp+="</tr>";
+		dojo.query("#t_amountmoneytype").append(tmp);
+
+	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
+	temp+='<td align="center">'+r+'</td>';
+	temp+='<td><select style="width:200px;"  id="expense_id_'+r+'" name="expense_id_'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getLocation('+r+')">'+province_option+'</select></td>';
+	temp+='<td><input  style="width:200px;" dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" ></td>';
+	temp+='<td><input  style="width:240px;" dojoType="dijit.form.TextBox" class="fullside"  name="note_'+r+'" id="note_'+r+'" value="" type="text" ></td>';
+	
+	dojo.html.set(dojo.byId("row_guide"+r),temp, {
+	    parseContent: true,
+	});
+	if(dijit.byId("record_row").get('value')!="") {
+		var ids = dijit.byId("record_row").value;
+		dijit.byId("record_row").attr('value',ids+','+r);
+	} else { dijit.byId("record_row").attr('value',r);}
+}
+
+function deleteRecord(index){
+	var ids =dijit.byId('record_row').value;
+	if(ids.length=='' || ids.length==null){
+		dijit.byId('record_row').attr('value','');
+		dojo.query("#row_guide"+ids).remove();
+	}else{
+		var arrays = ids.split(',');
+		for(var i=0;i<arrays.length;i++) {
+			if(arrays[i] == index) arrays.splice(i,1);
+		}
+		var strings = arrays.join(',');
+		dijit.byId('record_row').attr('value',strings);
+		dojo.query("#row_guide"+index).remove();
+	}
+}
+
+var url_driver_info = '<?php echo $this->url(array('module'=>'expense','controller'=>'vehiclemaintenance','action'=>'get-driver-info')); ?>';
+function getVehicleById(){
+	vehicle_id=dijit.byId("vehicle_id").get("value");
+	alert(vehicle_id);
+	dojo.xhrPost({
+		url:url_driver_info,	
+		content:{ 
+		    'vehicle_id':vehicle_id
+		},		    
+		handleAs:"json",
+		load: function(data) {
+			alert(data);
+		},
+		error: function(err) {
+			//alert(err);
+		}
+	});
+}
+
+</script>
