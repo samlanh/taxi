@@ -772,6 +772,34 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	}
   	return $pre.$new_acc_no;
   }
+  public function getNewPaymentNO(){
+  	$this->_name='ldc_carbooking_payment';
+  	$db = $this->getAdapter();
+  	$row = $this->getSystemSetting('paymentprefix');
+  	$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+  	$acc_no = $db->fetchOne($sql);
+  	$new_acc_no= (int)$acc_no+1;
+  	$acc_no= strlen((int)$acc_no+1);
+  	$pre = ($row['value']);
+  	for($i = $acc_no;$i<4;$i++){
+  		$pre.='0';
+  	}
+  	return $pre.$new_acc_no;
+  }
+  public function getNewCommissionPaymentNO(){
+  	$this->_name='ldc_commission_payment';
+  	$db = $this->getAdapter();
+  	$row = $this->getSystemSetting('paymentprefix');
+  	$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+  	$acc_no = $db->fetchOne($sql);
+  	$new_acc_no= (int)$acc_no+1;
+  	$acc_no= strlen((int)$acc_no+1);
+  	$pre = ($row['value']);
+  	for($i = $acc_no;$i<4;$i++){
+  		$pre.='0';
+  	}
+  	return $pre.$new_acc_no;
+  }
   function getAllLocation(){
   	$db = $this->getAdapter();
   	$sql = "SELECT id ,location_name as name FROM `ldc_package_location` WHERE status=1  ";

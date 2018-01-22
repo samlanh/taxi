@@ -1,0 +1,441 @@
+<?php 
+   $tr = Application_Form_FrmLanguages::getCurrentlanguage();
+   echo $this->headTitle($tr->translate("Commission Payment"));
+   $frm = $this->frm;
+?>
+<script type="text/javascript">
+dojo.ready(function(){
+});
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.Textarea");
+dojo.require("dojo.parser");
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+</script>
+<style>
+div.cus_info{
+	display: block;
+    border: solid 1px #eee;
+    clear: both;
+    padding: 5px 2px;
+    background: #f7f7f7;
+}
+.image-box.infor {
+    padding: 2px;
+    border: solid 1px #eee;
+}		
+span.span_title {
+    min-width: 30%;
+    display: inline-block;
+    font-weight: 600;
+}
+h4.car_title {
+    font-size: 14px;
+    color: #156288;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+    padding: 2px 0;
+}
+</style>
+<div class="clearfix"></div>
+<div class="x_panel">
+	<div class="row">
+		<form action="" method="post" id="addbookingrental" dojoType="dijit.form.Form">
+			<script type="dojo/method" event="onSubmit">			
+				if(this.validate()) {
+					var agency = dijit.byId('agency').get('value');
+					if(agency==0){
+						alert("<?php echo $tr->translate('PLEASE_SELECT_AGENCY')?>");
+						dijit.byId('agency').focus(); 
+						return false;
+					}
+					var total_paid = dijit.byId('total_paid').get('value');
+					if(total_paid>0){
+						var payment_method = dijit.byId('payment_method').get('value');
+						if(payment_method==0){
+							alert("<?php echo $tr->translate('PLEASE_SELECT_PAYMENT_METHOD')?>");
+							dijit.byId('payment_method').focus(); 
+							return false;
+						}
+					}
+					loading();
+					return true;
+				} else {
+					return false;
+				}
+			</script>
+      	 <div class="col-md-12 col-xs-12 forms_padding">
+	          <div class="x_panel">
+	              <div class="x_title">
+	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('Commission Payment')?></h2>
+	                 <ul class="nav navbar-right panel_toolbox">
+	                    <li>
+	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+	                    </li>
+	               	</ul>
+               		<div class="clearfix"></div>
+          		</div>
+	       		<div class="x_content">
+	       			<div class="col-md-8 col-sm-8 col-xs-12">
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("RECIEPT_NO")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('reciept_no');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('agency');?>
+		                   </div>
+		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("PAYMENT_DATE")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('payment_date');?>
+		                   </div>
+		                </div>
+		            	  <div class="form-group">
+	                   		   <label class="control-label col-md-2 col-sm-2 col-xs-4" for="first-name"><?php echo $tr->translate('BALANCE')?>
+			                   </label>
+			                  <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm->getElement('balance');?>
+			                   </div>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AMOUNT")?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm->getElement('amount');?>
+			                   </div>
+		                </div>
+		                <div class="col-md-12 col-sm-12 col-xs-12 bg" style="background: #dbe8f9;    padding: 10px;    margin: 10px 0;    border: solid 1px #ccc;">
+		                   <div class="col-md-12 col-sm-12 col-xs-12">
+			                   	<div class="col-md-2 col-sm-2 col-xs-2">
+			                   		<input type="checkbox" class="checkbox"  name="check_all" id="check_all" value="all" OnChange="CheckAllTotal(0);" style=" height: initial; display: inline-block;"  />&nbsp;
+									<span style="vertical-align: top;"><?php echo $tr->translate('ALL');?></span>
+			                   	</div>
+		                   </div>
+	             	   </div>
+		                <table id="table_parent" class="table" style="margin: 0 auto; width: 100%;  " >
+							<thead>
+								<tr>
+									<td colspan="8">
+										<table class="table" style=" border: 1px #ccc solid;">
+											<thead>
+												<tr id="head-title" class="head-td" align="right">
+													<th>&nbsp;</th>
+													<th><?php echo $tr->translate("NUM");?></th>
+													<th ><?php echo $tr->translate("BOOKING_DATE");?></th>
+													<th ><?php echo $tr->translate("BOOKING_NO");?></th>
+													<th ><?php echo $tr->translate("COMMISSION_FEE");?></th>
+													<th ><?php echo $tr->translate("PAYMENT_AMOUNT");?></th>
+													<th ><?php echo $tr->translate("PAYMENT_TYPE");?></th>
+													<th ><?php echo $tr->translate("REMAIN");?></th>
+												</tr>
+											</thead>
+											<tbody id="table_row">
+											<tbody>
+										</table>
+										
+										<input type="hidden" name="identity" id="identity"  value="" >
+										<input type="hidden" name="old_identity" id="old_identity"  value="" >
+									</td>
+								</tr>
+							</thead>
+						</table>
+						<div class="form-group">
+		                   <div class="col-md-4 col-sm-4 col-xs-4">
+		                    	<?php echo $frm->getElement('remark');?>
+		                   </div>
+		                    <div class="col-md-8 col-sm-8 col-xs-8">
+		                   		<div class="col-md-12 col-sm-12 col-xs-12">
+		                   		 <label class="control-label col-md-4 col-sm-4 col-xs-4" for="first-name"><?php echo $tr->translate('TOTAY_PAYMENT')?>
+				                   </label>
+				                   <div class="col-md-8 col-sm-8 col-xs-8">
+				                    	<?php echo $frm->getElement('total_payment');?>
+				                   </div>
+		                   		</div>
+		                   		<div class="col-md-12 col-sm-12 col-xs-12">
+		                   		 <label class="control-label col-md-4 col-sm-4 col-xs-4" for="first-name"><?php echo $tr->translate('TOTAL_PAID')?>
+				                   </label>
+				                   <div class="col-md-8 col-sm-8 col-xs-8">
+				                    	<?php echo $frm->getElement('total_paid');?>
+				                   </div>
+		                   		</div>
+		                   		<div class="col-md-12 col-sm-12 col-xs-12">
+		                   		 <label class="control-label col-md-4 col-sm-4 col-xs-4" for="first-name"><?php echo $tr->translate('TOTAL_DUE')?>
+				                   </label>
+				                   <div class="col-md-8 col-sm-8 col-xs-8">
+				                    	<?php echo $frm->getElement('total_due');?>
+				                   </div>
+		                   		</div>
+		                   </div>
+		           	  	</div>
+		               <div class="text-center">
+							<input type="button" value="GO_BACK" label="<?php echo $tr->translate('GO_BACK');?>" id="back" dojoType="dijit.form.Button" 
+										iconClass="dijitIconUndo" onclick="window.history.back();" />
+							<input class="button_success" type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVE_CLOSE');?>" id="save_close" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 	
+							<input class="button_success" type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVE_NEW');?>" id="save_new" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+						</div>
+	       			</div>
+	       			<div class="col-md-4 col-sm-4 col-xs-12">
+						<div class="title_form_blog " style=" margin: 0;">
+	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('AGENCY_INFO')?></h4>
+	       				</div>
+	       				<div id="agent_info" class="cus_info col-md-12 col-sm-12 col-xs-12">
+		       				<div class="col-md-4 col-sm-4 col-xs-12">
+				               	<div class="image-box infor">
+									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
+								</div>
+							</div>
+							<div class="col-md-8 col-sm-8 col-xs-12">
+								<ul class="list-unstyled">
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"></span>
+                              		</li>
+                              	</ul>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+	       			</div>
+	       		</div>
+	       		<div class="x_content">
+	       			
+	       		</div>
+       		</div>
+  		 </div>
+     </form>
+</div>
+</div>
+
+<script type="text/javascript">
+require(["dojo/ready"], function(ready){
+	ready(function(){
+	});
+});
+
+var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'commissionpayment','action'=>'getagent'));?>";
+function getAgent(){
+	var id = dijit.byId('agency').get('value');
+	loading();
+	dojo.xhrPost({
+	    url: urlagent,
+	    content:{
+	     'agency':id
+	     },
+	    handleAs:"json",
+	    load: function(data) {
+	    	document.getElementById('agent_info').innerHTML =data;
+			document.getElementsByClassName("overlay")[0].style.display="none";
+	    },
+	    error: function(err) {
+	     alert(err);
+	    }
+	   });
+}
+
+var keyindex=1;
+var urlcommissionagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'commissionpayment','action'=>'getcarbookingbyagency'));?>";
+function getCommissionAgent(){
+	var id = dijit.byId('agency').get('value');
+	loading();
+	dojo.xhrPost({
+	    url: urlcommissionagent,
+	    content:{
+	     'agency':id,'keyindex':keyindex
+	     },
+	    handleAs:"json",
+	    load: function(data) {
+	    	keyindex=data.keyindex;
+	    	$("#old_identity").val(data.identity);
+	    	dojo.html.set(dojo.byId("table_row"),data.stringrow , {
+			     parseContent: true,
+				});
+	    	
+			document.getElementsByClassName("overlay")[0].style.display="none";
+	    },
+	    error: function(err) {
+	     alert(err);
+	    }
+	   });
+}
+function CheckAllTotal(index){
+	var total = 0;
+	var descriptionr="";
+	var old_identity = $("#old_identity").val();
+	if(index==0){
+			if($('#check_all').is(":checked")){
+				$('.checkbox').each(function() { //loop through each checkbox
+		            this.checked = true;  
+				});
+				$("#identity").val(old_identity);
+			}else{
+				$('.checkbox').each(function() { //loop through each checkbox
+		            this.checked = false;  
+				});
+				ResetPayment();
+				$("#identity").val('');
+			}
+	}else{
+		 $('#check_all').attr('checked', false); // Unchecks it
+		var a = $("input:checked").val();
+		 var identity = [];
+	     $(':checkbox:checked').each(function(i){
+	    	 identity[i] = $(this).val();
+	     });
+	    
+	     $("#identity").val(identity);
+	     var newIdentity = $("#identity").val();
+
+			if(old_identity == newIdentity ){
+				$('#check_all').attr('checked', true); // checks it
+			}
+		if($('#mfdid_'+index).is(":checked")){
+			
+		}else{
+			dijit.byId('payment_amount'+index).set('value',0);
+			calculateAmountCheckByKeyup();
+			ResetPayment();
+		}
+	}
+	calculateAmountCheck();
+	calBalance();
+}
+function ResetPayment(){
+	var old_identity = $("#old_identity").val();
+	var rowIDArray = old_identity.split(',');
+	for(var n = 0; n < rowIDArray.length; n++) {
+		dijit.byId('payment_amount'+rowIDArray[n]).set('value',0);
+		amountrow = parseFloat(dijit.byId('commision_fee'+rowIDArray[n]).get('value'));
+		
+		amountrow = parseFloat(dijit.byId('remain'+rowIDArray[n]).set('value',amountrow.toFixed(2)));
+	}
+}
+function calBalance() {
+	var balance=0;
+	var rowId = $('#old_identity').val();
+	if(rowId==""){
+		return false;
+	}
+	var rowIDArray = rowId.split(',');
+	for(var n = 0; n < rowIDArray.length; n++) {
+		//balance+= parseFloat(dijit.byId('due_val'+rowIDArray[n]).get('value'));
+		if($('#mfdid_'+rowIDArray[n]).is(":checked")){
+			amountrow = parseFloat(dijit.byId('commision_fee'+rowIDArray[n]).get('value'));
+			balance = balance + parseFloat(amountrow);
+		}
+	}
+	dijit.byId('balance').attr('value',balance.toFixed(2));
+
+}
+function checkAmout(){
+	amount_paid = parseFloat(dijit.byId('amount').get('value'));
+	balance = parseFloat(dijit.byId('balance').get('value'));
+	if(amount_paid>=balance){
+		dijit.byId('amount').set('value',balance.toFixed(2))
+	}
+	calculateAmountCheck();
+}
+function calculateAmountCheck(){
+	ResetPayment();
+	amount_paid = parseFloat(dijit.byId('amount').get('value'));
+	var rowId = $('#identity').val();
+	if(rowId==""){
+		return false;
+	}
+	var payment=0;
+	var amount = 0;
+	var due = 0;
+	var amountrow = 0;
+	var rowIDArray = rowId.split(',');
+	if(amount_paid>0){
+		var paid=0;
+		for(var n = 0; n < rowIDArray.length; n++) {
+			
+			amountrow = parseFloat(dijit.byId('commision_fee'+rowIDArray[n]).get('value'));
+
+			amount_paid = amount_paid - parseFloat(amountrow);
+			
+			if(amount_paid>=0){
+				payment+= amountrow;
+				dijit.byId('payment_amount'+rowIDArray[n]).set('value',amountrow.toFixed(2));
+				dijit.byId('remain'+rowIDArray[n]).set('value',0);
+				due+= 0;
+			}else{
+				remain = Math.abs(amount_paid);
+				paid = parseFloat(dijit.byId('commision_fee'+rowIDArray[n]).get('value')) - parseFloat(remain);
+				dijit.byId('payment_amount'+rowIDArray[n]).set('value',paid.toFixed(2));
+				dijit.byId('remain'+rowIDArray[n]).set('value',remain.toFixed(2));
+				payment+= paid;
+				due+= remain;
+				break;
+			}
+			
+		}
+	}
+	calculateLastTotal();
+}
+function calculateLastTotal(){
+	var rowId = $('#identity').val();
+	if(rowId==""){
+		return false;
+	}
+	var payment=0;
+	var due = 0;
+	var rowIDArray = rowId.split(',');
+	for(var n = 0; n < rowIDArray.length; n++) {
+		payment+= parseFloat(dijit.byId('payment_amount'+rowIDArray[n]).get('value'));
+		due+= parseFloat(dijit.byId('remain'+rowIDArray[n]).get('value'));
+	}
+	dijit.byId('total_paid').attr('value',payment.toFixed(2));
+	dijit.byId('total_due').attr('value',due.toFixed(2));
+}
+function calculateamount(index){
+	var due = dijit.byId('commision_fee'+index).get('value');
+	var payment = dijit.byId('payment_amount'+index).get('value');
+	var paid =0;
+	var subtotal=0;
+	paid = parseFloat(payment);
+	subtotal= parseFloat(due);
+	
+	if(paid > subtotal){
+		dijit.byId('payment_amount'+index).set('value',subtotal.toFixed(2));
+		dijit.byId('remain'+index).set('value',0);
+	}else{
+		dijit.byId('remain'+index).set('value',(subtotal-paid).toFixed(2));
+	}
+	calBalance();
+	calculateAmountCheckByKeyup();
+}
+function calculateAmountCheckByKeyup(){
+	var rowId = $('#identity').val();
+	if(rowId==""){
+		return false;
+	}
+	var payment=0;
+	var amount = 0;
+	var due = 0;
+	var amountrow = 0;
+	var rowIDArray = rowId.split(',');
+		for(var n = 0; n < rowIDArray.length; n++) {
+			payment+= parseFloat(dijit.byId('payment_amount'+rowIDArray[n]).get('value'));
+			due+= parseFloat(dijit.byId('remain'+rowIDArray[n]).get('value'));
+		}
+	amount = parseFloat(payment).toFixed(2);
+	dijit.byId('total_paid').attr('value',payment.toFixed(2));
+	dijit.byId('total_due').attr('value',due.toFixed(2));
+	dijit.byId('amount').attr('value',parseFloat(amount).toFixed(2));
+}
+
+</script>
