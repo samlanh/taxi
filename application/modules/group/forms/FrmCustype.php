@@ -42,13 +42,23 @@ Class Group_Form_FrmCustype extends Zend_Dojo_Form {
 		$_title->setAttribs(array(
 				'dojoType'=>'dijit.form.ValidationTextBox',
 				'class'=>'fullside',
+				'required'=>true,
 				'placeholder'=>$this->tr->translate("TITLE"))
 				);
+		
+		$_c_type=  new Zend_Dojo_Form_Element_FilteringSelect('c_type');
+		$_c_type->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside',));
+		$_status_opt = array(
+				1=>$this->tr->translate("IS_VEHICLE_MAINTENANCE"),
+				2=>$this->tr->translate("IS_EXPENSE"),
+				);
+		$_c_type->setMultiOptions($_status_opt);
+		
 		if($data!=null){
 			$_title->setValue($data['name_en']);
 			$_status->setValue($data['status']);
 		}
-		$this->addElements(array($_title,$_status));
+		$this->addElements(array($_c_type,$_title,$_status));
 		return $this;
 		
 	}
