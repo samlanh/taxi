@@ -352,7 +352,7 @@ function deleteRecord(index){
 var url_driver_info = '<?php echo $this->url(array('module'=>'expense','controller'=>'vehiclemaintenance','action'=>'get-driver-info')); ?>';
 function getVehicleById(){
 	vehicle_id=dijit.byId("vehicle_id").get("value");
-	alert(vehicle_id);
+	//alert(vehicle_id);
 	dojo.xhrPost({
 		url:url_driver_info,	
 		content:{ 
@@ -360,7 +360,7 @@ function getVehicleById(){
 		},		    
 		handleAs:"json",
 		load: function(data) {
-			alert(data);
+			//alert(data);
 		},
 		error: function(err) {
 			//alert(err);
