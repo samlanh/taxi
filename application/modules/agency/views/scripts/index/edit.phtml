@@ -36,9 +36,6 @@ fieldset{border: 1px solid #fff;}
 </style>
 <div class="clearfix"></div>
 <div class="x_panel">
-	 <div class="blog_form_title">
-	 	<h4><i class="fa fa-edit" aria-hidden="true"></i> <?php echo $tr->translate("EDIT_AGENCY")?></h4>
-	 </div>
 	<form id='add_client' action="" enctype="multipart/form-data" dojoType="dijit.form.Form" method="post">
 		<script type="dojo/method" event="onSubmit">			
 		if(this.validate()) {
@@ -59,7 +56,7 @@ fieldset{border: 1px solid #fff;}
 				<div class="col-md-8 col-xs-12 forms_padding">
 			          <div class="x_panel">
 			              <div class="x_title">
-			                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('AGENCY_INFO')?></h2>
+			                 <h2><i class="fa fa-edit"  aria-hidden="true"></i> <?php echo $tr->translate("EDIT_AGENCY")?></h2>
 			                 <ul class="nav navbar-right panel_toolbox">
 			                    <li>
 			                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -236,43 +233,6 @@ fieldset{border: 1px solid #fff;}
 			                </div>
 			                <div class="clearfix"></div>
 			                <br />
-			                <div class="title_form_blog">
-			               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate("Family Book")?></h4>
-			               </div>
-			               <div class="clearfix"></div>
-			               <div class="form-group">
-			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Family Book No')?>
-			                   </label>
-			                   <div class="col-md-4 col-sm-4 col-xs-12">
-			                    	<?php echo $frm->getElement('ftb');?>
-			                   </div>
-			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Issued Date")?> (D/M/Y)
-			                   </label>
-			                   <div class="col-md-4 col-sm-4 col-xs-12">
-			                    	<?php echo $frm->getElement('fissue_date');?>
-			                   </div>
-			                </div>
-			                <div class="clearfix"></div>
-			                 <div class="form-group">
-			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Expired Date")?> (D/M/Y)
-			                   </label>
-			                   <div class="col-md-4 col-sm-4 col-xs-12">
-			                    	<?php echo $frm->getElement('fexpired_date');?>
-			                   </div>
-			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Balance")?>
-			                   </label>
-			                   <div class="col-md-4 col-sm-4 col-xs-12">
-			                    	<?php echo $frm->getElement('balance');?>
-			                   </div>
-			                </div>
-			                <div class="clearfix"></div>
-			                 <div class="form-group">
-			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("STATUS")?>
-			                   </label>
-			                   <div class="col-md-4 col-sm-4 col-xs-12">
-			                    	<?php echo $frm->getElement('status');?>
-			                   </div>
-			                </div>
 			            </div>
 			       	</div>
 			    </div>
@@ -288,35 +248,6 @@ fieldset{border: 1px solid #fff;}
 		               <div class="clearfix"></div>
 		          	</div>
 		       		<div class="x_content">
-		       			<div class="clearfix"></div>
-		               <div class="title_form_blog">
-			               		<h4><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate("Account Information")?></h4>
-			           </div>
-			           <div class="form-group">
-			           		<?php if (empty($this->row['email_login'])){?>
-			                   <label class="control-label col-md-12 col-sm-12 col-xs-12" for="first-name">
-			                  	 <?php echo $tr->translate("Create Account");?> <input type="checkbox" class="checkbox" name="create_acc" id="create_acc" onchange="checkingCreateAccount();" style=" height: initial; display: inline-block;">
-			                   </label>
-		                   <?php }else{?>
-		                   		 <label class="control-label col-md-12 col-sm-12 col-xs-12" for="first-name">
-		                  	 <?php echo $tr->translate("Change Password");?> <input type="checkbox" class="checkbox" name="changepass" id="changepass" onchange="checkingChangePass();" style=" height: initial; display: inline-block;">
-		                   </label>
-		                   <?php }?>
-		                </div>
-			           <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Password')?>
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('password');?>
-		                   </div>
-		                </div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('EMAIL_LOGIN')?>
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('email_login');?>
-		                   </div>
-		                </div>
 		       		   <div class="clearfix"></div>
 		               <div class="title_form_blog">
 			               		<h4><i class="fa  fa-home" aria-hidden="true"></i> <?php echo $tr->translate("Local Contact Information")?></h4>
@@ -393,66 +324,54 @@ fieldset{border: 1px solid #fff;}
 		                   </div>
 		                </div>
 		                <div class="clearfix"></div>
-		                <br />
-		                <div class="title_form_blog">
-			               		<h4><i class="fa  fa-home" aria-hidden="true"></i> <?php echo $tr->translate("International Contact Information")?></h4>
-			           </div>
-			           <div class="clearfix"></div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Address Line');?> 1
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('address1');?>
-		                   </div>
-		                </div>
-		                <div class="clearfix"></div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Address Line');?> 2
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('address2');?>
-		                   </div>
-		                </div>
-		                <div class="clearfix"></div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('City');?>
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('i_city');?>
-		                   </div>
-		                </div>
-		                <div class="clearfix"></div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Zipcode');?>
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('i_zipcode');?>
-		                   </div>
-		                </div>
-		                <div class="clearfix"></div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('State/Province/Region');?>
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('state');?>
-		                   </div>
-		                </div>
-		                <div class="clearfix"></div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Country');?>
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('countries');?>
-		                   </div>
-		                </div>
-		                <div class="clearfix"></div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Cell Phone');?>
-		                   </label>
-		                   <div class="col-md-8 col-sm-8 col-xs-12">
-		                    	<?php echo $frm->getElement('i_phone');?>
-		                   </div>
-		                </div>
+		                 <br /> <br /> <br /> 
+	               <div class="title_form_blog">
+		               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate('Family Book No')?></h4>
+		           </div>
+	                <div class="clearfix"></div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('Family Book No')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                    	<?php echo $frm->getElement('ftb');?>
+	                   </div>
+	                </div>
+	                <div class="clearfix"></div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("Issued Date")?> (D/M/Y)
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                    	<?php echo $frm->getElement('fissue_date');?>
+	                   </div>
+	                </div>
+		           <div class="clearfix"></div>
+		           
+		           <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("Expired Date")?> (D/M/Y)
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                    	<?php echo $frm->getElement('fexpired_date');?>
+	                   </div>
+	                </div>
+	                <div class="clearfix"></div>
+	                <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("Balance")?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                    	<?php echo $frm->getElement('balance');?>
+	                   </div>
+	                </div>
+		           <div class="clearfix"></div>
+		           <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate("STATUS")?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                    	<?php echo $frm->getElement('status');?>
+	                   </div>
+	                </div>
+		           <div class="clearfix"></div>
+		                
+		                
 		            </div>
 		       	</div>
 		    </div>
@@ -473,11 +392,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 dojo.ready(function(){
 	
 	try{	
-		<?php if (empty($this->row['email_login'])){?>
-			checkingCreateAccount();
-		<?php }else{?>
-			checkingChangePass();
-		<?php }?>
+		 
 	}catch(e){
 		alert(e);
 	}

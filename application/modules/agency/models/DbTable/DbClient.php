@@ -18,7 +18,7 @@ class Agency_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
     	$where = " WHERE (first_name!='' OR  last_name!='') ";
     	$sql = " SELECT id,customer_code,first_name,last_name,
 	    	(SELECT name_en FROM `ldc_view` WHERE TYPE=1 AND key_code =ldc_agency.`sex` LIMIT 1) AS sex,
-	    	(SELECT name_en FROM `ldc_view` WHERE TYPE=9 AND key_code =ldc_agency.`customer_type` LIMIT 1) AS custype
+	    	(SELECT name_en FROM `ldc_view` WHERE TYPE=10 AND key_code =ldc_agency.`customer_type` LIMIT 1) AS custype
 	    	,dob,phone,pob,nationality,company_name,
 	    	group_num,house_num,commune,district,
 	    	(SELECT province_en_name FROM `ldc_province` WHERE `ldc_province`.id=province_id LIMIT 1) AS province_name,
@@ -105,26 +105,20 @@ class Agency_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 					'province_id'	=> $_data['province'],
 					'balance'  		=> $_data['balance'],
 					//'i_housenum'      => $_data['i_house'],
-					'i_city'      	=> $_data['i_city'],
+					//'i_city'      	=> $_data['i_city'],
 					//'i_province'      => $_data['i_province'],
-					'i_zipcode'     => $_data['i_zipcode'],
-					'i_phone'       => $_data['i_phone'],
-					'i_state'	    => $_data['state'],
+					//'i_zipcode'     => $_data['i_zipcode'],
+					//'i_phone'       => $_data['i_phone'],
+					//'i_state'	    => $_data['state'],
 					//'i_note'	  =>$_data['i_note'],
-					'address1'		=> $_data['address1'],
-					'address2'		=> $_data['address2'],
+// 					'address1'		=> $_data['address1'],
+// 					'address2'		=> $_data['address2'],
 					'status'  		=> $_data['status'],
 					'date'  		=> date("Y-m-d"),
 					
 			);
-			if (!empty($_data['create_acc'])){
-				$_arr['password']=md5($_data['password']);
-				$_arr['email_login']=$_data['email_login'];
-			}
+			 
 			if(!empty($_data['id'])){
-				if (!empty($_data['changepass'])){
-					$_arr['password']=md5($_data['password']);
-				}
 				$_arr['modify_date']=date("Y-m-d H:i:s");
 				$where = 'id = '.$_data['id'];
 				$this->update($_arr, $where);
