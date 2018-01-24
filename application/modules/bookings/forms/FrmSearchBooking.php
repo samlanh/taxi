@@ -45,18 +45,59 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$search_tex = new Zend_Dojo_Form_Element_TextBox("search_text");
 		$search_tex->setAttribs(array('dojoType'=>$this->text,'class'=>"fullside",));
 		
-		
-		$db_booking = new Booking_Model_DbTable_DbBooking();
-		$row_cu = $db_booking->getIdNamecustomer();
-		$opt_cu = array('-1'=>$this->tr->translate("CHOOSE_CUSTOMER"));
+		$row_cu = $_db->getAllCustomers();
+		$opt_cu = array(0=>$this->tr->translate("SELECT_CUSTOMER"));
 		$customer = new Zend_Dojo_Form_Element_FilteringSelect("customer");
-		$customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside"));
+		$customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCustomer();'));
 		foreach ($row_cu as $rs){
-			$opt_cu[$rs["id"]] = $rs["first_name"]." ".$rs["last_name"];
+			$opt_cu[$rs["id"]] = $rs["name"];
 		}
 		$customer->setMultiOptions($opt_cu);
 		$customer->setValue($request->getParam("customer"));
-		$this->addElements(array($from_book_date,$to_book_date,$search_tex,$customer));
+		
+		$row_dri = $_db->getAllDriver();
+		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
+		$driver_search = new Zend_Dojo_Form_Element_FilteringSelect("driver_search");
+		$driver_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		foreach ($row_dri as $rs){
+			$opt_dri[$rs["id"]] = $rs["name"];
+		}
+		$driver_search->setMultiOptions($opt_dri);
+		$driver_search->setValue($request->getParam("driver_search"));
+		
+		$row_veh = $_db->getVehicleHasDriver();
+		$opt_vehi = array(0=>$this->tr->translate("SELECT_VEHICLE"));
+		$vehicle_search = new Zend_Dojo_Form_Element_FilteringSelect("vehicle_search");
+		$vehicle_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		foreach ($row_veh as $rs){
+			$opt_vehi[$rs["id"]] = $rs["name"];
+		}
+		$vehicle_search->setMultiOptions($opt_vehi);
+		$vehicle_search->setValue($request->getParam("vehicle_search"));
+		
+		$row_agen = $_db->getAllAgency();
+		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"));
+		$agency_search = new Zend_Dojo_Form_Element_FilteringSelect("agency_search");
+		$agency_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside"));
+		foreach ($row_agen as $rs){
+			$opt_agen[$rs["id"]] = $rs["name"];
+		}
+		$agency_search->setMultiOptions($opt_agen);
+		$agency_search->setValue($request->getParam("agency_search"));
+		
+		$row_payment = $_db->getVewOptoinTypeByTypes(11);
+		$opt_payment = array(0=>$this->tr->translate("SELECT_PAYMENT_METHOD"));
+		$payment_method_search = new Zend_Dojo_Form_Element_FilteringSelect("payment_method_search");
+		$payment_method_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		foreach ($row_payment as $rs){
+			$opt_payment[$rs["id"]] = $rs["name"];
+		}
+		$payment_method_search->setMultiOptions($opt_payment);
+		$payment_method_search->setValue($request->getParam("payment_method_search"));
+		
+		$this->addElements(array($from_book_date,$to_book_date,$search_tex,$customer,
+				$driver_search,$vehicle_search,$agency_search,$payment_method_search
+				));
 		return $this;
 	}
 	

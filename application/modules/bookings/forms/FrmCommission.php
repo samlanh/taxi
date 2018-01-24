@@ -110,15 +110,31 @@ class Bookings_Form_FrmCommission extends Zend_Dojo_Form{
 				));
 		$total_due->setValue(0);
 		
-		$payment_note = new Zend_Dojo_Form_Element_TextBox("payment_note");
-		$payment_note->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
+		
+		$c_date = date("Y-m-d",strtotime("-7 day"));
+		$booking_date_start= new Zend_Dojo_Form_Element_DateTextBox("booking_date_start");
+		$booking_date_start->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
+		));
+		$booking_date_start->setValue($c_date);
+		
+		$c_date = date("Y-m-d");
+		$booking_date_end= new Zend_Dojo_Form_Element_DateTextBox("booking_date_end");
+		$booking_date_end->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
+		));
+		$booking_date_end->setValue($c_date);
 		
 		if (!empty($data)){
 			
-			$_reciept_no->setValue($data['booking_no']);
+			$_reciept_no->setValue($data['payment_no']);
 			$agency->setValue($data['agency_id']);
-			$payment_date->setValue(date("Y-m-d",strtotime($data['booking_date'])));
-			$remark->setValue($data['remark']);
+			$payment_date->setValue(date("Y-m-d",strtotime($data['payment_date'])));
+			$remark->setValue($data['note']);
+			$_amount->setValue($data['amount']);
+			$payment_method->setValue($data['payment_method']);
+// 			$total_payment->setValue($data['booking_no']);
+			$balance->setValue($data['balance']);
+			$total_paid->setValue($data['paid']);
+			$total_due->setValue($data['total_due']);
 			
 		}
 		
@@ -133,7 +149,9 @@ class Bookings_Form_FrmCommission extends Zend_Dojo_Form{
 				$balance,
 				$total_paid,
 				$total_due,
-				$payment_note
+				
+				$booking_date_start,
+				$booking_date_end
 			));
 		return $this;
 	}

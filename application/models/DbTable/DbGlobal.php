@@ -708,7 +708,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	$db = $this->getAdapter();
   	$lang = $this->getCurrentLang();
   	$array = array(1=>"name_en",2=>"name_kh");
-  	$sql="SELECT id,key_code,".$array[$lang]." AS name ,displayby FROM `ldc_view` WHERE status =1 AND name_en!='' ";//just concate
+  	$sql="SELECT key_code as id,".$array[$lang]." AS name ,displayby FROM `ldc_view` WHERE status =1 AND name_en!='' ";//just concate
   	if($type!=null){
   		$sql.=" AND type = $type ";
   	}

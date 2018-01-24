@@ -21,16 +21,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 					<div class="col-md-2 col-xs-12 mg-10">
 					  <?php echo $frm->getElement("search_text");?>
 					</div>
-					<div class="col-md-1 col-xs-12 ">
-						<label class="control-label" style="padding-left: 5px;"><?php echo $tr->translate('Booking From')?>
-			            </label>
-					</div>
 					<div class="col-md-2 col-xs-12 mg-10">
 					  <?php echo $frm->getElement('from_book_date');?>
-					</div>
-					<div class="col-md-1 col-xs-12">
-						<label class="control-label" style="padding-left: 5px;"><?php echo $tr->translate('To Booking')?>
-			            </label>
 					</div>
 					<div class="col-md-2 col-xs-12 mg-10">
 					  <?php echo $frm->getElement('to_book_date');?>
@@ -38,7 +30,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				  </div>
 				  <div class="form-group">
 					  	<div class="col-md-2 col-xs-12 mg-10">
-						  <?php echo $frm->getElement("customer");?>
+						  <?php echo $frm->getElement("agency_search");?>
 						</div>
 						<div class="col-md-1 col-xs-12">
 							<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>

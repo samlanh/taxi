@@ -51,6 +51,10 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$delivery_date->setValue($request->getParam("delivery_date"));
 		}
 		
+		$delivery_time = new Zend_Form_Element_Text("delivery_time");
+		$delivery_time->setAttribs(array('dojoType'=>'dijit.form.TimeTextBox','class'=>"fullside"));
+		$delivery_time->setValue('T00:00:00');
+		
 		$rows = $_db->getAllLocation();
 		$opt_location = array(0=>$this->tr->translate("CHOOSE_LOCTION"),-1=>$this->tr->translate("ADD_NEW"));
 		if(!empty($rows)){
@@ -117,7 +121,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$price->setAttribs(
 				array('dojoType'=>$this->number,
 					'class'=>"fullside",
-					'onKeyup'=>'CalculateTotal();',
+					'onChange'=>'CalculateTotal();',
 				));
 		$price->setValue(0);
 		
@@ -125,7 +129,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$commision_fee->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
-						'onKeyup'=>'CalculateTotal();',
+						'onChange'=>'CalculateTotal();',
 				));
 		$commision_fee->setValue(0);
 		
@@ -133,14 +137,14 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$other_fee->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
-						'onKeyup'=>'CalculateTotal();',
+						'onChange'=>'CalculateTotal();',
 				));
 		$other_fee->setValue(0);
 		
 		$total = new Zend_Dojo_Form_Element_NumberTextBox("total");
 		$total->setAttribs(
 				array('dojoType'=>$this->number,
-						'readonly'=>'readonly',
+						'onKeyup'=>'settotal();',
 						'class'=>"fullside",
 				));
 		$total->setValue(0);
@@ -183,6 +187,19 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$payment_note = new Zend_Dojo_Form_Element_TextBox("payment_note");
 		$payment_note->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 		
+		$_fly_no = new Zend_Dojo_Form_Element_TextBox('fly_no');
+		$_fly_no->setAttribs(array(
+				'dojoType'=>'dijit.form.TextBox',
+				'class'=>'fullside',
+				'style'=>'color:red',
+				'placeholder'=>$this->tr->translate("FLY_NO")
+		));
+		$driver_fee = new Zend_Dojo_Form_Element_NumberTextBox("driver_fee");
+		$driver_fee->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+				));
+		$driver_fee->setValue(0);
 		if (!empty($data)){
 			
 			$_booking_no->setValue($data['booking_no']);
@@ -200,29 +217,35 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$total->setValue($data['total']);
 			$remark->setValue($data['remark']);
 			
+			$_fly_no->setValue($data['fly_no']);
+			$delivery_time->setValue($data['delivey_time']);
+			$driver_fee->setValue($data['driver_fee']);
 		}
 		
 		$this->addElements(array(
 				$_booking_no,
 				$customer,
+				$_fly_no,
 				$driver,
 				$vehicle,
 				$agency,
 				$from_location,
 				$to_location,
 				$booking_date,
+				$delivery_time,
 				$delivery_date,
 				$price,
 				$commision_fee,
 				$other_fee,
 				$total,
 				$remark,
+				$driver_fee,
 				
 				$payment_method,
 				$total_payment,
 				$balance,
 				$total_paid,
-				$payment_note
+				$payment_note,
 			));
 		return $this;
 	}

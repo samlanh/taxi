@@ -10,6 +10,7 @@ dojo.require("dojo.data.ItemFileWriteStore");
 dojo.require("dijit.form.NumberTextBox");
 dojo.require("dijit.form.DateTextBox");
 dojo.require("dijit.form.Textarea");
+dojo.require("dijit.form.TimeTextBox");
 dojo.require("dojo.parser");
 require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 </script>
@@ -97,10 +98,10 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('booking_date');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("FLY_NO")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('agency');?>
+		                    	<?php echo $frm->getElement('fly_no');?>
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -109,11 +110,25 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('delivery_date');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('agency');?>
+		                   </div>
+		                  
+		                </div>
+		                 <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DELIVERY_TIME")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('delivery_time');?>
+		                   </div>
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('driver');?>
 		                   </div>
+		                 
 		                </div>
 		                <div class="form-group">
 		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("FROM_LOCATION")?>
@@ -121,7 +136,7 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('from_location');?>
 		                   </div>
-		                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE")?>
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('vehicle');?>
@@ -133,7 +148,11 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('to_location');?>
 		                   </div>
-		                   <div class="col-md-6 col-sm-6 col-xs-12"></div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER_FEE")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('driver_fee');?>
+		                   </div>
 		                </div>
 		                <div class="form-group">
 		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("REMARK")?>
@@ -146,29 +165,31 @@ h4.car_title {
 		               		<h4><i class="fa  fa-money" aria-hidden="true"></i> <?php echo $tr->translate('PRICE_INFORMATION')?></h4>
 		               </div>
 		               <div class="form-group">
+		               	   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("GRAND_TOTAL")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('total');?>
+		                   </div>
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("CAR_RENT_FEE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('price');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("OTHER_FEE")?>
+		                   
+		                  
+		                </div>
+		                <div class="form-group">
+		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("OTHER_FEE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('other_fee');?>
 		                   </div>
-		                  
-		                </div>
-		                <div class="form-group">
 		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("COMMISSION_FEE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('commision_fee');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("GRAND_TOTAL")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('total');?>
-		                   </div>
+		                   
 		                </div>
 		                <div class="title_form_blog">
 		               		<h4><i class="fa  fa-money" aria-hidden="true"></i> <?php echo $tr->translate('PAYMENT_INFORMATION')?></h4>
@@ -303,7 +324,7 @@ h4.car_title {
 	       					<h4 style=" font-size: 14px;"><i class="fa  fa-car" aria-hidden="true"></i> <?php echo $tr->translate('Vehicle Infomation')?></h4>
 	       				</div>
 	       				<div id="vehiclesss" class="cus_info col-md-12 col-sm-12 col-xs-12">
-	       					<h4 class="car_title">FORD Ranger LIMITED</h4>
+	       					<h4 class="car_title"></h4>
 		       				<div class="col-md-4 col-sm-4 col-xs-12">
 				               	<div class="image-box infor">
 									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/no_car.png';?>" alt=""  />
@@ -416,8 +437,15 @@ function CalculateTotal(){
 	var price = dijit.byId('price').get('value');
 	var commision_fee = dijit.byId('commision_fee').get('value');
 	var other_fee = dijit.byId('other_fee').get('value');
-
-	var total = price + commision_fee + other_fee;
+	var total = dijit.byId('total').get('value');
+	total = total + other_fee;
+	if(total>0){
+		if(price > total){
+			total = price + other_fee;
+		}
+		var  commision_fee  = total - price - other_fee;
+		dijit.byId('commision_fee').set('value',commision_fee.toFixed(2));
+	}
 	dijit.byId('total').set('value',total.toFixed(2));
 	dijit.byId('total_payment').set('value',total.toFixed(2));
 	calculatebalance();
@@ -431,5 +459,16 @@ function calculatebalance(){
 	}
 	var balance = total - total_paid;
 	dijit.byId('balance').set('value',balance.toFixed(2));
+}
+function settotal(){
+	var other_fee = dijit.byId('other_fee').get('value');
+	var total = dijit.byId('total').get('value');
+	dijit.byId('total_payment').set('value',total.toFixed(2));
+	total = total -other_fee;
+	if(total<0){
+		total = 0;
+	}
+	dijit.byId('price').set('value',total.toFixed(2));
+	dijit.byId('commision_fee').set('value',0);
 }
 </script>

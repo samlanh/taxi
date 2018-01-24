@@ -18,16 +18,18 @@ class Bookings_CommissionpaymentController extends Zend_Controller_Action {
 						'to_book_date' => date("Y-m-d"),
 						'from_book_date' => date("Y-m-d"),
 						'search_text' => "",
-						'customer'=>-1,
+						'agency_search'=>0,
 				);
 			}
-			$rs_rows= $db->getAllCarBooking($search);
+			$rs_rows= $db->getAllCommissionPayment($search);
+			$glClass = new Application_Model_GlobalClass();
+			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("BOOKING_NO","CUSTOMER","FROM_LOCATION","TO_LOCATION","BOOKING_DATE","DELIVERY_DATE","CAR_RENT_FEE","COMMISSION_FEE","OTHER_FEE","GRAND_TOTAL","DRIVER","STATUS",);
+			$collumns = array("RECIEPT_NO","AGENCY","PAYMENT_DATE","PAYMENT_METHOD","BALANCE","PAID","TOTAL_DUE","STATUS",);
 			$link=array(
-					'module'=>'bookings','controller'=>'index','action'=>'edit',
+					'module'=>'bookings','controller'=>'commissionpayment','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('booking_no'=>$link,'cus_name'=>$link));
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'agentcy'=>$link));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -37,8 +39,8 @@ class Bookings_CommissionpaymentController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_search = $frm;
 	}
-	public function addAction(){
-		
+	public function addAction()
+	{
 		$db = new Bookings_Model_DbTable_DbCommission();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
@@ -61,14 +63,15 @@ class Bookings_CommissionpaymentController extends Zend_Controller_Action {
 		$db = new Bookings_Model_DbTable_DbCommission();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$booking_id=$db->addCarBooking($data);
-				$this->_redirect("/bookings/index");
+			$booking_id=$db->updateCommissionPayment($data);
+				$this->_redirect("/bookings/commissionpayment");
 		}
 		$id=$this->getRequest()->getParam('id');
 		$this->view->id = $id;
-		$row = $db->getCarbookingById($id);
+		$row = $db->getCommissionPaymentByID($id);
+		$this->view->row =$row;
 		if (empty($row)){
-			$this->_redirect("/bookings/index");
+			$this->_redirect("/bookings/commissionpayment");
 		}
 		$frm = new Bookings_Form_FrmCommission();
 		$form = $frm->FormBooking($row);
@@ -89,6 +92,16 @@ class Bookings_CommissionpaymentController extends Zend_Controller_Action {
 			$data = $this->getRequest()->getPost();
 			$db_com = new Bookings_Model_DbTable_DbCommission();
 			$id = $db_com->getCarbookingCommissionAgent($data);
+			print_r(Zend_Json::encode($id));
+			exit();
+		}
+	}
+	
+	function getcarbookingbyagencyeditAction(){
+		if($this->getRequest()->isPost()){
+			$data = $this->getRequest()->getPost();
+			$db_com = new Bookings_Model_DbTable_DbCommission();
+			$id = $db_com->getCarbookingCommissionAgentForEdit($data);
 			print_r(Zend_Json::encode($id));
 			exit();
 		}
