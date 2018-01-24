@@ -85,6 +85,8 @@ h4.car_title {
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('booking_no');?>
+		                    	<input type="hidden" dojoType="dijit.form.TextBox" name="booking_id" id="booking_id" value="<?php echo $this->row['id'];?>" >
+		                    	<input type="hidden" dojoType="dijit.form.TextBox" name="is_commssion_paid" id="is_commssion_paid" value="<?php echo $this->row['is_paid_commission'];?>" >
 		                   </div>
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("CUSTOMER")?>
 		                   </label>
@@ -299,22 +301,28 @@ h4.car_title {
 	       				<div id="driver_html" class="cus_info col-md-12 col-sm-12 col-xs-12">
 		       				<div class="col-md-4 col-sm-4 col-xs-12">
 				               	<div class="image-box infor">
-									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
+				               		<?php 
+				               		$profile = $this->baseUrl().'/images/profile.jpg';
+					               		if (!empty($this->driver_info['photo'])){
+					               			$profile = $this->baseUrl().'/images/driverphoto/'.$this->driver_info['photo'];
+					               		}
+				               		?>
+									<img id="profile_wiew" src="<?php echo $profile;?>" alt=""  />
 								</div>
 							</div>
 							<div class="col-md-8 col-sm-8 col-xs-12">
 								<ul class="list-unstyled">
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['first_name'])){ echo $this->driver_info['first_name']." ".$this->driver_info['last_name'];}?></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['sexs'])){ echo $this->driver_info['sexs'];}?></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['nationality'])){ echo $this->driver_info['nationality'];}?></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['tel'])){ echo $this->driver_info['tel'];}?></span>
                               		</li>
                               	</ul>
 							</div>
@@ -324,22 +332,31 @@ h4.car_title {
 	       					<h4 style=" font-size: 14px;"><i class="fa  fa-car" aria-hidden="true"></i> <?php echo $tr->translate('Vehicle Infomation')?></h4>
 	       				</div>
 	       				<div id="vehiclesss" class="cus_info col-md-12 col-sm-12 col-xs-12">
-	       					<h4 class="car_title"></h4>
+	       					<h4 class="car_title">
+	       						<?php if (!empty($this->vehicle_info['make'])){ echo $this->vehicle_info['make'];}?>&nbsp;
+	       						<?php if (!empty($this->vehicle_info['model'])){ echo $this->vehicle_info['model'];}?>&nbsp;
+	       						<?php if (!empty($this->vehicle_info['sub_model'])){ echo $this->vehicle_info['sub_model'];}?>&nbsp;
+	       					</h4>
 		       				<div class="col-md-4 col-sm-4 col-xs-12">
 				               	<div class="image-box infor">
-									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/no_car.png';?>" alt=""  />
+				               		<?php 
+				               		$images = $this->baseUrl().'/images/no_car.png';
+				               		if (!empty($this->vehicle_info['img_front'])){ 
+				               			$images = $this->baseUrl().'/images/vehicle/'.$this->vehicle_info['img_front'];
+				               		}?>
+									<img id="profile_wiew" src="<?php echo $images;?>" alt=""  />
 								</div>
 							</div>
 							<div class="col-md-8 col-sm-8 col-xs-12">
 								<ul class="list-unstyled">
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref.No.')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref.No.')?></span> : <span class="span_value"><?php if (!empty($this->vehicle_info['reffer'])){ echo $this->vehicle_info['reffer'];}?></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('YEAR')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('YEAR')?></span> : <span class="span_value"><?php if (!empty($this->vehicle_info['year'])){ echo $this->vehicle_info['year'];}?></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Color')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Color')?></span> : <span class="span_value"><?php if (!empty($this->vehicle_info['color'])){ echo $this->vehicle_info['color'];}?></span>
                               		</li>
                               	</ul>
 							</div>
@@ -436,6 +453,8 @@ function getDriver(type){
 }
 
 function CalculateTotal(){
+	var is_commssion_paid = dijit.byId('is_commssion_paid').get('value');
+	
 	var price = dijit.byId('price').get('value');
 	var commision_fee = dijit.byId('commision_fee').get('value');
 	var other_fee = dijit.byId('other_fee').get('value');
@@ -445,10 +464,15 @@ function CalculateTotal(){
 		if(price > total){
 			total = price + other_fee;
 		}
-		var  commision_fee  = total - price - other_fee;
-		dijit.byId('commision_fee').set('value',commision_fee.toFixed(2));
+		if(is_commssion_paid==1){
+			price = total - other_fee;
+			dijit.byId('price').set('value',price.toFixed(2));
+		}else{
+			var  commision_fee  = total - price - other_fee;
+			dijit.byId('commision_fee').set('value',commision_fee.toFixed(2));
+		}
 	}
-	dijit.byId('total').set('value',total.toFixed(2));
+	dijit.byId('total').set('value',total);
 	dijit.byId('total_payment').set('value',total.toFixed(2));
 	calculatebalance();
 }
@@ -463,14 +487,22 @@ function calculatebalance(){
 	dijit.byId('balance').set('value',balance.toFixed(2));
 }
 function settotal(){
+	var is_commssion_paid = dijit.byId('is_commssion_paid').get('value');
 	var other_fee = dijit.byId('other_fee').get('value');
 	var total = dijit.byId('total').get('value');
+	dijit.byId('balance').set('value',total.toFixed(2));
 	dijit.byId('total_payment').set('value',total.toFixed(2));
 	total = total -other_fee;
-	if(total<0){
-		total = 0;
+	if(is_commssion_paid==1){
+		var commision_fee = dijit.byId('commision_fee').get('value');
+		dijit.byId('price').set('value',(total-commision_fee).toFixed(2));
+	}else{
+		if(total<0){
+			total = 0;
+		}
+		dijit.byId('price').set('value',total.toFixed(2));
+		dijit.byId('commision_fee').set('value',0);
 	}
-	dijit.byId('price').set('value',total.toFixed(2));
-	dijit.byId('commision_fee').set('value',0);
+	
 }
 </script>

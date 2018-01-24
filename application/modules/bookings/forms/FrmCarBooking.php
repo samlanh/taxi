@@ -201,6 +201,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				));
 		$driver_fee->setValue(0);
 		if (!empty($data)){
+			$dbbooking = new Bookings_Model_DbTable_DbBooking();
+			$chekcpayment = $dbbooking->checkBookingHasPayment($data['id']);
 			
 			$_booking_no->setValue($data['booking_no']);
 			$customer->setValue($data['customer_id']);
@@ -220,6 +222,38 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$_fly_no->setValue($data['fly_no']);
 			$delivery_time->setValue($data['delivey_time']);
 			$driver_fee->setValue($data['driver_fee']);
+			if ($data['is_customer_paid']==1){
+				$customer->setAttribs(array('readonly'=>'readonly',));
+				$agency->setAttribs(array('readonly'=>'readonly',));
+				$commision_fee->setAttribs(array('readonly'=>'readonly',));
+				$other_fee->setAttribs(array('readonly'=>'readonly',));
+				$price->setAttribs(array('readonly'=>'readonly',));
+				$total->setAttribs(array('readonly'=>'readonly',));
+				if ($data['is_paid_to_driver']==1){
+				$driver_fee->setAttribs(array('readonly'=>'readonly',));
+				}
+			}
+			if ($data['is_paid_to_driver']==1){
+				$driver_fee->setAttribs(array('readonly'=>'readonly',));
+			}
+			if ($data['is_paid_commission']==1){
+				$commision_fee->setAttribs(array('readonly'=>'readonly',));
+				$agency->setAttribs(array('readonly'=>'readonly',));
+			}
+			$balance->setValue($data['total']);
+			$total_paid->setValue(0);
+			$total_payment->setValue($data['total']);
+			if (!empty($chekcpayment)){
+				$balance->setValue(0);
+				$total_paid->setValue(0);
+				$total_payment->setValue(0);
+				$payment_method->setAttribs(array('readonly'=>'readonly',));
+				$total_payment->setAttribs(array('readonly'=>'readonly',));
+				$balance->setAttribs(array('readonly'=>'readonly',));
+				$total_paid->setAttribs(array('readonly'=>'readonly',));
+				$payment_note->setAttribs(array('readonly'=>'readonly',));
+			}
+			
 		}
 		
 		$this->addElements(array(

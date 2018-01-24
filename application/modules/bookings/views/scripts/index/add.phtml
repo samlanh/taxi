@@ -446,7 +446,7 @@ function CalculateTotal(){
 		var  commision_fee  = total - price - other_fee;
 		dijit.byId('commision_fee').set('value',commision_fee.toFixed(2));
 	}
-	dijit.byId('total').set('value',total.toFixed(2));
+	dijit.byId('total').set('value',total);
 	dijit.byId('total_payment').set('value',total.toFixed(2));
 	calculatebalance();
 }

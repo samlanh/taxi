@@ -12,6 +12,9 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 	static function getCurrentLang(){
 		$session_lang=new Zend_Session_Namespace('lang');
 		if(!empty($session_lang->lang_id)){
+			if ($session_lang->lang_id>2){
+				return 2;
+			}
 			return $session_lang->lang_id;
 		}else{
 			return 2;

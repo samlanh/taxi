@@ -147,6 +147,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		}
 		return $string;
 	}
+	
 	function getDriverAndCarInfor($data){
 		$db = $this->getAdapter();
 		$dbgb = new Application_Model_DbTable_DbGlobal();
@@ -349,6 +350,19 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		';
 		return $row = $db->fetchRow($sql);
 	}
+	function getDriverInformation($driver_id){
+		$db = $this->getAdapter();
+		$dbgb = new Application_Model_DbTable_DbGlobal();
+		$lang= $dbgb->getCurrentLang();
+		$arrayview = array(1=>"name_en",2=>"name_kh");
+		$sql="
+		SELECT d.*,
+		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs
+		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`first_name`!=''
+		AND d.id =$driver_id LIMIT 1
+		";
+		return $db->fetchRow($sql);
+	}
 	public function addCarBooking($_data){
 		$db = $this->getAdapter();
 		$db->beginTransaction();
@@ -399,6 +413,119 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 			$db->rollBack();
 		}
+	}
+	public function updateCarBooking($_data){
+		$db = $this->getAdapter();
+		$db->beginTransaction();
+		try{
+			$commission_pay = $this->getTotalCommissionFee($_data['booking_id']);
+			$commiss_paid = 0;
+			if (!empty($commission_pay)){
+				$commiss_paid = $commission_pay['total_paid_commiss'];
+			}
+			$commision_fee_after = $_data['commision_fee'] - $commiss_paid;
+			$is_commissionpaid = 0;
+			if ($commision_fee_after<=0){
+				$is_commissionpaid =1;
+			}
+			
+			$driverfee_pay = $this->getTotalDriverFee($_data['booking_id']);
+			$driverfee_paid = 0;
+			if (!empty($driverfee_pay)){
+				$driverfee_paid = $driverfee_paid['total_driver_fee'];
+			}
+			$driver_feeafter = $_data['driver_fee']-$driverfee_paid;
+			$is_driverpaid = 0;
+			if ($driver_feeafter<=0){
+				if ($_data['driver']>0){
+					$is_driverpaid =1;
+				}
+			}
+			$_arrbooking=array(
+					'customer_id'	  => $_data['customer'],
+					'driver_id'	  => $_data['driver'],
+					'vehicle_id'	  => $_data['vehicle'],
+					'agency_id'	  => $_data['agency'],
+// 					'booking_no'	  => $booking_code,
+					'booking_date'	  => $_data['booking_date'],
+					'delivey_date'	  => $_data['delivery_date'],
+					'delivey_time'	  => $_data['delivery_time'],
+					'fly_no'	  => $_data['fly_no'],
+					'from_location'	  => $_data['from_location'],
+					'to_location'	  => $_data['to_location'],
+					'qty'	  => 1,
+					'price'	  => $_data['price'],
+					'commision_fee'	  => $_data['commision_fee'],
+					'commision_fee_after'	  => $commision_fee_after,
+					'is_paid_commission'	  => $is_commissionpaid,
+					'other_fee'	  => $_data['other_fee'],
+					'total'	  => $_data['total'],
+					'due'	  => $_data['total'],
+					'due_after'	  => $_data['total'],
+					'driver_fee'	  => $_data['driver_fee'],
+					'driver_fee_after'	  => $driver_feeafter,
+					'remark'	  => $_data['remark'],
+					'status'	  => 1,
+					'is_paid_to_driver'	  => $is_driverpaid,
+					'is_customer_paid'	  => 0,
+					'create_date'=> date("Y-m-d H:i:s"),
+					'modify_date'  =>date("Y-m-d H:i:s"),
+					'user_id'      => $this->getUserId(),
+			);
+			$this->_name="ldc_carbooking";
+			$where = " id = ".$_data['booking_id'];
+			$this->update($_arrbooking, $where);
+			$idbooking = $_data['booking_id'];
+
+			$chekcpayment = $this->checkBookingHasPayment($idbooking);
+			if (empty($chekcpayment)){
+				if ($_data['total_paid']>0){
+					$_data['booking_id'] = $idbooking;
+					$this->addCarbookingPayment($_data);
+				}
+			}
+			$db->commit();
+		}catch(exception $e){
+			Application_Form_FrmMessage::message("Application Error");
+			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			$db->rollBack();
+		}
+	}
+	function getTotalCommissionFee($booking_id){
+		$db = $this->getAdapter();
+		$sql="
+			SELECT 
+				SUM(pd.`paid`) AS total_paid_commiss
+			FROM `ldc_commission_payment_detail` AS pd,
+				`ldc_commission_payment` AS p
+			WHERE 
+				p.id = pd.`commission_payment_id` AND pd.`booking_id` =$booking_id
+				AND p.`status` =1";
+		return $db->fetchRow($sql);
+	}
+	function getTotalDriverFee($booking_id){
+		$db = $this->getAdapter();
+		$sql="
+		SELECT 
+			SUM(pd.`paid`) AS total_driver_fee
+		FROM `ldc_driver_fee_payment_detail` AS pd,
+			`ldc_driver_fee_payment` AS p
+		WHERE 
+			p.id = pd.`driverfee_payment_id` AND pd.`booking_id` =$booking_id
+			AND p.`status` =1";
+		return $db->fetchRow($sql);
+	}
+	function checkBookingHasPayment($booking_id){
+		$db = $this->getAdapter();
+		$sql="
+			SELECT cpd.* 
+			FROM `ldc_carbooking_payment_detail` AS cpd,
+			`ldc_carbooking_payment` AS cp
+			WHERE 
+				cp.`id` = cpd.`payment_id`
+				AND cpd.`booking_id` = $booking_id
+				AND cp.`status`=1";
+		return $db->fetchRow($sql);
 	}
 	function getCarbookingById($id){
 		$db = $this->getAdapter();

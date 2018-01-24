@@ -61,15 +61,19 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$db = new Bookings_Model_DbTable_DbBooking();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$booking_id=$db->addCarBooking($data);
+			$booking_id=$db->updateCarBooking($data);
 				$this->_redirect("/bookings/index");
 		}
 		$id=$this->getRequest()->getParam('id');
 		$this->view->id = $id;
 		$row = $db->getCarbookingById($id);
+		$this->view->row = $row;
 		if (empty($row)){
 			$this->_redirect("/bookings/index");
 		}
+		$this->view->driver_info = $db->getDriverInformation($row['driver_id']);
+		$this->view->vehicle_info = $db->getvehicleinfo($row['vehicle_id']);
+		
 		$frm = new Bookings_Form_FrmCarBooking();
 		$form = $frm->FormBooking($row);
 		Application_Model_Decorator::removeAllDecorator($form);
