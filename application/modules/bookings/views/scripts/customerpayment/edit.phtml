@@ -72,7 +72,7 @@ h4.car_title {
       	 <div class="col-md-12 col-xs-12 forms_padding">
 	          <div class="x_panel">
 	              <div class="x_title">
-	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('Customer Payment')?></h2>
+	                 <h2><i class="fa  fa-edit" aria-hidden="true"></i> <?php echo $tr->translate('Customer Payment')?></h2>
 	                 <ul class="nav navbar-right panel_toolbox">
 	                    <li>
 	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -226,7 +226,6 @@ h4.car_title {
 							<input type="button" value="GO_BACK" label="<?php echo $tr->translate('GO_BACK');?>" id="back" dojoType="dijit.form.Button" 
 										iconClass="dijitIconUndo" onclick="window.history.back();" />
 							<input class="button_success" type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVE_CLOSE');?>" id="save_close" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 	
-							<input class="button_success" type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVE_NEW');?>" id="save_new" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
 						</div>
 	       		</div>
        		</div>
@@ -239,6 +238,7 @@ h4.car_title {
 require(["dojo/ready"], function(ready){
 	ready(function(){
 		getCustomerBooking(1);
+		getCustomer();
 	});
 });
 var url="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getcustomer'));?>";

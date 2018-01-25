@@ -306,29 +306,28 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 		$db->beginTransaction();
 		try{
 			$_db = new Application_Model_DbTable_DbGlobal();
-			$reciept_no = $_db->getNewCommissionPaymentNO();
-			$_arrcommission=array(
-					'payment_no'	  => $reciept_no,
-					'agency_id'	  => $_data['agency'],
+// 			$reciept_no = $_db->getNewCommissionPaymentNO();
+			$_arr_payment=array(
+					'customer_id'	  => $_data['customer'],
 					'payment_date'	  => $_data['payment_date'],
 					'payment_type'	  => 0,
 					'payment_method'	  => $_data['payment_method'],
 					'paid'	  => $_data['total_paid'],
-					'balance'	  => $_data['balance'],
-					'total_due'	  => $_data['total_due'],
-					'amount'      => $_data['amount'],
+					'balance'	  => $_data['total_due'],
+					'grand_total'	  => $_data['amount'],
+// 					'amount'      => $_data['amount'],
 					'note'	  => $_data['remark'],
 					'status'	  => 1,
 					'create_date'=> date("Y-m-d H:i:s"),
 					'modify_date'  =>date("Y-m-d H:i:s"),
 					'user_id'      => $this->getUserId(),
 			);
-			$this->_name="ldc_commission_payment";
+			$this->_name="ldc_carbooking_payment";
 			$where = ' id = '.$_data['payment_id'];
-			$this->update($_arrcommission, $where);
-			$id_commission_payment = $_data['payment_id'];
+			$this->update($_arr_payment, $where);
+			$id_payment = $_data['payment_id'];
 			
-			$row = $this->getCommissionPaymentDetail($id_commission_payment);
+			$row = $this->getCarbookingPaymentDetail($id_payment);
 			if (!empty($row)) foreach ($row as $pay_detail){
 				$rowpaymentdetail = $this->getCarbookingPaymentAndBookingId($_data['payment_id'], $pay_detail['booking_id']);
 				
@@ -337,9 +336,9 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 					$duevalu=$rowpaymentdetail['paid'];
 					
 					$paymenttailByBooking = $this->getSumCarbookingPaymentDetailByBookingId($pay_detail['booking_id'], $pay_detail['id']);// get other pay amount on this Booking on other commission payment
-					$dueafters = $bookingafter['commision_fee_after']+$duevalu;
+					$dueafters = $bookingafter['due_after']+$duevalu;
 					if (!empty($paymenttailByBooking['tolalpayamount'])){
-						$duevalu = ($rowpaymentdetail['commision_fee']-$paymenttailByBooking['tolalpayamount']);
+						$duevalu = ($rowpaymentdetail['due']-$paymenttailByBooking['tolalpayamount']);
 						$dueafters =$duevalu;
 					}
 					
@@ -349,8 +348,8 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 						$is_payments=1;
 					}
 					$array=array(
-							'is_paid_commission'=>$is_payments,
-							'commision_fee_after'=>$dueafters,
+							'is_customer_paid'=>$is_payments,
+							'due_after'=>$dueafters,
 					);
 					$this->_name="ldc_carbooking";
 					$where = " id =".$pay_detail['booking_id'];
@@ -372,8 +371,8 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 				}
 			}
 			// delete old payment detail that don't have on new payment detail after edit
-			$this->_name="ldc_commission_payment_detail";
-			$where2=" commission_payment_id = ".$id_commission_payment;
+			$this->_name="ldc_carbooking_payment_detail";
+			$where2=" payment_id = ".$id_payment;
 			if (!empty($detailidlist)){ // check if has old payment detail  detail id
 				$where2.=" AND id NOT IN (".$detailidlist.")";
 			}
@@ -386,15 +385,15 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 				$paid = $_data['payment_amount'.$i];
 	
 				if (!empty($booking)){
-					$dueafter =$booking['commision_fee_after']-$paid;
+					$dueafter =$booking['due_after']-$paid;
 					if ($dueafter>0){
 						$is_payment=0;
 					}else{
 						$is_payment=1;
 					}
 					$array=array(
-							'is_paid_commission'=>$is_payment,
-							'commision_fee_after'=>$dueafter,
+							'is_customer_paid'=>$is_payment,
+							'due_after'=>$dueafter,
 					);
 					$this->_name="ldc_carbooking";
 					$where = " id =".$_data['carbooking_id'.$i];
@@ -402,24 +401,24 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 				}
 				if (!empty($_data['detailid'.$i])){
 					$arrs = array(
-							'commission_payment_id'=>$id_commission_payment,
+							'payment_id'=>$id_payment,
 							'booking_id'=>$_data['carbooking_id'.$i],
-							'due_amount'=>$_data['commision_fee'.$i],
+							'due_amount'=>$_data['due_after'.$i],
 							'paid'=>$_data['payment_amount'.$i],
 							'remain'=>$_data['remain'.$i],
 					);
-					$this->_name ='ldc_commission_payment_detail';
+					$this->_name ='ldc_carbooking_payment_detail';
 					$where12 =" id= ".$_data['detailid'.$i];
 					$this->update($arrs, $where12);
 				}else{
 					$arrs = array(
-							'commission_payment_id'=>$id_commission_payment,
+							'payment_id'=>$id_payment,
 							'booking_id'=>$_data['carbooking_id'.$i],
-							'due_amount'=>$_data['commision_fee'.$i],
+							'due_amount'=>$_data['due_after'.$i],
 							'paid'=>$_data['payment_amount'.$i],
 							'remain'=>$_data['remain'.$i],
 					);
-					$this->_name ='ldc_commission_payment_detail';
+					$this->_name ='ldc_carbooking_payment_detail';
 					$this->insert($arrs);
 				}
 			}
