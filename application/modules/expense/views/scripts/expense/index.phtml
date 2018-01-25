@@ -1,7 +1,7 @@
 <?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
 <?php
 	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
-	echo $this->headTitle($tr->translate("Customer List"));
+	echo $this->headTitle($tr->translate("EXPENSE"));
 ?>	
 <?php $frm =  $this->frm_search;
 ?>
@@ -10,11 +10,12 @@
 	dojo.require('dijit.form.Form');	
 	dojo.require('dijit.form.Button');
 	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
 </script>
 <div class="row">
 	<div class="x_panel" >
 		 <div class="blog_form_title">
-		 	<h4><i class="fa fa-users" aria-hidden="true"></i> <?php echo $tr->translate("AGENCY")?></h4>
+		 	<h4><i class="fa fa-edit" aria-hidden="true"></i> <?php echo $tr->translate("EXPENSE")?></h4>
 		 </div>
 		<form id="list" name="list" action="" dojoType="dijit.form.Form" method="post">
 		  <div class="clearfix"></div>
@@ -23,12 +24,18 @@
 		  			<?php echo $frm->getElement("title");?>
 		  		</div>
 		  		<div class="col-md-2 col-xs-12 mg-10">
-		  			<?php echo $frm->getElement("agencytype_id");?>
+		  			<?php echo $frm->getElement("payment_method");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("start_date");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("end_date");?>
 		  		</div>
 		  		<div class="col-md-2 col-xs-12 mg-10">
 		  			<?php echo $frm->getElement('status_search');?>
 		  		</div>
-		  		<div class="col-md-2 col-xs-12 mg-10">
+		  		<div class="col-md-1 col-xs-12 mg-10">
 		  			<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
 		  		</div>
 		  	</div>

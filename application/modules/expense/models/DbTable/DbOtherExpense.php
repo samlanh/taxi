@@ -1,137 +1,131 @@
 <?php
 
-class Expense_Model_DbTable_DbVehicleMaintenance extends Zend_Db_Table_Abstract
+class Expense_Model_DbTable_DbOtherExpense extends Zend_Db_Table_Abstract
 {
-
-    protected $_name = 'ldc_agency';
+    protected $_name = 'ln_expense';
     public function getUserId(){
     	$db = new Application_Model_DbTable_DbGlobal();
     	$cud = $db->getUserId();
     	return $cud;
     }
     
-    function getAllClients($search = null){
+    function getAllOtherExpense($search = null){
     	$db = $this->getAdapter();
-    	$from_date =(empty($search['start_date']))? '1': "date >= '".$search['start_date']." 00:00:00'";
-    	$to_date = (empty($search['end_date']))? '1': "date <= '".$search['end_date']." 23:59:59'";
-    	// 		$where = " WHERE (first_name!='' OR  last_name!='') AND ".$from_date." AND ".$to_date;
-    	$where = " WHERE (first_name!='' OR  last_name!='') ";
-    	$sql = " SELECT id,customer_code,first_name,last_name,
-	    	(SELECT name_en FROM `ldc_view` WHERE TYPE=1 AND key_code =ldc_agency.`sex` LIMIT 1) AS sex,
-	    	(SELECT name_en FROM `ldc_view` WHERE TYPE=9 AND key_code =ldc_agency.`customer_type` LIMIT 1) AS custype
-	    	,dob,phone,pob,nationality,company_name,
-	    	group_num,house_num,commune,district,
-	    	(SELECT province_en_name FROM `ldc_province` WHERE `ldc_province`.id=province_id LIMIT 1) AS province_name,
-	    	status FROM  $this->_name ";
+    	$from_date =(empty($search['start_date']))? '1': "create_date >= '".$search['start_date']." 00:00:00'";
+    	$to_date = (empty($search['end_date']))? '1': "create_date <= '".$search['end_date']." 23:59:59'";
+    	 
+    	$sql = " SELECT  id,invoice,cheque_no,
+			         (SELECT name_en FROM tb_view WHERE `key_code`=ln_expense.payment_type AND `type`=15 LIMIT 1) AS payment_type,title,
+			         CONCAT('$ ',total_amount),create_date,
+			        (SELECT first_name FROM rms_users WHERE rms_users.id=ln_expense.user_id LIMIT 1) AS user_name,`status`
+			        FROM ln_expense ";
+    	$from_date =(empty($search['start_date']))? '1': " create_date >= '".$search['start_date']." 00:00:00'";
+    	$to_date = (empty($search['end_date']))? '1': " create_date <= '".$search['end_date']." 23:59:59'";
+    	$where = " WHERE ".$from_date." AND ".$to_date;
     	if(!empty($search['title'])){
     		$s_where = array();
     		$s_search = addslashes(trim($search['title']));
     		$s_search = str_replace(' ', '', $s_search);
-    		$s_where[] = "REPLACE(customer_code,' ','') LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(first_name,' ','')  	LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(last_name,' ','')  	LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(phone,' ','')  		LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(pob,' ','')  			LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(nationality,' ','')   LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(company_name,' ','')  LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(group_num,' ','')   	LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(house_num,' ','')   	LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(commune,' ','')   	LIKE '%{$s_search}%'";
-    		$s_where[] = "REPLACE(district,' ','')   	LIKE '%{$s_search}%'";
-    	 
+    		$s_where[] = "REPLACE(invoice,' ','') LIKE '%{$s_search}%'";
+    		$s_where[] = "REPLACE(title,' ','') LIKE '%{$s_search}%'";
+    		$s_where[] = "REPLACE(cheque_no,' ','')  	LIKE '%{$s_search}%'";
     		$where .=' AND ('.implode(' OR ',$s_where).')';
     	}
     	if($search['status_search']>-1){
     		$where.= " AND status = ".$search['status_search'];
     	}
-    	if($search['agencytype_id']>-1){
-    		$where.= " AND customer_type = ".$search['agencytype_id'];
+    	if($search['payment_method']>0){
+    		$where.= " AND payment_type = ".$search['payment_method'];
     	}
-    
     	$order=" ORDER BY id DESC";
+    	//echo $sql.$where;
     	return $db->fetchAll($sql.$where.$order);
     }
     
-	public function addClient($_data){
-		//print_r($_data);exit();
-		$photoname = str_replace(" ", "_", $_data['name_en'].'-AGN') . '.jpg';
-		$upload = new Zend_File_Transfer();
-		$upload->addFilter('Rename',
-				array('target' => PUBLIC_PATH . '/images/profile/'. $photoname, 'overwrite' => true) ,'photo');
-		$receive = $upload->receive();
-		if($receive){
-			$_data['photo'] = $photoname;
-		}else{
-			$_data['photo'] = $_data['old_photo'];
-		}
+	public function addExpense($data){
+		$db = $this->getAdapter();
+		$db->beginTransaction();
 		try{
-			$db = new Application_Model_DbTable_DbGlobal();
-			$client_code = $db->getNewClientId();
-			$_arr=array(
-					'title'	  		=> $_data['title'],
-					'customer_code'	=> $client_code,//$_data['client_no'],
-					'first_name'	=>$_data['name_kh'],
-					'last_name' 	=> $_data['name_en'],
-					'sex'			=> $_data['sex'],
-					'dob'	  		=> $_data['dob_client'],
-					'pob'	  		=> $_data['country'],
-					'occupation'	=> $_data['occupation'],
-					'nationality'	=> $_data['nationality'],
-					'company_name'	=> $_data['company_name'],
-					'customer_type'	=> $_data['agency_type'],
-					'photo'	  		=> $_data['photo'],
-					'note'	      	=> $_data['desc'],
-					'passport_name'	=>$_data['passport'],
-					'pass_issuedate'=> $_data['pissue_date'],
-					'pass_expireddate'=> $_data['pexpired_date'],
-					'card_name'     => $_data['card_code'],
-					'card_issuedate'=> $_data['cissue_date'],
-					'card_expireddate'=> $_data['cexpired_date'],
-					'ftb'	  		=> $_data['ftb'],
-					'ftb_issuedate'	=> $_data['fissue_date'],
-					'ftb_expireddate'=>$_data['fexpired_date'],
-					'phone'        	=>$_data['phone'],
-					'email'			=>$_data['email'],
-					'fax'	      	=> $_data['fax'],
-					'group_num' 	=> $_data['group_num'],
-					'house_num'		=>$_data['address'],
-					'street'		=>$_data['street'],
-					'commune'		=>$_data['commune'],
-					'district' 		=> $_data["district"], 
-					'province_id'	=> $_data['province'],
-					'balance'  		=> $_data['balance'],
-					//'i_housenum'      => $_data['i_house'],
-					'i_city'      	=> $_data['i_city'],
-					//'i_province'      => $_data['i_province'],
-					'i_zipcode'     => $_data['i_zipcode'],
-					'i_phone'       => $_data['i_phone'],
-					'i_state'	    => $_data['state'],
-					//'i_note'	  =>$_data['i_note'],
-					'address1'		=> $_data['address1'],
-					'address2'		=> $_data['address2'],
-					'status'  		=> $_data['status'],
-					'date'  		=> date("Y-m-d"),
-					
+			$arr_data=array(
+					"invoice"    	=>$data['invoice'],
+					"cheque_no" 	=>$data['cheque_num'],
+					"title"  		=>$data['title'],
+					"payment_type"  =>$data['payment_method'],
+					"total_amount"  =>$data['total_amount'],
+					"description"   =>$data['note_de'],
+					"date"  	 	=>date("Y-m-d"),
+					'create_date' 	=>date("Y-m-d"),
+					'user_id'       =>$this->getUserId(),
+					"status"		=>$data['Stutas'],
 			);
-			if (!empty($_data['create_acc'])){
-				$_arr['password']=md5($_data['password']);
-				$_arr['email_login']=$_data['email_login'];
+			$this->_name="ln_expense";
+			$expense_id = $this->insert($arr_data);
+				
+			$ids=explode(',',$data['record_row']);
+			foreach ($ids as $key => $i)
+			{
+				$data_item= array(
+						'expense_id' 		=> 	$expense_id,
+						'expense_type_id' 	=> 	$data['expense_id_'.$i],
+						'total_amount'     	=>		$data['price_'.$i],
+						'description'      	=>		$data['note_'.$i],
+						'status'      		=> 1,
+				);
+				$this->_name='ln_expense_detail';
+				$this->insert($data_item);
 			}
-			if(!empty($_data['id'])){
-				if (!empty($_data['changepass'])){
-					$_arr['password']=md5($_data['password']);
-				}
-				$_arr['modify_date']=date("Y-m-d H:i:s");
-				$where = 'id = '.$_data['id'];
-				$this->update($_arr, $where);
-				return $_data['id'];
-			}else{
-				$_arr['create_date']=date("Y-m-d H:i:s");
-				$_arr['modify_date']=date("Y-m-d H:i:s");
-				return  $this->insert($_arr);
-			}
+			$db->commit();
 		}catch(Exception $e){
-			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			$db->rollBack();
+			Application_Form_FrmMessage::message('INSERT_FAIL');
+			$err =$e->getMessage();
+			echo $err;exit();
+			Application_Model_DbTable_DbUserLog::writeMessageError($err);
+		}
+	}
+	
+	public function updateExpense($data){
+		$db = $this->getAdapter();
+		$db->beginTransaction();
+		try{
+			$arr_data=array(
+					"invoice"    	=>$data['invoice'],
+					"cheque_no" 	=>$data['cheque_num'],
+					"title"  		=>$data['title'],
+					"payment_type"  =>$data['payment_method'],
+					"total_amount"  =>$data['total_amount'],
+					"description"   =>$data['note_de'],
+					"date"  	 	=>date("Y-m-d"),
+					'create_date' 	=>date("Y-m-d"),
+					'user_id'       =>$this->getUserId(),
+					"status"		=>$data['Stutas'],
+			);
+			$this->_name="ln_expense";
+			$where=" id=".$data['id']; 
+			$this->update($arr_data, $where);
+
+			$sql =" DELETE FROM ln_expense_detail WHERE expense_id=".$data["id"];
+			$db->query($sql);
+			$ids=explode(',',$data['record_row']);
+			foreach ($ids as $key => $i)
+			{
+				$data_item= array(
+						'expense_id' 		=> 	$data['id'],
+						'expense_type_id' 	=> 	$data['expense_id_'.$i],
+						'total_amount'     	=>	$data['price_'.$i],
+						'description'      	=>	$data['note_'.$i],
+						'status'      		=>  1,
+				);
+				$this->_name='ln_expense_detail';
+				$this->insert($data_item);
+			}
+			$db->commit();
+		}catch(Exception $e){
+			$db->rollBack();
+			Application_Form_FrmMessage::message('INSERT_FAIL');
+			$err =$e->getMessage();
+			echo $err;exit();
+			Application_Model_DbTable_DbUserLog::writeMessageError($err);
 		}
 	}
 	
@@ -219,21 +213,7 @@ class Expense_Model_DbTable_DbVehicleMaintenance extends Zend_Db_Table_Abstract
 		}
 		return $pre.$new_acc_no;
 	}
-// 	public function adddoocumenttype($data){
-		
-// 		$db = $this->getAdapter();
-// 		$document_type=array(
-// 				'name_en'=>$data['clienttype_nameen'],
-// 				'name_kh'=>$data['clienttype_namekh'],
-// 				'displayby'=>1,
-// 				'type'=>23,
-// 				'status'=>1
-				
-// 		);
-		
-// 		$row= $this->insert($document_type);
-// 		return $row;
-// 	}
+
 	public function addIndividaulClient($_data){
 		
 		$client_code = $this->getClientCode($_data['branch_id']);
@@ -307,7 +287,7 @@ class Expense_Model_DbTable_DbVehicleMaintenance extends Zend_Db_Table_Abstract
 	
 	function getExpendVehicleType($type){
 		$db=$this->getAdapter();
-		$sql=" SELECT id,account_name AS name FROM ln_expense_type WHERE option_type=$type AND `status`=1 AND account_name!='' order by id desc";
+		$sql=" SELECT id,account_name AS name FROM ln_expense_type WHERE option_type=$type AND `status`=1 order by id desc";
 		return $db->fetchAll($sql);
 	}
 	
@@ -315,14 +295,25 @@ class Expense_Model_DbTable_DbVehicleMaintenance extends Zend_Db_Table_Abstract
 		$tr = Application_Form_FrmLanguages::getCurrentlanguage();
 		$rows = $this->getExpendVehicleType($type);
 		$options = '';
-		$options .= '<option Value="0">'.$tr->translate("SELECT_CATEGORY").'</option>';
-		$options .= '<option Value="-1">'.$tr->translate("ADD_NEW").'</option>';
+		$options .= '<option value="0">'.$tr->translate("SELECT_CATEGORY").'</option>';
+		$options .= '<option value="-1">'.$tr->translate("ADD_NEW").'</option>';
 		if(!empty($rows))foreach($rows as $value){
 			$options .= '<option value="'.$value['id'].'" >'.htmlspecialchars($value['name']).'</option>';
 		}
-			
 		return $options;
 	}
 	
+	function getExpenseById($id){
+		$db=$this->getAdapter();
+		$sql=" SELECT * FROM ln_expense WHERE id=$id";
+		return $db->fetchRow($sql);
+	}
+	
+	function getExpenseDetail($id){
+		$db=$this->getAdapter();
+		$sql=" SELECT id,expense_type_id,description,total_amount FROM ln_expense_detail WHERE expense_id=$id";
+		return $db->fetchAll($sql);
+	}
+		
 }
 

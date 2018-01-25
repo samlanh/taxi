@@ -9,50 +9,51 @@ class Expense_ExpenseController extends Zend_Controller_Action {
 	
 	public function indexAction(){
 		try{
-			$db = new Expense_Model_DbTable_DbVehicleMaintenance();
+			$db = new Expense_Model_DbTable_DbOtherExpense();
 			if($this->getRequest()->isPost()){
 				$search=$this->getRequest()->getPost();
 			}
 			else{
 				$search = array(
 					'title' => '',
+					'payment_method'=>'',
+					'start_date'=>date("Y-m-d"),
+					'end_date'=>date("Y-m-d"),
 					'status_search' => -1,
-					'agencytype_id' => -1
 				);
 			}
-			$rs_rows= $db->getAllClients($search);
+			$rs_rows= $db->getAllOtherExpense($search);
 			 
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("CUS_CODE","First Name","Last Name","Gender","Customer Type","DOB","PHONE","POB","Nationality","Company Name","Group No",
-					"House No","Commune","District","Province","STATUS");
+			$collumns = array("INVOICE","CHEQUE_NO","PAYMENT_TYPE","TITLE","TOTALE","CTEATE_DATE","USER_NAME","STATUS");
 			$link=array(
-					'module'=>'agency','controller'=>'index','action'=>'edit',
+					'module'=>'expense','controller'=>'expense','action'=>'edit',
 			);
 			
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('customer_code'=>$link,'first_name'=>$link,'last_name'=>$link,'sex'=>$link,'custype'=>$link));
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('invoice'=>$link,'cheque_no'=>$link,'payment_type'=>$link,'title'=>$link));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 		}
-		$frm = new Expense_Form_FrmClient();
+		$frm = new Expense_Form_FrmSearchInfo();
 		$frm =$frm->search();
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_search = $frm;
 	}
 	
 	public function addAction(){
-		$db = new Expense_Model_DbTable_DbVehicleMaintenance();
+		$db = new Expense_Model_DbTable_DbOtherExpense();
 		if($this->getRequest()->isPost()){
 				$data = $this->getRequest()->getPost();
 				try{
-					$id= $db->addClient($data);
+					$id= $db->addExpense($data);
 				 if(isset($data['save_new'])){
-				 	$this->_redirect("/agency/index/add");
+				 	$this->_redirect("/expense/expense/add");
 				}
 				else{
-					$this->_redirect("/agency");
+					$this->_redirect("/expense/expense/index");
 				}
 				
 			}catch (Exception $e){
@@ -76,45 +77,82 @@ class Expense_ExpenseController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($fr);
 		$this->view->frm_client = $frm;
 		$this->view->frm_h = $frm_h;
+		
+		$fm = new Group_Form_FrmCustype();
+		$frm = $fm->FrmAddCustomerType();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_cat_type = $frm;
+		
+		$db=new Expense_Model_DbTable_DbExpensetype();
+		$type=$db->getExpenstypeByOpt(2);
+		array_unshift($type,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->cat_type=$type;
 	}
 	
 	public function editAction(){
-		$db = new Expense_Model_DbTable_DbVehicleMaintenance();
+		$id=$this->getRequest()->getParam('id');
+		$db = new Expense_Model_DbTable_DbOtherExpense();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
+			$data['id']=$id;
 			try{
-					$db->addClient($data);
-				$this->_redirect("/agency");
+				$id= $db->updateExpense($data);
+				if(isset($data['save_new'])){
+					$this->_redirect("/expense/expense/index");
+				}
+				else{
+					$this->_redirect("/expense/expense/index");
+				}
+		
 			}catch (Exception $e){
 				Application_Form_FrmMessage::message("Application Error");
 				Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 			}
 		}
-		$fm = new Expense_Form_FrmClient();
-		$id = $this->getRequest()->getParam("id");
-		$row = $db->getClientById($id);
-		if (empty($row)){
-			Application_Form_FrmMessage::Sucessfull("NO_RECORD", "/agency");
-		}
-		$this->view->row = $row;
+		$row=$this->view->opt_type=$db->getAllExpenseByType(2);
+		$row=$db->getExpenseById($id);
+		$this->view->exp_detail=$db->getExpenseDetail($id);
 		$dbgb = new Application_Model_DbTable_DbGlobal();
 		$customer_opt= $dbgb->getViewsAsName(10);
 		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
 		array_unshift($customer_opt,array('id' => 0,'name' =>"",),array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
 		$this->view->custype = $customer_opt;
 		
-		$this->view->id=$row['id'];
-		$frm = $fm->FrmAddClient($row);
+		$fm = new Expense_Form_FrmClient();
+		$frm = $fm->FrmAddClient();
+		$fr =new Expense_Form_FrmVehiclemaintenance();
+		$frm_h=$fr->addVehicleMaintenance($row);
 		Application_Model_Decorator::removeAllDecorator($frm);
+		Application_Model_Decorator::removeAllDecorator($fr);
 		$this->view->frm_client = $frm;
+		$this->view->frm_h = $frm_h;
+		
+		$fm = new Group_Form_FrmCustype();
+		$frm = $fm->FrmAddCustomerType();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_cat_type = $frm;
+		
+		$db=new Expense_Model_DbTable_DbExpensetype();
+		$type=$db->getExpenstypeByOpt(2);
+		array_unshift($type,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->cat_type=$type;
 	}
-	
 	 
 	function getDriverInfoAction(){
 		if($this->getRequest()->isPost()){
 			$db = new Expense_Model_DbTable_DbVehicleMaintenance();
 			$data = $this->getRequest()->getPost();
 			$code = $db->getVehiclAndDriver($data['vehicle_id']);
+			print_r(Zend_Json::encode($code));
+			exit();
+		}
+	}
+	
+	function addCatcoryTypeAction(){
+		if($this->getRequest()->isPost()){
+			$db = new Expense_Model_DbTable_DbExpensetype();
+			$data = $this->getRequest()->getPost();
+			$code = $db->addCategoryType($data,2);
 			print_r(Zend_Json::encode($code));
 			exit();
 		}

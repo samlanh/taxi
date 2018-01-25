@@ -55,7 +55,9 @@ Class Group_Form_FrmCustype extends Zend_Dojo_Form {
 		$_c_type->setMultiOptions($_status_opt);
 		
 		if($data!=null){
-			$_title->setValue($data['name_en']);
+			 
+			$_title->setValue($data['account_name']);
+			$_c_type->setValue($data['option_type']);
 			$_status->setValue($data['status']);
 		}
 		$this->addElements(array($_c_type,$_title,$_status));

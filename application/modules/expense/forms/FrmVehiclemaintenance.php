@@ -109,6 +109,7 @@ Class Expense_Form_FrmVehiclemaintenance extends Zend_Dojo_Form {
 		$total_amount->setAttribs(array(
 				'dojoType'=>'dijit.form.NumberTextBox',
 				'class'=>'fullside',
+				'readonly'=>true
 		));
 		
 		///////////////////////
@@ -147,13 +148,14 @@ Class Expense_Form_FrmVehiclemaintenance extends Zend_Dojo_Form {
 		$vehicle_name->setMultiOptions($_status_opt);
 		
 		if($data!=null){
-			 
-// 			$citypublic->setValue($data['citypublicprice']);
-// 			$cityweekendprice->setValue($data['cityweekendprice']);
-// 			$cityotprice->setValue($data['cityotprice']);
-// 			$citynormalprice->setValue($data['citynormalprice']);
-// 			$_status->setValue($data['status']);
-                     
+			//print_r($data);exit();
+			$invoice->setValue($data['invoice']);
+			$title->setValue($data['title']);
+			$payment_method->setValue($data['payment_type']);
+			$cheque_num->setValue($data['cheque_no']);
+			$total_amount->setValue($data['total_amount']);
+			$_Description->setValue($data['description']);
+			$_stutas->setValue($data['status']);
 		}
 		$this->addElements(array($vehicle_name,$invoice,$title,$payment_method,$start_date,$monthly_price,$cheque_num,$total_amount, 
 				$_Description,$_stutas ));

@@ -11,14 +11,12 @@ class Expense_ExpensetypeController extends Zend_Controller_Action {
 		try{
 			$db = new Expense_Model_DbTable_DbExpensetype();
 			if($this->getRequest()->isPost()){
-				$formdata=$this->getRequest()->getPost();
-				$search = array(
-						'title' => $formdata['title'],
-						'status_search'=>$formdata['status_search'],
-						);
+				$search=$this->getRequest()->getPost();
+				 
 			}
 			else{
 				$search = array(
+					'c_type'=>'',
 					'title' => '',
 					'status_search' => -1,
 				);
@@ -27,16 +25,16 @@ class Expense_ExpensetypeController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("TITLE","STATUS");
+			$collumns = array("EXPENSE_TYPE","TITLE","USER_NAME","STATUS");
 			$link=array(
 					'module'=>'expense','controller'=>'expensetype','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('name_en'=>$link));
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('type_hevicel'=>$link,'account_name'=>$link));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 		}
-		$frm = new Group_Form_FrmClient();
+		$frm = new Expense_Form_FrmSearchInfo();
 		$frm =$frm->search();
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_search = $frm;
@@ -68,12 +66,12 @@ class Expense_ExpensetypeController extends Zend_Controller_Action {
 	}
 	
 	public function editAction(){
-		$db = new Agency_Model_DbTable_DbAgencytype();
+		$db = new Expense_Model_DbTable_DbExpensetype();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
 			try{
-					$db->addCustomerType($data);
-					$this->_redirect("/agency/agencytype");
+					$db->addExpenseType($data);
+					$this->_redirect("/expense/expensetype");
 		
 			}catch (Exception $e){
 				Application_Form_FrmMessage::message("Application Error");
@@ -82,9 +80,9 @@ class Expense_ExpensetypeController extends Zend_Controller_Action {
 		}
 		
 		$id = $this->getRequest()->getParam("id");
-		$row = $db->getCustomerTypeById($id);
+		$row = $db->getExpenstype($id);
 		if (empty($row)){
-			Application_Form_FrmMessage::Sucessfull("NO_RECORD", "/agency/agencytype");
+			Application_Form_FrmMessage::Sucessfull("NO_RECORD", "/expense/expensetype");
 		}
 		$this->view->id=$row['id'];
 		$fm = new Group_Form_FrmCustype();
