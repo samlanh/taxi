@@ -9,12 +9,12 @@ Class Expense_Form_FrmSearchInfo extends Zend_Dojo_Form {
 		$request=Zend_Controller_Front::getInstance()->getRequest();
 		$db = new Application_Model_DbTable_DbGlobal();
 		$_title = new Zend_Dojo_Form_Element_TextBox('title');
-		$_title->setAttribs(array('dojoType'=>'dijit.form.TextBox',
+		$_title->setAttribs(array('dojoType'=>'dijit.form.TextBox','class'=>'fullside',
 				'placeholder'=>$this->tr->translate("ADVANCE_SEARCH")));
 		$_title->setValue($request->getParam("title"));
 	
 		$_status=  new Zend_Dojo_Form_Element_FilteringSelect('status_search');
-		$_status->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect',));
+		$_status->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside',));
 		$_status_opt = array(
 				-1=>$this->tr->translate("ALL_STATUS"),
 				1=>$this->tr->translate("ACTIVE"),
@@ -96,7 +96,19 @@ Class Expense_Form_FrmSearchInfo extends Zend_Dojo_Form {
 		$payment_method->setMultiOptions($_status_opt);
 		$payment_method->setValue($request->getParam("payment_method"));
 		
-		$this->addElements(array($payment_method,$_dateline,$_releasedate,$_c_type,$agencytype_id,$_title,$_status,$customer_type));
+		$vehicle_name=  new Zend_Dojo_Form_Element_FilteringSelect('vehicle_id');
+		$vehicle_name->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside',
+				'Onchange'=>'getVehicleById();getCarentalById()'));
+		$expen=new Expense_Model_DbTable_DbVehicleMaintenance();
+		$_status_opt = array("-1"=>$this->tr->translate("CHOOSE_VEHICLE_REF_NO"));
+		$row= $expen->getVehicleRefNo();
+		if(!empty($row))foreach($row AS $row){
+			$_status_opt[$row['id']]=$row['name'];
+		}
+		$vehicle_name->setMultiOptions($_status_opt);
+		$vehicle_name->setValue($request->getParam("vehicle_id"));
+		
+		$this->addElements(array($vehicle_name,$payment_method,$_dateline,$_releasedate,$_c_type,$agencytype_id,$_title,$_status,$customer_type));
 	
 		return $this;
 	}

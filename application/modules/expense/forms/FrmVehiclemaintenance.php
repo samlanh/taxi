@@ -138,7 +138,8 @@ Class Expense_Form_FrmVehiclemaintenance extends Zend_Dojo_Form {
 		$_stutas->setMultiOptions($options);
 		
 		$vehicle_name=  new Zend_Dojo_Form_Element_FilteringSelect('vehicle_id');
-		$vehicle_name->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside','Onchange'=>'getVehicleById()'));
+		$vehicle_name->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside',
+				'Onchange'=>'getVehicleById();getCarentalById()'));
 		$expen=new Expense_Model_DbTable_DbVehicleMaintenance();
 		$_status_opt = array("-1"=>$this->tr->translate("CHOOSE_VEHICLE_REF_NO"));
 		$row= $expen->getVehicleRefNo();
@@ -149,6 +150,7 @@ Class Expense_Form_FrmVehiclemaintenance extends Zend_Dojo_Form {
 		
 		if($data!=null){
 			//print_r($data);exit();
+			$vehicle_name->setValue($data['vehicle_id']);
 			$invoice->setValue($data['invoice']);
 			$title->setValue($data['title']);
 			$payment_method->setValue($data['payment_type']);

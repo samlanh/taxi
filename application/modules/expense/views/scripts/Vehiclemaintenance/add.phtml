@@ -39,11 +39,27 @@ fieldset table td input ,fieldset table td select{color: #000 !important; }
 	<form id='add_client' action="" enctype="multipart/form-data" dojoType="dijit.form.Form" method="post">
 		<script type="dojo/method" event="onSubmit">			
 		if(this.validate()) {
-				customer_type = dijit.byId('agency_type').get('value');
-				if(customer_type<1){
-					alert("<?php echo $tr->translate("Please Select Customer Type")?>");
-					dijit.byId('agency_type').focus(); 
+                if(dijit.byId("vehicle_id").get("value")==-1){ 
+					alert("សូមជ្រើសរើសអត្តលេខរថយន្ត!!!");
+					dijit.byId("vehicle_id").focus();
 					return false;
+				}
+				if(dijit.byId("payment_method").get("value")==-1){
+					alert("សូមជ្រើសរើសប្រភេទបង់ប្រាក់!!!");
+					dijit.byId("payment_method").focus();
+					return false;
+				}
+				var rowId = dijit.byId('record_row').get("value");
+    			if(rowId!=''){ 
+					var rowIDArray = rowId.split(',');
+					for(var n = 0; n < rowIDArray.length; n++){
+					var restule = dijit.byId('expense_id_'+rowIDArray[n]).get('value');
+					if(restule=='' || restule==0){
+							alert("Please Select Expense Type!!!");
+							dijit.byId('expense_id_'+rowIDArray[n]).focus();
+							return false;
+						}
+					}
 				}
 				loading();
 				return true;
@@ -142,7 +158,7 @@ fieldset table td input ,fieldset table td select{color: #000 !important; }
 			                	<div style="clear: both;"></div>
 								<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
 								<div  id="store_record"></div>
-								 <input  iconClass="dijitIconClear" type="button" onClick="addPockage();" label="Add Record" dojoType="dijit.form.Button"/>
+								 <input  iconClass="dijitIconClear" type="button" onClick="addPockage();" label="<?php echo $tr->translate("ADD_EXPENSE_TYPE")?>" dojoType="dijit.form.Button"/>
 			                </div>
 		               </div>
 		                
@@ -166,48 +182,66 @@ fieldset table td input ,fieldset table td select{color: #000 !important; }
 	               <div class="title_form_blog">
 		               		<h4><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate("DRIVER_INFO")?></h4>
 		           </div>
-		             <div class="form-groupsa">
-	               		<div class="col-md-6 col-sm-6 col-xs-12">
-		               		<div class="account-image">
-								<div class="image-box">
+		             <div id="driver_info" class="cus_info col-md-12 col-sm-12 col-xs-12">
+		       				<div class="col-md-6 col-sm-6 col-xs-12">
+				               	<div class="image-box infor">
 									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
 								</div>
 							</div>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+							    <br/><br/> 
+								<ul class="list-unstyled">
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"></span>
+                              		</li>
+                              	</ul>
+							</div>
 						</div>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-							<div class="clearfix"></div>
-			                <div class="form-group">
-			                   <label class="control-label col-md-12 col-sm-12 col-xs-12" for="first-name"><?php echo $tr->translate("CUS_CODE")?>
-			                   </label>
-			                </div>
-							 <div class="clearfix"></div>
-		                </div>
-		                 <div class="clearfix"></div>
-	                </div>
 	                 
 	       		   <div class="clearfix"></div>
 	       		   
 	               <div class="title_form_blog">
 		               		<h4><i class="fa  fa-car" aria-hidden="true"></i> <?php echo $tr->translate("VEHICLE_INFO")?></h4>
 		           </div>
-	               <div class="form-groupsa">
-	               		<div class="col-md-6 col-sm-6 col-xs-12">
-		               		<div class="account-image">
-								<div class="image-box">
-									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
+	               <div id="car_info" class="cus_info col-md-12 col-sm-12 col-xs-12">
+		       				<div class="col-md-6 col-sm-6 col-xs-12">
+				               	<div class="image-box infor">
+									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/vehicle/no_car.png';?>" alt=""  />
 								</div>
 							</div>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+							<br/><br/> 
+								<ul class="list-unstyled">
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Ref. No.')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('YEAR')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Color')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('No. of Seats')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Trans. Type')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('VEHICLETYPE')?></span> : <span class="span_value"></span>
+                              		</li>
+                              	</ul>
+							</div>
 						</div>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-							<div class="clearfix"></div>
-			                <div class="form-group">
-			                   <label class="control-label col-md-12 col-sm-12 col-xs-12" for="first-name"><?php echo $tr->translate("CUS_CODE")?>
-			                   </label>
-			                </div>
-							 <div class="clearfix"></div>
-		                </div>
-		                 <div class="clearfix"></div>
-	               </div>
 	            </div>
 	       	</div>
 	    </div>
@@ -289,7 +323,8 @@ function addCustometType(){
 require(["dojo/ready"], function(ready){
 	ready(function(){
 		addNewRecord();
-		dijit.byId("payment_method").attr("value",'1');
+		dijit.byId("c_type").attr("value",'1');
+		dijit.byId("c_type").set("readOnly","true");
 	});
 });
 
@@ -320,8 +355,8 @@ function addPockage(){
 
 	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
 	temp+='<td align="center">'+r+'</td>';
-	temp+='<td><select style="width:200px;"  id="expense_id_'+r+'" name="expense_id_'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getLocation('+r+')">'+province_option+'</select></td>';
-	temp+='<td><input  style="width:200px;" dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" ></td>';
+	temp+='<td><select style="width:200px;"  id="expense_id_'+r+'" name="expense_id_'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getPopUpType('+r+')">'+province_option+'</select></td>';
+	temp+='<td><input  style="width:200px;" dojoType="dijit.form.NumberTextBox" class="fullside" onkeyup="calculateTotal('+r+')" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" ></td>';
 	temp+='<td><input  style="width:240px;" dojoType="dijit.form.TextBox" class="fullside"  name="note_'+r+'" id="note_'+r+'" value="" type="text" ></td>';
 	
 	dojo.html.set(dojo.byId("row_guide"+r),temp, {
@@ -360,7 +395,29 @@ function getVehicleById(){
 		},		    
 		handleAs:"json",
 		load: function(data) {
-			//alert(data);
+			document.getElementById('driver_info').innerHTML =data;
+			document.getElementsByClassName("overlay")[0].style.display="none";
+		},
+		error: function(err) {
+			//alert(err);
+		}
+	});
+}
+
+var url_car_info = '<?php echo $this->url(array('module'=>'expense','controller'=>'vehiclemaintenance','action'=>'get-car-info')); ?>';
+function getCarentalById(){
+	vehicle_id=dijit.byId("vehicle_id").get("value");
+	//alert(vehicle_id);
+	dojo.xhrPost({
+		url:url_car_info,	
+		content:{ 
+		    'vehicle_id':vehicle_id
+		},		    
+		handleAs:"json",
+		load: function(data) {
+			 
+			document.getElementById('car_info').innerHTML =data;
+			document.getElementsByClassName("overlay")[0].style.display="none";
 		},
 		error: function(err) {
 			//alert(err);
@@ -369,3 +426,96 @@ function getVehicleById(){
 }
 
 </script>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
+<script type="text/javascript">  
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dojo.data.ItemFileWriteStore");  
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+dojo.require("dijit.form.Textarea"); 
+ 
+function getPopUpType(r){
+	 $("#num").val(r);
+	expense_id = dijit.byId('expense_id_'+r).get('value');
+
+	if(expense_id==-1){
+		dijit.byId("pop_cat").show();
+	}
+}
+
+function hideDialogCategory(){		
+	dijit.byId("pop_cat").hide();
+}
+
+function calculateTotal(index){
+	netTotal();
+}
+function netTotal() {
+	var netTotal=0;
+	var rowId = $('#record_row').val();
+	var rowIDArray = rowId.split(',');
+	for(var n = 0; n < rowIDArray.length; n++) {
+		netTotal += dijit.byId('price_'+rowIDArray[n]).get('value');
+	}
+	dijit.byId('total_amount').attr('value',netTotal);
+}
+
+var cat_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->cat_type));?> );
+var url_cattype = '<?php echo $this->url(array('module'=>'expense','controller'=>'vehiclemaintenance','action'=>'add-catcory-type')); ?>';
+function addCategoryType(){
+	if(dijit.byId('frm_cat').validate()){
+		dojo.xhrPost({
+			url:url_cattype,
+			form: dojo.byId("frm_cat"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data,
+					    name: dijit.byId('title_cat').get('value')
+				};			
+				addDataToSelectbox(dijit.byId('expense_id_'+$("#num").val()), cat_store, Itemmake, data);
+				dijit.byId('frm_cat').reset();
+				dijit.byId("pop_cat").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+ 
+</script>
+
+<?php $c_typ=$this->frm_cat_type;?>
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_cat" title="<?php echo $tr->translate("ADD_EXPENSE_TYPE")?>">
+		<form id='frm_cat' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table  >
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="title_cat" name="title_cat" value="" type="text"></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?></td>
+				<td><?php echo $c_typ->getElement('c_type');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?> </td>
+				<td><?php echo $c_typ->getElement('status');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button"  label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
+					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="hideDialogCategory()"/>
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addCategoryType();"/>
+				</td>
+				
+			</tr>
+		</table>
+		<input type="hidden" id="num" name="num"   >
+		</form>
+	</div>
+</div>
