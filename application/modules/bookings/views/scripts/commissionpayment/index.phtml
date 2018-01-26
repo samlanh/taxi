@@ -1,6 +1,6 @@
 <?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
 <?php $frm =  $this->frm_search;?>
-<title><?php echo $tr->translate("Car Booking");?></title>
+<title><?php echo $tr->translate("COMMISSIONPAYMENT");?></title>
 <script type="text/javascript">
 dojo.ready(function(){
 });
@@ -13,9 +13,9 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 <div class="row">
 	<div class="x_panel" >
 		 <div class="blog_form_title">
-		 	<h4><i class="fa fa-book" aria-hidden="true"></i> <?php echo $tr->translate("Car Booking")?></h4>
+		 	<h4><i class="fa fa-book" aria-hidden="true"></i> <?php echo $tr->translate("COMMISSIONPAYMENT")?></h4>
 		 </div>
-			<form id="list" name="list" action="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'index')); ?>" dojoType="dijit.form.Form" method="post">
+			<form id="list" name="list" action="<?php echo $this->url(array('module'=>'bookings','controller'=>'commissionpayment','action'=>'index')); ?>" dojoType="dijit.form.Form" method="post">
 			  	<div class="clearfix"></div>
 				  <div class="form-group">
 					<div class="col-md-2 col-xs-12 mg-10">
