@@ -1,6 +1,6 @@
 <?php 
    $tr = Application_Form_FrmLanguages::getCurrentlanguage();
-   echo $this->headTitle($tr->translate("Commission Payment"));
+   echo $this->headTitle($tr->translate("ADD_DRIVER_PAYMEN"));
    $frm = $this->frm;
 ?>
 <script type="text/javascript">
@@ -72,7 +72,7 @@ h4.car_title {
       	 <div class="col-md-12 col-xs-12 forms_padding">
 	          <div class="x_panel">
 	              <div class="x_title">
-	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('Commission Payment')?></h2>
+	                 <h2><i class="fa  fa-plus-circle" aria-hidden="true"></i> <?php echo $tr->translate('ADD_DRIVER_PAYMENT')?></h2>
 	                 <ul class="nav navbar-right panel_toolbox">
 	                    <li>
 	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -88,10 +88,10 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('reciept_no');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('agency');?>
+		                    	<?php echo $frm->getElement('driver');?>
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -240,14 +240,14 @@ require(["dojo/ready"], function(ready){
 	});
 });
 
-var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'commissionpayment','action'=>'getagent'));?>";
-function getAgent(){
-	var id = dijit.byId('agency').get('value');
+var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'driverpayment','action'=>'getdriver'));?>";
+function getDriverInfo(){
+	var id = dijit.byId('driver').get('value');
 	loading();
 	dojo.xhrPost({
 	    url: urlagent,
 	    content:{
-	     'agency':id
+	     'driver_id':id
 	     },
 	    handleAs:"json",
 	    load: function(data) {
@@ -261,9 +261,9 @@ function getAgent(){
 }
 
 var keyindex=1;
-var urlcommissionagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'commissionpayment','action'=>'getcarbookingbyagency'));?>";
+var urlcommissionagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'driverpayment','action'=>'getcarbookingdriverinfo'));?>";
 function getCommissionAgent(){
-	var id = dijit.byId('agency').get('value');
+	var id = dijit.byId('driver').get('value');
 	var start_date = dijit.byId('booking_date_start').get('value');
 	var end_date = dijit.byId('booking_date_end').get('value');
 	var day = start_date.getDate();
@@ -279,14 +279,15 @@ function getCommissionAgent(){
 	if(m <= 9) {m = "0" +m;}
 	var year = end_date.getFullYear();
 	end_date = year+"-"+m+"-"+day;
-	loading();
+	//loading();
 	dojo.xhrPost({
 	    url: urlcommissionagent,
 	    content:{
-	     'agency':id,'keyindex':keyindex,'start_date':start_date,'end_date':end_date
+	     'driver':id,'keyindex':keyindex,'start_date':start_date,'end_date':end_date
 	     },
 	    handleAs:"json",
 	    load: function(data) {
+		    //alert(data);
 	    	keyindex=data.keyindex;
 	    	$("#old_identity").val(data.identity);
 	    	dojo.html.set(dojo.byId("table_row"),data.stringrow , {

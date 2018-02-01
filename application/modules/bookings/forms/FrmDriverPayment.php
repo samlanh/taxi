@@ -123,10 +123,19 @@ class Bookings_Form_FrmDriverPayment extends Zend_Dojo_Form{
 		));
 		$booking_date_end->setValue($c_date);
 		
+		$row_dri = $_db->getAllDriver();
+		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
+		$driver = new Zend_Dojo_Form_Element_FilteringSelect("driver");
+		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCommissionAgent();getDriverInfo()'));
+		foreach ($row_dri as $rs){
+			$opt_dri[$rs["id"]] = $rs["name"];
+		}
+		$driver->setMultiOptions($opt_dri);
+		
 		if (!empty($data)){
 			
 			$_reciept_no->setValue($data['payment_no']);
-			$agency->setValue($data['agency_id']);
+			//$agency->setValue($data['agency_id']);
 			$payment_date->setValue(date("Y-m-d",strtotime($data['payment_date'])));
 			$remark->setValue($data['note']);
 			$_amount->setValue($data['amount']);
@@ -135,6 +144,7 @@ class Bookings_Form_FrmDriverPayment extends Zend_Dojo_Form{
 			$balance->setValue($data['balance']);
 			$total_paid->setValue($data['paid']);
 			$total_due->setValue($data['total_due']);
+			$driver->setValue($data['driver_id']);
 			
 		}
 		
@@ -151,7 +161,8 @@ class Bookings_Form_FrmDriverPayment extends Zend_Dojo_Form{
 				$total_due,
 				
 				$booking_date_start,
-				$booking_date_end
+				$booking_date_end,
+				$driver
 			));
 		return $this;
 	}

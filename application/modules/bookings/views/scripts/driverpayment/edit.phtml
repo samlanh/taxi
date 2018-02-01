@@ -1,6 +1,6 @@
 <?php 
    $tr = Application_Form_FrmLanguages::getCurrentlanguage();
-   echo $this->headTitle($tr->translate("Commission Payment"));
+   echo $this->headTitle($tr->translate("EDIT_DRIVER_PAYMENT"));
    $frm = $this->frm;
 ?>
 <script type="text/javascript">
@@ -72,7 +72,7 @@ h4.car_title {
       	 <div class="col-md-12 col-xs-12 forms_padding">
 	          <div class="x_panel">
 	              <div class="x_title">
-	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('Commission Payment')?></h2>
+	                 <h2><i class="fa fa-edit" aria-hidden="true"></i> <?php echo $tr->translate('EDIT_DRIVER_PAYMENT')?></h2>
 	                 <ul class="nav navbar-right panel_toolbox">
 	                    <li>
 	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -89,10 +89,10 @@ h4.car_title {
 		                    	<?php echo $frm->getElement('reciept_no');?>
 		                    	<input type="hidden" dojoType="dijit.form.TextBox" name="payment_id" id="payment_id" value="<?php echo $this->row['id'];?>" >
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('agency');?>
+		                    	<?php echo $frm->getElement('driver');?>
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -194,7 +194,7 @@ h4.car_title {
 											<tbody>
 										</table>
 										
-										<input type="hidden" name="identity" id="identity"  value="" >
+										<input type="text" name="identity" id="identity"  value="" >
 										<input type="hidden" name="old_identity" id="old_identity"  value="" >
 									</td>
 								</tr>
@@ -249,18 +249,18 @@ require(["dojo/ready"], function(ready){
 			});
 		  });
 		getCommissionAgent(1);
-		getAgent();
+		getDriverInfo();
 	});
 });
 
-var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'commissionpayment','action'=>'getagent'));?>";
-function getAgent(){
-	var id = dijit.byId('agency').get('value');
+var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'driverpayment','action'=>'getdriver'));?>";
+function getDriverInfo(){
+	var id = dijit.byId('driver').get('value');
 	loading();
 	dojo.xhrPost({
 	    url: urlagent,
 	    content:{
-	     'agency':id
+	     'driver_id':id
 	     },
 	    handleAs:"json",
 	    load: function(data) {
@@ -274,9 +274,9 @@ function getAgent(){
 }
 
 var keyindex=1;
-var urlcommissionagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'commissionpayment','action'=>'getcarbookingbyagencyedit'));?>";
+var urlcommissionagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'driverpayment','action'=>'getcarbookingbyagencyedit'));?>";
 function getCommissionAgent(type=""){
-	var id = dijit.byId('agency').get('value');
+	var id = dijit.byId('driver').get('value');
 	var start_date = dijit.byId('booking_date_start').get('value');
 	var end_date = dijit.byId('booking_date_end').get('value');
 	var day = start_date.getDate();
@@ -297,7 +297,7 @@ function getCommissionAgent(type=""){
 	dojo.xhrPost({
 	    url: urlcommissionagent,
 	    content:{
-	     'agency':id,'keyindex':keyindex,'start_date':start_date,'end_date':end_date,'payment_id':payment_id
+	     'driver':id,'keyindex':keyindex,'start_date':start_date,'end_date':end_date,'payment_id':payment_id
 	     },
 	    handleAs:"json",
 	    load: function(data) {
