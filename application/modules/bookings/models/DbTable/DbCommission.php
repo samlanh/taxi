@@ -180,7 +180,7 @@ class Bookings_Model_DbTable_DbCommission extends Zend_Db_Table_Abstract
 					$duevalu=$rowpaymentdetail['due_amount'];
 					$paymenttailByBooking = $this->getSumCommissionPaymentDetailByBookingId($rowpaymentdetail['booking_id'], $rowpaymentdetail['id']);// get other pay amount on this Booking id on other payment number
 					if (!empty($paymenttailByBooking)){
-						$duevalu = $rowpaymentdetail['driver_fee']-$paymenttailByBooking['tolalpayamount'];
+						$duevalu = $rowpaymentdetail['commision_fee']-$paymenttailByBooking['tolalpayamount'];
 					}
 					if (empty($identityedit)){
 						$identityedit=$no;
@@ -200,15 +200,15 @@ class Bookings_Model_DbTable_DbCommission extends Zend_Db_Table_Abstract
 							<input type="hidden" dojoType="dijit.form.TextBox" name="bookingno_hidden'.$no.'" id="bookingno_hidden'.$no.'" value="'.$row['booking_no'].'" >
 						</td>
 						<td style="vertical-align: middle; text-align: left; border-left:solid 1px #ccc; min-width: 100px;">&nbsp;
-							<label id="origtotallabel'.$no.'">'.number_format($rowpaymentdetail['driver_fee'],2).'</label>
+							<label id="origtotallabel'.$no.'">'.number_format($rowpaymentdetail['commision_fee'],2).'</label>
 						</td>
 						<td style="vertical-align: middle; text-align: left; border-left:solid 1px #ccc;  min-width: 100px; ">&nbsp;
-							<label id="duelabel'.$no.'">'.number_format($row['driver_fee_after'],2).'</label>
+							<label id="duelabel'.$no.'">'.number_format($row['commision_fee_after'],2).'</label>
 							<input type="hidden" dojoType="dijit.form.TextBox" name="commision_fee'.$no.'" id="commision_fee'.$no.'" value="'.$duevalu.'" >
 							<input type="hidden" dojoType="dijit.form.TextBox" name="detailid'.$no.'" id="detailid'.$no.'" value="'.$rowpaymentdetail['id'].'" >
 						</td>
 						<td><input type="text" class="fullside" dojoType="dijit.form.NumberTextBox" required="required" onKeyup="calculateamount('.$no.');" name="payment_amount'.$no.'" id="payment_amount'.$no.'" value="'.$rowpaymentdetail['paid'].'" style="text-align: center;" ></td>
-						<td><input type="text" class="fullside" readonly="readonly" dojoType="dijit.form.NumberTextBox" required="required" name="remain'.$no.'" id="remain'.$no.'" value="'.$rowpaymentdetail['driver_fee_after'].'" style="text-align: center;" ></td>
+						<td><input type="text" class="fullside" readonly="readonly" dojoType="dijit.form.NumberTextBox" required="required" name="remain'.$no.'" id="remain'.$no.'" value="'.$rowpaymentdetail['commision_fee_after'].'" style="text-align: center;" ></td>
 					</tr>';
 				}else{
 					$string.='
@@ -224,14 +224,14 @@ class Bookings_Model_DbTable_DbCommission extends Zend_Db_Table_Abstract
 						<input type="hidden" dojoType="dijit.form.TextBox" name="bookingno_hidden'.$no.'" id="bookingno_hidden'.$no.'" value="'.$row['booking_no'].'" >
 						</td>
 						<td style="vertical-align: middle; text-align: left; border-left:solid 1px #ccc; min-width: 100px;">&nbsp;
-							<label id="origtotallabel'.$no.'">'.number_format($row['driver_fee'],2).'</label>
+							<label id="origtotallabel'.$no.'">'.number_format($row['commision_fee'],2).'</label>
 						</td>
 						<td style="vertical-align: middle; text-align: left; border-left:solid 1px #ccc;  min-width: 100px; ">&nbsp;
-						<label id="duelabel'.$no.'">'.number_format($row['driver_fee_after'],2).'</label>
-						<input type="hidden" dojoType="dijit.form.TextBox" name="commision_fee'.$no.'" id="commision_fee'.$no.'" value="'.$row['driver_fee_after'].'" >
+						<label id="duelabel'.$no.'">'.number_format($row['commision_fee_after'],2).'</label>
+						<input type="hidden" dojoType="dijit.form.TextBox" name="commision_fee'.$no.'" id="commision_fee'.$no.'" value="'.$row['commision_fee_after'].'" >
 						</td>
 						<td><input type="text" class="fullside" dojoType="dijit.form.NumberTextBox" required="required" onKeyup="calculateamount('.$no.');" name="payment_amount'.$no.'" id="payment_amount'.$no.'" value="0" style="text-align: center;" ></td>
-						<td><input type="text" class="fullside" readonly="readonly" dojoType="dijit.form.NumberTextBox" required="required" name="remain'.$no.'" id="remain'.$no.'" value="'.$row['driver_fee_after'].'" style="text-align: center;" ></td>
+						<td><input type="text" class="fullside" readonly="readonly" dojoType="dijit.form.NumberTextBox" required="required" name="remain'.$no.'" id="remain'.$no.'" value="'.$row['commision_fee_after'].'" style="text-align: center;" ></td>
 					</tr>';
 				}
 				$no++;
@@ -246,10 +246,10 @@ class Bookings_Model_DbTable_DbCommission extends Zend_Db_Table_Abstract
 		$db = $this->getAdapter();
 		$sql="SELECT 
 				SUM(pd.`paid`) AS tolalpayamount
-			FROM `ldc_driver_payment_detail` AS pd,
-				`ldc_driver_payment` AS p
+			FROM `ldc_commission_payment_detail` AS pd,
+				`ldc_commission_payment` AS p
 			WHERE 
-				p.id = pd.`driver_payment_id` AND
+				p.id = pd.`commission_payment_id` AND
 				pd.`id`!=$detail_id AND pd.`booking_id`=$booking_id 
 				AND p.`status`=1
 			LIMIT 1 ";
@@ -260,8 +260,8 @@ class Bookings_Model_DbTable_DbCommission extends Zend_Db_Table_Abstract
 		$sql="SELECT pd.*,
 			(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS booking_no,
 			(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS booking_date,
-			(SELECT c.driver_fee FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS driver_fee,
-			(SELECT c.driver_fee_after FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS driver_fee_after
+			(SELECT c.commision_fee FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS commision_fee,
+			(SELECT c.commision_fee_after FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS commision_fee_after
 			FROM `ldc_commission_payment_detail` AS pd 
 			WHERE pd.`commission_payment_id`=$payment_id AND pd.`booking_id`=$booking_id LIMIT 1";
 		return $db->fetchRow($sql);
