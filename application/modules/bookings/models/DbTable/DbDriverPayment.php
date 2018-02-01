@@ -180,7 +180,7 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 					$duevalu=$rowpaymentdetail['due_amount'];
 					$paymenttailByBooking = $this->getSumCommissionPaymentDetailByBookingId($rowpaymentdetail['booking_id'], $rowpaymentdetail['id']);// get other pay amount on this Booking id on other payment number
 					if (!empty($paymenttailByBooking)){
-						$duevalu = $rowpaymentdetail['commision_fee']-$paymenttailByBooking['tolalpayamount'];
+						$duevalu = $rowpaymentdetail['driver_fee']-$paymenttailByBooking['tolalpayamount'];
 					}
 					if (empty($identityedit)){
 						$identityedit=$no;
@@ -200,15 +200,15 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 							<input type="hidden" dojoType="dijit.form.TextBox" name="bookingno_hidden'.$no.'" id="bookingno_hidden'.$no.'" value="'.$row['booking_no'].'" >
 						</td>
 						<td style="vertical-align: middle; text-align: left; border-left:solid 1px #ccc; min-width: 100px;">&nbsp;
-							<label id="origtotallabel'.$no.'">'.number_format($rowpaymentdetail['commision_fee'],2).'</label>
+							<label id="origtotallabel'.$no.'">'.number_format($rowpaymentdetail['driver_fee'],2).'</label>
 						</td>
 						<td style="vertical-align: middle; text-align: left; border-left:solid 1px #ccc;  min-width: 100px; ">&nbsp;
-							<label id="duelabel'.$no.'">'.number_format($row['commision_fee_after'],2).'</label>
+							<label id="duelabel'.$no.'">'.number_format($row['driver_fee_after'],2).'</label>
 							<input type="hidden" dojoType="dijit.form.TextBox" name="commision_fee'.$no.'" id="commision_fee'.$no.'" value="'.$duevalu.'" >
 							<input type="hidden" dojoType="dijit.form.TextBox" name="detailid'.$no.'" id="detailid'.$no.'" value="'.$rowpaymentdetail['id'].'" >
 						</td>
 						<td><input type="text" class="fullside" dojoType="dijit.form.NumberTextBox" required="required" onKeyup="calculateamount('.$no.');" name="payment_amount'.$no.'" id="payment_amount'.$no.'" value="'.$rowpaymentdetail['paid'].'" style="text-align: center;" ></td>
-						<td><input type="text" class="fullside" readonly="readonly" dojoType="dijit.form.NumberTextBox" required="required" name="remain'.$no.'" id="remain'.$no.'" value="'.$rowpaymentdetail['commision_fee_after'].'" style="text-align: center;" ></td>
+						<td><input type="text" class="fullside" readonly="readonly" dojoType="dijit.form.NumberTextBox" required="required" name="remain'.$no.'" id="remain'.$no.'" value="'.$rowpaymentdetail['driver_fee_after'].'" style="text-align: center;" ></td>
 					</tr>';
 				}else{
 					$string.='
@@ -224,14 +224,14 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 						<input type="hidden" dojoType="dijit.form.TextBox" name="bookingno_hidden'.$no.'" id="bookingno_hidden'.$no.'" value="'.$row['booking_no'].'" >
 						</td>
 						<td style="vertical-align: middle; text-align: left; border-left:solid 1px #ccc; min-width: 100px;">&nbsp;
-							<label id="origtotallabel'.$no.'">'.number_format($row['commision_fee'],2).'</label>
+							<label id="origtotallabel'.$no.'">'.number_format($row['driver_fee'],2).'</label>
 						</td>
 						<td style="vertical-align: middle; text-align: left; border-left:solid 1px #ccc;  min-width: 100px; ">&nbsp;
-						<label id="duelabel'.$no.'">'.number_format($row['commision_fee_after'],2).'</label>
-						<input type="hidden" dojoType="dijit.form.TextBox" name="commision_fee'.$no.'" id="commision_fee'.$no.'" value="'.$row['commision_fee_after'].'" >
+						<label id="duelabel'.$no.'">'.number_format($row['driver_fee_after'],2).'</label>
+						<input type="hidden" dojoType="dijit.form.TextBox" name="commision_fee'.$no.'" id="commision_fee'.$no.'" value="'.$row['driver_fee_after'].'" >
 						</td>
 						<td><input type="text" class="fullside" dojoType="dijit.form.NumberTextBox" required="required" onKeyup="calculateamount('.$no.');" name="payment_amount'.$no.'" id="payment_amount'.$no.'" value="0" style="text-align: center;" ></td>
-						<td><input type="text" class="fullside" readonly="readonly" dojoType="dijit.form.NumberTextBox" required="required" name="remain'.$no.'" id="remain'.$no.'" value="'.$row['commision_fee_after'].'" style="text-align: center;" ></td>
+						<td><input type="text" class="fullside" readonly="readonly" dojoType="dijit.form.NumberTextBox" required="required" name="remain'.$no.'" id="remain'.$no.'" value="'.$row['driver_fee_after'].'" style="text-align: center;" ></td>
 					</tr>';
 				}
 				$no++;
@@ -246,26 +246,28 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 		$db = $this->getAdapter();
 		$sql="SELECT 
 				SUM(pd.`paid`) AS tolalpayamount
-			FROM `ldc_commission_payment_detail` AS pd,
-				`ldc_commission_payment` AS p
+			FROM `ldc_driver_payment_detail` AS pd,
+				`ldc_driver_payment` AS p
 			WHERE 
-				p.id = pd.`commission_payment_id` AND
+				p.id = pd.`driver_payment_id` AND
 				pd.`id`!=$detail_id AND pd.`booking_id`=$booking_id 
 				AND p.`status`=1
 			LIMIT 1 ";
 		return $db->fetchRow($sql);
 	}
+	
 	function getCommissionPaymentAndBookingId($payment_id,$booking_id){
 		$db = $this->getAdapter();
 		$sql="SELECT pd.*,
 			(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS booking_no,
 			(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS booking_date,
-			(SELECT c.commision_fee FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS commision_fee,
-			(SELECT c.commision_fee_after FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS commision_fee_after
+			(SELECT c.driver_fee FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS driver_fee,
+			(SELECT c.driver_fee_after FROM `ldc_carbooking` AS c WHERE c.id = pd.`booking_id` LIMIT 1) AS driver_fee_after
 			FROM `ldc_driver_payment_detail` AS pd 
 			WHERE pd.`driver_payment_id`=$payment_id AND pd.`booking_id`=$booking_id LIMIT 1";
 		return $db->fetchRow($sql);
 	}
+	
 	function getAllDriverPayment($search){
 		$db = $this->getAdapter();
 		$from_date=$search["from_book_date"];
@@ -374,28 +376,29 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 	}
 	
 	public function updateCommissionPayment($_data){
+		
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
 			$_db = new Application_Model_DbTable_DbGlobal();
 // 			$reciept_no = $_db->getNewCommissionPaymentNO();
 			$_arrcommission=array(
-// 					'payment_no'	  => $reciept_no,
-					'agency_id'	  => $_data['agency'],
-					'payment_date'	  => $_data['payment_date'],
-					'payment_type'	  => 0,
-					'payment_method'	  => $_data['payment_method'],
-					'paid'	  => $_data['total_paid'],
-					'balance'	  => $_data['balance'],
-					'total_due'	  => $_data['total_due'],
-					'amount'      => $_data['amount'],
-					'note'	  => $_data['remark'],
-					'status'	  => 1,
-					'create_date'=> date("Y-m-d H:i:s"),
-					'modify_date'  =>date("Y-m-d H:i:s"),
-					'user_id'      => $this->getUserId(),
+// 					'payment_no'	  	=> $reciept_no,
+					'driver_id'	  	=> $_data['driver'],
+					'payment_date'	  	=> $_data['payment_date'],
+					'payment_type'	  	=> 0,
+					'payment_method'  	=> $_data['payment_method'],
+					'paid'	  			=> $_data['total_paid'],
+					'balance'	  		=> $_data['balance'],
+					'total_due'	  		=> $_data['total_due'],
+					'amount'      		=> $_data['amount'],
+					'note'	  			=> $_data['remark'],
+					'status'	  		=> 1,
+					'create_date'		=> date("Y-m-d H:i:s"),
+					'modify_date'  		=>date("Y-m-d H:i:s"),
+					'user_id'      		=> $this->getUserId(),
 			);
-			$this->_name="ldc_commission_payment";
+			$this->_name="ldc_driver_payment";
 			$where = ' id = '.$_data['payment_id'];
 			$this->update($_arrcommission, $where);
 			$id_commission_payment = $_data['payment_id'];
@@ -409,9 +412,9 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 					$duevalu=$rowpaymentdetail['paid'];
 					
 					$paymenttailByBooking = $this->getSumCommissionPaymentDetailByBookingId($pay_detail['booking_id'], $pay_detail['id']);// get other pay amount on this Booking on other commission payment
-					$dueafters = $bookingafter['commision_fee_after']+$duevalu;
+					$dueafters = $bookingafter['driver_fee_after']+$duevalu;
 					if (!empty($paymenttailByBooking['tolalpayamount'])){
-						$duevalu = ($rowpaymentdetail['commision_fee']-$paymenttailByBooking['tolalpayamount']);
+						$duevalu = ($rowpaymentdetail['driver_fee']-$paymenttailByBooking['tolalpayamount']);
 						$dueafters =$duevalu;
 					}
 					
@@ -421,8 +424,8 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 						$is_payments=1;
 					}
 					$array=array(
-							'is_paid_commission'=>$is_payments,
-							'commision_fee_after'=>$dueafters,
+							'is_paid_to_driver'=>$is_payments,
+							'driver_fee_after' =>$dueafters,
 					);
 					$this->_name="ldc_carbooking";
 					$where = " id =".$pay_detail['booking_id'];
@@ -444,8 +447,8 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 				}
 			}
 			// delete old payment detail that don't have on new payment detail after edit
-			$this->_name="ldc_commission_payment_detail";
-			$where2=" commission_payment_id = ".$id_commission_payment;
+			$this->_name="ldc_driver_payment_detail";
+			$where2=" driver_payment_id = ".$id_commission_payment;
 			if (!empty($detailidlist)){ // check if has old payment detail  detail id
 				$where2.=" AND id NOT IN (".$detailidlist.")";
 			}
@@ -458,15 +461,15 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 				$paid = $_data['payment_amount'.$i];
 	
 				if (!empty($booking)){
-					$dueafter =$booking['commision_fee_after']-$paid;
+					$dueafter =$booking['driver_fee_after']-$paid;
 					if ($dueafter>0){
 						$is_payment=0;
 					}else{
 						$is_payment=1;
 					}
 					$array=array(
-							'is_paid_commission'=>$is_payment,
-							'commision_fee_after'=>$dueafter,
+							'is_paid_to_driver'=>$is_payment,
+							'driver_fee_after' =>$dueafter,
 					);
 					$this->_name="ldc_carbooking";
 					$where = " id =".$_data['carbooking_id'.$i];
@@ -474,24 +477,24 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 				}
 				if (!empty($_data['detailid'.$i])){
 					$arrs = array(
-							'commission_payment_id'=>$id_commission_payment,
-							'booking_id'=>$_data['carbooking_id'.$i],
-							'due_amount'=>$_data['commision_fee'.$i],
-							'paid'=>$_data['payment_amount'.$i],
-							'remain'=>$_data['remain'.$i],
+							'commission_payment_id'	=>$id_commission_payment,
+							'booking_id'			=>$_data['carbooking_id'.$i],
+							'due_amount'			=>$_data['commision_fee'.$i],
+							'paid'					=>$_data['payment_amount'.$i],
+							'remain'				=>$_data['remain'.$i],
 					);
-					$this->_name ='ldc_commission_payment_detail';
+					$this->_name ='ldc_driver_payment_detail';
 					$where12 =" id= ".$_data['detailid'.$i];
 					$this->update($arrs, $where12);
 				}else{
 					$arrs = array(
-							'commission_payment_id'=>$id_commission_payment,
-							'booking_id'=>$_data['carbooking_id'.$i],
-							'due_amount'=>$_data['commision_fee'.$i],
-							'paid'=>$_data['payment_amount'.$i],
-							'remain'=>$_data['remain'.$i],
+							'commission_payment_id'	=>$id_commission_payment,
+							'booking_id'			=>$_data['carbooking_id'.$i],
+							'due_amount'			=>$_data['commision_fee'.$i],
+							'paid'					=>$_data['payment_amount'.$i],
+							'remain'				=>$_data['remain'.$i],
 					);
-					$this->_name ='ldc_commission_payment_detail';
+					$this->_name ='ldc_driver_payment_detail';
 					$this->insert($arrs);
 				}
 			}
@@ -502,6 +505,7 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 			$db->rollBack();
 		}
 	}
+	
 	function getCarbookingById($id){
 		$db = $this->getAdapter();
 		$sql="SELECT c.* FROM `ldc_carbooking` AS c WHERE c.`id` = $id LIMIT 1";
