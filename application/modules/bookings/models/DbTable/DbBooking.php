@@ -367,6 +367,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
+			
 			$_db = new Application_Model_DbTable_DbGlobal();
 			$booking_code = $_db->getNewCarBookingNO();
 			$_arrbooking=array(
