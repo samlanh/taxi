@@ -299,7 +299,7 @@ class Expense_Model_DbTable_DbVehicleMaintenance extends Zend_Db_Table_Abstract
 		      (SELECT vt.title FROM ldc_vechicletye AS vt WHERE vt.id=v.car_type LIMIT 1) AS cat_type       
 		      
 		     FROM ldc_driver AS d,ldc_vehicle AS v
-		     WHERE v.id=d.vehicle_id AND d.id=$id ";
+		     WHERE v.id=d.vehicle_id AND d.vehicle_id=$id ";
 			$row=$db->fetchRow($sql);
 		
 			$tr= Application_Form_FrmLanguages::getCurrentlanguage();
@@ -377,7 +377,7 @@ class Expense_Model_DbTable_DbVehicleMaintenance extends Zend_Db_Table_Abstract
 			(SELECT e.`capacity` FROM `ldc_engince` AS e WHERE e.id=v.`engine`) AS `engine`
 			 
 		        FROM ldc_driver AS d,ldc_vehicle AS v
-			WHERE v.id=d.vehicle_id AND d.id=$id";
+			WHERE v.id=d.vehicle_id AND d.vehicle_id=$id";
 		$row=$db->fetchRow($sql);
 		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
 		$baseurl= Zend_Controller_Front::getInstance()->getBaseUrl();

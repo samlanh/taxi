@@ -45,12 +45,20 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	}
 	  
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
-	  	$this->view->rows = $db->getAllVehiclePrice($search);
+	  	$this->view->rows = $db->getAllExpenseMaintenance($search);
 	  
 	  	$frm = new Application_Form_FrmAdvanceSearch();
 	  	$form = $frm->AdvanceSearch();
 	  	Application_Model_Decorator::removeAllDecorator($form);
 	  	$this->view->frm = $form;
+	  }
+	  
+	  function rptVehiclemaintenanceDetailAction(){
+	  	$id=$this->getRequest()->getParam('id');
+	  	$db = new Report_Model_DbTable_DbBookingPayment();
+	  	$this->view->driver= $db->getDriverInfor($id);
+	  	$this->view->car = $db->getCarInfor($id);
+	  	$this->view->he_m_detail = $db->getVehicleMaintenantDetail($id);
 	  }
   
 }

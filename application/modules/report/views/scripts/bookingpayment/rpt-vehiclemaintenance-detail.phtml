@@ -1,118 +1,146 @@
-<?php $filter = $this->frm_search;
-$tr = Application_Form_FrmLanguages::getCurrentlanguage();
-$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
-$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
-$frm=$this->frm;
-?>
-<meta charset="utf-8">
-<title><?php echo $tr->translate("Vehicle Rental Price");?></title>
-<form method="post">
+<?php 
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	$rss = $this->row_booking;
+	$frm = $this->frms;
 	
-	</form>
+	$session_user=new Zend_Session_Namespace('authcar');
+	$username = $session_user->user_name;
+	
+	//print_r($this->driver);exit();
+?>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("INVOICE");?></title>
+<style type="text/css">
+      .wrapp{ width: 100%; height: 100%;}
+      .h_left{width:40%;float:left;}
+      .h_right{width:40%;float:right;}
+      .conten{margin-top:20px;}
+      table tr .totalbr{
+			border: 1px solid #000;
+		}	
+		 table tr th.totalbr{
+      	text-align: center;
+		}	
+	.header ul li{line-height: 20px;}
+	td.colortext {color:#145c82;}
+</style>
+</head>
+<body>
 <div class="row">
 	<div class="x_panel " >
-		<form method="post">
-			<div class="form-group">
-				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('adv_search');?></div>
-				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('status');?></div>
-				<div class="col-md-1 col-sm-1 col-xs-12"></div>
-				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('btn_search');?></div>
-			</div>
-		</form>
-		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
-			<div id="divPrint" style="width: 100%;">
-				<style>
-				.style{
-					line-height: 20px;font-size: 10px !important;
-					font-family: 'Khmer OS Battambang';
-				}
-				th{padding: 5px;}
-				tr.header {
-				    font-weight: bold;
-				    line-height: 14px;
-				    font-size: 12px;
-				    background: #eee;
-				    text-align: center;
-				}
-				tr.header td {
-				    padding: 5px;
-				}
-				</style>
-				<table style="font-family: 'Khmer OS Content'; width:100%;">
-					<tr>
-				    	<td align="center">
-				    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
-				            	<tr>
-				                	<td width="20%"></td>
-				                	<td width="60%" valign="top">
-				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
-				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Vehicle Rental Price");?></h2>
-				                	</td>
-				                    <td width="20%"></td>
-				                </tr> 
-				                <tr>
-				                	<td colspan="3">
-						              </td>
-						           </tr>   
-				            </table>
-				        </td>
-				    </tr>
-				    <tr>
-				    	<td>
-				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
-				                 <tr class="header">
-				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
-				                    <td><?php echo $tr->translate("Reff");?></td>
-				                    <td><?php echo $tr->translate("Frame No");?></td>
-				                    <td><?php echo $tr->translate("Licence Plate");?></td>
-				                    <td><?php echo $tr->translate("Make");?></td>
-				                    <td><?php echo $tr->translate("Model");?></td>
-				                    <td><?php echo $tr->translate("Sub Model");?></td>
-				                    <td><?php echo $tr->translate("Year");?></td>
-				                    <td><?php echo $tr->translate("Color");?></td>
-				                    <td><?php echo $tr->translate("Vehicle Type");?></td>
-				                    <td><?php echo $tr->translate("Package Day");?></td>
-				                    <td><?php echo $tr->translate("Price/Day");?></td>
-				                    <td><?php echo $tr->translate("Extra Price/Day");?></td>
-				                    <td><?php echo $tr->translate("VAT");?></td>
-				                    <td><?php echo $tr->translate("Note");?></td>
-				                    <td><?php echo $tr->translate("Status");?></td>
-				                </tr>
-				               <?php 
-				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
-									<tr align="center" style="line-height: 18px; background: #fff;">
-										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
-										<td align="left" >&nbsp;<?php echo $row['reffer']; ?>&nbsp;</td>
-										<td align="left">&nbsp;<?php echo $row['frame_no'];?>&nbsp;</td>
-										<td>&nbsp;<?php echo $row['licence_plate'];?>&nbsp;</td>
-										<td>&nbsp;<?php echo $row['make'];?>&nbsp;</td>
-										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['model']; ?></span>&nbsp;</td>	
-										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo $row['sub_model'] ?>&nbsp;</td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['year'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['color'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['car_type'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['package_name'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo number_format($row['price'],2);?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo number_format($row['extraprice'],2);?></td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['vat_value'];?></td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['note'];?></td>
-										<td align="center" line-height:15px;">&nbsp;<?php echo $row['status'];?></td>	
-										
-									</tr>
-								<?php }?>
-				            </table>
-				            <br />
-				               <table align="center" width="100%">
-								   <tr style="font-size: 12px;">
-								        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
-								        <th></th>
-								        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
-								   </tr>
-							</table>
-				    	</td>
-				    </tr>
-				</table>
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc;">
+			<div class="wrapp" style="width: 21cm;height:29.7cm; margin: 0 auto; border:1px dotted #000; padding: 20px;">
+				<div id="divPrint" style="width: 100%;">
+				    <div class="header">
+				    	<ul>
+				    		<li style="list-style:none ;text-align:center;height:28px; font-size:16px; font-family:Arial, Helvetica, sans-serif;font-weight: bold;"><?php echo $tr->translate("BRANCH_TITLE");?></li>
+				    		<li style="list-style:none ; text-align:center;height:20px; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("​រាយការណ៍ប្រវត្តិថែទាំរថយន្តលំអិត");?></li>
+				    	</ul>
+				    </div>
+				    <div class="header_tow">
+				           <table id="exportExcel" style="border-collapse:collapse;font-size: 12px;"  width="100%" >
+							    <tbody>
+								<tr>
+									<th valign="top" width="40%">
+									<?php $img='no_car.png';
+										  if(!empty($this->car['img_front'])){
+										  	$img=$this->car['img_front'];
+										  }
+									?>
+							       	 	<table style="border-collapse:collapse;font-size: 12px; width:100% ;text-align: left; border:1px solid #000;padding:5px;white-space: nowrap;" >
+											<tr><td colspan="3" style="border-bottom:1px solid #ccc;background-color: #145c82;color: #fefafa;text-align: left;padding: 2px 0;"><strong>&nbsp;<i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('Vehicle Infomation')?></strong></td></tr>
+									        <tr><td rowspan="4"​ valign="top">&nbsp;<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/vehicle/no_car.png';?>" alt="" style="width:100px;height: 100px;" />&nbsp;</td>
+									         <td width="100px">&nbsp;<span class="span_title">   <?php echo $tr->translate('Ref. No.')?></span> :&nbsp;</td><td class="colortext"><?php echo $this->car['reffer'];?></td></tr>
+									        <tr><td >&nbsp;&nbsp;&nbsp;<span class="span_title"><?php echo $tr->translate('YEAR')?></span> : </td><td class="colortext"><?php echo $this->car['year'];?></td></tr>
+									        <tr><td >&nbsp;<span class="span_title">			<?php echo $tr->translate('Color')?></span> : </td><td class="colortext"><?php echo $this->car['color'];?></td></tr>
+									        <tr><td >&nbsp;<span class="span_title">			<?php echo $tr->translate('No. of Seats')?></span> : </td><td class="colortext"><?php echo $this->car['seat_amount'];?></td></tr>
+									       <!-- <tr><td >&nbsp;<span class="span_title">			<?php echo $tr->translate('Trans. Type')?></span> : </td><td class="colortext"><?php echo $this->car['transmission'];?></td></tr>
+									        <tr><td >&nbsp;<span class="span_title">			<?php echo $tr->translate('VEHICLETYPE')?></span> : </td><td class="colortext">	<?php echo $this->car['cat_type'];?></td></tr>
+							       	 		 --> 
+							       	 	</table>
+							        </th>
+							       <th width="20%"></th>
+									<th valign="top" width="40%">
+									<?php $img='user_profile.jpg';
+										  if(!empty($this->driver['photo'])){
+										  	$img=$this->driver['photo'];
+										  }
+									?>
+										<table style="border-collapse:collapse;font-size: 12px; width:100% ;text-align: left; border:1px solid #000;padding:5px;white-space: nowrap;" >
+											<tr><td colspan="3" style="border-bottom:1px solid #ccc;background-color: #145c82;color: #fefafa;text-align: left;padding: 2px 0;"><strong>&nbsp;<i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('Driver Infomation')?></strong></td></tr>
+									        <tr><td rowspan="4"​ valign="top">&nbsp;<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/driverphoto/'.$img;?>" alt="" style="width:100px;height: 100px;" />&nbsp;</td>
+									        <td width="100px">&nbsp;<span class="span_title"><?php echo $tr->translate('NAME')?></span> :&nbsp;</td><td class="colortext"><?php echo $this->driver['first_name'].' '.$this->driver['last_name'];?></td></tr>
+									        <tr><td width="100px">&nbsp;<span class="span_title"><?php echo $tr->translate('Gender')?></span> : </td><td class="colortext"><?php echo $this->driver['gender'];?></td></tr>
+									        <tr><td >&nbsp;<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : </td><td class="colortext"><?php echo $this->driver['nationality'];?></td></tr>
+									        <tr><td >&nbsp;<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : </td><td class="colortext"><?php echo $this->driver['tel'];?></td></tr>
+							       	 	</table>
+							        </th>
+								</tr>
+							   </tbody>
+						</table>
+				    </div>
+					 
+				    <div class="conten" style="border-top:2px solid #000; margin-top: 10px;">
+				        <table style="border-collapse:collapse;font-size: 12px;margin-top:10px;float: left; border:1px solid #000;font-weight: bold; white-space: nowrap;" border="1"  width="100%">
+						  <tr align="center" style="background:#D6D6D6; height:25px;" >
+						     <th class="totalbr">No.</th>
+						     <th class="totalbr" ><?php echo $tr->translate('INVOICE')?></th> 
+						     <th class="totalbr"><?php echo $tr->translate('CHEQUE_NO')?></th>
+						     <th class="totalbr" width="120"><?php echo $tr->translate('VEHICLE_REF_NO')?></th>
+						     <th class="totalbr"><?php echo $tr->translate('PAYMENT_TYPE')?></th>
+		                     <th class="totalbr"><?php echo $tr->translate('EXPENSE_TYPE')?></th>
+		                     <th class="totalbr"><?php echo $tr->translate('TOTAL_AMOUNT')?></th>
+		                     <th class="totalbr"><?php echo $tr->translate('DESCRIPTION')?></th>
+						     <th class="totalbr"><?php echo $tr->translate('USER_NAME')?></th>
+						  </tr>
+						  <?php $total=0;$refund_deposit=0; foreach($this->he_m_detail AS $i => $rows){?>
+						  <tr style="height: 25px; color: #145c82;">
+						     <td class="totalbr" align="center">&nbsp;<?php echo $i+1;?></td>
+						     <td class="totalbr" align="left">&nbsp;<?php echo $rows['invoice'];?></td>
+						     <td class="totalbr" align="center" width="110px"><?php echo $rows['cheque_no'];?></td>
+						     <td class="totalbr" align="right" width="110px"> <?php echo $rows['car_no'];?></td>
+						     <td class="totalbr" width="110px" align="center"><?php echo $rows['payment_type'];?></td>
+	                    	 <td class="totalbr" width="110px" align="center"><?php echo $rows['expen_type'];?></td>
+						     <td class="totalbr" width="110px" align="right">$ <?php echo number_format($rows['total_amount'],2);?></td>
+						     <td class="totalbr" width="110px" align="center"><?php  echo $rows['description'];?></td>
+	                    	 <td class="totalbr" width="110px" align="center"><?php  echo $rows['user_name'];?></td>
+						  </tr>
+						  <?php 
+						      $total=$total+$rows['total_amount'];
+							}?>
+						   
+						  <tr height="30px">
+							  <td style="border:none;border-left:1px solid #fff;border-bottom:1px solid #fff;" colspan="7"></td>
+							  <td class="totalbr" >&nbsp;<?php echo $tr->translate('TOTAL_AMOUNT')?></td>
+							  <td class="totalbr" >&nbsp;$ <?php echo number_format($total,2);?></td>
+						  </tr>
+					   </table>
+				    </div>
+				    <div>
+				    <!-- 
+				         <table style="width: 100%;" cellspacing="5">
+				            <tr height="100px">
+				                <td  valign="top" style="width:33%;font-weight: bold; text-align: center;" width="33%">Authorized Signature</td>
+				                <td></td>
+				                <td valign="top" style="font-weight: bold;text-align:center;" width="33%">Customer Name</td>
+				            </tr>
+				             <tr height="60">
+				             	<td style="text-align:center;color:#145c82;font-weight: bold; border-top: 1px solid #145c82;">Signature/Name of Owner <br/> <?php echo $this->agreeinfo['owner_name'];?></td>
+				                <td></td>
+				                <td style="color:#145c82;font-weight: bold;border-top: 1px solid #145c82;text-align: center;" valign="top"> Signature/Name of Renter<br /><?php echo $this->customer['first_name']?>-<?php echo $this->customer['last_name']?></td>
+				            </tr>
+				         </table>
+				          -->
+				    </div>
+  				</div>
+			    
 			</div>
 		</div>
 	</div>
 </div>
+<script>
+dojo.require("dijit.form.DateTextBox");
+</script>

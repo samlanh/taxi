@@ -3,6 +3,7 @@ $tr = Application_Form_FrmLanguages::getCurrentlanguage();
 $url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
 $url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
 $frm=$this->frm;
+// print_r($this->rows);
 ?>
 <meta charset="utf-8">
 <title><?php echo $tr->translate("Vehicle Rental Price");?></title>
@@ -46,7 +47,7 @@ $frm=$this->frm;
 				                	<td width="20%"></td>
 				                	<td width="60%" valign="top">
 				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
-				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Vehicle Rental Price");?></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("រាយការណ៍ប្រវត្តិថែទាំរថយន្ត");?></h2>
 				                	</td>
 				                    <td width="20%"></td>
 				                </tr> 
@@ -62,42 +63,23 @@ $frm=$this->frm;
 				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
 				                 <tr class="header">
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
-				                    <td><?php echo $tr->translate("Reff");?></td>
-				                    <td><?php echo $tr->translate("Frame No");?></td>
-				                    <td><?php echo $tr->translate("Licence Plate");?></td>
-				                    <td><?php echo $tr->translate("Make");?></td>
-				                    <td><?php echo $tr->translate("Model");?></td>
-				                    <td><?php echo $tr->translate("Sub Model");?></td>
-				                    <td><?php echo $tr->translate("Year");?></td>
-				                    <td><?php echo $tr->translate("Color");?></td>
-				                    <td><?php echo $tr->translate("Vehicle Type");?></td>
-				                    <td><?php echo $tr->translate("Package Day");?></td>
-				                    <td><?php echo $tr->translate("Price/Day");?></td>
-				                    <td><?php echo $tr->translate("Extra Price/Day");?></td>
-				                    <td><?php echo $tr->translate("VAT");?></td>
-				                    <td><?php echo $tr->translate("Note");?></td>
-				                    <td><?php echo $tr->translate("Status");?></td>
+				                     
+				                    <td><?php echo $tr->translate("VEHICLE_REF_NO");?></td>
+				                    <td><?php echo $tr->translate("PAYMENT_TYPE");?></td>
+				                    
+				                    <td><?php echo $tr->translate("ALL_TOTALE");?></td>
+				                    <td><?php echo $tr->translate("CTEATE_DATE");?></td>
+				                    <td><?php echo $tr->translate("USER_NAME");?></td>
 				                </tr>
 				               <?php 
 				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
 									<tr align="center" style="line-height: 18px; background: #fff;">
 										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
-										<td align="left" >&nbsp;<?php echo $row['reffer']; ?>&nbsp;</td>
-										<td align="left">&nbsp;<?php echo $row['frame_no'];?>&nbsp;</td>
-										<td>&nbsp;<?php echo $row['licence_plate'];?>&nbsp;</td>
-										<td>&nbsp;<?php echo $row['make'];?>&nbsp;</td>
-										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['model']; ?></span>&nbsp;</td>	
-										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo $row['sub_model'] ?>&nbsp;</td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['year'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['color'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['car_type'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['package_name'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo number_format($row['price'],2);?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo number_format($row['extraprice'],2);?></td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['vat_value'];?></td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['note'];?></td>
-										<td align="center" line-height:15px;">&nbsp;<?php echo $row['status'];?></td>	
-										
+										<td align="left" style="line-height:15px;"><a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-vehiclemaintenance-detail/id/<?php echo $row["id"]?>">&nbsp;<?php echo $row['car_no'];?></a></td>	
+										<td align="left" style="line-height:15px;"><a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-vehiclemaintenance-detail/id/<?php echo $row["id"]?>">&nbsp;<?php echo $row['title'];?></a></td>	
+										<td align="left" style="line-height:15px;">&nbsp;$&nbsp;&nbsp;<?php echo number_format($row['total_amount'],2);?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['create_date']));?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['user_name'];?></td>
 									</tr>
 								<?php }?>
 				            </table>
