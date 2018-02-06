@@ -34,6 +34,20 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 		}
 		return $pre.$new_acc_no;
 	}
+	public function getNewAgencyId(){
+		$this->_name='ldc_agency';
+		$db = $this->getAdapter();
+		$row = $this->getSystemSetting('customer_prefix');
+		$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+		$acc_no = $db->fetchOne($sql);
+		$new_acc_no= (int)$acc_no+1;
+		$acc_no= strlen((int)$acc_no+1);
+		$pre = ($row['value']);
+		for($i = $acc_no;$i<4;$i++){
+			$pre.='0';
+		}
+		return $pre.$new_acc_no;
+	}
 	public function getNewAgreementCode($date=null){
 		$db = $this->getAdapter();
 		$row = $this->getSystemSetting('agreement_code');
@@ -827,6 +841,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	$sql="SELECT c.id,CONCAT(first_name,' ',last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_customer AS c WHERE c.`status`=1 AND c.`first_name` !='' ORDER BY c.`first_name` ASC";
   	return $this->getAdapter()->fetchAll($sql);
   }
+  
   public function getAllDriver(){
   	$db= $this->getAdapter();
   	$sql="SELECT d.`id`,CONCAT(d.`first_name`,' ',d.`last_name`,'(',d.`driver_id`,')') AS `name`

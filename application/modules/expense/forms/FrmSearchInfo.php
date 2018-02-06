@@ -108,7 +108,15 @@ Class Expense_Form_FrmSearchInfo extends Zend_Dojo_Form {
 		$vehicle_name->setMultiOptions($_status_opt);
 		$vehicle_name->setValue($request->getParam("vehicle_id"));
 		
-		$this->addElements(array($vehicle_name,$payment_method,$_dateline,$_releasedate,$_c_type,$agencytype_id,$_title,$_status,$customer_type));
+		$_btn_search = new Zend_Dojo_Form_Element_SubmitButton('btn_search');
+		$_btn_search->setAttribs(array(
+				'dojoType'=>'dijit.form.Button',
+				'iconclass'=>'dijitIconSearch',
+				'label'=>'Search'
+		
+		));
+		
+		$this->addElements(array($_btn_search,$vehicle_name,$payment_method,$_dateline,$_releasedate,$_c_type,$agencytype_id,$_title,$_status,$customer_type));
 	
 		return $this;
 	}

@@ -60,6 +60,29 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	$this->view->car = $db->getCarInfor($id);
 	  	$this->view->he_m_detail = $db->getVehicleMaintenantDetail($id);
 	  }
+	  
+	  function rptExpenseDetailAction(){
+	  	if($this->getRequest()->isPost()){
+	  		$search = $this->getRequest()->getPost();
+	  	}
+	  	else{
+	  		$search = array(
+	  				'title'			=>'',
+	  				'payment_method'=>-1,
+	  				'start_date'	=> date('Y-m-d'),
+	  				'end_date'		=>date('Y-m-d'),
+	  				'status_search' =>-1
+	  				);
+	  	}
+	  	 
+	  	$db = new Report_Model_DbTable_DbBookingPayment();
+	  	$this->view->rows = $db->getAllExpenseDetail($search);
+	  	 
+	  	$frm = new Expense_Form_FrmSearchInfo();
+	  	$frm =$frm->search();
+	  	Application_Model_Decorator::removeAllDecorator($frm);
+	  	$this->view->frm_search = $frm;
+	  }
   
 }
 

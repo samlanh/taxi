@@ -363,7 +363,9 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		";
 		return $db->fetchRow($sql);
 	}
+	
 	public function addCarBooking($_data){
+		///print_r($_data);exit();
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
@@ -372,34 +374,35 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$booking_code = $_db->getNewCarBookingNO();
 			$_arrbooking=array(
 					'customer_id'	  => $_data['customer'],
-					'driver_id'	  => $_data['driver'],
+					//'driver_id'	  => $_data['driver'],
 					'vehicle_id'	  => $_data['vehicle'],
-					'agency_id'	  => $_data['agency'],
+					'agency_id'	  	  => $_data['agency'],
 					'booking_no'	  => $booking_code,
 					'booking_date'	  => $_data['booking_date'],
 					'delivey_date'	  => $_data['delivery_date'],
 					'delivey_time'	  => $_data['delivery_time'],
-					'fly_no'	  => $_data['fly_no'],
+					'fly_no'	  	  => $_data['fly_no'],
 					'from_location'	  => $_data['from_location'],
 					'to_location'	  => $_data['to_location'],
-					'qty'	  => 1,
-					'price'	  => $_data['price'],
+					'qty'	  		  => 1,
+					'price'	  		  => $_data['price'],
 					'commision_fee'	  => $_data['commision_fee'],
-					'commision_fee_after'	  => $_data['commision_fee'],
-					'is_paid_commission'	  => 0,
-					'other_fee'	  => $_data['other_fee'],
-					'total'	  => $_data['total'],
-					'due'	  => $_data['total'],
-					'due_after'	  => $_data['total'],
-					'driver_fee'	  => $_data['driver_fee'],
-					'driver_fee_after'	  => $_data['driver_fee'],
-					'remark'	  => $_data['remark'],
-					'status'	  => 1,
-					'is_paid_to_driver'	  => 0,
-					'is_customer_paid'	  => 0,
-					'create_date'=> date("Y-m-d H:i:s"),
-					'modify_date'  =>date("Y-m-d H:i:s"),
-					'user_id'      => $this->getUserId(),
+					'commision_fee_after'=> $_data['commision_fee'],
+					'is_paid_commission'=> 0,
+					'other_fee'	  		=> $_data['other_fee'],
+					'total'	  			=> $_data['total'],
+					'due'	  			=> $_data['total'],
+					'due_after'	  		=> $_data['total'],
+					'driver_fee'	  	=> $_data['driver_fee'],
+					'driver_fee_after'	=> $_data['driver_fee'],
+					'remark'	  		=> $_data['remark'],
+					'status_working'	=>0,
+					'status'	  		=> 1,
+					'is_paid_to_driver'	=> 0,
+					'is_customer_paid'	=> 0,
+					'create_date'		=> date("Y-m-d H:i:s"),
+					'modify_date'  		=>date("Y-m-d H:i:s"),
+					'user_id'      		=> $this->getUserId(),
 			);
 			$this->_name="ldc_carbooking";
 			$idbooking = $this->insert($_arrbooking);
@@ -444,34 +447,35 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			}
 			$_arrbooking=array(
 					'customer_id'	  => $_data['customer'],
-					'driver_id'	  => $_data['driver'],
+					//'driver_id'	  => $_data['driver'],
 					'vehicle_id'	  => $_data['vehicle'],
-					'agency_id'	  => $_data['agency'],
+					'agency_id'	  	  => $_data['agency'],
 // 					'booking_no'	  => $booking_code,
 					'booking_date'	  => $_data['booking_date'],
 					'delivey_date'	  => $_data['delivery_date'],
 					'delivey_time'	  => $_data['delivery_time'],
-					'fly_no'	  => $_data['fly_no'],
+					'fly_no'	  	  => $_data['fly_no'],
 					'from_location'	  => $_data['from_location'],
 					'to_location'	  => $_data['to_location'],
-					'qty'	  => 1,
-					'price'	  => $_data['price'],
+					'qty'	  		  => 1,
+					'price'	  		  => $_data['price'],
 					'commision_fee'	  => $_data['commision_fee'],
-					'commision_fee_after'	  => $commision_fee_after,
-					'is_paid_commission'	  => $is_commissionpaid,
-					'other_fee'	  => $_data['other_fee'],
-					'total'	  => $_data['total'],
-					'due'	  => $_data['total'],
-					'due_after'	  => $_data['total'],
+					'commision_fee_after'=> $commision_fee_after,
+					'is_paid_commission'=> $is_commissionpaid,
+					'other_fee'	  	  => $_data['other_fee'],
+					'total'	  		  => $_data['total'],
+					'due'	  		  => $_data['total'],
+					'due_after'	  	  => $_data['total'],
 					'driver_fee'	  => $_data['driver_fee'],
-					'driver_fee_after'	  => $driver_feeafter,
-					'remark'	  => $_data['remark'],
-					'status'	  => 1,
-					'is_paid_to_driver'	  => $is_driverpaid,
-					'is_customer_paid'	  => 0,
-					'create_date'=> date("Y-m-d H:i:s"),
-					'modify_date'  =>date("Y-m-d H:i:s"),
-					'user_id'      => $this->getUserId(),
+					'driver_fee_after'=> $driver_feeafter,
+					'remark'	  	  => $_data['remark'],
+					'status_working'  =>0,
+					'status'	  	  => 1,
+					'is_paid_to_driver'=> $is_driverpaid,
+					'is_customer_paid'=> 0,
+					'create_date'	  => date("Y-m-d H:i:s"),
+					'modify_date'  	  => date("Y-m-d H:i:s"),
+					'user_id'      	  => $this->getUserId(),
 			);
 			$this->_name="ldc_carbooking";
 			$where = " id = ".$_data['booking_id'];
@@ -593,6 +597,20 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 // 			$db->rollBack();
 		}
+	}
+	
+	public function getAllServiceType(){
+		$db=$this->getAdapter();
+		$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+		$sql =" SELECT id,service_title AS `name` FROM ldc_booking_service WHERE service_title!='' AND `status`=1";
+		$rows=$db->fetchAll($sql);
+		$options = '';
+		$options .= '<option value="0">'.$tr->translate("SELECT_SERVICE").'</option>';
+		$options .= '<option value="-1">'.$tr->translate("ADD_NEW").'</option>';
+		if(!empty($rows))foreach($rows as $value){
+			$options .= '<option value="'.$value['id'].'" >'.htmlspecialchars($value['name']).'</option>';
+		}
+		return $options;
 	}
 }
 ?>

@@ -1,11 +1,14 @@
 <?php
 class Bookings_indexController extends Zend_Controller_Action {
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
+	//protected $tr = null;
+	
     public function init()
     {    	
      /* Initialize action controller here */
     	header('content-type: text/html; charset=utf8');
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
+    	 $tr = Application_Form_FrmLanguages::getCurrentlanguage();
 	}
 	public function indexAction(){
 		try{
@@ -37,8 +40,8 @@ class Bookings_indexController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_search = $frm;
 	}
+	
 	public function addAction(){
-		
 		$db = new Bookings_Model_DbTable_DbBooking();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
@@ -54,6 +57,30 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$form = $frm->FormBooking();
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
+		////////////////////////////////add popup/////////
+		$fm = new Agency_Form_FrmClient();
+		$frm = $fm->FrmAddClient();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_client = $frm;
+		$db_globle=new Application_Model_DbTable_DbGlobal();
+		$row_cu = $db_globle->getAllCustomers();
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		array_unshift($row_cu,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->cus_all = $row_cu;
+		$fm = new Agency_Form_FrmClient();
+		$agency=$db_globle->getAllAgency();
+		array_unshift($agency,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->agency_all = $agency;
+		
+		$frm = new Location_Form_FrmLocation();
+		$frm=$frm->FrmAddLocation();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_location = $frm;
+		$local=$db_globle->getAllLocation();
+		array_unshift($local,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->location_all = $local;
+		$row=$this->service=$db->getAllServiceType();
+		 
 	}
 	
 	public function editAction()
@@ -103,6 +130,37 @@ class Bookings_indexController extends Zend_Controller_Action {
 			$db = new Bookings_Model_DbTable_DbBooking();
 			$row = $db->getDriverAndCarInfor($data);
 			print_r(Zend_Json::encode($row));
+			exit();
+		}
+	}
+	
+	function addcustomerAction(){
+		if($this->getRequest()->isPost()){
+			$db = new Group_Model_DbTable_DbClient();
+			$data = $this->getRequest()->getPost();
+			//echo $data;exit();
+			$code = $db->addCustomerAjax($data);
+			print_r(Zend_Json::encode($code));
+			exit();
+		}
+	}
+	
+	function addagencyAction(){
+		if($this->getRequest()->isPost()){
+			$db = new Group_Model_DbTable_DbClient();
+			$data = $this->getRequest()->getPost();
+			$code = $db->addAgencyAjax($data);
+			print_r(Zend_Json::encode($code));
+			exit();
+		}
+	}
+	
+	function addlocationAction(){
+		if($this->getRequest()->isPost()){
+			$db = new Group_Model_DbTable_DbClient();
+			$data = $this->getRequest()->getPost();
+			$code = $db->addLocationAjax($data);
+			print_r(Zend_Json::encode($code));
 			exit();
 		}
 	}

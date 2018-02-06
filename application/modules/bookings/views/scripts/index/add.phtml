@@ -2,17 +2,24 @@
    $tr = Application_Form_FrmLanguages::getCurrentlanguage();
    echo $this->headTitle($tr->translate("BOOKING"));
    $frm = $this->frm;
+   
+  // print_r($this->service);exit();
+   
 ?>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
 <script type="text/javascript">
-dojo.ready(function(){
-});
-dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dojo.data.ItemFileWriteStore"); 
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+ 
+dojo.require("dojo.html");
+dojo.require("dojo.NodeList-manipulate");
 dojo.require("dijit.form.NumberTextBox");
 dojo.require("dijit.form.DateTextBox");
 dojo.require("dijit.form.Textarea");
 dojo.require("dijit.form.TimeTextBox");
 dojo.require("dojo.parser");
-require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+ 
 </script>
 <style>
 div.cus_info{
@@ -86,10 +93,10 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('booking_no');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("CUSTOMER")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("OTHER_BOOKING_NO")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('customer');?>
+		                    	<?php echo $frm->getElement('other_booking_no');?>
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -98,10 +105,11 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('booking_date');?>
 		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("FLY_NO")?>
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("CUSTOMER")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('fly_no');?>
+		                    	<?php echo $frm->getElement('customer');?>
+		                    	<!-- <input id="dept" />  -->
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -110,10 +118,10 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('delivery_date');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("FLY_NO")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('agency');?>
+		                    	<?php echo $frm->getElement('fly_no');?>
 		                   </div>
 		                  
 		                </div>
@@ -123,10 +131,10 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('delivery_time');?>
 		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER")?>
+							<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('driver');?>
+		                    	<?php echo $frm->getElement('agency');?>
 		                   </div>
 		                 
 		                </div>
@@ -239,6 +247,21 @@ h4.car_title {
 						</div>
 	       			</div>
 	       			<div class="col-md-4 col-sm-4 col-xs-12">
+	       				<div class="clearfix"></div>
+						<div class="title_form_blog " style=" margin: 0;">
+	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('Service Information')?></h4>
+	       				</div>
+	       				<div id="service" class="cus_info col-md-12 col-sm-12 col-xs-12">
+		       				 <div class="form-group">
+					                <div class="col-md-12 col-sm-12 col-xs-12">
+					                	<div style="clear: both;"></div>
+										<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
+										<div  id="store_record"></div>
+										 <input  iconClass="dijitIconClear" type="button" onClick="addPockage();" label=" <?php echo $tr->translate("ADD_SERVICE")?>" dojoType="dijit.form.Button"/>
+					                </div>
+				               </div>
+						</div>
+	       			
 	       				<div class="title_form_blog " style=" margin: 0;">
 	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('CUSTOMER_INFO')?></h4>
 	       				</div>
@@ -292,33 +315,7 @@ h4.car_title {
                               	</ul>
 							</div>
 						</div>
-						<div class="clearfix"></div>
-						<div class="title_form_blog " style=" margin: 0;">
-	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('Driver Infomation')?></h4>
-	       				</div>
-	       				<div id="driver_html" class="cus_info col-md-12 col-sm-12 col-xs-12">
-		       				<div class="col-md-4 col-sm-4 col-xs-12">
-				               	<div class="image-box infor">
-									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
-								</div>
-							</div>
-							<div class="col-md-8 col-sm-8 col-xs-12">
-								<ul class="list-unstyled">
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <span class="span_value"></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"></span>
-                              		</li>
-                              	</ul>
-							</div>
-						</div>
+						
 						<div class="clearfix"></div>
 						<div class="title_form_blog " style=" margin: 0;">
 	       					<h4 style=" font-size: 14px;"><i class="fa  fa-car" aria-hidden="true"></i> <?php echo $tr->translate('Vehicle Infomation')?></h4>
@@ -352,12 +349,9 @@ h4.car_title {
      </form>
 </div>
 </div>
-
+ 
 <script type="text/javascript">
-require(["dojo/ready"], function(ready){
-	ready(function(){
-	});
-});
+
 var url="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getcustomer'));?>";
 function getCustomer(){
 	var id = dijit.byId('customer').get('value');
@@ -400,7 +394,7 @@ function getAgent(){
 var urldriver_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getdrivercar'));?>";
 function getDriver(type){
 	if(type==1){
-		var id = dijit.byId('driver').get('value');
+		//var id = dijit.byId('driver').get('value');
 	}else if(type=2){
 		var id = dijit.byId('vehicle').get('value');
 	}
@@ -413,15 +407,15 @@ function getDriver(type){
 	    handleAs:"json",
 	    load: function(data) {
 	    	
-	    	document.getElementById('driver_html').innerHTML =data.driver;
+	    	//document.getElementById('driver_html').innerHTML =data.driver;
 	    	document.getElementById('vehiclesss').innerHTML =data.vehicle;
-	    	if(dijit.byId('driver').get('value')==data.driver_id && dijit.byId('vehicle').get('value')==data.vehicle_id){
+	    	//if(dijit.byId('driver').get('value')==data.driver_id && dijit.byId('vehicle').get('value')==data.vehicle_id){
 	    		document.getElementsByClassName("overlay")[0].style.display="none";
-	    	}
+	    	//}
 	    	if(type==1){
 	    		 dijit.byId('vehicle').set('value',data.vehicle_id);
 	    	}else if(type=2){
-	    		dijit.byId('driver').set('value',data.driver_id);
+	    		//dijit.byId('driver').set('value',data.driver_id);
 	    	}
 	    	
 			
@@ -471,4 +465,315 @@ function settotal(){
 	dijit.byId('price').set('value',total.toFixed(2));
 	dijit.byId('commision_fee').set('value',0);
 }
+
 </script>
+
+<script type="text/javascript"> 
+
+require(["dojo/ready"], function(ready){
+	ready(function(){
+		addNewRecord();
+	});
+});
+
+var service = '<?php echo $this->service;?>';
+function addNewRecord(){
+	dojo.query("#store_record").append('');
+	tmp='<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">';
+	tmp+='<tr style="background:#eee; height: 30px;margin-bottom: 10px;" id="head_title" class="head-title" align="center"></tr>';
+	tmp+='</table>';
+	dojo.query("#store_record").append(tmp);
+	thead='<th style="text-align:center;"><?php echo $tr->translate('DELETE');?></th>';
+	thead+='<th style="text-align:center;"><?php echo $tr->translate('NUM');?></th>';
+	thead+='<th style="text-align:center;"><?php echo $tr->translate('EXPENSE_TYPE');?></th>';
+	thead+='<th style="text-align:center;"><?php echo $tr->translate('PRICE');?></th>';
+	thead+='<th style="text-align:center;"><?php echo $tr->translate('NOTE');?></th>';
+	fund_title=1;
+	dojo.query("#head_title").append(thead);	
+	dijit.byId('record_row').attr('value','');
+	addPockage();
+}
+
+r=0;
+function addPockage(){
+	r++;
+	tmp='<tr style="border:1px solid #ccc;" id="row_guide'+r+'">'
+	tmp+="</tr>";
+		dojo.query("#t_amountmoneytype").append(tmp);
+
+	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
+	temp+='<td align="center">'+r+'</td>';
+	temp+='<td><select  style="width:100px !important; id="expense_id_'+r+'" name="expense_id_'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getPopUpType('+r+')">'+service+'</select></td>';
+	temp+='<td><input   dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" onkeyup="calculateTotal('+r+')" ></td>';
+	temp+='<td><input   dojoType="dijit.form.TextBox" class="fullside"  name="note_'+r+'" id="note_'+r+'" value="" type="text" ></td>';
+	
+	dojo.html.set(dojo.byId("row_guide"+r),temp, {
+	    parseContent: true,
+	});
+	if(dijit.byId("record_row").get('value')!="") {
+		var ids = dijit.byId("record_row").value;
+		dijit.byId("record_row").attr('value',ids+','+r);
+	} else { dijit.byId("record_row").attr('value',r);}
+}
+
+function deleteRecord(index){
+	var ids =dijit.byId('record_row').value;
+	if(ids.length=='' || ids.length==null){
+		dijit.byId('record_row').attr('value','');
+		dojo.query("#row_guide"+ids).remove();
+	}else{
+		var arrays = ids.split(',');
+		for(var i=0;i<arrays.length;i++) {
+			if(arrays[i] == index) arrays.splice(i,1);
+		}
+		var strings = arrays.join(',');
+		dijit.byId('record_row').attr('value',strings);
+		dojo.query("#row_guide"+index).remove();
+	}
+}
+
+function getLocationPopUp($type){
+	if($type==1){
+		$("#str_value").val(1);
+	}else{
+		$("#str_value").val(2);
+	}
+	if(dijit.byId('from_location').get('value')==-1 || dijit.byId('to_location').get('value')==-1){
+		dijit.byId("pop_frm_location").show();
+	}
+}
+
+function getAgencyPopUp(){
+	if(dijit.byId('agency').get('value')==-1){
+		dijit.byId("pop_frm_agency").show();
+	}
+}
+
+function getCustomerPopUp(){
+	if(dijit.byId('customer').get('value')==-1){
+		dijit.byId("pop_frm_customer").show();
+	}
+}
+
+function hideCustomerPopUp(){
+	dijit.byId("pop_frm_customer").hide();
+}
+function hideAgencyPopUp(){
+	dijit.byId("pop_frm_agency").hide();
+}
+function hideLocationPopUp(){
+	dijit.byId("pop_frm_location").hide();
+}
+
+var custype_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->cus_all));?> );
+var url_customerttype = '<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'addcustomer')); ?>';
+function addCustomet(){
+	if(dijit.byId('frm_customer').validate()){
+		dojo.xhrPost({
+			url:url_customerttype,
+			form: dojo.byId("frm_customer"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data.id,
+					    name: dijit.byId('name_kh').get('value')+' '+dijit.byId('name_en').get('value')+'('+data.cus_code+')',
+				};			
+				addDataToSelectbox(dijit.byId('customer'), custype_store, Itemmake, data.id);
+				dijit.byId('frm_customer').reset();
+				dijit.byId("pop_frm_customer").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+
+var agency_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->agency_all));?> );
+var url_agency = '<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'addagency')); ?>';
+function addAgency(){
+	if(dijit.byId('frm_agency').validate()){
+		dojo.xhrPost({
+			url:url_agency,
+			form: dojo.byId("frm_agency"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data.id,
+					    name: dijit.byId('first_name').get('value')+' '+dijit.byId('last_name').get('value')+'('+data.cus_code+')',
+				};			
+				addDataToSelectbox(dijit.byId('agency'), agency_store, Itemmake, data.id);
+				dijit.byId('frm_agency').reset();
+				dijit.byId("pop_frm_agency").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+
+var location_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->location_all));?> );
+var url_location = '<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'addlocation')); ?>';
+function addLocation(){
+	if(dijit.byId('frm_location').validate()){
+		dojo.xhrPost({
+			url:url_location,
+			form: dojo.byId("frm_location"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data.id,
+					    name: dijit.byId('location_name').get('value'),
+				};			
+				if(data.str_value==1){
+					addDataToSelectbox(dijit.byId('from_location'), location_store, Itemmake, data.id);
+				}else{
+					addDataToSelectbox(dijit.byId('to_location'), location_store, Itemmake, data.id);
+				}
+				dijit.byId('frm_location').reset();
+				dijit.byId("pop_frm_location").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+
+</script>
+<!-- popup customer -->
+<?php $c_typ=$this->frm_client;?>
+<div class="dijitHidden" >
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_customer" title="<?php echo $tr->translate("ADD_CUSTOMER")?>">
+		<form id='frm_customer' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table  style="width:400px;">
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?></td>
+				<td><?php echo $c_typ->getElement('title');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("First Name")?></td>
+				<td><?php echo $c_typ->getElement('name_kh');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("LAST_NAME")?> </td>
+				<td><?php echo $c_typ->getElement('name_en');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("SEX")?> </td>
+				<td><?php echo $c_typ->getElement('sex');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("PHONE")?> </td>
+				<td><?php echo $c_typ->getElement('phone');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("EMAIL")?> </td>
+				<td><?php echo $c_typ->getElement('email');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button"  label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
+					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="hideCustomerPopUp()"/>
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addCustomet();"/>
+				</td>
+				
+			</tr>
+		</table>
+		
+		</form>
+	</div>
+</div>
+
+<!-- popup agency -->
+<div class="dijitHidden" >
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_agency" title="<?php echo $tr->translate("ADD_AGENCY")?>">
+		<form id='frm_agency' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table  style="width:400px;">
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("First Name")?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="first_name" name="first_name" value="" type="text" class="fullside"></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("LAST_NAME")?> </td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="last_name" name="last_name" value="" type="text" class="fullside"></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("SEX")?> </td>
+				<td><select name="a_sex" id="a_sex" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*" >
+					       <option value="1" label=" "><?php echo $tr->translate("Male")?></option>
+					        <option value="2" label=" "><?php echo $tr->translate("Female")?></option>
+					</select><br/>
+				</td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("PHONE")?> </td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="a_phone" name="a_phone" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("EMAIL")?> </td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="a_email" name="a_email" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button" name="a_cancel" id="a_cancel" label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
+					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="hideAgencyPopUp()"/>
+				  	<input type="button" name="a_save" id="a_save" label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addAgency();"/>
+				</td>
+			</tr>
+		</table>
+		
+		</form>
+	</div>
+</div>
+
+<!-- popup location -->
+<?php $c_typ=$this->frm_location;?>
+<div class="dijitHidden" >
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_location" title="<?php echo $tr->translate("ADD_LOCATION")?>">
+		<form id='frm_location' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table  style="width:400px;">
+			<tr>
+				<td><?php echo $tr->translate("Location")?></td>
+				<td><?php echo $c_typ->getElement('location_name');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("Province")?></td>
+				<td><?php echo $c_typ->getElement('province_name');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("Description")?> </td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="descript" name="descript" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			 <input type="hidden" name="str_value"   id="str_value" value="" />
+  			<tr>
+				<td colspan="2" align="center">
+					<input type="button"  name="l_cancel" id="l_cancel"  label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
+					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="hideLocationPopUp()"/>
+				  	<input type="button"  name="l_save" id="l_save" label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addLocation();"/>
+				</td>
+				
+			</tr>
+		</table>
+		</form>
+	</div>
+</div>

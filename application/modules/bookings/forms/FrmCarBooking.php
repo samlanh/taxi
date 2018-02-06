@@ -61,7 +61,10 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			foreach($rows AS $row) {$opt_location[$row['id']]=$row['name'];};
 		}
 		$from_location = new Zend_Form_Element_Select("from_location");
-		$from_location->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside"));
+		$from_location->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onchange'=>'getLocationPopUp(1)',
+				'autoComplete'=>"false",
+				'queryExpr'=>'*${0}*'
+		));
 		$from_location->setMultiOptions($opt_location);
 // 		if($request->getParam("from_location")==""){
 // 			$from_location->setValue(25);
@@ -76,13 +79,13 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			};
 		}
 		$to_location = new Zend_Form_Element_Select("to_location");
-		$to_location->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside"));
+		$to_location->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*','onchange'=>'getLocationPopUp(2)'));
 		$to_location->setMultiOptions($opt_location);
 		
 		$row_cu = $_db->getAllCustomers();
-		$opt_cu = array(0=>$this->tr->translate("SELECT_CUSTOMER"));
+		$opt_cu = array(0=>$this->tr->translate("SELECT_CUSTOMER"),-1=>$this->tr->translate("ADD_NEW"));
 		$customer = new Zend_Dojo_Form_Element_FilteringSelect("customer");
-		$customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCustomer();'));
+		$customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCustomer();getCustomerPopUp()'));
 		foreach ($row_cu as $rs){
 			$opt_cu[$rs["id"]] = $rs["name"];
 		}
@@ -107,9 +110,9 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$vehicle->setMultiOptions($opt_vehi);
 		
 		$row_agen = $_db->getAllAgency();
-		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"));
+		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"),'-1'=>$this->tr->translate("ADD_NEW"));
 		$agency = new Zend_Dojo_Form_Element_FilteringSelect("agency");
-		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAgent();'));
+		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAgent();getAgencyPopUp()'));
 		foreach ($row_agen as $rs){
 			$opt_agen[$rs["id"]] = $rs["name"];
 		}
@@ -121,7 +124,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$price->setAttribs(
 				array('dojoType'=>$this->number,
 					'class'=>"fullside",
-					'onChange'=>'CalculateTotal();',
+					'onKeyup'=>'CalculateTotal();',
 				));
 		$price->setValue(0);
 		
@@ -151,6 +154,9 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		
 		$remark = new Zend_Dojo_Form_Element_TextBox("remark");
 		$remark->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
+		
+		$other_booking_no = new Zend_Dojo_Form_Element_TextBox("other_booking_no");
+		$other_booking_no->setAttribs(array('dojoType'=>$this->text,'class'=>"fullside",));
 		
 		$row_payment = $_db->getVewOptoinTypeByTypes(11);
 		$opt_payment = array(0=>$this->tr->translate("SELECT_PAYMENT_METHOD"));
@@ -205,6 +211,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$chekcpayment = $dbbooking->checkBookingHasPayment($data['id']);
 			
 			$_booking_no->setValue($data['booking_no']);
+			$other_booking_no->setValue($data['status_working']);
 			$customer->setValue($data['customer_id']);
 			$driver->setValue($data['driver_id']);
 			$vehicle->setValue($data['vehicle_id']);
@@ -280,6 +287,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$balance,
 				$total_paid,
 				$payment_note,
+				$other_booking_no,
 			));
 		return $this;
 	}

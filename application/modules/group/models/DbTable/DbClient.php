@@ -72,6 +72,7 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 				'address2'		=> $_data['address2'],
 				'status'  => $_data['status'],
 				'date'  => date("Y-m-d"),
+				'user_id'	  => $this->getUserId(),
 		);
 		if (!empty($_data['create_acc'])){
 			$_arr['password']=md5($_data['password']);
@@ -95,6 +96,71 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 		}
 	}
+	
+	function addCustomerAjax($data){
+		$db = new Application_Model_DbTable_DbGlobal();
+		$client_code = $db->getNewClientId();
+		$_arr=array(
+				'title'	  	=> $data['title'],
+				'customer_code'=> $client_code,//$_data['client_no'],
+				'first_name'=>$data['name_kh'],
+				'last_name' =>$data['name_en'],
+				'sex'		=>$data['sex'],
+				'phone'     =>$data['phone'],
+				'email'		=>$data['email'],
+				'status'	=>1,
+				'user_id'	=>$this->getUserId(),
+				);
+		$id =$this->insert($_arr);
+		if ($id){
+			$arr=array('id'=>$id,'cus_code'=>$client_code);
+		}
+		return $arr;
+	}
+	
+	function addAgencyAjax($data){
+		$this->_name='ldc_agency';
+		$db = new Application_Model_DbTable_DbGlobal();
+		$client_code = $db->getNewAgencyId();
+		$_arr=array(
+				//'title'	  	=> $data['title'],
+				'customer_code'=> $client_code,//$_data['client_no'],
+				'first_name'=>$data['first_name'],
+				'last_name' =>$data['last_name'],
+				'sex'		=>$data['a_sex'],
+				'phone'     =>$data['a_phone'],
+				'email'		=>$data['a_email'],
+				'status'	=>1,
+				'user_id'	=>$this->getUserId(),
+		);
+		
+		$id =$this->insert($_arr);
+		if ($id){
+			$arr=array('id'=>$id,'cus_code'=>$client_code);
+		}
+		return $arr;
+	}
+	
+	function addLocationAjax($data){
+		$this->_name='ldc_package_location';
+		$string=$data['str_value'];
+		$_arr=array(
+				'location_name'	=>$data['location_name'],
+				'province_id' 	=>$data['province_name'],
+				'note'			=>$data['descript'],
+				'status'		=>1,
+				'user_id'		=>$this->getUserId(),
+		);
+		$id=$this->insert($_arr);
+		if($id){
+			$arr=array(
+					'id'=>$id,
+					'str_value'=>$string
+					);
+		}
+		return $arr;
+	}
+	
 	public function getClientById($id){
 		$db = $this->getAdapter();
 		$sql = "SELECT * FROM $this->_name WHERE id = ".$db->quote($id);
@@ -268,5 +334,6 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 				$id =$this->insert($_arr);
 				return array('id'=>$id,'client_code'=>$client_code);
 	}
+	
 }
 

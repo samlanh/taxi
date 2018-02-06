@@ -1,0 +1,140 @@
+<?php $filter = $this->frm_search;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+$frm=$this->frm_search;
+  //print_r($this->rows);
+?>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("Vehicle Rental Price");?></title>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+</script>
+<div class="row">
+	<div class="x_panel " >
+		<form id="list" name="list" action="" dojoType="dijit.form.Form" method="post">
+		  <div class="clearfix"></div>
+			<div class="form-group">
+			
+				<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("title");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("payment_method");?>
+		  		</div>
+		  		
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("start_date");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("end_date");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement('status_search');?>
+		  		</div>
+		  		<div class="col-md-1 col-xs-12 mg-10">
+		  			<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
+		  		</div>
+		  	</div>
+		</form>
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+			<div id="divPrint" style="width: 100%;">
+				<style>
+				.style{
+					line-height: 20px;font-size: 10px !important;
+					font-family: 'Khmer OS Battambang';
+				}
+				th{padding: 5px;}
+				tr.header {
+				    font-weight: bold;
+				    line-height: 14px;
+				    font-size: 12px;
+				    background: #eee;
+				    text-align: center;
+				}
+				tr.header td {
+				    padding: 5px;
+				}
+				</style>
+				<table style="font-family: 'Khmer OS Content'; width:100%;">
+					<tr>
+				    	<td align="center">
+				    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+				            	<tr>
+				                	<td width="20%"></td>
+				                	<td width="60%" valign="top">
+				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("OTHER_EXPENSE");?></h2>
+				                	</td>
+				                    <td width="20%"></td>
+				                </tr> 
+				                <tr>
+				                	<td colspan="3">
+						              </td>
+						           </tr>   
+				            </table>
+				        </td>
+				    </tr>
+				    <tr>
+				    	<td>
+				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+				                 <tr class="header">
+				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
+				                    <td><?php echo $tr->translate("INVOICE");?></td>
+				                    <td><?php echo $tr->translate("cheque_no");?></td>
+				                    <td><?php echo $tr->translate("DATE");?></td>
+				                    <td><?php echo $tr->translate("PAYMENT_TYPE");?></td>
+				                    <td><?php echo $tr->translate("EXPENSE_TYPE");?></td>
+				                    <td><?php echo $tr->translate("TOTAL_AMOUNT");?></td>
+				                    <td><?php echo $tr->translate("DESCRIPTION");?></td>
+				                    <td><?php echo $tr->translate("USER_NAME");?></td>
+				                    <td><?php echo $tr->translate("STATUS");?></td>
+				                </tr>
+				               <?php $total=0;
+				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
+									<tr align="center" style="line-height: 18px; background: #fff;">
+										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['invoice']?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['cheque_no']?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['create_date']));?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_type']?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['expen_type']?></td>
+										<td align="left" style="line-height:15px;">&nbsp;$&nbsp;&nbsp;<?php echo number_format($row['total_amount'],2);?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['description']?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['user_name']?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['status']?></td>
+									</tr>
+									
+								<?php $total=$total+$row['total_amount'];
+				               }?>
+								<tr align="center" style="line-height: 25px; background: #fff;font-family: 'Khmer OS Battambang';">
+										<td style="border-bottom:1px solid #fff;border-left:1px solid #fff;border-right:1px solid #fff;"> </td>
+										<td align="left" style="border-bottom:1px solid #fff;border-left:1px solid #fff;border-right:1px solid #fff;"> </td>	
+										<td align="left" style="border-bottom:1px solid #fff;border-left:1px solid #fff;border-right:1px solid #fff;"> </td>
+										<td align="left" style="border-bottom:1px solid #fff;border-left:1px solid #fff;border-right:1px solid #fff; "> </td>	
+										<td align="left" style="border-bottom:1px solid #fff; border-right:1px solid #fff;font-family:arial;font-weight:bold;font-size: 14px;font-family: 'Khmer OS Battambang';">&nbsp;<?php echo $tr->translate("TOTAL_AMOUNT");?></td>
+										<td align="left" style="border-bottom:1px solid #fff; border-right:1px solid #fff;font-family:arial;font-weight:bold;font-size: 14px;" >&nbsp;$&nbsp;<?php echo number_format($total,2);?></td>	
+										<td align="left" style="border-bottom:1px solid #fff; border-right:1px solid #fff;">&nbsp;</td>	
+										<td align="left" style="border-bottom:1px solid #fff;border-left:1px solid #fff;border-right:1px solid #fff;"> </td>
+										<td align="left" style="border-bottom:1px solid #fff;border-left:1px solid #fff;border-right:1px solid #fff;"> </td>
+									</tr>
+				            </table>
+				            <br />
+				               <table align="center" width="100%">
+								   <tr style="font-size: 12px;">
+								        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+								        <th></th>
+								        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+								   </tr>
+							</table>
+				    	</td>
+				    </tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
