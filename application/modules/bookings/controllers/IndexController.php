@@ -79,7 +79,8 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$local=$db_globle->getAllLocation();
 		array_unshift($local,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
 		$this->view->location_all = $local;
-		$row=$this->service=$db->getAllServiceType();
+		array_unshift($local,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$row=$this->view->service_booking=$db->getAllServiceType();
 		 
 	}
 	

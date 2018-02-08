@@ -3,8 +3,6 @@
    echo $this->headTitle($tr->translate("BOOKING"));
    $frm = $this->frm;
    
-  // print_r($this->service);exit();
-   
 ?>
 <script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
 <script type="text/javascript">
@@ -476,7 +474,7 @@ require(["dojo/ready"], function(ready){
 	});
 });
 
-var service = '<?php echo $this->service;?>';
+service_booking = '<?php echo $this->service_booking;?>';
 function addNewRecord(){
 	dojo.query("#store_record").append('');
 	tmp='<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">';
@@ -503,7 +501,7 @@ function addPockage(){
 
 	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
 	temp+='<td align="center">'+r+'</td>';
-	temp+='<td><select  style="width:100px !important; id="expense_id_'+r+'" name="expense_id_'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getPopUpType('+r+')">'+service+'</select></td>';
+	temp+='<td><select  style="width:120px !important; id="service_id_'+r+'" name="service_id_'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getPopupservice('+r+')">'+service_booking+'</select></td>';
 	temp+='<td><input   dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" onkeyup="calculateTotal('+r+')" ></td>';
 	temp+='<td><input   dojoType="dijit.form.TextBox" class="fullside"  name="note_'+r+'" id="note_'+r+'" value="" type="text" ></td>';
 	
@@ -540,6 +538,13 @@ function getLocationPopUp($type){
 	}
 	if(dijit.byId('from_location').get('value')==-1 || dijit.byId('to_location').get('value')==-1){
 		dijit.byId("pop_frm_location").show();
+	}
+}
+
+function getPopupservice(r){
+	service_id=dijit.byId("service_id_"+r).get("value");
+	if(service_id=='-1'){
+		dijit.byId("pop_frm_service").show();
 	}
 }
 
@@ -775,5 +780,12 @@ function addLocation(){
 			</tr>
 		</table>
 		</form>
+	</div>
+</div>
+
+<!-- popup service -->
+<div class="dijitHidden" >
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_service" title="<?php echo $tr->translate("ADD_AGENCY")?>">
+		 
 	</div>
 </div>
