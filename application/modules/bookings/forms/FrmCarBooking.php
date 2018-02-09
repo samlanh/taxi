@@ -225,6 +225,9 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$other_fee->setValue($data['other_fee']);
 			$total->setValue($data['total']);
 			$remark->setValue($data['remark']);
+			$other_booking_no->setValue($data['payment_booking_no']);
+			$total_paid->setValue($data['paid']);
+			$balance->setValue($data['balance']);
 			
 			$_fly_no->setValue($data['fly_no']);
 			$delivery_time->setValue($data['delivey_time']);
@@ -247,9 +250,9 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$commision_fee->setAttribs(array('readonly'=>'readonly',));
 				$agency->setAttribs(array('readonly'=>'readonly',));
 			}
-			$balance->setValue($data['total']);
+			
 			$total_paid->setValue(0);
-			$total_payment->setValue($data['total']);
+			$total_payment->setValue($data['grand_total']);
 			if (!empty($chekcpayment)){
 				$balance->setValue(0);
 				$total_paid->setValue(0);
@@ -260,7 +263,6 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$total_paid->setAttribs(array('readonly'=>'readonly',));
 				$payment_note->setAttribs(array('readonly'=>'readonly',));
 			}
-			
 		}
 		
 		$this->addElements(array(

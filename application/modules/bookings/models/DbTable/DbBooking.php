@@ -356,12 +356,10 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$dbgb = new Application_Model_DbTable_DbGlobal();
 		$lang= $dbgb->getCurrentLang();
 		$arrayview = array(1=>"name_en",2=>"name_kh");
-		$sql="
-		SELECT d.*,
+		$sql=" SELECT d.*,
 		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs
 		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`first_name`!=''
-		AND d.id =$driver_id LIMIT 1
-		";
+		AND d.id =$driver_id ";
 		return $db->fetchRow($sql);
 	}
 	
@@ -398,6 +396,10 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'remark'	  		=> $_data['remark'],
 					'status_working'	=>0,
 					'payment_booking_no'=>$_data['other_booking_no'],
+					'grand_total'		=>$_data['total_payment'],
+					'grand_total_after'	=>$_data['total_payment'],
+					'paid'	  		  	=> $_data['total_paid'],
+					'balance'	  	  	=> $_data['balance'],
 					'status'	  		=> 1,
 					'is_paid_to_driver'	=> 0,
 					'is_customer_paid'	=> 0,
@@ -489,6 +491,11 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'driver_fee_after'=> $driver_feeafter,
 					'remark'	  	  => $_data['remark'],
 					'status_working'  =>0,
+					'payment_booking_no'=>$_data['other_booking_no'],
+					'grand_total'	  =>$_data['total_payment'],
+					'grand_total_after'=>$_data['total_payment'],
+					'paid'	  		  => $_data['total_paid'],
+					'balance'	  	  => $_data['balance'],
 					'status'	  	  => 1,
 					'is_paid_to_driver'=> $is_driverpaid,
 					'is_customer_paid'=> 0,
@@ -500,6 +507,24 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$where = " id = ".$_data['booking_id'];
 			$this->update($_arrbooking, $where);
 			$idbooking = $_data['booking_id'];
+			
+			$sql = "DELETE FROM ldc_booking_service_detial WHERE carbooking_id=".$idbooking;
+			$db->query($sql);
+			$ids=explode(',',$_data['record_row']);
+			foreach ($ids as $key => $i)
+			{
+				$data_item= array(
+						'carbooking_id'	=> 	$idbooking,
+						'service_id' 	=> 	$_data['service'.$i],
+						'total_amount'  =>	$_data['price_'.$i],
+						'description'   =>	$_data['note_'.$i],
+						'create_date'   =>	date("Y-m-d H:i:s"),
+						'user_id'      	=>	$this->getUserId(),
+						'status'      	=> 1,
+				);
+				$this->_name='ldc_booking_service_detial';
+				$this->insert($data_item);
+			}
 
 			$chekcpayment = $this->checkBookingHasPayment($idbooking);
 			if (empty($chekcpayment)){
@@ -528,15 +553,16 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 				AND p.`status` =1";
 		return $db->fetchRow($sql);
 	}
+	
 	function getTotalDriverFee($booking_id){
 		$db = $this->getAdapter();
 		$sql="
 		SELECT 
 			SUM(pd.`paid`) AS total_driver_fee
-		FROM `ldc_driver_fee_payment_detail` AS pd,
-			`ldc_driver_fee_payment` AS p
+		FROM `ldc_driver_payment_detail` AS pd,
+			`ldc_driver_payment` AS p
 		WHERE 
-			p.id = pd.`driverfee_payment_id` AND pd.`booking_id` =$booking_id
+			p.id = pd.`driver_payment_id` AND pd.`booking_id` =$booking_id
 			AND p.`status` =1";
 		return $db->fetchRow($sql);
 	}
@@ -637,6 +663,14 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 	public function getAllServiceoption(){
 		$db=$this->getAdapter();
 		$sql =" SELECT id,service_title AS `name` FROM ldc_booking_service WHERE service_title!='' AND `status`=1";
+		return $db->fetchAll($sql);
+	}
+	
+	public function getServiceDetail($id){
+		$db=$this->getAdapter();
+		$sql="SELECT id,service_id,carbooking_id,total_amount,description 
+		       FROM ldc_booking_service_detial
+		       WHERE carbooking_id=$id";
 		return $db->fetchAll($sql);
 	}
 }
