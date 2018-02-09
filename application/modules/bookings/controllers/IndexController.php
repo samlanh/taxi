@@ -101,7 +101,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$db = new Bookings_Model_DbTable_DbBooking();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			//$booking_id=$db->updateCarBooking($data);
+			$booking_id=$db->updateCarBooking($data);
 				$this->_redirect("/bookings/index");
 		}
 		$id=$this->getRequest()->getParam('id');
@@ -119,14 +119,49 @@ class Bookings_indexController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
 		$this->view->ser_detail=$db->getServiceDetail($id);
+		
+		////////////////////////////////add popup/////////
+		$fm = new Agency_Form_FrmClient();
+		$frm = $fm->FrmAddClient();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_client = $frm;
+		$db_globle=new Application_Model_DbTable_DbGlobal();
+		$row_cu = $db_globle->getAllCustomers();
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		array_unshift($row_cu,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->cus_all = $row_cu;
+		$fm = new Agency_Form_FrmClient();
+		$agency=$db_globle->getAllAgency();
+		array_unshift($agency,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->agency_all = $agency;
+		
+		$frm = new Location_Form_FrmLocation();
+		$frm=$frm->FrmAddLocation();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_location = $frm;
+		$local=$db_globle->getAllLocation();
+		array_unshift($local,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->location_all = $local;
+		array_unshift($local,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$row=$this->view->service_booking=$db->getAllServiceType();
+		$ser=$db->getAllServiceoption();
+		array_unshift($ser,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->services=$ser;
+		
+		$fm = new Bookings_Form_FrmServiceType();
+		$frm = $fm->FrmAddService();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_service = $frm;
 	}
 	
 	public function bookviewAction()
 	{
+		$id=$this->getRequest()->getParam('id');
 		$db = new Bookings_Model_DbTable_DbBooking();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$booking_id=$db->updateCarBooking($data);
+			$data['id']=$id;
+			$booking_id=$db->addDrivert($data);
 			$this->_redirect("/bookings/index");
 		}
 		$id=$this->getRequest()->getParam('id');

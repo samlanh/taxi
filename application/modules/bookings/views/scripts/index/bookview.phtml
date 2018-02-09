@@ -207,7 +207,10 @@ h4.car_title {
 <script type="text/javascript">
 require(["dojo/ready"], function(ready){
 	ready(function(){
-		  
+        if('<?php echo $this->row['driver_id'];?>'){
+        	getDriver(1);
+        }
+        dijit.byId("agency").attr("disabled", true);
 		dijit.byId("booking_date").attr("disabled", true);
 		dijit.byId("delivery_date").attr("disabled", true);
 		dijit.byId("delivery_time").attr("disabled", true);
@@ -216,6 +219,7 @@ require(["dojo/ready"], function(ready){
 		dijit.byId("customer").attr("disabled", true);
 		dijit.byId("fly_no").attr("disabled", true);
 		dijit.byId("vehicle").attr("disabled", true);
+		
 	 
 	});
 });

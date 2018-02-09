@@ -296,7 +296,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			cb.`delivey_date`,
 			cb.`price`,cb.`commision_fee`,cb.`other_fee`,cb.`total`,
 			(SELECT CONCAT(d.`first_name`,' ',d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
-			(SELECT v.name_en FROM ldc_view AS v WHERE v.key_code=cb.status_working AND v.type=11 LIMIT 1) book_status,
+			(SELECT v.name_en FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
 			cb.`status`
 			FROM `ldc_carbooking` AS cb,
 			`ldc_customer` AS c,
@@ -643,6 +643,29 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 // 			$db->rollBack();
+		}
+	}
+	
+	function addDrivert($_data){
+		try{
+			$_db = new Application_Model_DbTable_DbGlobal();
+			$payment_no = $_db->getNewPaymentNO();
+			$arr=array(
+					'status_working'  => 1,
+					'driver_id'	  	  => $_data['driver'],
+					'driver_fee'	  => $_data['driver_fee'],
+					'driver_fee_after'=> $_data['driver_fee'],
+					'remark'	  	  => $_data['remark'],
+					'modify_date'  	  =>date("Y-m-d H:i:s"),
+					'user_id'      	  => $this->getUserId(),
+			);
+			$this->_name="ldc_carbooking";
+			$where=" id=".$_data['id'];
+			$this->update($arr, $where);
+		}catch(exception $e){
+			Application_Form_FrmMessage::message("Application Error");
+			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			//$db->rollBack();
 		}
 	}
 	
