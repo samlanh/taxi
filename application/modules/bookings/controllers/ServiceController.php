@@ -1,6 +1,7 @@
 <?php
 class Bookings_ServiceController extends Zend_Controller_Action {
 	const REDIRECT_URL = '/group/index';
+	
 	public function init()
 	{
 		header('content-type: text/html; charset=utf8');
@@ -17,18 +18,19 @@ class Bookings_ServiceController extends Zend_Controller_Action {
 			else{
 				$search = array(
 					'title' => '',
+					'service_type'=>'',
 					'status_search' => -1,
 				);
 			}
-			$rs_rows= $db->getAllServiceType($search);
+			$rs_rows= $db->getAllService($search);
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("SERVICE_TYPE","NOTE","DATE","USER_NAME","STATUS");
+			$collumns = array("SERVICE_NAME","SERVICE_TYPE","NOTE","DATE","USER_NAME","STATUS");
 			$link=array(
-					'module'=>'bookings','controller'=>'servicetype','action'=>'edit',
+					'module'=>'bookings','controller'=>'service','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('title_en'=>$link,'note'=>$link));
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('service_title'=>$link,'service_id'=>$link));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -46,10 +48,10 @@ class Bookings_ServiceController extends Zend_Controller_Action {
 				try{
 					$id= $db->addSerice($data);
 				 if(isset($data['save_new'])){
-				 	$this->_redirect("/bookings/servicetype/add");
+				 	$this->_redirect("/bookings/service/add");
 				}
 				else{
-					$this->_redirect("/bookings/servicetype");
+					$this->_redirect("/bookings/service");
 				}
 				
 			}catch (Exception $e){
@@ -61,40 +63,61 @@ class Bookings_ServiceController extends Zend_Controller_Action {
 		$fm = new Bookings_Form_FrmServiceType();
 		$frm = $fm->FrmAddService();
 		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_serice = $frm;
+		
+		$fm = new Bookings_Form_FrmServiceType();
+		$frm = $fm->FrmAddCustomerType();
+		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_custype = $frm;
+		$servic=new Bookings_Model_DbTable_DbService();
+		$rows= $servic->getSerictTypeOpt();
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		array_unshift($rows,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->ser_type=$rows;
 	}
 	
 	public function editAction(){
-		$id = $this->getRequest()->getParam("id");
+		$id=$this->getRequest()->getParam('id');
 		$db = new Bookings_Model_DbTable_DbService();
 		if($this->getRequest()->isPost()){
-			$data = $this->getRequest()->getPost();
-			$data['id']=$id;
-			try{
-					$db->addSericeType($data);
-					$this->_redirect("/bookings/servicetype");
-		
+				$data = $this->getRequest()->getPost();
+				$data['id']=$id;
+				try{
+					$id= $db->addSerice($data);
+				 if(isset($data['save_new'])){
+				 	$this->_redirect("/bookings/service/index");
+				}
+				else{
+					$this->_redirect("/bookings/service");
+				}
+				
 			}catch (Exception $e){
 				Application_Form_FrmMessage::message("Application Error");
 				Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 			}
 		}
-		$row = $db->getServicetype($id);
-		if (empty($row)){
-			Application_Form_FrmMessage::Sucessfull("NO_RECORD", "/bookings/servicetype");
-		}
-		$this->view->id=$row['id'];
+		$row=$db->getServiceById($id);
 		$fm = new Bookings_Form_FrmServiceType();
-		$frm = $fm->FrmAddCustomerType($row);
+		$frm = $fm->FrmAddService($row);
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_serice = $frm;
+		
+		$fm = new Bookings_Form_FrmServiceType();
+		$frm = $fm->FrmAddCustomerType();
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_custype = $frm;
+		$servic=new Bookings_Model_DbTable_DbService();
+		$rows= $servic->getSerictTypeOpt();
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		array_unshift($rows,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->ser_type=$rows;
 	}
 	
-	public function addcustomertypeAction(){
+	public function addservicetypeAction(){
 		if($this->getRequest()->isPost()){
-			$db = new Agency_Model_DbTable_DbAgencytype();
+			$db = new Bookings_Model_DbTable_DbService();
 			$data = $this->getRequest()->getPost();
-			$id = $db->addCustomerTypeAjax($data);
+			$id = $db->addServiceTypeAjax($data);
 			print_r(Zend_Json::encode($id));
 			exit();
 		}

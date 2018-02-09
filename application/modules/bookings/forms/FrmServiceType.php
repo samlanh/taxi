@@ -101,22 +101,26 @@ Class Bookings_Form_FrmServiceType extends Zend_Dojo_Form {
 		$remark->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 		
 		$servic=new Bookings_Model_DbTable_DbService();
-		$service_id=  new Zend_Dojo_Form_Element_FilteringSelect('service_id');
-		$service_id->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside',));
-		$_status_opt = array();
-		$status= $db->getViews(2);
-		if(!empty($status))foreach($status AS $row){
-			$_status_opt[$row['key_code']]=$row['name_en'];
+		$service_type=  new Zend_Dojo_Form_Element_FilteringSelect('service_type');
+		$service_type->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside','onChange'=>'getServiceTypePopUp()'));
+		$_status_opt = array(
+				''=>$this->tr->translate("SELECT_SERVICE_TYPE"),
+				-1=>$this->tr->translate("ADD_NEW"),
+				);
+		$rows= $servic->getSerictTypeOpt();
+		if(!empty($rows))foreach($rows AS $row){
+			$_status_opt[$row['id']]=$row['name'];
 		}
-		$_status->setMultiOptions($_status_opt);
+		$service_type->setMultiOptions($_status_opt);
 	
 		if($data!=null){
-			$_title->setValue($data['title_en']);
-			$remark->setValue($data['note']);
+			$_title->setValue($data['service_title']);
+			$remark->setValue($data['description']);
 			$_status->setValue($data['status']);
+			$service_type->setValue($data['service_id']);
 		}
 	
-		$this->addElements(array($remark,$_c_type,$_title,$_status));
+		$this->addElements(array($service_type,$remark,$_c_type,$_title,$_status));
 		return $this;
 	
 	}

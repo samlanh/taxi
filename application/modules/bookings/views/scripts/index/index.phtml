@@ -35,14 +35,12 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 					<div class="col-md-2 col-xs-12 mg-10">
 					  <?php echo $frm->getElement('to_book_date');?>
 					</div>
-				  </div>
-				  <div class="form-group">
-					  	<div class="col-md-2 col-xs-12 mg-10">
+					<div class="col-md-2 col-xs-12 mg-10">
 						  <?php echo $frm->getElement("customer");?>
 						</div>
 						<div class="col-md-1 col-xs-12">
 							<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
-						</div>
+					</div>
 				  </div>
 			</form>
 			<?php echo $this->list;?>

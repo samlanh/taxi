@@ -25,12 +25,17 @@ class Bookings_indexController extends Zend_Controller_Action {
 				);
 			}
 			$rs_rows= $db->getAllCarBooking($search);
+			$glClass = new Application_Model_GlobalClass();
+			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("BOOKING_NO","CUSTOMER","FROM_LOCATION","TO_LOCATION","BOOKING_DATE","DELIVERY_DATE","CAR_RENT_FEE","COMMISSION_FEE","OTHER_FEE","GRAND_TOTAL","DRIVER","STATUS",);
+			$collumns = array("BOOKING_NO","CUSTOMER","FROM_LOCATION","TO_LOCATION","BOOKING_DATE","DELIVERY_DATE","CAR_RENT_FEE","COMMISSION_FEE","OTHER_FEE","GRAND_TOTAL","DRIVER","DRIVER_FEE","BOOKING_STATUS","STATUS",);
 			$link=array(
 					'module'=>'bookings','controller'=>'index','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('booking_no'=>$link,'cus_name'=>$link));
+			$book_status=array(
+					'module'=>'bookings','controller'=>'index','action'=>'bookview',
+			);
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('booking_no'=>$link,'cus_name'=>$link,'book_status'=>$book_status));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -81,7 +86,14 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$this->view->location_all = $local;
 		array_unshift($local,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
 		$row=$this->view->service_booking=$db->getAllServiceType();
-		 
+		$ser=$db->getAllServiceoption();
+		array_unshift($ser,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->services=$ser;
+		
+		$fm = new Bookings_Form_FrmServiceType();
+		$frm = $fm->FrmAddService();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_service = $frm;
 	}
 	
 	public function editAction()
@@ -107,6 +119,31 @@ class Bookings_indexController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
 	}
+	
+	public function bookviewAction()
+	{
+		$db = new Bookings_Model_DbTable_DbBooking();
+		if($this->getRequest()->isPost()){
+			$data = $this->getRequest()->getPost();
+			$booking_id=$db->updateCarBooking($data);
+			$this->_redirect("/bookings/index");
+		}
+		$id=$this->getRequest()->getParam('id');
+		$this->view->id = $id;
+		$row = $db->getCarbookingById($id);
+		$this->view->row = $row;
+		if (empty($row)){
+			$this->_redirect("/bookings/index");
+		}
+		$this->view->driver_info = $db->getDriverInformation($row['driver_id']);
+		$this->view->vehicle_info = $db->getvehicleinfo($row['vehicle_id']);
+	
+		$frm = new Bookings_Form_FrmCarBooking();
+		$form = $frm->FormBooking($row);
+		Application_Model_Decorator::removeAllDecorator($form);
+		$this->view->frm = $form;
+	}
+	
 	function getcustomerAction(){
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
@@ -161,6 +198,16 @@ class Bookings_indexController extends Zend_Controller_Action {
 			$db = new Group_Model_DbTable_DbClient();
 			$data = $this->getRequest()->getPost();
 			$code = $db->addLocationAjax($data);
+			print_r(Zend_Json::encode($code));
+			exit();
+		}
+	}
+	
+	function addserviceAction(){
+		if($this->getRequest()->isPost()){
+			$db = new Group_Model_DbTable_DbClient();
+			$data = $this->getRequest()->getPost();
+			$code = $db->addServiceAjax($data);
 			print_r(Zend_Json::encode($code));
 			exit();
 		}

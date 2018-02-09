@@ -116,7 +116,21 @@ Class Expense_Form_FrmSearchInfo extends Zend_Dojo_Form {
 		
 		));
 		
-		$this->addElements(array($_btn_search,$vehicle_name,$payment_method,$_dateline,$_releasedate,$_c_type,$agencytype_id,$_title,$_status,$customer_type));
+		$servic=new Bookings_Model_DbTable_DbService();
+		$service_type=  new Zend_Dojo_Form_Element_FilteringSelect('service_type');
+		$service_type->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>'fullside','onChange'=>'getServiceTypePopUp()'));
+		$_status_opt = array(
+				''=>$this->tr->translate("SELECT_SERVICE_TYPE"),
+				-1=>$this->tr->translate("ADD_NEW"),
+		);
+		$rows= $servic->getSerictTypeOpt();
+		if(!empty($rows))foreach($rows AS $row){
+			$_status_opt[$row['id']]=$row['name'];
+		}
+		$service_type->setMultiOptions($_status_opt);
+		$service_type->setValue($request->getParam("service_type"));
+		
+		$this->addElements(array($service_type,$_btn_search,$vehicle_name,$payment_method,$_dateline,$_releasedate,$_c_type,$agencytype_id,$_title,$_status,$customer_type));
 	
 		return $this;
 	}

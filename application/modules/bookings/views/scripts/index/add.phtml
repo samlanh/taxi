@@ -66,6 +66,28 @@ h4.car_title {
 							return false;
 						}
 					}
+					if(dijit.byId("from_location").get("value")==0){
+                      	alert("<?php echo $tr->translate('CHOOSE_LOCTION')?>");
+							dijit.byId('from_location').focus();
+							return false;
+					}
+					if(dijit.byId("to_location").get("value")==0){
+                      		alert("<?php echo $tr->translate('CHOOSE_LOCTION')?>");
+							dijit.byId('to_location').focus();
+							return false;
+					}
+					var rowId = $('#record_row').val();
+    				if(rowId!=''){ 
+						var rowIDArray = rowId.split(',');
+						for(var n = 0; n < rowIDArray.length; n++){
+						var service = dijit.byId('service'+rowIDArray[n]).get('value');
+						if(service==0){
+							alert("<?php echo $tr->translate('SELECT_SERVICE')?>");
+							dijit.byId('service'+rowIDArray[n]).focus();
+							return false;
+							}
+						}
+					}
 					loading();
 					return true;
 				} else {
@@ -255,7 +277,7 @@ h4.car_title {
 					                	<div style="clear: both;"></div>
 										<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
 										<div  id="store_record"></div>
-										 <input  iconClass="dijitIconClear" type="button" onClick="addPockage();" label=" <?php echo $tr->translate("ADD_SERVICE")?>" dojoType="dijit.form.Button"/>
+										 <input  iconClass="dijitEditorIcon dijitEditorIconSave" type="button" onClick="addPockage();" label=" <?php echo $tr->translate("ADD_SERVICE")?>" dojoType="dijit.form.Button"/>
 					                </div>
 				               </div>
 						</div>
@@ -441,7 +463,23 @@ function CalculateTotal(){
 	dijit.byId('total').set('value',total);
 	dijit.byId('total_payment').set('value',total.toFixed(2));
 	calculatebalance();
+	netTotal();
 }
+
+function netTotal() {
+	var netTotal=0;
+	total=0;
+	var rowId = $('#record_row').val();
+	var rowIDArray = rowId.split(',');
+	for(var n = 0; n < rowIDArray.length; n++) {
+		netTotal += dijit.byId('price_'+rowIDArray[n]).get('value');
+	}
+	total=dijit.byId("total").get("value");
+	netTotal=Number(netTotal)+Number(total);
+	dijit.byId('total_payment').attr('value',netTotal);
+	dijit.byId('balance').attr('value',netTotal);
+ }
+
 function calculatebalance(){
 	var total = dijit.byId('total_payment').get('value');
 	var total_paid = dijit.byId('total_paid').get('value');
@@ -462,12 +500,12 @@ function settotal(){
 	}
 	dijit.byId('price').set('value',total.toFixed(2));
 	dijit.byId('commision_fee').set('value',0);
+	netTotal();
 }
 
 </script>
 
 <script type="text/javascript"> 
-
 require(["dojo/ready"], function(ready){
 	ready(function(){
 		addNewRecord();
@@ -483,7 +521,7 @@ function addNewRecord(){
 	dojo.query("#store_record").append(tmp);
 	thead='<th style="text-align:center;"><?php echo $tr->translate('DELETE');?></th>';
 	thead+='<th style="text-align:center;"><?php echo $tr->translate('NUM');?></th>';
-	thead+='<th style="text-align:center;"><?php echo $tr->translate('EXPENSE_TYPE');?></th>';
+	thead+='<th style="text-align:center;"><?php echo $tr->translate('SERVICE_NAME');?></th>';
 	thead+='<th style="text-align:center;"><?php echo $tr->translate('PRICE');?></th>';
 	thead+='<th style="text-align:center;"><?php echo $tr->translate('NOTE');?></th>';
 	fund_title=1;
@@ -499,10 +537,10 @@ function addPockage(){
 	tmp+="</tr>";
 		dojo.query("#t_amountmoneytype").append(tmp);
 
-	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
+	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+');CalculateTotal()" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
 	temp+='<td align="center">'+r+'</td>';
-	temp+='<td><select  style="width:120px !important; id="service_id_'+r+'" name="service_id_'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getPopupservice('+r+')">'+service_booking+'</select></td>';
-	temp+='<td><input   dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" onkeyup="calculateTotal('+r+')" ></td>';
+	temp+='<td><select  style="width:120px !important;" id="service'+r+'" name="service'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getServicePopup('+r+')">'+service_booking+'</select></td>';
+	temp+='<td><input   dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" onkeyup="CalculateTotal()" ></td>';
 	temp+='<td><input   dojoType="dijit.form.TextBox" class="fullside"  name="note_'+r+'" id="note_'+r+'" value="" type="text" ></td>';
 	
 	dojo.html.set(dojo.byId("row_guide"+r),temp, {
@@ -541,13 +579,6 @@ function getLocationPopUp($type){
 	}
 }
 
-function getPopupservice(r){
-	service_id=dijit.byId("service_id_"+r).get("value");
-	if(service_id=='-1'){
-		dijit.byId("pop_frm_service").show();
-	}
-}
-
 function getAgencyPopUp(){
 	if(dijit.byId('agency').get('value')==-1){
 		dijit.byId("pop_frm_agency").show();
@@ -568,6 +599,9 @@ function hideAgencyPopUp(){
 }
 function hideLocationPopUp(){
 	dijit.byId("pop_frm_location").hide();
+}
+function hideServicePopUp(){
+	dijit.byId("pop_frm_service").hide();
 }
 
 var custype_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->cus_all));?> );
@@ -646,6 +680,42 @@ function addLocation(){
 	}
 }
 
+var service_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->services));?> );
+var url_service = '<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'addservice')); ?>';
+function addSerice(){
+	if(dijit.byId('frm_service').validate()){
+		if(dijit.byId("service_type").get("value")==''){
+			alert("<?php echo $tr->translate('SELECT_SERVICE_TYPE')?>");
+			dijit.byId("service_type").focus();
+			return false;
+		 }
+		
+		dojo.xhrPost({
+			url:url_service,
+			form: dojo.byId("frm_service"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data,
+					    name: dijit.byId('service_name').get('value'),
+				};			
+				addDataToSelectbox(dijit.byId('service'+$("#new_index_service").val()), service_store, Itemmake, data);
+				dijit.byId('frm_service').reset();
+				dijit.byId("pop_frm_service").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+
+function getServicePopup(r){
+	$("#new_index_service").val(r);
+	if(dijit.byId('service'+r).get('value')==-1){
+		dijit.byId("pop_frm_service").show();
+	}
+}
 </script>
 <!-- popup customer -->
 <?php $c_typ=$this->frm_client;?>
@@ -784,8 +854,37 @@ function addLocation(){
 </div>
 
 <!-- popup service -->
+<?php $s_frm=$this->frm_service;?>
 <div class="dijitHidden" >
-	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_service" title="<?php echo $tr->translate("ADD_AGENCY")?>">
-		 
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_service" title="<?php echo $tr->translate("ADD_SERVICE")?>"  >
+		<form id='frm_service' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table  style="width:400px;">
+			<tr>
+				<td><?php echo $tr->translate('SERVICE_NAME')?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="service_name" name="service_name" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate('DESCRIPTION')?></td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="s_des" name="s_des" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate('SERVICE_TYPE')?> </td>
+				<td><?php echo $s_frm->getElement('service_type');?><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			 <input type="hidden" name="new_index_service"   id="new_index_service" value="" />
+  			<tr>
+				<td colspan="2" align="center">
+					<input type="button"  name="s_cancel" id="s_cancel"  label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
+					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="hideServicePopUp()"/>
+				  	<input type="button"  name="s_save" id="s_save" label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addSerice();"/>
+				</td>
+				
+			</tr>
+		</table>
+		</form>
 	</div>
 </div>

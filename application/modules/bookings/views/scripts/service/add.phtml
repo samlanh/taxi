@@ -1,8 +1,9 @@
 <?php 
      $url_save = $this->url(array('module'=>'group','controller'=>'customertype','action'=>'add'));
      $tr=Application_Form_FrmLanguages::getCurrentlanguage();
-     $frm = $this->frm_custype;
+     $frm = $this->frm_serice;
 ?>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
 <script type="text/javascript">
 dojo.require("dijit.form.DateTextBox");
 dojo.require("dojo.data.ItemFileWriteStore"); 
@@ -21,6 +22,11 @@ dojo.require("dojo.parser");
 <form id="add_province" action="" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	 <script type="dojo/method" event="onSubmit">			
 			if(this.validate()) {
+                if(dijit.byId("service_type").get("value")==''){
+					alert("<?php echo $tr->translate('SELECT_SERVICE_TYPE') ?>");
+                    dijit.byId("service_type").focus();
+                    return false;
+				}
 				loading();
 				return true;
 			} else {
@@ -57,6 +63,13 @@ dojo.require("dojo.parser");
 	                    	<?php echo $frm->getElement('remark');?>
 	                   </div>
 	                </div>
+	                 <div class="form-group">
+	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('SERVICE_TYPE')?>
+	                   </label>
+	                   <div class="col-md-8 col-sm-8 col-xs-12">
+	                    	<?php echo $frm->getElement('service_type');?>
+	                   </div>
+	                </div>
 	                <div class="form-group">
 	                   <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('STATUS')?>
 	                   </label>
@@ -82,3 +95,78 @@ dojo.require("dojo.parser");
 	 	</div>
 	 </div>
 </form> 
+
+<!-- popup customer -->
+<?php $c_typ=$this->frm_custype;?>
+<div class="dijitHidden" >
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_serice_type" title="<?php echo $tr->translate("ADD_SERVICE_TYPE")?>">
+		<form id='frm_serice_type' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table  style="width:400px;">
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="title_s_t" name="title_s_t" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate('NOTE')?></td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="descript" name="descript" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate('STATUS')?> </td>
+				<td><select name="status_s_t" id="status_s_t" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*" >
+					       <option value="1" label=" "><?php echo $tr->translate("ACTIVE")?></option>
+					        <option value="0" label=" "><?php echo $tr->translate("DEACTIVE")?></option>
+					</select><br/>
+				</td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button"  label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
+					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="hideServicePopUp()"/>
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addService();"/>
+				</td>
+				
+			</tr>
+		</table>
+		
+		</form>
+	</div>
+</div>
+<script>
+function getServiceTypePopUp(){
+	if(dijit.byId('service_type').get('value')==-1){
+		dijit.byId("pop_serice_type").show();
+	}
+}
+
+function hideServicePopUp(){
+	dijit.byId("pop_serice_type").hide();
+}
+
+var stype_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->ser_type));?> );
+var url_customerttype = '<?php echo $this->url(array('module'=>'bookings','controller'=>'service','action'=>'addservicetype')); ?>';
+function addService(){
+	if(dijit.byId('frm_serice_type').validate()){
+		dojo.xhrPost({
+			url:url_customerttype,
+			form: dojo.byId("frm_serice_type"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data,
+					    name: dijit.byId('title_s_t').get('value'),
+				};			
+				addDataToSelectbox(dijit.byId('service_type'), stype_store, Itemmake, data);
+				dijit.byId('frm_serice_type').reset();
+				dijit.byId("pop_serice_type").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+</script>

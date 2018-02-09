@@ -353,7 +353,7 @@ function addPockage(){
 	tmp+="</tr>";
 		dojo.query("#t_amountmoneytype").append(tmp);
 
-	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
+	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+');calculateTotal('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
 	temp+='<td align="center">'+r+'</td>';
 	temp+='<td><select style="width:200px;"  id="expense_id_'+r+'" name="expense_id_'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getPopUpType('+r+')">'+province_option+'</select></td>';
 	temp+='<td><input  style="width:200px;" dojoType="dijit.form.NumberTextBox" class="fullside" onkeyup="calculateTotal('+r+')" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" ></td>';

@@ -10,26 +10,29 @@ class Bookings_Model_DbTable_DbService extends Zend_Db_Table_Abstract
     	return $cud;
     }
     
-    function getAllServiceType($search = null){
+    function getAllService($search = null){
     	$db = $this->getAdapter();
-    	$sql = "SELECT id,title_en,note,DATE_FORMAT(create_date,'%d-%m-%Y') AS date,
-			        (SELECT first_name FROM rms_users WHERE rms_users.id=user_id LIMIT 1) AS user_name,`status` 
-			      FROM ldc_booking_service_type   
-			      WHERE 1  ";
+    	$sql = "SELECT id,service_title,
+				 (SELECT title_en FROM ldc_booking_service_type WHERE ldc_booking_service_type.id= service_id LIMIT 1) AS service_id,
+				 note,DATE_FORMAT(DATE,'%d-%m-%Y') AS DATE,
+			     (SELECT first_name FROM rms_users WHERE rms_users.id=user_id LIMIT 1) AS user_name,`status` 
+			    FROM ldc_booking_service WHERE 1 ";
     	$where = " ";
     	if(!empty($search['title'])){
     		$s_where = array();
     		$s_search = addslashes(trim($search['title']));
     		$s_search = str_replace(' ', '', $s_search);
-    		$s_where[] = "REPLACE(title_en,' ','')  LIKE '%{$s_search}%'";
+    		$s_where[] = "REPLACE(service_title,' ','')  LIKE '%{$s_search}%'";
     		$s_where[] = "REPLACE(note,' ','')  	LIKE '%{$s_search}%'";
     		$where .=' AND ('.implode(' OR ',$s_where).')';
     	}
     	if($search['status_search']>-1){
     		$where.= " AND status = ".$search['status_search'];
     	}
+    	if(!empty($search['service_type'])){
+    		$where.= " AND service_id = ".$search['service_type'];
+    	}
     	$order=" ORDER BY id DESC";
-    	//print_r($sql.$where);
     	return $db->fetchAll($sql.$where.$order);
     }
     
@@ -46,14 +49,14 @@ class Bookings_Model_DbTable_DbService extends Zend_Db_Table_Abstract
 		try{
 			$_arr=array(
 				'service_title'		=> $_data['title'],
+				'service_id'		=> $_data['service_type'],
 				'description'		=> $_data['remark'],
-				'service_id'		=> $_data['remark'],
-				'create_date'		=> date("Y-m-d  H:i:s"),
+				'date'				=> date("Y-m-d"),
 				'status'  	    	=> $_data['status'],
 				'user_id'  	    	=> $this->getUserId(),
 			);
 		if(!empty($_data['id'])){
-			$where = 'id = '.$_data['id'];
+			$where = ' id = '.$_data['id'];
 			$this->update($_arr, $where);
 			return 1;
 		}else{
@@ -80,22 +83,21 @@ class Bookings_Model_DbTable_DbService extends Zend_Db_Table_Abstract
 	}
 	
 	
-	public function addCustomerTypeAjax($_data){
+	public function addServiceTypeAjax($_data){
 		try{
-			$keycode = $this->getlastKeycode();
 			$_arr=array(
-					'name_en'	  => $_data['custype_title'],
-					'name_kh'	  => $_data['custype_title'],
-					'key_code'	  => $keycode,
+					'title_en'	 	=> $_data['title_s_t'],
+					'note'	  		=> $_data['descript'],
+					'create_date'	=> date("Y-m-d"),
 					'status'  => 1,
-					'type'  => 10,
 			);
-			  $this->insert($_arr);
-			  return $keycode;
+		$this->_name='ldc_booking_service_type';
+		return	$this->insert($_arr);
 		}catch(Exception $e){
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 		}
 	}
+	
 	public function getCustomerTypeById($id){
 		$db = $this->getAdapter();
 		$sql = "SELECT * FROM $this->_name WHERE id = ".$db->quote($id)." AND type =10 ";
@@ -104,9 +106,9 @@ class Bookings_Model_DbTable_DbService extends Zend_Db_Table_Abstract
 		return $row;
 	}
 	
-	function getServicetype($id){
+	function getServiceById($id){
 		$db=$this->getAdapter();
-		$sql=" SELECT * FROM ldc_booking_service_type WHERE id=$id";
+		$sql=" SELECT * FROM ldc_booking_service WHERE id=$id";
 		return $db->fetchRow($sql);
 	}
 	
@@ -118,7 +120,7 @@ class Bookings_Model_DbTable_DbService extends Zend_Db_Table_Abstract
 	
 	function getSerictTypeOpt(){
 		$db=$this->getAdapter();
-		$sql="  SELECT id,title_en FROM ldc_booking_service_type WHERE STATUS=1 ";
+		$sql="  SELECT id,title_en AS `name` FROM ldc_booking_service_type WHERE `status`=1 AND title_en!='' ";
 		return $db->fetchAll($sql);
 	}
 	 

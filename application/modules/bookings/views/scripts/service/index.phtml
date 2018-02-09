@@ -1,7 +1,7 @@
 <?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
 <?php
 	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
-	echo $this->headTitle($tr->translate("SERVICE_TYPE"));
+	echo $this->headTitle($tr->translate("SERVICE"));
 ?>	
 <?php $frm =  $this->frm_search;
 ?>
@@ -14,13 +14,16 @@
 <div class="row">
 	<div class="x_panel" >
 		 <div class="blog_form_title">
-		 	<h4><i class="fa fa-edit" aria-hidden="true"></i> <?php echo $tr->translate("SERVICE_TYPE")?></h4>
+		 	<h4><i class="fa fa-edit" aria-hidden="true"></i> <?php echo $tr->translate("SERVICE")?></h4>
 		 </div>
 		<form id="list" name="list" action="" dojoType="dijit.form.Form" method="post">
 			<div class="clearfix"></div>
 			<div class="form-group">
 				<div class="col-md-2 col-xs-12 mg-10">
 		  			<?php echo $frm->getElement("title");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement('service_type');?>
 		  		</div>
 		  		<div class="col-md-2 col-xs-12 mg-10">
 		  			<?php echo $frm->getElement('status_search');?>

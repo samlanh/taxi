@@ -161,6 +161,19 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		return $arr;
 	}
 	
+	function addServiceAjax($data){
+		$this->_name='ldc_booking_service';
+		$_arr=array(
+				'service_title'		=> $data['service_name'],
+				'service_id'		=> $data['service_type'],
+				'description'		=> $data['s_des'],
+				'date'				=> date("Y-m-d"),
+				'status'  	    	=> 1,
+				'user_id'  	    	=> $this->getUserId(),
+		);
+		return $this->insert($_arr);
+	}
+	
 	public function getClientById($id){
 		$db = $this->getAdapter();
 		$sql = "SELECT * FROM $this->_name WHERE id = ".$db->quote($id);
