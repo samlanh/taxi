@@ -144,6 +144,15 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 		$sql="SELECT key_code,".$array[$lang]." as name_en FROM ldc_view WHERE `type`=$type";
 		return $db->fetchAll($sql);
 	}
+	
+	function getTbViews($type){
+		$db=$this->getAdapter();
+		$lang= $this->getCurrentLang();
+		$array = array(1=>"name_en",2=>"name_kh");
+		$sql="SELECT key_code,".$array[$lang]." as name_en FROM tb_view WHERE `type`=$type";
+		return $db->fetchAll($sql);
+	}
+	
 	function getViewsAsName($type=2){
 		$db=$this->getAdapter();
 		$lang= $this->getCurrentLang();
@@ -852,5 +861,6 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	$sql="SELECT c.id,CONCAT(first_name,' ',last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_agency AS c WHERE c.`status`=1 AND c.`first_name` !='' ORDER BY c.`first_name` ASC";
   	return $this->getAdapter()->fetchAll($sql);
   }
+
 }
 ?>

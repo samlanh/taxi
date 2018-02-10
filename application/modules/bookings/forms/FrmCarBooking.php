@@ -92,7 +92,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$customer->setMultiOptions($opt_cu);
 		
 		$row_dri = $_db->getAllDriver();
-		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
+		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"),);
 		$driver = new Zend_Dojo_Form_Element_FilteringSelect("driver");
 		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriver(1);'));
 		foreach ($row_dri as $rs){
@@ -204,8 +204,19 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$driver_fee->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
+						'required'=>true
 				));
 		$driver_fee->setValue(0);
+		
+		$work_s = $_db->getTbViews(17);
+		$opt_s=array();
+		$working_status = new Zend_Dojo_Form_Element_FilteringSelect("working_status");
+		$working_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		foreach ($work_s as $rs){
+			$opt_s[$rs["key_code"]] = $rs["name_en"];
+		}
+		$working_status->setMultiOptions($opt_s);
+		
 		if (!empty($data)){
 			$dbbooking = new Bookings_Model_DbTable_DbBooking();
 			$chekcpayment = $dbbooking->checkBookingHasPayment($data['id']);
@@ -228,6 +239,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$other_booking_no->setValue($data['payment_booking_no']);
 			$total_paid->setValue($data['paid']);
 			$balance->setValue($data['balance']);
+			$working_status->setValue($data['status_working']);
 			
 			$_fly_no->setValue($data['fly_no']);
 			$delivery_time->setValue($data['delivey_time']);
@@ -290,6 +302,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$total_paid,
 				$payment_note,
 				$other_booking_no,
+				$working_status
 			));
 		return $this;
 	}

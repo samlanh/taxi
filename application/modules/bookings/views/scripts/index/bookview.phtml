@@ -147,10 +147,15 @@ h4.car_title {
 		                   </div>
 		                </div>
 		                <div class="form-group">
-		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("REMARK")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("REMARK")?>
 		                   </label>
-		                   <div class="col-md-10 col-sm-10 col-xs-12">
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('remark');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("BOOKING_STATUS")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('working_status');?>
 		                   </div>
 		                </div>
 		                  
@@ -213,7 +218,7 @@ require(["dojo/ready"], function(ready){
         dijit.byId("agency").attr("disabled", true);
 		dijit.byId("booking_date").attr("disabled", true);
 		dijit.byId("delivery_date").attr("disabled", true);
-		dijit.byId("delivery_time").attr("disabled", true);
+		 
 		dijit.byId("to_location").attr("disabled", true);
 		dijit.byId("from_location").attr("disabled", true);
 		dijit.byId("customer").attr("disabled", true);

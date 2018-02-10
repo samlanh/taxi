@@ -285,6 +285,9 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 	}
 	function getAllCarBooking($search){
 		$db = $this->getAdapter();
+		$glob=new Application_Model_DbTable_DbGlobal();
+		$lang= $glob->getCurrentLang();
+		$array = array(1=>"name_en",2=>"name_kh");
 		$from_date=$search["from_book_date"];
 		$to_date=$search["to_book_date"];
 		$sql="
@@ -296,7 +299,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			cb.`delivey_date`,
 			cb.`price`,cb.`commision_fee`,cb.`other_fee`,cb.`total`,
 			(SELECT CONCAT(d.`first_name`,' ',d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
-			(SELECT v.name_en FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
+			(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
 			cb.`status`
 			FROM `ldc_carbooking` AS cb,
 			`ldc_customer` AS c,
@@ -391,7 +394,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'total'	  			=> $_data['total'],
 					'due'	  			=> $_data['total'],
 					'due_after'	  		=> $_data['total'],
-					'driver_fee'	  	=> $_data['driver_fee'],
+					//'driver_fee'	  	=> $_data['driver_fee'],
 					'driver_fee_after'	=> $_data['driver_fee'],
 					'remark'	  		=> $_data['remark'],
 					'status_working'	=>0,
@@ -487,7 +490,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'total'	  		  => $_data['total'],
 					'due'	  		  => $_data['total'],
 					'due_after'	  	  => $_data['total'],
-					'driver_fee'	  => $_data['driver_fee'],
+					//'driver_fee'	  => $_data['driver_fee'],
 					'driver_fee_after'=> $driver_feeafter,
 					'remark'	  	  => $_data['remark'],
 					'status_working'  =>0,
@@ -651,8 +654,9 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$_db = new Application_Model_DbTable_DbGlobal();
 			$payment_no = $_db->getNewPaymentNO();
 			$arr=array(
-					'status_working'  => 1,
+					'status_working'  => $_data['working_status'],
 					'driver_id'	  	  => $_data['driver'],
+					'delivey_time'	  => $_data['delivery_time'],
 					'driver_fee'	  => $_data['driver_fee'],
 					'driver_fee_after'=> $_data['driver_fee'],
 					'remark'	  	  => $_data['remark'],
