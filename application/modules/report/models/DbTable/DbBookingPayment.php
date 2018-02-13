@@ -185,5 +185,45 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	return $db->fetchAll($sql.$where.$order);
       }
       
+      function getAllDriverPyment($search){
+      	$db=$this->getAdapter();
+      	$where =" ";
+      	$_db = new Application_Model_DbTable_DbGlobal();
+      	$lang = $_db->getCurrentLang();
+      	$array = array(1=>"name_en",2=>"name_kh");
+      	$sql="SELECT 
+				cp.`id`,cp.`payment_no`,
+				CONCAT(a.`first_name`,' ',a.`last_name`) AS driver_name,
+				cp.`payment_date`,
+				(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
+				(SELECT b.booking_no FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) AS booking_no,
+				 dpd.`due_amount`,dpd.`paid`,dpd.`remain`, 
+				  (SELECT first_name FROM rms_users WHERE rms_users.id=cp.user_id LIMIT 1) AS user_name,
+				  (SELECT name_en FROM tb_view WHERE tb_view.key_code=cp.status AND tb_view.type=5 LIMIT 1) AS `status`
+				FROM `ldc_driver_payment` AS cp,ldc_driver_payment_detail AS dpd,
+				`ldc_driver` AS a
+				WHERE
+				a.`id` = cp.`driver_id`
+				AND cp.id=dpd.driver_payment_id";
+      	$order = "  ";
+      	 
+      	if (!empty($search['adv_search'])){
+      		$s_where = array();
+      		$s_search = addslashes(trim($search['adv_search']));
+      		$s_search = str_replace(' ', '', $s_search);
+      		
+      		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(dpd.`due_amount`,' ','') LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(dpd.`paid`,' ','') 		LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(dpd.`remain`,' ','') 	LIKE '%{$s_search}%'";
+      		$s_where[] = "(SELECT b.booking_no FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) LIKE '%{$s_search}%'";
+      		$where .=' AND ('.implode(' OR ',$s_where).')';
+      	}
+      	if ($search['status']>-1){
+      		$where .=' AND cp.`status` = '.$search['status'];
+      	}
+      	return $db->fetchAll($sql.$where.$order);
+      }
+      
  }
 
