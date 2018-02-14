@@ -199,6 +199,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 				(SELECT b.booking_no FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) AS booking_no,
 				 dpd.`due_amount`,dpd.`paid`,dpd.`remain`, 
 				  (SELECT first_name FROM rms_users WHERE rms_users.id=cp.user_id LIMIT 1) AS user_name,
+				  (SELECT b.is_paid_to_driver FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) AS s_driver_paid,a.driver_id,
 				  (SELECT name_en FROM tb_view WHERE tb_view.key_code=cp.status AND tb_view.type=5 LIMIT 1) AS `status`
 				FROM `ldc_driver_payment` AS cp,ldc_driver_payment_detail AS dpd,
 				`ldc_driver` AS a
