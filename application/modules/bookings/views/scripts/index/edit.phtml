@@ -167,10 +167,11 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('from_location');?>
 		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE")?>
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE_TYPE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('vehicle');?>
+		                    	<!--<?php echo $frm->getElement('vehicle');?>-->
+		                    	<?php echo $frm->getElement('vehicle_type');?>
 		                   </div>
 		                </div>
 		                 <div class="form-group">
@@ -661,11 +662,12 @@ function addCustomet(){
 			load: function(data) {
 				var Itemmake = {					
 						id: data.id,
-					    name: dijit.byId('name_kh').get('value')+' '+dijit.byId('name_en').get('value')+'('+data.cus_code+')',
+					    name: dijit.byId('name_en').get('value')+'('+data.cus_code+')',
 				};			
 				addDataToSelectbox(dijit.byId('customer'), custype_store, Itemmake, data.id);
 				dijit.byId('frm_customer').reset();
 				dijit.byId("pop_frm_customer").hide();
+				dijit.byId("c_save").attr("disabled",true);
 			},
 			error: function(err) {
 				alert(err);
@@ -685,7 +687,7 @@ function addAgency(){
 			load: function(data) {
 				var Itemmake = {					
 						id: data.id,
-					    name: dijit.byId('first_name').get('value')+' '+dijit.byId('last_name').get('value')+'('+data.cus_code+')',
+					    name: dijit.byId('last_name').get('value')+'('+data.cus_code+')',
 				};			
 				addDataToSelectbox(dijit.byId('agency'), agency_store, Itemmake, data.id);
 				dijit.byId('frm_agency').reset();
@@ -730,12 +732,6 @@ var service_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::
 var url_service = '<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'addservice')); ?>';
 function addSerice(){
 	if(dijit.byId('frm_service').validate()){
-		if(dijit.byId("service_type").get("value")==''){
-			alert("<?php echo $tr->translate('SELECT_SERVICE_TYPE')?>");
-			dijit.byId("service_type").focus();
-			return false;
-		 }
-		
 		dojo.xhrPost({
 			url:url_service,
 			form: dojo.byId("frm_service"),
@@ -773,14 +769,10 @@ function getServicePopup(r){
 				<td><?php echo $tr->translate("TITLE")?></td>
 				<td><?php echo $c_typ->getElement('title');?><br/></td>
 			</tr>
+			
 			<tr><td colspan="2" style="height: 5px;" ></td></tr>
 			<tr>
-				<td><?php echo $tr->translate("First Name")?></td>
-				<td><?php echo $c_typ->getElement('name_kh');?><br/></td>
-			</tr>
-			<tr><td colspan="2" style="height: 5px;" ></td></tr>
-			<tr>
-				<td><?php echo $tr->translate("LAST_NAME")?> </td>
+				<td><?php echo $tr->translate("CUSTOMER_NAME")?> </td>
 				<td><?php echo $c_typ->getElement('name_en');?><br/></td>
 			</tr>
 			<tr><td colspan="2" style="height: 5px;" ></td></tr>
@@ -803,7 +795,7 @@ function getServicePopup(r){
 				<td colspan="2" align="center">
 					<input type="button"  label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
 					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="hideCustomerPopUp()"/>
-				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" id="c_save"
 				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addCustomet();"/>
 				</td>
 				
@@ -819,14 +811,10 @@ function getServicePopup(r){
 	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_agency" title="<?php echo $tr->translate("ADD_AGENCY")?>">
 		<form id='frm_agency' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 		<table  style="width:400px;">
+			 
 			<tr><td colspan="2" style="height: 5px;" ></td></tr>
 			<tr>
-				<td><?php echo $tr->translate("First Name")?></td>
-				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="first_name" name="first_name" value="" type="text" class="fullside"></td>
-			</tr>
-			<tr><td colspan="2" style="height: 5px;" ></td></tr>
-			<tr>
-				<td><?php echo $tr->translate("LAST_NAME")?> </td>
+				<td><?php echo $tr->translate("CUSTOMER_NAME")?> </td>
 				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="last_name" name="last_name" value="" type="text" class="fullside"></td>
 			</tr>
 			<tr><td colspan="2" style="height: 5px;" ></td></tr>

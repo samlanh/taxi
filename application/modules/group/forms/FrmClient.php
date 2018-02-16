@@ -385,7 +385,7 @@ Class Group_Form_FrmClient extends Zend_Dojo_Form {
 			$old_photo->setValue($data['photo']);
 			$id->setValue($data['id']);
 			$_title->setValue($data['title']);
-			$_namekh->setValue($data['first_name']);
+			//$_namekh->setValue($data['first_name']);
 			$_nameen->setValue($data['last_name']);
 			$_sex->setValue($data['sex']);
 			$_dob->setValue($data['dob']);

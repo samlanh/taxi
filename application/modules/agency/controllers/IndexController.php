@@ -25,7 +25,7 @@ class Agency_indexController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("CUS_CODE","First Name","Last Name","Gender","Customer Type","DOB","PHONE","POB","Nationality","Company Name","Group No",
+			$collumns = array("CUS_CODE","AGENCY_NAME","Gender","Customer Type","DOB","PHONE","POB","Nationality","Company Name","Group No",
 					"House No","Commune","District","Province","STATUS");
 			$link=array(
 					'module'=>'agency','controller'=>'index','action'=>'edit',

@@ -24,7 +24,7 @@ class Group_indexController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("CUS_CODE","First Name","Last Name","Gender","Customer Type","DOB","PHONE","POB","Nationality","Company Name","Group No",
+			$collumns = array("CUS_CODE","CUSTOMER_NAME","Gender","Customer Type","DOB","PHONE","POB","Nationality","Company Name","Group No",
 					"House No","Commune","District","Province","STATUS");
 			$link=array(
 					'module'=>'group','controller'=>'index','action'=>'edit',
@@ -72,6 +72,7 @@ class Group_indexController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_client = $frm;
 	}
+	
 	public function editAction(){
 		$db = new Group_Model_DbTable_DbClient();
 		if($this->getRequest()->isPost()){
@@ -102,6 +103,7 @@ class Group_indexController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_client = $frm;
 	}
+	
 	function viewAction(){
 		$id = $this->getRequest()->getParam("id");
 		$db = new Group_Model_DbTable_DbClient();

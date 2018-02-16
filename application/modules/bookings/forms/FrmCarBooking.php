@@ -216,6 +216,16 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$opt_s[$rs["key_code"]] = $rs["name_en"];
 		}
 		$working_status->setMultiOptions($opt_s);
+		 
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typ=$db->getAllVehicleType();
+		$opt_payment = array(0=>$this->tr->translate("SELECT_VECHICLE_TYPE"));
+		$vehicle_type = new Zend_Dojo_Form_Element_FilteringSelect("vehicle_type");
+		$vehicle_type->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		foreach ($rows_veh_typ as $rs){
+			$opt_payment[$rs["id"]] = $rs["title"];
+		}
+		$vehicle_type->setMultiOptions($opt_payment);
 		
 		if (!empty($data)){
 			$dbbooking = new Bookings_Model_DbTable_DbBooking();
@@ -295,7 +305,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$total,
 				$remark,
 				$driver_fee,
-				
+				$vehicle_type,
 				$payment_method,
 				$total_payment,
 				$balance,

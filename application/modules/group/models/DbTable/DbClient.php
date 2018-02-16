@@ -31,7 +31,7 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		$_arr=array(
 				'title'	  => $_data['title'],
 				'customer_code'	  => $client_code,//$_data['client_no'],
-				'first_name'	  =>$_data['name_kh'],
+				//'first_name'	  =>$_data['name_kh'],
 				'last_name' => $_data['name_en'],
 				'sex'=> $_data['sex'],
 				'dob'	  => $_data['dob_client'],
@@ -103,7 +103,7 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		$_arr=array(
 				'title'	  	=> $data['title'],
 				'customer_code'=> $client_code,//$_data['client_no'],
-				'first_name'=>$data['name_kh'],
+				//'first_name'=>$data['name_kh'],
 				'last_name' =>$data['name_en'],
 				'sex'		=>$data['sex'],
 				'phone'     =>$data['phone'],
@@ -125,7 +125,7 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		$_arr=array(
 				//'title'	  	=> $data['title'],
 				'customer_code'=> $client_code,//$_data['client_no'],
-				'first_name'=>$data['first_name'],
+				//'first_name'=>$data['first_name'],
 				'last_name' =>$data['last_name'],
 				'sex'		=>$data['a_sex'],
 				'phone'     =>$data['a_phone'],
@@ -221,7 +221,7 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		$to_date = (empty($search['end_date']))? '1': "date <= '".$search['end_date']." 23:59:59'";
 // 		$where = " WHERE (first_name!='' OR  last_name!='') AND ".$from_date." AND ".$to_date;		
 		$where = " WHERE (first_name!='' OR  last_name!='') ";
-		$sql = " SELECT id,customer_code,first_name,last_name,
+		$sql = " SELECT id,customer_code,last_name,
 		(SELECT name_en FROM `ldc_view` WHERE TYPE=1 AND key_code =$this->_name.`sex` LIMIT 1) AS sex,
 		(SELECT name_en FROM `ldc_view` WHERE TYPE=9 AND key_code =ldc_customer.`customer_type` LIMIT 1) AS custype
 		,dob,phone,pob,nationality,company_name,

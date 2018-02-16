@@ -241,6 +241,7 @@ class Vehicle_Model_DbTable_DbVehicle extends Zend_Db_Table_Abstract
     	$order=' ORDER BY id DESC';
     	return $db->fetchAll($sql.$order);
     }
+    
     function getAllVehicleType(){
     	$db=$this->getAdapter();
     	$sql="SELECT id,title FROM ldc_vechicletye WHERE `status`= 1 ";

@@ -376,7 +376,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$_arrbooking=array(
 					'customer_id'	  => $_data['customer'],
 					//'driver_id'	  => $_data['driver'],
-					'vehicle_id'	  => $_data['vehicle'],
+// 					'vehicle_id'	  => $_data['vehicle'],
+					'vehicletype_id'  => $_data['vehicle_type'],
 					'agency_id'	  	  => $_data['agency'],
 					'booking_no'	  => $booking_code,
 					'booking_date'	  => $_data['booking_date'],

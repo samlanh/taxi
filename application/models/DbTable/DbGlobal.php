@@ -847,18 +847,18 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	return $row;
   }
   function getAllCustomers(){
-  	$sql="SELECT c.id,CONCAT(first_name,' ',last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_customer AS c WHERE c.`status`=1 AND c.`first_name` !='' ORDER BY c.`first_name` ASC";
+  	$sql="SELECT c.id,CONCAT(last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_customer AS c WHERE c.`status`=1 AND c.`last_name` !='' ORDER BY c.`last_name` ASC";
   	return $this->getAdapter()->fetchAll($sql);
   }
   
   public function getAllDriver(){
   	$db= $this->getAdapter();
-  	$sql="SELECT d.`id`,CONCAT(d.`first_name`,' ',d.`last_name`,'(',d.`driver_id`,')') AS `name`
+  	$sql="SELECT d.`id`,CONCAT(d.`last_name`,'(',d.`driver_id`,')') AS `name`
  	FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`first_name`!='' ORDER BY d.`first_name` ASC";
   	return $db->fetchAll($sql);
   }
   public function getAllAgency(){
-  	$sql="SELECT c.id,CONCAT(first_name,' ',last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_agency AS c WHERE c.`status`=1 AND c.`first_name` !='' ORDER BY c.`first_name` ASC";
+  	$sql="SELECT c.id,CONCAT(last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_agency AS c WHERE c.`status`=1 AND c.`last_name` !='' ORDER BY c.`last_name` ASC";
   	return $this->getAdapter()->fetchAll($sql);
   }
 
