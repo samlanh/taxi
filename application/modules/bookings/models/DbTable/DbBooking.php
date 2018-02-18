@@ -292,7 +292,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$to_date=$search["to_book_date"];
 		$sql="
 		SELECT cb.id,cb.`booking_no`,
-			CONCAT(c.`first_name`,' ',c.`last_name`) AS cus_name,
+			CONCAT(c.`last_name`) AS cus_name,
 			l.`location_name` AS from_location,
 			tl.`location_name` AS to_location,
 			cb.`booking_date`,
@@ -326,6 +326,9 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		}
 		if ($search['customer']>0){
 			$where.=" AND cb.`customer_id`=".$search['customer'];
+		}
+		if ($search['working_status']>-1){
+			$where.=" AND cb.`status_working`=".$search['working_status'];
 		}
 		$order=' ORDER BY cb.id DESC';
 		return $db->fetchAll($sql.$where.$order);
@@ -473,7 +476,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$_arrbooking=array(
 					'customer_id'	  => $_data['customer'],
 					//'driver_id'	  => $_data['driver'],
-					'vehicle_id'	  => $_data['vehicle'],
+					//'vehicle_id'	  => $_data['vehicle'],
+					'vehicletype_id'  => $_data['vehicle_type'],
 					'agency_id'	  	  => $_data['agency'],
 // 					'booking_no'	  => $booking_code,
 					'booking_date'	  => $_data['booking_date'],

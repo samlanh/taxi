@@ -250,6 +250,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$total_paid->setValue($data['paid']);
 			$balance->setValue($data['balance']);
 			$working_status->setValue($data['status_working']);
+			$vehicle_type->setValue($data['vehicletype_id']);
 			
 			$_fly_no->setValue($data['fly_no']);
 			$delivery_time->setValue($data['delivey_time']);

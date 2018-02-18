@@ -18,17 +18,18 @@ class Bookings_indexController extends Zend_Controller_Action {
 			}
 			else{
 				$search = array(
-						'to_book_date' => date("Y-m-d"),
+						'to_book_date'   => date("Y-m-d"),
 						'from_book_date' => date("Y-m-d"),
-						'search_text' => "",
-						'customer'=>-1,
+						'search_text'    => "",
+						'customer'       =>-1,
+						'working_status' =>-1
 				);
 			}
 			$rs_rows= $db->getAllCarBooking($search);
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("BOOKING_NO","CUSTOMER","FROM_LOCATION","TO_LOCATION","BOOKING_DATE","DELIVERY_DATE","CAR_RENT_FEE","COMMISSION_FEE","OTHER_FEE","GRAND_TOTAL","DRIVER","DRIVER_FEE","BOOKING_STATUS","STATUS",);
+			$collumns = array("BOOKING_NO","CUSTOMER_NAME","FROM_LOCATION","TO_LOCATION","BOOKING_DATE","DELIVERY_DATE","CAR_RENT_FEE","COMMISSION_FEE","OTHER_FEE","GRAND_TOTAL","DRIVER","DRIVER_FEE","BOOKING_STATUS","STATUS",);
 			$link=array(
 					'module'=>'bookings','controller'=>'index','action'=>'edit',
 			);
@@ -113,7 +114,6 @@ class Bookings_indexController extends Zend_Controller_Action {
 			$this->_redirect("/bookings/index");
 		}
 		//$this->view->driver_info = $db->getDriverInformation($row['driver_id']);
-		$this->view->vehicle_info = $db->getvehicleinfo($row['vehicle_id']);
 		$frm = new Bookings_Form_FrmCarBooking();
 		$form = $frm->FormBooking($row);
 		Application_Model_Decorator::removeAllDecorator($form);
@@ -173,7 +173,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 			$this->_redirect("/bookings/index");
 		}
 		//$this->view->driver_info = $db->getDriverInformation($row['driver_id']);
-		$this->view->vehicle_info = $db->getvehicleinfo($row['vehicle_id']);
+		//$this->view->vehicle_info = $db->getvehicleinfo($row['vehicle_id']);
 		
 		$frm = new Bookings_Form_FrmCarBooking();
 		$form = $frm->FormBooking($row);

@@ -95,8 +95,20 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$payment_method_search->setMultiOptions($opt_payment);
 		$payment_method_search->setValue($request->getParam("payment_method_search"));
 		
+		$db_globle=new Application_Model_DbTable_DbGlobal();
+		$row_status = $db_globle->getTbViews(17);
+		$opt_s = array('-1'=>$this->tr->translate("WORKING_STATUS"));
+		$working_status = new Zend_Dojo_Form_Element_FilteringSelect("working_status");
+		$working_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside"));
+		foreach ($row_status as $rs){
+			$opt_s[$rs["key_code"]] = $rs["name_en"];
+		}
+		$working_status->setMultiOptions($opt_s);
+		$working_status->setValue($request->getParam("working_status"));
+		
 		$this->addElements(array($from_book_date,$to_book_date,$search_tex,$customer,
-				$driver_search,$vehicle_search,$agency_search,$payment_method_search
+				$driver_search,$vehicle_search,$agency_search,$payment_method_search,
+				$working_status
 				));
 		return $this;
 	}

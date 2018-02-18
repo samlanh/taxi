@@ -627,12 +627,14 @@ function getLocationPopUp($type){
 }
 
 function getAgencyPopUp(){
+	dijit.byId("a_save").attr("disabled",false);
 	if(dijit.byId('agency').get('value')==-1){
 		dijit.byId("pop_frm_agency").show();
 	}
 }
 
 function getCustomerPopUp(){
+	dijit.byId("c_save").attr("disabled",false);
 	if(dijit.byId('customer').get('value')==-1){
 		dijit.byId("pop_frm_customer").show();
 	}
@@ -655,6 +657,7 @@ var custype_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::
 var url_customerttype = '<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'addcustomer')); ?>';
 function addCustomet(){
 	if(dijit.byId('frm_customer').validate()){
+		dijit.byId("c_save").attr("disabled",true);
 		dojo.xhrPost({
 			url:url_customerttype,
 			form: dojo.byId("frm_customer"),
@@ -667,7 +670,6 @@ function addCustomet(){
 				addDataToSelectbox(dijit.byId('customer'), custype_store, Itemmake, data.id);
 				dijit.byId('frm_customer').reset();
 				dijit.byId("pop_frm_customer").hide();
-				dijit.byId("c_save").attr("disabled",true);
 			},
 			error: function(err) {
 				alert(err);
@@ -680,6 +682,7 @@ var agency_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::e
 var url_agency = '<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'addagency')); ?>';
 function addAgency(){
 	if(dijit.byId('frm_agency').validate()){
+		dijit.byId("a_save").attr("disabled",true);
 		dojo.xhrPost({
 			url:url_agency,
 			form: dojo.byId("frm_agency"),
@@ -732,6 +735,7 @@ var service_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::
 var url_service = '<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'addservice')); ?>';
 function addSerice(){
 	if(dijit.byId('frm_service').validate()){
+		dijit.byId("s_save").attr("disabled",true);
 		dojo.xhrPost({
 			url:url_service,
 			form: dojo.byId("frm_service"),
@@ -753,6 +757,7 @@ function addSerice(){
 }
 
 function getServicePopup(r){
+	dijit.byId("s_save").attr("disabled",false);
 	$("#new_index_service").val(r);
 	if(dijit.byId('service'+r).get('value')==-1){
 		dijit.byId("pop_frm_service").show();
