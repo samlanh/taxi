@@ -661,6 +661,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$arr=array(
 					'status_working'  => $_data['working_status'],
 					'driver_id'	  	  => $_data['driver'],
+					'vehicle_id'	  => $_data['vehicle'],
+					
 					'delivey_time'	  => $_data['delivery_time'],
 					'driver_fee'	  => $_data['driver_fee'],
 					'driver_fee_after'=> $_data['driver_fee'],
@@ -703,6 +705,42 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$sql="SELECT id,service_id,carbooking_id,total_amount,description 
 		       FROM ldc_booking_service_detial
 		       WHERE carbooking_id=$id";
+		return $db->fetchAll($sql);
+	}
+	
+	function getVehicleByCategory(){
+		$db = $this->getAdapter();
+		$sql='SELECT v.id,
+		CONCAT(m.`title`," ",mo.`title`," ",smo.`title`," (",v.`reffer`,")") AS `name`
+		FROM `ldc_vehicle` AS v,
+		`ldc_make` AS m,
+		`ldc_model` AS mo,
+		`ldc_submodel` AS smo
+		WHERE
+		v.`make_id` = m.`id` AND
+		v.`model_id` = mo.`id` AND
+		v.`sub_model` = smo.`id` AND
+		v.is_sale !=1
+		AND v.`status`=1
+		';
+		return $db->fetchAll($sql);
+	}
+	
+	function getVehicleByCarType($cat_id){
+		$db = $this->getAdapter();
+		$sql='SELECT v.id,
+		CONCAT(m.`title`," ",mo.`title`," ",smo.`title`," (",v.`reffer`,")") AS `name`
+		FROM `ldc_vehicle` AS v,
+		`ldc_make` AS m,
+		`ldc_model` AS mo,
+		`ldc_submodel` AS smo
+		WHERE
+		v.`make_id` = m.`id` AND
+		v.`model_id` = mo.`id` AND
+		v.`sub_model` = smo.`id` AND
+		v.is_sale !=1
+		AND v.`status`=1
+		AND v.car_type='.$cat_id;
 		return $db->fetchAll($sql);
 	}
 }

@@ -3,16 +3,20 @@
    echo $this->headTitle($tr->translate("BOOKING_VIEW"));
    $frm = $this->frm;
 ?>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
 <script type="text/javascript">
-dojo.ready(function(){
-});
-dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dojo.data.ItemFileWriteStore"); 
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+ 
+dojo.require("dojo.html");
+dojo.require("dojo.NodeList-manipulate");
 dojo.require("dijit.form.NumberTextBox");
 dojo.require("dijit.form.DateTextBox");
 dojo.require("dijit.form.Textarea");
 dojo.require("dijit.form.TimeTextBox");
 dojo.require("dojo.parser");
-require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+ 
 </script>
 <style>
 div.cus_info{
@@ -131,7 +135,13 @@ h4.car_title {
 		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('vehicle');?>
+		                    	<?php //echo $frm->getElement('vehicle');?>
+		                    	<select name="vehicle" id="vehicle" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*" onchange="getDriver(2)">
+								       <option value="1" label=" "><?php echo $tr->translate("SELECT_VEHICLE")?></option>
+								       <?php if(!empty($this->cars)) foreach ($this->cars As $car){?>
+								       <option value="<?php echo $car['id']?>" label=" "><?php echo $car['name']?></option>
+								       <?php }?>
+								</select>
 		                   </div>
 		                </div>
 		                 <div class="form-group">
@@ -201,6 +211,37 @@ h4.car_title {
 							</div>
 						</div>
 						<div class="clearfix"></div>
+						
+						
+						
+						
+						<div class="title_form_blog " style=" margin: 0;">
+	       					<h4 style=" font-size: 14px;"><i class="fa  fa-car" aria-hidden="true"></i> <?php echo $tr->translate('Vehicle Infomation')?></h4>
+	       				</div>
+	       				<div id="vehiclesss" class="cus_info col-md-12 col-sm-12 col-xs-12">
+	       					<h4 class="car_title"></h4>
+		       				<div class="col-md-4 col-sm-4 col-xs-12">
+				               	<div class="image-box infor">
+									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/no_car.png';?>" alt=""  />
+								</div>
+							</div>
+							<div class="col-md-8 col-sm-8 col-xs-12">
+								<ul class="list-unstyled">
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref.No.')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('YEAR')?></span> : <span class="span_value"></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Color')?></span> : <span class="span_value"></span>
+                              		</li>
+                              	</ul>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						
+						
 	       			</div>
 	       		</div>
        		</div>
@@ -210,11 +251,14 @@ h4.car_title {
 </div>
 
 <script type="text/javascript">
+var care_typestore  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->cars));?> );
 require(["dojo/ready"], function(ready){
 	ready(function(){
         if('<?php echo $this->row['driver_id'];?>'){
+       	    dijit.byId("vehicle").attr("value",'<?php echo $this->row['vehicletype_id'];?>');
         	getDriver(1);
         }
+       
         dijit.byId("agency").attr("disabled", true);
 		dijit.byId("booking_date").attr("disabled", true);
 		dijit.byId("delivery_date").attr("disabled", true);
@@ -235,7 +279,7 @@ function getDriver(type){
 	if(type==1){
 		var id = dijit.byId('driver').get('value');
 	}else if(type=2){
-		//var id = dijit.byId('vehicle').get('value');
+		var id = dijit.byId('vehicle').get('value');
 	}
 	loading();
 	dojo.xhrPost({
@@ -246,12 +290,12 @@ function getDriver(type){
 	    handleAs:"json",
 	    load: function(data) {
 	    	document.getElementById('driver_html').innerHTML =data.driver;
-	    	//document.getElementById('vehiclesss').innerHTML =data.vehicle;
+	    	document.getElementById('vehiclesss').innerHTML =data.vehicle;
 	    	if(dijit.byId('driver').get('value')==data.driver_id ){
 	    		document.getElementsByClassName("overlay")[0].style.display="none";
 	    	}
 	    	if(type==1){
-	    		// dijit.byId('vehicle').set('value',data.vehicle_id);
+	    		 dijit.byId('vehicle').set('value',data.vehicle_id);
 	    	}else if(type=2){
 	    		dijit.byId('driver').set('value',data.driver_id);
 	    	}
@@ -261,5 +305,6 @@ function getDriver(type){
 	    }
    });
 }
+
 
 </script>

@@ -5,19 +5,33 @@ $url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=
 $frm=$this->frm;
 ?>
 <meta charset="utf-8">
-<title><?php echo $tr->translate("RPT_DRIVER_PAYMENT_DETAIL");?></title>
+<title><?php echo $tr->translate("RPT_COMMISSION_DETAIL");?></title>
 <form method="post">
 	
 	</form>
 <div class="row">
 	<div class="x_panel " >
 		<form method="post"  action="">
-			<div class="form-group">
-				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('adv_search');?></div>
-				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('status');?></div>
-				<div class="col-md-1 col-sm-1 col-xs-12"></div>
-				<div class="col-md-2 col-sm-2 col-xs-12"><?php echo $frm->getElement('btn_search');?></div>
-			</div>
+			<div style=" margin:0 auto; padding:0px 0.2cm">
+		  	  <div class="form-group">
+				  <div class="col-md-2 col-xs-12 mg-10">
+				  	<?php echo $frm->getElement('adv_search');?>
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+					  <?php echo $frm->getElement('status');?>
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+					  <?php echo $frm->getElement('btn_search');?>
+				  </div>
+				   <div class="col-md-2 col-xs-12 mg-10">
+				 	 
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+					   
+				  </div>
+			  </div>
+			  </div>
+			
 		</form>
 		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
 			<div id="divPrint" style="width: 100%;">
@@ -46,7 +60,7 @@ $frm=$this->frm;
 				                	<td width="20%"></td>
 				                	<td width="60%" valign="top">
 				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
-				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("RPT_DRIVER_PAYMENT_DETAIL");?></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("RPT_COMMISSION_DETAIL");?></h2>
 				                	</td>
 				                    <td width="20%"></td>
 				                </tr> 
@@ -77,7 +91,7 @@ $frm=$this->frm;
 				                </tr>
 				               <?php  $status_drinver='';
 				               if(!empty($this->d_payment)) foreach($this->d_payment as $key =>$row){
-				                       if($row['s_driver_paid']==1){
+				                       if($row['is_paid_commission']==1){
 				                       	$status_drinver=$tr->translate("COMPLETE");
 				                       }else{
 				                       	$status_drinver=$tr->translate("NOT_COMPLETE");
@@ -87,8 +101,8 @@ $frm=$this->frm;
 										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
 										<td align="left" >&nbsp;<?php echo $row['payment_no']; ?>&nbsp;</td>
 										<td align="left">&nbsp;<?php echo $row['booking_no'];?>&nbsp;</td>
-										<td align="left">&nbsp;<?php echo $row['driver_id'];?>&nbsp;</td>
-										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['driver_name']; ?></span>&nbsp;</td>	
+										<td align="left">&nbsp;<?php echo $row['customer_code'];?>&nbsp;</td>
+										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['last_name']; ?></span>&nbsp;</td>	
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['payment_date']))?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_method'];?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['due_amount']!=0) echo '$&nbsp;'.number_format($row['due_amount'],2);?></td>	

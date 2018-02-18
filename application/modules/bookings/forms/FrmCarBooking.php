@@ -100,7 +100,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		}
 		$driver->setMultiOptions($opt_dri);
 		
-		$row_veh = $_db->getVehicleHasDriver();
+		$dbbooking = new Bookings_Model_DbTable_DbBooking();
+		$row_veh = $dbbooking->getVehicleByCategory();
 		$opt_vehi = array(0=>$this->tr->translate("SELECT_VEHICLE"));
 		$vehicle = new Zend_Dojo_Form_Element_FilteringSelect("vehicle");
 		$vehicle->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriver(2);'));

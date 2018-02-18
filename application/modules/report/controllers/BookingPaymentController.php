@@ -119,8 +119,7 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  		);
 	  	}
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
-	  	$this->view->d_payment = $db->getAllDriverPyment($search);
-	  	 
+	  	$row=$this->view->d_payment = $db->getAllCommission($search);
 	  	$frm = new Application_Form_FrmAdvanceSearch();
 	  	$form = $frm->AdvanceSearch();
 	  	Application_Model_Decorator::removeAllDecorator($form);

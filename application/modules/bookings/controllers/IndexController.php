@@ -167,8 +167,12 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$id=$this->getRequest()->getParam('id');
 		$this->view->id = $id;
 		$row = $db->getCarbookingById($id);
-			
+		if(!empty($row['vehicletype_id'])){
+			$result=$this->view->cars=$db->getVehicleByCarType($row['vehicletype_id']);
+			//print_r($result);exit();
+		}
 		$this->view->row = $row;
+		 
 		if (empty($row)){
 			$this->_redirect("/bookings/index");
 		}

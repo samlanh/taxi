@@ -144,7 +144,7 @@ class IndexController extends Zend_Controller_Action
 			
         	$session_user->unsetAll();       	
 	        if (empty($session_user->user_id)){ 
-        	Application_Form_FrmMessage::redirectUrl("/");
+        	Application_Form_FrmMessage::redirectUrl("/index/administrator");
 	        }
         	exit();
         } 
