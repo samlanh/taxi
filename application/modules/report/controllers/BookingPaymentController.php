@@ -125,6 +125,28 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	Application_Model_Decorator::removeAllDecorator($form);
 	  	$this->view->frm = $form;
 	  }
+	  
+	  function rptCustomerNealyPaymentAction(){
+	  	if($this->getRequest()->isPost()){
+	  		$search = $this->getRequest()->getPost();
+	  	}
+	  	else{
+	  		$search = array(
+	  				'adv_search'=>'',
+	  				'status'=>-1,
+	  				'customer'=>0,
+	  				'status'=>0,
+	  				'end_date'=>date('Y-m-d')
+	  		);
+	  	}
+	  	$this->view->search=$search;
+	  	$db = new Report_Model_DbTable_DbBookingPayment();
+	  	$row=$this->view->row_customer = $db->getCustomerNearlyPayment($search);
+	  	$frm = new Application_Form_FrmAdvanceSearch();
+	  	$form = $frm->AdvanceSearch();
+	  	Application_Model_Decorator::removeAllDecorator($form);
+	  	$this->view->frm = $form;
+	  }
   
 }
 

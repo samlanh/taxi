@@ -19,6 +19,7 @@ class Application_Form_FrmAdvanceSearch extends Zend_Dojo_Form
 	}
 	public function AdvanceSearch($data=null,$type=null){
 		$request=Zend_Controller_Front::getInstance()->getRequest();
+		$_db = new Application_Model_DbTable_DbGlobal();
 		
 		$_title = new Zend_Dojo_Form_Element_TextBox('adv_search');
 		$_title->setAttribs(array('dojoType'=>$this->text,
@@ -80,7 +81,15 @@ class Application_Form_FrmAdvanceSearch extends Zend_Dojo_Form
 		}
 		$to_date->setValue($_date);
 		
-		
+		$row_cu = $_db->getAllCustomers();
+		$opt_cu = array(0=>$this->tr->translate("SELECT_CUSTOMER"));
+		$customer = new Zend_Dojo_Form_Element_FilteringSelect("customer");
+		$customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		foreach ($row_cu as $rs){
+			$opt_cu[$rs["id"]] = $rs["name"];
+		}
+		$customer->setValue($request->getParam("customer"));
+		$customer->setMultiOptions($opt_cu);
 	
 		
 		$is_paid=new Zend_Dojo_Form_Element_FilteringSelect('is_paid');
@@ -92,7 +101,7 @@ class Application_Form_FrmAdvanceSearch extends Zend_Dojo_Form
 		$is_paid->setMultiOptions($is_paid_opt);
 		$is_paid->setValue($request->getParam("is_paid"));
 		
-		$this->addElements(array($from_date,$to_date,$_title,$_title,$_status,$is_paid,$_btn_search));
+		$this->addElements(array($customer,$from_date,$to_date,$_title,$_title,$_status,$is_paid,$_btn_search));
 		return $this;
 	}
 	

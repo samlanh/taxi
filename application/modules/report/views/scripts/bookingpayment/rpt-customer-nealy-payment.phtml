@@ -1,0 +1,154 @@
+<?php $filter = $this->frm_search;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+$frm=$this->frm;
+ 
+?>
+<script type="text/javascript">
+dojo.ready(function(){
+});
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.Textarea");
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+</script>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("RPT_CUSTOMER_NEARLY_DAY_PAYMEN");?></title>
+<form method="post">
+	
+	</form>
+<div class="row">
+	<div class="x_panel " >
+		<form method="post"  action="">
+			<div style=" margin:0 auto; padding:0px 0.2cm">
+		  	  <div class="form-group">
+				  <div class="col-md-2 col-xs-12 mg-10">
+				  	<?php echo $frm->getElement('adv_search');?>
+				  </div>
+				   <div class="col-md-2 col-xs-12 mg-10">
+					 <?php echo $frm->getElement('customer');?>
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+					  <?php echo $frm->getElement('end_date');?>
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+				 	 <?php echo $frm->getElement('status');?>
+				  </div>
+				   <div class="col-md-2 col-xs-12 mg-10">
+				 	 <?php echo $frm->getElement('btn_search');?>
+				  </div>
+			  </div>
+			  </div>
+			
+		</form>
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+			<div id="divPrint" style="width: 100%;">
+				<style>
+				.style{
+					line-height: 20px;font-size: 10px !important;
+					font-family: 'Khmer OS Battambang';
+				}
+				th{padding: 5px;}
+				tr.header {
+				    font-weight: bold;
+				    line-height: 14px;
+				    font-size: 12px;
+				    background: #eee;
+				    text-align: center;
+				}
+				tr.header td {
+				    padding: 5px;
+				}
+				</style>
+				<table style="font-family: 'Khmer OS Content'; width:100%;">
+					<tr>
+				    	<td align="center">
+				    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+				            	<tr>
+				                	<td width="20%"></td>
+				                	<td width="60%" valign="top">
+				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("RPT_CUSTOMER_NEARLY_DAY_PAYMEN");?></h2>
+				                	</td>
+				                    <td width="20%"></td>
+				                </tr> 
+				                <tr>
+				                	<td colspan="3">
+						              </td>
+						           </tr>   
+				            </table>
+				        </td>
+				    </tr>
+				    <tr>
+				    	<td>
+				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+				                 <tr class="header">
+				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
+				                    <td><?php echo $tr->translate("BOOKING_NO");?></td>
+				                    <td><?php echo $tr->translate("CUSTOMER_NAME");?></td>
+				                    <td><?php echo $tr->translate("FROM_LOCATION");?></td>
+				                    <td><?php echo $tr->translate("TO_LOCATION");?></td>
+				                    <td><?php echo $tr->translate("BOOKING_DATE");?></td>
+				                    <td><?php echo $tr->translate("DELIVERY_DATE");?></td>
+				                    <td><?php echo $tr->translate("CAR_RENT_FEE");?></td>
+				                    <td><?php echo $tr->translate("COMMISSION_FEE");?></td>
+			                        <td><?php echo $tr->translate("OTHER_FEE");?></td>
+			                        <td><?php echo $tr->translate("GRAND_TOTAL");?></td>
+			                        <td><?php echo $tr->translate("DRIVER");?></td>
+			                        <td><?php echo $tr->translate("DRIVER_FEE");?></td>
+			                        <td><?php echo $tr->translate("BOOKING_STATUS");?></td>
+			                        <td><?php echo $tr->translate("RETURN_DATE");?></td>
+			                        <td><?php echo $tr->translate("REMAIN_DAY");?></td>
+				                </tr>
+				                
+				               <?php  $status_drinver='';
+				               if(!empty($this->row_customer)) foreach($this->row_customer as $key =>$row){
+				               	
+				               	$date1=date_create($row['delivey_date']);
+				               	$date2=date_create($this->search['end_date']);
+				               	$diff=date_diff($date1,$date2);
+				               	$day=$diff->format("%R%a");
+				                        
+				               	?>
+									<tr align="center" style="line-height: 18px; background: #fff;">
+										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+										<td align="left" >&nbsp;<?php echo $row['booking_no']; ?>&nbsp;</td>
+										<td align="left">&nbsp;<?php  echo $row['cus_name'];?>&nbsp;</td>
+										<td align="left">&nbsp;<?php  echo $row['from_location'];?>&nbsp;</td>
+										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['to_location']; ?></span>&nbsp;</td>	
+										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['booking_date']))?>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['delivey_date']))?> </td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['price']!=0) echo '$&nbsp;'.number_format($row['price'],2);?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['commision_fee']!=0) echo '$&nbsp;'.number_format($row['commision_fee'],2);?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['other_fee']!=0) echo '$&nbsp;'.number_format($row['other_fee'],2);?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php if($row['total']!=0) echo '$&nbsp;'.number_format($row['total'],2);?></td>
+										<td align="center" style="line-height:15px;">&nbsp; <?php echo $row['driver'];?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php if($row['total']!=0) echo '$&nbsp;'.number_format($row['driver_fee'],2);?> </td>	
+										<td align="center" style="line-height:15px;">&nbsp;<?php  echo $row['book_status'];?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['delivey_date']))?> </td>	
+										 <?php if($day>=0){
+															$daylate ="Late ".abs($day);
+														}else{
+															$daylate ="Remain ".abs($day);
+														}?>
+										<td align="center" style="border: 1px solid #000;color: red;font-weight: bold;">&nbsp;<?php echo ($daylate);?> days</td>
+									</tr>
+								<?php }?>
+				            </table>
+				            <br />
+				               <table align="center" width="100%">
+								   <tr style="font-size: 12px;">
+								        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+								        <th></th>
+								        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+								   </tr>
+							</table>
+				    	</td>
+				    </tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

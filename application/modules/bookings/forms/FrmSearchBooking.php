@@ -97,7 +97,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		
 		$db_globle=new Application_Model_DbTable_DbGlobal();
 		$row_status = $db_globle->getTbViews(17);
-		$opt_s = array('-1'=>$this->tr->translate("WORKING_STATUS"));
+		$opt_s = array('-1'=>$this->tr->translate("BOOKING_STATUS"));
 		$working_status = new Zend_Dojo_Form_Element_FilteringSelect("working_status");
 		$working_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside"));
 		foreach ($row_status as $rs){
