@@ -79,7 +79,7 @@ Class Agency_Form_FrmClient extends Zend_Dojo_Form {
 				'style'=>'color:red;',
 				'readOnly'=>true
 		));
-		$id_client = $db->getNewClientId();
+		$id_client = $db->getNewAgencyCode();
 		$_clientno->setValue($id_client);
 	
 		$_nameen = new Zend_Dojo_Form_Element_ValidationTextBox('name_en');
@@ -395,6 +395,8 @@ Class Agency_Form_FrmClient extends Zend_Dojo_Form {
 		
 		
 		if($data!=null){
+			//print_r($data);
+			$_clientno->setValue($data['customer_code']);
 			$occupation->setValue($data['occupation']);
 			$old_photo->setValue($data['photo']);
 			$id->setValue($data['id']);

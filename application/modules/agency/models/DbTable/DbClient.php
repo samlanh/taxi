@@ -70,10 +70,9 @@ class Agency_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		}
 		try{
 			$db = new Application_Model_DbTable_DbGlobal();
-			$client_code = $db->getNewClientId();
+			$client_code = $db->getNewAgencyCode();
 			$_arr=array(
 					'title'	  		=> $_data['title'],
-					'customer_code'	=> $client_code,//$_data['client_no'],
 					//'first_name'	=>$_data['name_kh'],
 					'last_name' 	=> $_data['name_en'],
 					'sex'			=> $_data['sex'],
@@ -126,6 +125,7 @@ class Agency_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 			}else{
 				$_arr['create_date']=date("Y-m-d H:i:s");
 				$_arr['modify_date']=date("Y-m-d H:i:s");
+				$_arr['customer_code']=$client_code;//$_data['client_no'],
 				return  $this->insert($_arr);
 			}
 		}catch(Exception $e){

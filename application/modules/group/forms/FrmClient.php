@@ -381,6 +381,8 @@ Class Group_Form_FrmClient extends Zend_Dojo_Form {
 		
 		
 		if($data!=null){
+			//print_r($data); 
+			$_clientno->setValue($data['customer_code']);
 			$occupation->setValue($data['occupation']);
 			$old_photo->setValue($data['photo']);
 			$id->setValue($data['id']);

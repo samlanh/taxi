@@ -30,7 +30,6 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 			
 		$_arr=array(
 				'title'	  => $_data['title'],
-				'customer_code'	  => $client_code,//$_data['client_no'],
 				//'first_name'	  =>$_data['name_kh'],
 				'last_name' => $_data['name_en'],
 				'sex'=> $_data['sex'],
@@ -90,6 +89,7 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		}else{
 			$_arr['create_date']=date("Y-m-d H:i:s");
 			$_arr['modify_date']=date("Y-m-d H:i:s");
+			$_arr['customer_code']=$client_code;//$_data['client_no'],
 			return  $this->insert($_arr);
 		}
 		}catch(Exception $e){

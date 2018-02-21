@@ -397,6 +397,7 @@ function showPopupclientdtype(){
 	dijit.byId('frm_clienttype').show();
 }
 function getPopFormCus(){
+	//dijit.byId("a_save").attr("disabled",false);
 	customer_type = dijit.byId('agency_type').get('value');
 	if(customer_type==-1){
 		dijit.byId("pop_customertype").show();
@@ -407,6 +408,7 @@ var custype_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::
 var url_customerttype = '<?php echo $this->url(array('module'=>'agency','controller'=>'agencytype','action'=>'addcustomertype')); ?>';
 function addCustometType(){
 	if(dijit.byId('frm_customertype').validate()){
+		dijit.byId("a_save").attr("disabled",true);
 		dojo.xhrPost({
 			url:url_customerttype,
 			form: dojo.byId("frm_customertype"),
@@ -468,7 +470,7 @@ function checkingChangePass(){
 <?php }?>
 </script>
 <div class="dijitHidden">
-	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_customertype" title="<?php echo $tr->translate("ADD_CUSTOMERTYPE")?>">
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_customertype" title="<?php echo $tr->translate("ADD_AGENCY_TYPE")?>">
 		<form id='frm_customertype' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 		<table class="height" >
 			<tr>
@@ -476,8 +478,8 @@ function checkingChangePass(){
 				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="custype_title" name="custype_title" value="" type="text"></td>
 			</tr>
 			<tr>
-				<td colspan="2" align="center">
-				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				<td colspan="2" align="center"> 
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button"  id="a_save" name="a_save"
 				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addCustometType();"/>
 				</td>
 			</tr>

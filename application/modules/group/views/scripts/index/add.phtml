@@ -33,9 +33,7 @@ fieldset table td input ,fieldset table td select{color: #000 !important; }
 </style>
 <div class="clearfix"></div>
 <div class="x_panel">
-	 <div class="blog_form_title">
-	 	<h4><i class="fa fa-plus-circle" aria-hidden="true"></i> <?php echo $tr->translate("ADD_CLIENT")?></h4>
-	 </div>
+	​
 	<form id='add_client' action="<?php echo $this->url(array('module'=>'group','controller'=>'index','action'=>'add')); ?>" enctype="multipart/form-data" dojoType="dijit.form.Form" method="post">
 		<script type="dojo/method" event="onSubmit">			
 		if(this.validate()) {
@@ -56,7 +54,7 @@ fieldset table td input ,fieldset table td select{color: #000 !important; }
 	      	 <div class="col-md-8 col-xs-12 forms_padding">
 		          <div class="x_panel">
 		              <div class="x_title">
-		                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('CUSTOMER_INFO')?></h2>
+		                 <h2><i class="fa fa-plus-circle" aria-hidden="true"></i> <?php echo $tr->translate("ADD_CLIENT")?></h2>
 		                 <ul class="nav navbar-right panel_toolbox">
 		                    <li>
 		                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
