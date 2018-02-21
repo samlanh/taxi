@@ -106,7 +106,11 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$working_status->setMultiOptions($opt_s);
 		$working_status->setValue($request->getParam("working_status"));
 		
-		$this->addElements(array($from_book_date,$to_book_date,$search_tex,$customer,
+		$delivery_time = new Zend_Form_Element_Text("delivery_time");
+		$delivery_time->setAttribs(array('dojoType'=>'dijit.form.TimeTextBox','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
+		$working_status->setValue($request->getParam("delivery_time"));
+		
+		$this->addElements(array($delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
 				$driver_search,$vehicle_search,$agency_search,$payment_method_search,
 				$working_status
 				));

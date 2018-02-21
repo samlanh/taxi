@@ -31,7 +31,6 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				'dojoType'=>'dijit.form.ValidationTextBox',
 				'class'=>'fullside',
 				'required'=>true,
-				'readonly'=>true,
 				'style'=>'color:red',
 				'placeholder'=>$this->tr->translate("Booking No")
 		));
@@ -52,7 +51,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		}
 		
 		$delivery_time = new Zend_Form_Element_Text("delivery_time");
-		$delivery_time->setAttribs(array('dojoType'=>'dijit.form.TimeTextBox','class'=>"fullside"));
+		$delivery_time->setAttribs(array('dojoType'=>'dijit.form.TimeTextBox','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		$delivery_time->setValue('T00:00:00');
 		
 		$rows = $_db->getAllLocation();
@@ -85,7 +84,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$row_cu = $_db->getAllCustomers();
 		$opt_cu = array(0=>$this->tr->translate("SELECT_CUSTOMER"),-1=>$this->tr->translate("ADD_NEW"));
 		$customer = new Zend_Dojo_Form_Element_FilteringSelect("customer");
-		$customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCustomer();getCustomerPopUp()'));
+		$customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*','onChange'=>'getCustomer();getCustomerPopUp()'));
 		foreach ($row_cu as $rs){
 			$opt_cu[$rs["id"]] = $rs["name"];
 		}
@@ -113,7 +112,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$row_agen = $_db->getAllAgency();
 		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"),'-1'=>$this->tr->translate("ADD_NEW"));
 		$agency = new Zend_Dojo_Form_Element_FilteringSelect("agency");
-		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAgent();getAgencyPopUp()'));
+		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*','onChange'=>'getAgent();getAgencyPopUp()'));
 		foreach ($row_agen as $rs){
 			$opt_agen[$rs["id"]] = $rs["name"];
 		}
@@ -125,7 +124,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$price->setAttribs(
 				array('dojoType'=>$this->number,
 					'class'=>"fullside",
-					'onKeyup'=>'CalculateTotal();',
+					'onKeyup'=>'getPice();',
 				));
 		$price->setValue(0);
 		
@@ -133,7 +132,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$commision_fee->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
-						'onChange'=>'CalculateTotal();',
+						'readonly'=>'readonly',
+					//	'onChange'=>'CalculateTotal();',
 				));
 		$commision_fee->setValue(0);
 		
@@ -141,15 +141,16 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$other_fee->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
-						'onChange'=>'CalculateTotal();',
+						'onKeyup'=>'CalculateTotal();',
 				));
 		$other_fee->setValue(0);
 		
 		$total = new Zend_Dojo_Form_Element_NumberTextBox("total");
 		$total->setAttribs(
 				array('dojoType'=>$this->number,
-						'onKeyup'=>'settotal();',
+						'onKeyup'=>'CalculateTotal();',
 						'class'=>"fullside",
+						'required'=>true,
 				));
 		$total->setValue(0);
 		
@@ -220,9 +221,11 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		 
 		$db=new Vehicle_Model_DbTable_DbVehicle();
 		$rows_veh_typ=$db->getAllVehicleType();
-		$opt_payment = array(0=>$this->tr->translate("SELECT_VECHICLE_TYPE"));
+		$opt_payment = array(0=>$this->tr->translate("SELECT_VECHICLE_TYPE"),-1=>$this->tr->translate("Add Vehicle Type"));
 		$vehicle_type = new Zend_Dojo_Form_Element_FilteringSelect("vehicle_type");
-		$vehicle_type->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$vehicle_type->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
+				      'onchange'=>'getPopupFormVehicleType()'
+				));
 		foreach ($rows_veh_typ as $rs){
 			$opt_payment[$rs["id"]] = $rs["title"];
 		}
@@ -238,8 +241,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$driver->setValue($data['driver_id']);
 			$vehicle->setValue($data['vehicle_id']);
 			$agency->setValue($data['agency_id']);
-			$from_location->setValue($data['agency_id']);
-			$to_location->setValue($data['agency_id']);
+			$from_location->setValue($data['from_location']);
+			$to_location->setValue($data['to_location']);
 			$booking_date->setValue(date("Y-m-d",strtotime($data['booking_date'])));
 			$delivery_date->setValue(date("Y-m-d",strtotime($data['delivey_date'])));
 			$commision_fee->setValue($data['commision_fee']);

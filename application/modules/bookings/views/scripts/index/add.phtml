@@ -377,6 +377,9 @@ h4.car_title {
 var url="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getcustomer'));?>";
 function getCustomer(){
 	var id = dijit.byId('customer').get('value');
+	if(id=='' || id==0){
+		return false;
+	}
 	loading();
 	dojo.xhrPost({
 	    url: url,
@@ -396,6 +399,9 @@ function getCustomer(){
 var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getagent'));?>";
 function getAgent(){
 	var id = dijit.byId('agency').get('value');
+	if(id=='' || id==0){
+		return false;
+	}
 	loading();
 	dojo.xhrPost({
 	    url: urlagent,
@@ -450,22 +456,25 @@ function getDriver(type){
 }
 
 function CalculateTotal(){
+	var total = dijit.byId('total').get('value');
+	var other_fee = dijit.byId('other_fee').get('value');
 	var price = dijit.byId('price').get('value');
 	var commision_fee = dijit.byId('commision_fee').get('value');
-	var other_fee = dijit.byId('other_fee').get('value');
+    totals=Number(total)+Number(other_fee);
+
+    dijit.byId("price").attr("value",totals);
+    dijit.byId("total_payment").attr("value",totals);
+    getPice();
+    netTotal();
+}
+
+function getPice(){
 	var total = dijit.byId('total').get('value');
-	total = total + other_fee;
-	if(total>0){
-		if(price > total){
-			total = price + other_fee;
-		}
-		var  commision_fee  = total - price - other_fee;
-		dijit.byId('commision_fee').set('value',commision_fee.toFixed(2));
-	}
-	dijit.byId('total').set('value',total);
-	dijit.byId('total_payment').set('value',total.toFixed(2));
-	calculatebalance();
-	netTotal();
+	var other_fee = dijit.byId('other_fee').get('value');
+	var price = dijit.byId('price').get('value');
+	 totals=Number(total)+Number(other_fee);
+	 result=Number(totals)-price;
+	 dijit.byId("commision_fee").attr("value",result);
 }
 
 function netTotal() {
@@ -476,7 +485,7 @@ function netTotal() {
 	for(var n = 0; n < rowIDArray.length; n++) {
 		netTotal += dijit.byId('price_'+rowIDArray[n]).get('value');
 	}
-	total=dijit.byId("total").get("value");
+	total=Number(dijit.byId("total").get("value"))+Number(dijit.byId("other_fee").get("value"));
 	netTotal=Number(netTotal)+Number(total);
 	dijit.byId('total_payment').attr('value',netTotal);
 	dijit.byId('balance').attr('value',netTotal);
@@ -512,7 +521,7 @@ function settotal(){
 require(["dojo/ready"], function(ready){
 	ready(function(){
 		addNewRecord();
-		
+		 
 	});
 });
 
@@ -531,7 +540,7 @@ function addNewRecord(){
 	fund_title=1;
 	dojo.query("#head_title").append(thead);	
 	dijit.byId('record_row').attr('value','');
-	addPockage();
+	//addPockage();
 }
 
 r=0;
@@ -544,7 +553,7 @@ function addPockage(){
 	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+');CalculateTotal()" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
 	temp+='<td align="center">'+r+'</td>';
 	temp+='<td><select  style="width:120px !important;" id="service'+r+'" name="service'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getServicePopup('+r+')">'+service_booking+'</select></td>';
-	temp+='<td><input   dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="" type="text" onkeyup="CalculateTotal()" ></td>';
+	temp+='<td><input   dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="0" type="text" onkeyup="CalculateTotal()" ></td>';
 	temp+='<td><input   dojoType="dijit.form.TextBox" class="fullside"  name="note_'+r+'" id="note_'+r+'" value="" type="text" ></td>';
 	
 	dojo.html.set(dojo.byId("row_guide"+r),temp, {
@@ -720,6 +729,41 @@ function getServicePopup(r){
 		dijit.byId("pop_frm_service").show();
 	}
 }
+
+function getPopupFormVehicleType(){
+	dijit.byId("car_save").attr("disabled",false);
+	vehicle_type = dijit.byId('vehicle_type').get('value');
+	if(vehicle_type==-1){
+		dijit.byId("pop_vehicle_type").show();
+	}
+}
+
+var vehicletype_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->rows_veh_typasname));?> );
+var url_vehicletype = '<?php echo $this->url(array('module'=>'vehicle','controller'=>'vehicletype','action'=>'addvehiceltype')); ?>';
+function addvehicleType(){
+	if(dijit.byId('frm_vehicle_type').validate()){
+		dijit.byId("car_save").attr("disabled",true);
+		dojo.xhrPost({
+			url: url_vehicletype,
+			form: dojo.byId("frm_vehicle_type"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data,
+					    name: dijit.byId('vehicletype_title').get('value')
+				};			
+				addDataToSelectbox(dijit.byId('vehicle_type'), vehicletype_store, Itemmake, data);
+				dijit.byId('frm_vehicle_type').reset();
+				dijit.byId("pop_vehicle_type").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+
+
 </script>
 <!-- popup customer -->
 <?php $c_typ=$this->frm_client;?>
@@ -877,6 +921,25 @@ function getServicePopup(r){
 				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addSerice();"/>
 				</td>
 				
+			</tr>
+		</table>
+		</form>
+	</div>
+</div>
+
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_vehicle_type" title="<?php echo $tr->translate("Add Vehicle Type")?>">
+		<form id='frm_vehicle_type' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table class="height" >
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="vehicletype_title" name="vehicletype_title" value="" type="text"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" id="car_save"
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addvehicleType();"/>
+				</td>
 			</tr>
 		</table>
 		</form>

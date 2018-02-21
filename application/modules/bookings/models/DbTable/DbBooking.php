@@ -327,6 +327,9 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		if ($search['customer']>0){
 			$where.=" AND cb.`customer_id`=".$search['customer'];
 		}
+		if ($search['delivery_time']>0){
+			$where.=" AND cb.`delivey_time`=".$search['delivery_time'];
+		}
 		if ($search['working_status']>-1){
 			$where.=" AND cb.`status_working`=".$search['working_status'];
 		}
@@ -399,7 +402,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'due'	  			=> $_data['total'],
 					'due_after'	  		=> $_data['total'],
 					//'driver_fee'	  	=> $_data['driver_fee'],
-					'driver_fee_after'	=> $_data['driver_fee'],
+					//'driver_fee_after'	=> $_data['driver_fee'],
 					'remark'	  		=> $_data['remark'],
 					'status_working'	=>0,
 					'payment_booking_no'=>$_data['other_booking_no'],
@@ -417,20 +420,22 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$this->_name="ldc_carbooking";
 			$idbooking = $this->insert($_arrbooking);
 			
-			$ids=explode(',',$_data['record_row']);
-			foreach ($ids as $key => $i)
-			{
-				$data_item= array(
-						'carbooking_id'	=> 	$idbooking,
-						'service_id' 	=> 	$_data['service'.$i],
-						'total_amount'  =>	$_data['price_'.$i],
-						'description'   =>	$_data['note_'.$i],
-						'create_date'   =>	date("Y-m-d H:i:s"),
-						'user_id'      	=>	$this->getUserId(),
-						'status'      	=> 1,
-				);
-				$this->_name='ldc_booking_service_detial';
-				$this->insert($data_item);
+			if($_data['record_row']!=''){
+				$ids=explode(',',$_data['record_row']);
+				foreach ($ids as $key => $i)
+				{
+					$data_item= array(
+							'carbooking_id'	=> 	$idbooking,
+							'service_id' 	=> 	$_data['service'.$i],
+							'total_amount'  =>	$_data['price_'.$i],
+							'description'   =>	$_data['note_'.$i],
+							'create_date'   =>	date("Y-m-d H:i:s"),
+							'user_id'      	=>	$this->getUserId(),
+							'status'      	=> 1,
+					);
+					$this->_name='ldc_booking_service_detial';
+					$this->insert($data_item);
+				}
 			}
 			
 			if ($_data['total_paid']>0){
@@ -496,7 +501,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'due'	  		  => $_data['total'],
 					'due_after'	  	  => $_data['total'],
 					//'driver_fee'	  => $_data['driver_fee'],
-					'driver_fee_after'=> $driver_feeafter,
+					//'driver_fee_after'=> $driver_feeafter,
 					'remark'	  	  => $_data['remark'],
 					'status_working'  =>0,
 					'payment_booking_no'=>$_data['other_booking_no'],
@@ -518,20 +523,23 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			
 			$sql = "DELETE FROM ldc_booking_service_detial WHERE carbooking_id=".$idbooking;
 			$db->query($sql);
-			$ids=explode(',',$_data['record_row']);
-			foreach ($ids as $key => $i)
-			{
-				$data_item= array(
-						'carbooking_id'	=> 	$idbooking,
-						'service_id' 	=> 	$_data['service'.$i],
-						'total_amount'  =>	$_data['price_'.$i],
-						'description'   =>	$_data['note_'.$i],
-						'create_date'   =>	date("Y-m-d H:i:s"),
-						'user_id'      	=>	$this->getUserId(),
-						'status'      	=> 1,
-				);
-				$this->_name='ldc_booking_service_detial';
-				$this->insert($data_item);
+			
+			if($_data['record_row']!=''){
+			    $ids=explode(',',$_data['record_row']);
+				foreach ($ids as $key => $i)
+				{
+					$data_item= array(
+							'carbooking_id'	=> 	$idbooking,
+							'service_id' 	=> 	$_data['service'.$i],
+							'total_amount'  =>	$_data['price_'.$i],
+							'description'   =>	$_data['note_'.$i],
+							'create_date'   =>	date("Y-m-d H:i:s"),
+							'user_id'      	=>	$this->getUserId(),
+							'status'      	=> 1,
+					);
+					$this->_name='ldc_booking_service_detial';
+					$this->insert($data_item);
+				}
 			}
 
 			$chekcpayment = $this->checkBookingHasPayment($idbooking);

@@ -8,6 +8,7 @@ dojo.require("dojo.data.ItemFileWriteStore");
 dojo.require("dijit.form.NumberTextBox");
 dojo.require("dijit.form.DateTextBox");
 dojo.require("dijit.form.Textarea");
+dojo.require("dijit.form.TimeTextBox");
 require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 </script>
 <div class="row">
@@ -36,7 +37,14 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 					<div class="col-md-2 col-xs-12 mg-10">
 						  <?php echo $frm->getElement("working_status");?>
 						</div>
-						<div class="col-md-1 col-xs-12">
+				  </div>
+				  
+				  <div class="clearfix"></div>
+				  <div class="form-group">
+					<div class="col-md-2 col-xs-12 mg-10">
+					  <?php echo $frm->getElement("delivery_time");?>
+					</div>
+				    <div class="col-md-1 col-xs-12">
 							<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
 					</div>
 				  </div>

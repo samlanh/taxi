@@ -65,3 +65,22 @@ echo '<title>'. $tr->translate("Edit Vehicle Type").'</title>';
 	 	</div>
 	 </div>
 </form> 
+
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_vehicle_type" title="<?php echo $tr->translate("Add Vehicle Type")?>">
+		<form id='frm_vehicle_type' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table class="height" >
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="vehicletype_title" name="vehicletype_title" value="" type="text"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" id="car_save"
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addvehicleType();"/>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+</div>

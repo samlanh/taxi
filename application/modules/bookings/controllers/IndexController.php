@@ -22,7 +22,8 @@ class Bookings_indexController extends Zend_Controller_Action {
 						'from_book_date' => date("Y-m-d"),
 						'search_text'    => "",
 						'customer'       =>-1,
-						'working_status' =>-1
+						'working_status' =>-1,
+						'delivery_time'	 =>'T00:00:00'
 				);
 			}
 			$rs_rows= $db->getAllCarBooking($search);
@@ -95,6 +96,11 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$frm = $fm->FrmAddService();
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_service = $frm;
+		
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typAsname=$db->getAllVehicleTypeAsName();
+		array_unshift($rows_veh_typAsname, array ( 'id' => 0, 'name' => $tr->translate("Choose Vehicle Type")), array ( 'id' => -1, 'name' => $tr->translate("Add Vehicle Type")) );
+		$this->view->rows_veh_typasname=$rows_veh_typAsname;
 	}
 	
 	public function editAction()
@@ -152,6 +158,11 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$frm = $fm->FrmAddService();
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_service = $frm;
+		
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typAsname=$db->getAllVehicleTypeAsName();
+		array_unshift($rows_veh_typAsname, array ( 'id' => 0, 'name' => $tr->translate("Choose Vehicle Type")), array ( 'id' => -1, 'name' => $tr->translate("Add Vehicle Type")) );
+		$this->view->rows_veh_typasname=$rows_veh_typAsname;
 	}
 	
 	public function bookviewAction()
