@@ -28,7 +28,7 @@ class Expense_VehicleMaintenanceController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns =  array("INVOICE","CHEQUE_NO","VEHICLE_REF_NO","PAYMENT_TYPE","TITLE","TOTALE","CTEATE_DATE","USER_NAME","STATUS");
+			$collumns =  array("INVOICE","CHEQUE_NO","VEHICLE_REF_NO","PAYMENT_TYPE","TITLE","TOTAL","CREATE_DATE","USER_NAME","STATUS");
 					 
 			$link=array(
 					'module'=>'expense','controller'=>'vehiclemaintenance','action'=>'edit',
