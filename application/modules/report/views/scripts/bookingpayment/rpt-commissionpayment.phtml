@@ -99,9 +99,9 @@ $frm=$this->frm;
 				               	?>
 									<tr align="center" style="line-height: 18px; background: #fff;">
 										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
-										<td align="left" >&nbsp;<?php echo $row['payment_no']; ?>&nbsp;</td>
-										<td align="left">&nbsp;<?php echo $row['booking_no'];?>&nbsp;</td>
-										<td align="left">&nbsp;<?php echo $row['customer_code'];?>&nbsp;</td>
+										<td align="left" >&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-commissionpaymentdetail/id/<?php echo $row["id"]?>"><?php echo $row['payment_no']; ?></a>&nbsp;</td>
+										<td align="left">&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-commissionpaymentdetail/id/<?php echo $row["id"]?>"><?php echo $row['booking_no'];?></a>&nbsp;</td>
+										<td align="left">&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-commissionpaymentdetail/id/<?php echo $row["id"]?>"><?php echo $row['customer_code'];?></a>&nbsp;</td>
 										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['last_name']; ?></span>&nbsp;</td>	
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['payment_date']))?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_method'];?></td>	
