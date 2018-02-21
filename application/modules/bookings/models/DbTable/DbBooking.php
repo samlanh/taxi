@@ -293,6 +293,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$sql="
 		SELECT cb.id,cb.`booking_no`,
 			CONCAT(c.`last_name`) AS cus_name,
+			(SELECT g.last_name FROM ldc_agency AS g WHERE g.id=cb.agency_id LIMIT 1) AS agency_name,
+			(SELECT v.title FROM ldc_vechicletye AS v WHERE v.id=cb.vehicletype_id LIMIT 1) AS vehicle_type,
 			l.`location_name` AS from_location,
 			tl.`location_name` AS to_location,
 			cb.`booking_date`,
@@ -309,8 +311,18 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			c.`id` = cb.`customer_id` 
 			AND l.`id` = cb.`from_location`
 			AND tl.`id` = cb.`to_location`
-			AND cb.`status` >-1 AND cb.`booking_date`>='$from_date' AND cb.`booking_date`<='$to_date'";
+			AND cb.`status` >-1 ";
 		$where = '';
+		
+		if($search['date_type']==2){
+			$from_date =(empty($search['from_book_date']))? '1': "cb.`delivey_date` >= '".$search['from_book_date']." 00:00:00'";
+			$to_date = (empty($search['to_book_date']))? '1': "cb.`delivey_date` <= '".$search['to_book_date']." 23:59:59'";
+		}
+		if($search['date_type']==1){
+			$from_date =(empty($search['from_book_date']))? '1': "cb.`booking_date` >= '".$search['from_book_date']." 00:00:00'";
+			$to_date = (empty($search['to_book_date']))? '1': "cb.`booking_date` <= '".$search['to_book_date']." 23:59:59'";
+		}
+		$where = "  AND ".$from_date." AND ".$to_date;
 		if($search["search_text"] !=""){
 			$s_where=array();
 			$s_search=addslashes(trim($search['search_text']));
@@ -327,13 +339,20 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		if ($search['customer']>0){
 			$where.=" AND cb.`customer_id`=".$search['customer'];
 		}
-		if ($search['delivery_time']>0){
-			$where.=" AND cb.`delivey_time`=".$search['delivery_time'];
+// 		if ($search['delivery_time']>0){
+// 			$where.=" AND cb.`delivey_time`=".$search['delivery_time'];
+// 		}
+		if ($search['agency_search']>0){
+			$where.=" AND cb.`agency_id`=".$search['agency_search'];
+		}
+		if ($search['vehicle_type']>0){
+			$where.=" AND cb.`vehicletype_id`=".$search['vehicle_type'];
 		}
 		if ($search['working_status']>-1){
 			$where.=" AND cb.`status_working`=".$search['working_status'];
 		}
 		$order=' ORDER BY cb.id DESC';
+		 
 		return $db->fetchAll($sql.$where.$order);
 	}
 	function getvehicleinfo($vehilce_id){ //add & edit driver
