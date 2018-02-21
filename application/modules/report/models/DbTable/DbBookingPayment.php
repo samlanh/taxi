@@ -320,6 +320,40 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 			$where .= " AND ".$to_date;
 	      	return $db->fetchAll($sql.$where);
       }
-      
+      function getCommissionPaymentById($id){
+      	$db=$this->getAdapter();
+      	$where =" ";
+      	$_db = new Application_Model_DbTable_DbGlobal();
+      	$lang = $_db->getCurrentLang();
+      	$array = array(1=>"name_en",2=>"name_kh");
+      	$sql="SELECT
+      	cp.`id`,cp.`payment_no`,
+      	a.`first_name`,
+      	a.`last_name`,a.customer_code,
+      	a.`phone`,a.`email`,
+      	cp.`payment_date`,
+      	(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
+      	(SELECT b.booking_no FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) AS booking_no,
+      	dpd.`due_amount`,dpd.`paid`,dpd.`remain`,
+      	(SELECT first_name FROM rms_users WHERE rms_users.id=cp.user_id LIMIT 1) AS user_name,
+      	(SELECT b.is_paid_commission FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) AS is_paid_commission,
+      	(SELECT name_en FROM tb_view WHERE tb_view.key_code=cp.status AND tb_view.type=5 LIMIT 1) AS `status`
+      	FROM `ldc_commission_payment` AS cp,
+      	ldc_commission_payment_detail AS dpd,
+      	`ldc_agency` AS a
+      	WHERE
+      	a.`id` = cp.agency_id
+      	AND cp.id=dpd.commission_payment_id AND cp.id=".$id." LIMIT 1";
+      	return $db->fetchRow($sql);
+      }
+      function getCommissionPaymentDetail($commission_payment_id){
+      	$db = $this->getAdapter();
+      	$sql="SELECT pd.*,
+		(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.id LIMIT 1) AS booking_no,
+		(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.id LIMIT 1) AS booking_date 
+		FROM `ldc_commission_payment_detail` AS pd 
+		WHERE pd.`commission_payment_id`=$commission_payment_id";
+      	return $db->fetchAll($sql);
+      }
  }
 

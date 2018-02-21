@@ -126,6 +126,20 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	$this->view->frm = $form;
 	  }
 	  
+	  function rptCommissionpaymentdetailAction(){
+	  	$id = $this->getRequest()->getParam("id");
+	  	if (empty($id)){
+	  		$this->_redirect("/report/bookingpayment/rpt-commissionpayment");
+	  	}
+	  	$db = new Report_Model_DbTable_DbBookingPayment();
+	  	$row= $db->getCommissionPaymentById($id);
+	  	if (empty($row)){
+	  		$this->_redirect("/report/bookingpayment/rpt-commissionpayment");
+	  	}
+	  	$this->view->commision_payment = $row;
+	  	$this->view->commision_detail = $db->getCommissionPaymentDetail($id);
+	  }
+	  
 	  function rptCustomerNealyPaymentAction(){
 	  	if($this->getRequest()->isPost()){
 	  		$search = $this->getRequest()->getPost();
