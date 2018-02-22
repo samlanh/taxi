@@ -283,6 +283,193 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 				);
 		return $array;
 	}
+	
+	function getCarInfor($data){
+		$db = $this->getAdapter();
+		$dbgb = new Application_Model_DbTable_DbGlobal();
+		$lang= $dbgb->getCurrentLang();
+		$arrayview = array(1=>"name_en",2=>"name_kh");
+		$sql='
+		SELECT v.*,
+		m.`title` AS make,
+		mo.`title` AS model,
+		smo.`title` AS submodel,
+		CONCAT(m.`title`," ",mo.`title`," ",smo.`title`," (",v.`reffer`,")") AS `name`,
+		(SELECT t.`tran_name` FROM `ldc_transmission` AS t WHERE t.`id`=v.`transmission`) AS transmission,
+		(SELECT vt.`title` FROM `ldc_vechicletye` AS vt WHERE vt.id=v.`car_type` LIMIT 1) AS `type`,
+		(SELECT e.`capacity` FROM `ldc_engince` AS e WHERE e.id=v.`engine`) AS `engine`
+		FROM `ldc_vehicle` AS v,
+		`ldc_make` AS m,
+		`ldc_model` AS mo,
+		`ldc_submodel` AS smo
+		WHERE
+		v.`make_id` = m.`id` AND
+		v.`model_id` = mo.`id` AND
+		v.`sub_model` = smo.`id` AND
+		v.is_sale !=1
+		AND v.`status`=1 AND v.`id` ='.$data['id'].' LIMIT 1
+		';
+		$row = $db->fetchRow($sql);
+	     
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		$baseurl= Zend_Controller_Front::getInstance()->getBaseUrl();
+		$vehicleid = 0;
+		$images_car = $baseurl."/images/no_car.png";
+			$vehicle_string='
+			<h4 class="car_title"></h4>
+			<div class="col-md-4 col-sm-4 col-xs-12">
+			<div class="image-box infor">
+			<img id="profile_wiew" src="'.$images_car.'" alt=""  />
+			</div>
+			</div>
+			<div id="vehiclesss" class="col-md-8 col-sm-8 col-xs-12">
+			<ul class="list-unstyled">
+			<li>
+			<span class="span_title">'.$tr->translate("Vehicle Ref.No.").'</span> : <span class="span_value"></span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('YEAR').'</span> : <span class="span_value"></span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('Color').'</span> : <span class="span_value"></span>
+			</li>
+			</ul>
+			</div>
+			';
+		 
+		if (!empty($row)){
+			$vehicleid = $row['id'];
+			if (!empty($row['img_front'])){
+				$images_car = $baseurl."/images/vehicle/".$row['img_front'];
+			}
+			$vehicle_string='
+			<h4 class="car_title">'.$row['make'].' '.$row['model'].' '.$row['submodel'].'</h4>
+			<div class="col-md-4 col-sm-4 col-xs-12">
+			<div class="image-box infor">
+			<img id="profile_wiew" src="'.$images_car.'" alt=""  />
+			</div>
+			</div>
+			<div class="col-md-8 col-sm-8 col-xs-12">
+			<ul class="list-unstyled">
+			<li>
+			<span class="span_title">'.$tr->translate("Vehicle Ref.No.").'</span> : <span class="span_value">'.$row['reffer'].'</span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('YEAR').'</span> : <span class="span_value">'.$row['year'].'</span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('Color').'</span> : <span class="span_value">'.$row['color'].'</span>
+			</li>
+			</ul>
+			</div>
+			';
+		}else{
+			$images_car = $baseurl."/images/no_car.png";
+			$vehicle_string='
+			<h4 class="car_title"></h4>
+			<div class="col-md-4 col-sm-4 col-xs-12">
+			<div class="image-box infor">
+			<img id="profile_wiew" src="'.$images_car.'" alt=""  />
+			</div>
+			</div>
+			<div id="vehiclesss" class="col-md-8 col-sm-8 col-xs-12">
+			<ul class="list-unstyled">
+			<li>
+			<span class="span_title">'.$tr->translate("Vehicle Ref.No.").'</span> : <span class="span_value"></span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('YEAR').'</span> : <span class="span_value"></span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('Color').'</span> : <span class="span_value"></span>
+			</li>
+			</ul>
+			</div>
+			';
+		}
+		return $vehicle_string;
+	}
+	
+	function getDriverInfor($data){
+		$db = $this->getAdapter();
+		$dbgb = new Application_Model_DbTable_DbGlobal();
+		$lang= $dbgb->getCurrentLang();
+		$arrayview = array(1=>"name_en",2=>"name_kh");
+		$sql="
+		SELECT d.*,
+		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs
+		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`first_name`!='' AND d.id=".$data['id'];
+		$order=' LIMIT 1';
+		$row = $db->fetchRow($sql.$order);
+		
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		$baseurl= Zend_Controller_Front::getInstance()->getBaseUrl();
+		$vehicleid = 0;
+		$driver_id = 0;
+		$images_car = $baseurl."/images/no_car.png";
+		$images = $baseurl."/images/profile.jpg";
+		
+		$string='
+		<div class="col-md-4 col-sm-4 col-xs-12">
+		<div class="image-box infor">
+		<img id="profile_wiew" src="'.$images.'" alt=""  />
+		</div>
+		</div>
+		<div class="col-md-8 col-sm-8 col-xs-12">
+		<ul class="list-unstyled">
+		<li>
+		<span class="span_title">'.$tr->translate('NAME').'</span> : <span class="span_value"></span>
+		</li>
+		<li>
+		<span class="span_title">'.$tr->translate('Gender').'</span> : <span class="span_value"></span>
+		</li>
+		<li>
+		<span class="span_title">'.$tr->translate('Nationality').'</span> : <span class="span_value"></span>
+		</li>
+		<li>
+		<span class="span_title">'.$tr->translate('PHONE').'</span> : <span class="span_value"></span>
+		</li>
+		</ul>
+		</div>
+		';
+		
+		if (!empty($row)){
+			$driver_id = $row['id'];
+			if (!empty($row['photo'])){
+				$images = $baseurl."/images/driverphoto/".$row['photo'];
+			}
+			$string='
+			<div class="col-md-4 col-sm-4 col-xs-12">
+			<div class="image-box infor">
+			<img id="profile_wiew" src="'.$images.'" alt=""  />
+			</div>
+			</div>
+			<div class="col-md-8 col-sm-8 col-xs-12">
+			<ul class="list-unstyled">
+			<li>
+			<span class="span_title">'.$tr->translate('NAME').'</span> : <span class="span_value">'.$row['first_name'].' '.$row['last_name'].'</span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('Gender').'</span> : <span class="span_value">'.$row['sexs'].'</span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('Nationality').'</span> : <span class="span_value">'.$row['nationality'].'</span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('PHONE').'</span> : <span class="span_value">'.$row['tel'].'</span>
+			</li>
+			</ul>
+			</div>
+			';
+		}
+		
+		$array = array(
+				'driver'=>$string,
+				'driver_id'=>$driver_id,
+		);
+		return $array;
+	}
+	
 	function getAllCarBooking($search){
 		$db = $this->getAdapter();
 		$glob=new Application_Model_DbTable_DbGlobal();

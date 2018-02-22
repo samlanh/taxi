@@ -136,8 +136,8 @@ h4.car_title {
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php //echo $frm->getElement('vehicle');?>
-		                    	<select name="vehicle" id="vehicle" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*" onchange="getDriver(2)">
-								       <option value="1" label=" "><?php echo $tr->translate("SELECT_VEHICLE")?></option>
+		                    	<select name="vehicle" id="vehicle" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*" onchange="getCareInfoByid();">
+								       <option value="0" label=" "><?php echo $tr->translate("SELECT_VEHICLE")?></option>
 								       <?php if(!empty($this->cars)) foreach ($this->cars As $car){?>
 								       <option value="<?php echo $car['id']?>" label=" "><?php echo $car['name']?></option>
 								       <?php }?>
@@ -255,8 +255,9 @@ var care_typestore  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json:
 require(["dojo/ready"], function(ready){
 	ready(function(){
         if('<?php echo $this->row['driver_id'];?>'){
-       	    dijit.byId("vehicle").attr("value",'<?php echo $this->row['vehicletype_id'];?>');
-        	getDriver(1);
+       	   dijit.byId("vehicle").attr("value",'<?php echo $this->row['vehicle_id'];?>');
+           getDriverInfoByid();
+           getCareInfoByid();
         }
        
         dijit.byId("agency").attr("disabled", true);
@@ -273,8 +274,8 @@ require(["dojo/ready"], function(ready){
 	});
 });
   
-
-var urldriver_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getdrivercar'));?>";
+/*
+var urldriver_car="<?php //echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getdrivercar'));?>";
 function getDriver(type){
 	if(type==1){
 		var id = dijit.byId('driver').get('value');
@@ -289,8 +290,8 @@ function getDriver(type){
 	     },
 	    handleAs:"json",
 	    load: function(data) {
-	    	document.getElementById('driver_html').innerHTML =data.driver;
-	    	document.getElementById('vehiclesss').innerHTML =data.vehicle;
+	    	//document.getElementById('driver_html').innerHTML =data.driver;
+	    	//document.getElementById('vehiclesss').innerHTML =data.vehicle;
 	    	if(dijit.byId('driver').get('value')==data.driver_id ){
 	    		document.getElementsByClassName("overlay")[0].style.display="none";
 	    	}
@@ -305,6 +306,57 @@ function getDriver(type){
 	    }
    });
 }
+*/
+ 
 
+var urldriver_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getdrivercar'));?>";
+function getDriverInfoByid(){
+	var id = dijit.byId('driver').get('value');
+	if(id==''){
+		return false;
+	}
+	loading();
+	dojo.xhrPost({
+	    url: urldriver_car,
+	    content:{
+	     'id':id,
+	     },
+	    handleAs:"json",
+	    load: function(data) {
+	    	document.getElementById('driver_html').innerHTML =data.driver;
+	    	if(dijit.byId('driver').get('value')==data.driver_id ){
+	    		document.getElementsByClassName("overlay")[0].style.display="none";
+	    	}
+	    	dijit.byId('driver').set('value',data.driver_id);
+	    },
+	    error: function(err) {
+	     alert(err);
+	    }
+   });
+}
+
+
+var url_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getcar'));?>";
+function getCareInfoByid(){
+	var id = dijit.byId('vehicle').get('value');
+	if( id==''){
+		return false;
+	}
+	loading();
+	dojo.xhrPost({
+	    url: url_car,
+	    content:{
+	     'id':id,
+	     },
+	    handleAs:"json",
+	    load: function(data) {
+	    	document.getElementById('vehiclesss').innerHTML =data;
+	        document.getElementsByClassName("overlay")[0].style.display="none";
+	    },
+	    error: function(err) {
+	     alert(err);
+	    }
+   });
+}
 
 </script>

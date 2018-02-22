@@ -217,11 +217,22 @@ class Bookings_indexController extends Zend_Controller_Action {
 			exit();
 		}
 	}
+	
 	function getdrivercarAction(){
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
 			$db = new Bookings_Model_DbTable_DbBooking();
-			$row = $db->getDriverAndCarInfor($data);
+			$row = $db->getDriverInfor($data);
+			print_r(Zend_Json::encode($row));
+			exit();
+		}
+	}
+	
+	function getcarAction(){
+		if($this->getRequest()->isPost()){
+			$data = $this->getRequest()->getPost();
+			$db = new Bookings_Model_DbTable_DbBooking();
+			$row = $db->getCarInfor($data);
 			print_r(Zend_Json::encode($row));
 			exit();
 		}

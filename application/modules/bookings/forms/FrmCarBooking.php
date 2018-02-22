@@ -93,7 +93,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$row_dri = $_db->getAllDriver();
 		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"),);
 		$driver = new Zend_Dojo_Form_Element_FilteringSelect("driver");
-		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriver(1);'));
+		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriverInfoByid();'));
 		foreach ($row_dri as $rs){
 			$opt_dri[$rs["id"]] = $rs["name"];
 		}
@@ -103,7 +103,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$row_veh = $dbbooking->getVehicleByCategory();
 		$opt_vehi = array(0=>$this->tr->translate("SELECT_VEHICLE"));
 		$vehicle = new Zend_Dojo_Form_Element_FilteringSelect("vehicle");
-		$vehicle->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriver(2);'));
+		$vehicle->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCarInfor();'));
 		foreach ($row_veh as $rs){
 			$opt_vehi[$rs["id"]] = $rs["name"];
 		}
