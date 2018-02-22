@@ -242,19 +242,6 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 		$array = array('stringrow'=>$string,'keyindex'=>$no,'identity'=>$identity,'identitycheck'=>$identityedit,);
 		return $array;
 	}
-	function getSumCommissionPaymentDetailByBookingId($booking_id,$detail_id){
-		$db = $this->getAdapter();
-		$sql="SELECT 
-				SUM(pd.`paid`) AS tolalpayamount
-			FROM `ldc_driver_payment_detail` AS pd,
-				`ldc_driver_payment` AS p
-			WHERE 
-				p.id = pd.`driver_payment_id` AND
-				pd.`id`!=$detail_id AND pd.`booking_id`=$booking_id 
-				AND p.`status`=1
-			LIMIT 1 ";
-		return $db->fetchRow($sql);
-	}
 	
 	function getCommissionPaymentAndBookingId($payment_id,$booking_id){
 		$db = $this->getAdapter();
@@ -278,7 +265,7 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 		$sql="
 		SELECT 
 			cp.`id`,cp.`payment_no`,
-			CONCAT(a.`first_name`,' ',a.`last_name`) AS driver_name,
+			CONCAT(a.`last_name`,'(',a.driver_id,')') AS driver_name,
 			cp.`payment_date`,
 			(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
 			cp.`balance`,cp.`paid`,cp.`total_due`,cp.`status`
@@ -312,7 +299,7 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 		$db->beginTransaction();
 		try{
 			$_db = new Application_Model_DbTable_DbGlobal();
-			$reciept_no = $_db->getNewCommissionPaymentNO();
+			$reciept_no = $_db->getNewDriverPaymentNO();
 			$_arrcommission=array(
 					'payment_no'	=> $reciept_no,
 					'driver_id'	  	=> $_data['driver'],
@@ -333,14 +320,11 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 			$id_driver_payment = $this->insert($_arrcommission);
 			
 			$ids = explode(',', $_data['identity']);
-			//print_r($ids);exit();
 			$dueafter=0;
 			foreach ($ids as $i){
 				$is_payment =0;
 				$booking = $this->getCarbookingById($_data['carbooking_id'.$i]);
-				
 				$paid = $_data['payment_amount'.$i];
-				
 				if (!empty($booking)){
 					$dueafter =$booking['driver_fee_after']-$paid;
 					if ($dueafter>0){
@@ -356,7 +340,6 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 					$where = " id =".$_data['carbooking_id'.$i];
 					$this->update($array, $where);
 				}
-				
 				$arrs = array(
 						'driver_payment_id'	   =>$id_driver_payment,
 						'booking_id'           =>$_data['carbooking_id'.$i],
@@ -367,6 +350,7 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 				$this->_name ='ldc_driver_payment_detail';
 				$this->insert($arrs);
 			}
+			
 			$db->commit();
 		}catch(exception $e){
 			Application_Form_FrmMessage::message("Application Error");
@@ -376,90 +360,52 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 	}
 	
 	public function updateCommissionPayment($_data){
-		
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
+			$rows=$this->getDriverPaymentDetail($_data['driver_payment_id']);
+			if(!empty($rows)) foreach ($rows As $result){
+				$row_paid=$this->getSumDriverPayment($result['booking_id'],$result['driver_payment_id']);
+				$driver_fee_after=$this->getCarbookingById($result['booking_id']);
+				$arr_car=array(
+						'driver_fee_after'=> ($row_paid['tolalpayamount'])+($driver_fee_after['driver_fee_after']),
+						);
+				$this->_name="ldc_carbooking";
+				$where=" id=".$driver_fee_after['id'];
+				$this->update($arr_car, $where);
+			}
+			
 			$_db = new Application_Model_DbTable_DbGlobal();
-// 			$reciept_no = $_db->getNewCommissionPaymentNO();
+			$reciept_no = $_db->getNewDriverPaymentNO();
 			$_arrcommission=array(
-// 					'payment_no'	  	=> $reciept_no,
+					'payment_no'	=> $_data['reciept_no'],
 					'driver_id'	  	=> $_data['driver'],
-					'payment_date'	  	=> $_data['payment_date'],
-					'payment_type'	  	=> 0,
-					'payment_method'  	=> $_data['payment_method'],
-					'paid'	  			=> $_data['total_paid'],
-					'balance'	  		=> $_data['balance'],
-					'total_due'	  		=> $_data['total_due'],
-					'amount'      		=> $_data['amount'],
-					'note'	  			=> $_data['remark'],
-					'status'	  		=> 1,
-					'create_date'		=> date("Y-m-d H:i:s"),
-					'modify_date'  		=>date("Y-m-d H:i:s"),
-					'user_id'      		=> $this->getUserId(),
+					'payment_date'	=> $_data['payment_date'],
+					'payment_type'	=> 0,
+					'payment_method'=> $_data['payment_method'],
+					'paid'	  		=> $_data['total_paid'],
+					'balance'	  	=> $_data['balance'],
+					'total_due'	  	=> $_data['total_due'],
+					'amount'      	=> $_data['amount'],
+					'note'	  		=> $_data['remark'],
+					'status'	  	=> 1,
+					'create_date'	=> date("Y-m-d H:i:s"),
+					'modify_date'  	=>date("Y-m-d H:i:s"),
+					'user_id'      	=> $this->getUserId(),
 			);
 			$this->_name="ldc_driver_payment";
-			$where = ' id = '.$_data['payment_id'];
+			$where=" id=".$_data['driver_payment_id'];
 			$this->update($_arrcommission, $where);
-			$id_commission_payment = $_data['payment_id'];
 			
-			$row = $this->getCommissionPaymentDetail($id_commission_payment);
-			if (!empty($row)) foreach ($row as $pay_detail){
-				$rowpaymentdetail = $this->getCommissionPaymentAndBookingId($_data['payment_id'], $pay_detail['booking_id']);
+			$sql =" DELETE FROM ldc_driver_payment_detail WHERE driver_payment_id=".$_data['driver_payment_id'];
+			$db->query($sql);
 				
-				if (!empty($rowpaymentdetail)){
-					$bookingafter = $this->getCarbookingById($pay_detail['booking_id']);
-					$duevalu=$rowpaymentdetail['paid'];
-					
-					$paymenttailByBooking = $this->getSumCommissionPaymentDetailByBookingId($pay_detail['booking_id'], $pay_detail['id']);// get other pay amount on this Booking on other commission payment
-					$dueafters = $bookingafter['driver_fee_after']+$duevalu;
-					if (!empty($paymenttailByBooking['tolalpayamount'])){
-						$duevalu = ($rowpaymentdetail['driver_fee']-$paymenttailByBooking['tolalpayamount']);
-						$dueafters =$duevalu;
-					}
-					
-					if ($dueafters>0){
-						$is_payments=0;
-					}else{
-						$is_payments=1;
-					}
-					$array=array(
-							'is_paid_to_driver'=>$is_payments,
-							'driver_fee_after' =>$dueafters,
-					);
-					$this->_name="ldc_carbooking";
-					$where = " id =".$pay_detail['booking_id'];
-					$this->update($array, $where);
-				}
-			}
-			
 			$ids = explode(',', $_data['identity']);
-			$detailidlist = '';
-			foreach ($ids as $i){
-				if (empty($detailidlist)){
-					if (!empty($_data['detailid'.$i])){
-						$detailidlist= $_data['detailid'.$i];
-					}
-				}else{
-					if (!empty($_data['detailid'.$i])){
-						$detailidlist = $detailidlist.",".$_data['detailid'.$i];
-					}
-				}
-			}
-			// delete old payment detail that don't have on new payment detail after edit
-			$this->_name="ldc_driver_payment_detail";
-			$where2=" driver_payment_id = ".$id_commission_payment;
-			if (!empty($detailidlist)){ // check if has old payment detail  detail id
-				$where2.=" AND id NOT IN (".$detailidlist.")";
-			}
-			$this->delete($where2);
-			
 			$dueafter=0;
 			foreach ($ids as $i){
 				$is_payment =0;
 				$booking = $this->getCarbookingById($_data['carbooking_id'.$i]);
 				$paid = $_data['payment_amount'.$i];
-	
 				if (!empty($booking)){
 					$dueafter =$booking['driver_fee_after']-$paid;
 					if ($dueafter>0){
@@ -475,29 +421,17 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 					$where = " id =".$_data['carbooking_id'.$i];
 					$this->update($array, $where);
 				}
-				if (!empty($_data['detailid'.$i])){
-					$arrs = array(
-							'commission_payment_id'	=>$id_commission_payment,
-							'booking_id'			=>$_data['carbooking_id'.$i],
-							'due_amount'			=>$_data['commision_fee'.$i],
-							'paid'					=>$_data['payment_amount'.$i],
-							'remain'				=>$_data['remain'.$i],
-					);
-					$this->_name ='ldc_driver_payment_detail';
-					$where12 =" id= ".$_data['detailid'.$i];
-					$this->update($arrs, $where12);
-				}else{
-					$arrs = array(
-							'commission_payment_id'	=>$id_commission_payment,
-							'booking_id'			=>$_data['carbooking_id'.$i],
-							'due_amount'			=>$_data['commision_fee'.$i],
-							'paid'					=>$_data['payment_amount'.$i],
-							'remain'				=>$_data['remain'.$i],
-					);
-					$this->_name ='ldc_driver_payment_detail';
-					$this->insert($arrs);
-				}
+				$arrs = array(
+						'driver_payment_id'	   =>$_data['driver_payment_id'],
+						'booking_id'           =>$_data['carbooking_id'.$i],
+						'due_amount'           =>$_data['commision_fee'.$i],
+						'paid'                 =>$_data['payment_amount'.$i],
+						'remain'               =>$_data['remain'.$i],
+				);
+				$this->_name ='ldc_driver_payment_detail';
+				$this->insert($arrs);
 			}
+				
 			$db->commit();
 		}catch(exception $e){
 			Application_Form_FrmMessage::message("Application Error");
@@ -505,13 +439,6 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 			$db->rollBack();
 		}
 	}
-	
-	function getCarbookingById($id){
-		$db = $this->getAdapter();
-		$sql="SELECT c.* FROM `ldc_carbooking` AS c WHERE c.`id` = $id LIMIT 1";
-		return $db->fetchRow($sql);
-	}
-	
 	
 	function getCommissionPaymentByID($id){
 		$db = $this->getAdapter();
@@ -524,5 +451,39 @@ class Bookings_Model_DbTable_DbDriverPayment extends Zend_Db_Table_Abstract
 		$sql="SELECT pd.* FROM `ldc_driver_payment_detail` AS pd WHERE pd.`driver_payment_id`=$driver_payment_id";
 		return $db->fetchAll($sql);
 	}
+	
+	function getSumDriverPayment($booking_id,$driver_payment_id){
+		$db = $this->getAdapter();
+		$sql=" SELECT
+		SUM(pd.`paid`) AS tolalpayamount
+		FROM `ldc_driver_payment` AS p,`ldc_driver_payment_detail` AS pd
+		WHERE   p.id = pd.`driver_payment_id` AND
+		pd.`driver_payment_id`=$driver_payment_id AND pd.`booking_id`=$booking_id
+		AND p.`status`=1 LIMIT 1 ";
+		return $db->fetchRow($sql);
+	}
+	
+	function getDriverPaymentDetail($driver_payment_id){
+		$db = $this->getAdapter();
+		$sql="SELECT pd.* FROM `ldc_driver_payment_detail` AS pd WHERE pd.`driver_payment_id`=$driver_payment_id";
+		return $db->fetchAll($sql);
+    }
+    
+    function getCarbookingById($id){
+    	$db = $this->getAdapter();
+    	$sql="SELECT c.* FROM `ldc_carbooking` AS c WHERE c.`id` = $id LIMIT 1";
+    	return $db->fetchRow($sql);
+    }
+    
+    function getSumCommissionPaymentDetailByBookingId($booking_id,$driver_payment_id){
+    	$db = $this->getAdapter();
+    	$sql=" SELECT
+    	SUM(pd.`paid`) AS tolalpayamount
+    	FROM `ldc_driver_payment` AS p,`ldc_driver_payment_detail` AS pd
+    	WHERE   p.id = pd.`driver_payment_id` AND
+    	pd.`driver_payment_id`=$driver_payment_id AND pd.`booking_id`=$booking_id
+    	AND p.`status`=1 LIMIT 1 ";
+    	return $db->fetchRow($sql);
+    }
 }
 ?>

@@ -842,6 +842,22 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	}
   	return $pre.$new_acc_no;
   }
+  
+  public function getNewDriverPaymentNO(){
+  	$this->_name='ldc_driver_payment';
+  	$db = $this->getAdapter();
+  	$row = $this->getSystemSetting('agentpaymentlprefix');
+  	$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+  	$acc_no = $db->fetchOne($sql);
+  	$new_acc_no= (int)$acc_no+1;
+  	$acc_no= strlen((int)$acc_no+1);
+  	$pre = ($row['value']);
+  	for($i = $acc_no;$i<4;$i++){
+  		$pre.='0';
+  	}
+  	return $pre.$new_acc_no;
+  }
+  
   public function getNewCarrentalNO(){
   	$this->_name='ldc_carrental_detail';
   	$db = $this->getAdapter();

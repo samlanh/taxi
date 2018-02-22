@@ -44,6 +44,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		
 		$search_tex = new Zend_Dojo_Form_Element_TextBox("search_text");
 		$search_tex->setAttribs(array('dojoType'=>$this->text,'class'=>"fullside",));
+		$search_tex->setValue($request->getParam("search_text"));
 		
 		$row_cu = $_db->getAllCustomers();
 		$opt_cu = array(0=>$this->tr->translate("SELECT_CUSTOMER"));

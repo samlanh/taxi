@@ -60,13 +60,14 @@ class Bookings_DriverpaymentController extends Zend_Controller_Action {
 	
 	public function editAction()
 	{
+		$id=$this->getRequest()->getParam('id');
 		$db = new Bookings_Model_DbTable_DbDriverPayment();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
+			$data['driver_payment_id']=$id;
 			$booking_id=$db->updateCommissionPayment($data);
 				$this->_redirect("/bookings/driverpayment");
 		}
-		$id=$this->getRequest()->getParam('id');
 		$this->view->id = $id;
 		$row = $db->getCommissionPaymentByID($id);
 		$this->view->row =$row;

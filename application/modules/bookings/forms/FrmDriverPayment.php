@@ -25,7 +25,7 @@ class Bookings_Form_FrmDriverPayment extends Zend_Dojo_Form{
 		$request=Zend_Controller_Front::getInstance()->getRequest();
 		
 		$_db = new Application_Model_DbTable_DbGlobal();
-		$booking_code = $_db->getNewCommissionPaymentNO();
+		$booking_code = $_db->getNewDriverPaymentNO();
 		$_reciept_no = new Zend_Dojo_Form_Element_ValidationTextBox('reciept_no');
 		$_reciept_no->setAttribs(array(
 				'dojoType'=>'dijit.form.ValidationTextBox',
