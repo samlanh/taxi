@@ -193,37 +193,54 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	$array = array(1=>"name_en",2=>"name_kh");
       	$sql="SELECT 
 				cp.`id`,cp.`payment_no`,
-				CONCAT(a.`first_name`,' ',a.`last_name`) AS driver_name,
+				CONCAT(a.`last_name`,'(',a.driver_id,')') AS driver_name,
 				cp.`payment_date`,
 				(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
-				(SELECT b.booking_no FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) AS booking_no,
-				 dpd.`due_amount`,dpd.`paid`,dpd.`remain`, 
-				  (SELECT first_name FROM rms_users WHERE rms_users.id=cp.user_id LIMIT 1) AS user_name,
-				  (SELECT b.is_paid_to_driver FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) AS s_driver_paid,a.driver_id,
-				  (SELECT name_en FROM tb_view WHERE tb_view.key_code=cp.status AND tb_view.type=5 LIMIT 1) AS `status`
-				FROM `ldc_driver_payment` AS cp,ldc_driver_payment_detail AS dpd,
+				cp.`balance`,cp.`paid`,cp.`total_due`,
+				(SELECT name_en FROM tb_view WHERE tb_view.key_code=cp.status AND tb_view.type=5 LIMIT 1) AS `status`,
+				(SELECT first_name FROM rms_users WHERE rms_users.id=cp.user_id LIMIT 1) AS user_name
+				FROM `ldc_driver_payment` AS cp,
 				`ldc_driver` AS a
 				WHERE
-				a.`id` = cp.`driver_id`
-				AND cp.id=dpd.driver_payment_id";
+				a.`id` = cp.`driver_id`  ";
       	$order = "  ";
       	 
       	if (!empty($search['adv_search'])){
       		$s_where = array();
       		$s_search = addslashes(trim($search['adv_search']));
       		$s_search = str_replace(' ', '', $s_search);
-      		
+      		$s_where[] = " REPLACE(CONCAT(a.`last_name`,'(',a.driver_id,')'),' ','') 	LIKE '%{$s_search}%'";
       		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
-      		$s_where[] = " REPLACE(dpd.`due_amount`,' ','') LIKE '%{$s_search}%'";
-      		$s_where[] = " REPLACE(dpd.`paid`,' ','') 		LIKE '%{$s_search}%'";
-      		$s_where[] = " REPLACE(dpd.`remain`,' ','') 	LIKE '%{$s_search}%'";
-      		$s_where[] = "(SELECT b.booking_no FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(cp.balance,' ','') LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(cp.`paid`,' ','') 		LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(cp.`total_due`,' ','') 	LIKE '%{$s_search}%'";
       		$where .=' AND ('.implode(' OR ',$s_where).')';
       	}
       	if ($search['status']>-1){
       		$where .=' AND cp.`status` = '.$search['status'];
       	}
       	return $db->fetchAll($sql.$where.$order);
+      }
+      
+      function getAllDriverPymentById($id){
+      	$db=$this->getAdapter();
+      	$where =" ";
+      	$_db = new Application_Model_DbTable_DbGlobal();
+      	$lang = $_db->getCurrentLang();
+      	$array = array(1=>"name_en",2=>"name_kh");
+      	$sql=" SELECT 
+				cp.`id`,cp.`payment_no`,a.tel as phone, a.email,
+				CONCAT(a.`last_name`,'(',a.driver_id,')') AS driver_name,
+				cp.`payment_date`,
+				(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
+				cp.`balance`,cp.`paid`,cp.`total_due`,
+				(SELECT name_en FROM tb_view WHERE tb_view.key_code=cp.status AND tb_view.type=5 LIMIT 1) AS `status`,
+				(SELECT first_name FROM rms_users WHERE rms_users.id=cp.user_id LIMIT 1) AS user_name
+				FROM `ldc_driver_payment` AS cp,
+				`ldc_driver` AS a
+				WHERE
+				a.`id` = cp.`driver_id` AND cp.id=".$id." LIMIT 1";
+      	return $db->fetchRow($sql);
       }
       
       function getAllCommission($search){
@@ -340,10 +357,104 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       function getCommissionPaymentDetail($commission_payment_id){
       	$db = $this->getAdapter();
       	$sql="SELECT pd.*,
-		(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.id LIMIT 1) AS booking_no,
-		(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.id LIMIT 1) AS booking_date 
+		(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_no,
+		(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_date 
 		FROM `ldc_commission_payment_detail` AS pd 
 		WHERE pd.`commission_payment_id`=$commission_payment_id";
+      	return $db->fetchAll($sql);
+      }
+      
+      function getDriverPaymentDetail($driver_payment_id){
+      	$db = $this->getAdapter();
+      	$sql="SELECT pd.*,
+		(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_no,
+		(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_date 
+		FROM `ldc_driver_payment_detail` AS pd 
+		WHERE pd.`driver_payment_id`=$driver_payment_id";
+      	return $db->fetchAll($sql);
+      }
+      
+      function getAllCustomerPyment($search){
+      	$db=$this->getAdapter();
+      	$where =" ";
+      	$_db = new Application_Model_DbTable_DbGlobal();
+      	$lang = $_db->getCurrentLang();
+      	$array = array(1=>"name_en",2=>"name_kh");
+      	$sql=" SELECT cb.id,cb.`payment_no`,
+				CONCAT(c.`last_name`,'(',c.customer_code,')') AS customer,cb.`payment_date`,
+				(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cb.`payment_method` LIMIT 1) AS `payment_method`,
+				cb.`grand_total`,cb.`paid`,cb.`balance`,
+			    (SELECT name_en FROM tb_view WHERE tb_view.key_code=cb.status AND tb_view.type=5 LIMIT 1) AS `status`,
+			    (SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_id LIMIT 1) AS user_name
+			   FROM 
+				`ldc_carbooking_payment` AS cb,
+				`ldc_customer` AS c
+			   WHERE 
+				c.id = cb.`customer_id`
+				AND cb.`status`>-1 ";
+      	$order = "  ";
+      
+//       	if (!empty($search['adv_search'])){
+//       		$s_where = array();
+//       		$s_search = addslashes(trim($search['adv_search']));
+//       		$s_search = str_replace(' ', '', $s_search);
+//       		$s_where[] = " REPLACE(CONCAT(a.`last_name`,'(',a.driver_id,')'),' ','') 	LIKE '%{$s_search}%'";
+//       		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
+//       		$s_where[] = " REPLACE(cp.balance,' ','') LIKE '%{$s_search}%'";
+//       		$s_where[] = " REPLACE(cp.`paid`,' ','') 		LIKE '%{$s_search}%'";
+//       		$s_where[] = " REPLACE(cp.`total_due`,' ','') 	LIKE '%{$s_search}%'";
+//       		$where .=' AND ('.implode(' OR ',$s_where).')';
+//       	}
+//       	if ($search['status']>-1){
+//       		$where .=' AND cp.`status` = '.$search['status'];
+//       	}
+      	return $db->fetchAll($sql.$where.$order);
+      }
+      
+      function getAllCustomerPymentById($payment_id){
+      	$db=$this->getAdapter();
+      	$where =" ";
+      	$_db = new Application_Model_DbTable_DbGlobal();
+      	$lang = $_db->getCurrentLang();
+      	$array = array(1=>"name_en",2=>"name_kh");
+      	$sql=" SELECT cb.id,cb.`payment_no`,
+      	CONCAT(c.`last_name`,'(',c.customer_code,')') AS customer,cb.`payment_date`,
+      	(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cb.`payment_method` LIMIT 1) AS `payment_method`,
+      	cb.`grand_total`,cb.`paid`,cb.`balance`,
+      	(SELECT name_en FROM tb_view WHERE tb_view.key_code=cb.status AND tb_view.type=5 LIMIT 1) AS `status`,
+      	(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_id LIMIT 1) AS user_name
+      	FROM
+      	`ldc_carbooking_payment` AS cb,
+      	`ldc_customer` AS c
+      	WHERE
+      	c.id = cb.`customer_id`
+      	AND  cb.id=$payment_id";
+      	$order = "  ";
+      
+      	//       	if (!empty($search['adv_search'])){
+      	//       		$s_where = array();
+      	//       		$s_search = addslashes(trim($search['adv_search']));
+      	//       		$s_search = str_replace(' ', '', $s_search);
+      	//       		$s_where[] = " REPLACE(CONCAT(a.`last_name`,'(',a.driver_id,')'),' ','') 	LIKE '%{$s_search}%'";
+      	//       		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
+      	//       		$s_where[] = " REPLACE(cp.balance,' ','') LIKE '%{$s_search}%'";
+      	//       		$s_where[] = " REPLACE(cp.`paid`,' ','') 		LIKE '%{$s_search}%'";
+      	//       		$s_where[] = " REPLACE(cp.`total_due`,' ','') 	LIKE '%{$s_search}%'";
+      	//       		$where .=' AND ('.implode(' OR ',$s_where).')';
+      	//       	}
+      	//       	if ($search['status']>-1){
+      	//       		$where .=' AND cp.`status` = '.$search['status'];
+      	//       	}
+      	return $db->fetchAll($sql.$where.$order);
+      }
+      
+      function getCustomerPaymentDetail($customer_payment_id){
+      	$db = $this->getAdapter();
+      	$sql="SELECT pd.*,
+      	(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_no,
+      	(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_date
+      	FROM `ldc_carbooking_payment_detail` AS pd
+      	WHERE pd.`payment_id`=$customer_payment_id";
       	return $db->fetchAll($sql);
       }
  }

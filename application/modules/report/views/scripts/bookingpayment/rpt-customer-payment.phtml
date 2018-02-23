@@ -5,7 +5,7 @@ $url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=
 $frm=$this->frm;
 ?>
 <meta charset="utf-8">
-<title><?php echo $tr->translate("RPT_DRIVER_PAYMENT_DETAIL");?></title>
+<title><?php echo $tr->translate("RPT_CUSTOMER_PAYMENT");?></title>
 <form method="post">
 	
 	</form>
@@ -59,7 +59,7 @@ $frm=$this->frm;
 				                	<td width="20%"></td>
 				                	<td width="60%" valign="top">
 				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
-				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("RPT_DRIVER_PAYMENT_DETAIL");?></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("RPT_CUSTOMER_PAYMENT");?></h2>
 				                	</td>
 				                    <td width="20%"></td>
 				                </tr> 
@@ -76,17 +76,17 @@ $frm=$this->frm;
 				                 <tr class="header">
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
 				                    <td><?php echo $tr->translate("RECIEPT_NO");?></td>
-				                    <td><?php echo $tr->translate("DRIVER");?></td>
+				                    <td><?php echo $tr->translate("CUSTOMER");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_DATE");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_METHOD");?></td>
-				                    <td><?php echo $tr->translate("BALANCE");?></td>
+				                    <td><?php echo $tr->translate("TOTAL");?></td>
 				                    <td><?php echo $tr->translate("PAID");?></td>
-				                    <td><?php echo $tr->translate("TOTAL_DUE");?></td>
+				                    <td><?php echo $tr->translate("BALANCE");?></td>
 				                    <td><?php echo $tr->translate("STATUS");?></td>
 				                    <td><?php echo $tr->translate("USER_NAME");?></td>
 				                </tr>
 				               <?php  $status_drinver='';
-				               if(!empty($this->d_payment)) foreach($this->d_payment as $key =>$row){
+				               if(!empty($this->d_customer)) foreach($this->d_customer as $key =>$row){
 // 				                       if($row['s_driver_paid']==1){
 // 				                       	$status_drinver=$tr->translate("COMPLETE");
 // 				                       }else{
@@ -95,13 +95,13 @@ $frm=$this->frm;
 				               	?>
 									<tr align="center" style="line-height: 18px; background: #fff;">
 										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
-										<td align="left" >&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-driver-paymentdetail/id/<?php echo $row["id"]?>"><?php echo $row['payment_no']; ?></a>&nbsp;</td>
-										<td align="left">&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-driver-paymentdetail/id/<?php echo $row["id"]?>"><?php echo $row['driver_name'];?></a>&nbsp;</td>
+										<td align="left" >&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-customer-payment-detail/id/<?php echo $row["id"]?>"><?php echo $row['payment_no']; ?></a>&nbsp;</td>
+										<td align="left">&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-customer-payment-detail/id/<?php echo $row["id"]?>"><?php echo $row['customer'];?></a>&nbsp;</td>
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['payment_date']))?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_method'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['balance']!=0) echo '$&nbsp;'.number_format($row['balance'],2);?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['grand_total']!=0) echo '$&nbsp;'.number_format($row['grand_total'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['paid']!=0) echo '$&nbsp;'.number_format($row['paid'],2);?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['total_due']!=0) echo '$&nbsp;'.number_format($row['total_due'],2);?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['balance']!=0) echo '$&nbsp;'.number_format($row['balance'],2);?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['status'];?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['user_name'];?></td>
 									</tr>

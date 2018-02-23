@@ -208,7 +208,7 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 		$array = array(1=>"name_en",2=>"name_kh");
 		$sql="
 		SELECT cb.id,cb.`payment_no`,
-			CONCAT(c.`first_name`,' ',c.`last_name`) AS customer,cb.`payment_date`,
+			CONCAT(c.`last_name`,'(',c.customer_code,')') AS customer,cb.`payment_date`,
 			(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cb.`payment_method` LIMIT 1) AS `payment_method`,
 			cb.`grand_total`,cb.`paid`,cb.`balance`,cb.`status`
 		FROM 
