@@ -377,7 +377,7 @@ h4.car_title {
 var url="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getcustomer'));?>";
 function getCustomer(){
 	var id = dijit.byId('customer').get('value');
-	if(id=='' || id==0){
+	if(id==''){
 		return false;
 	}
 	loading();
@@ -399,7 +399,7 @@ function getCustomer(){
 var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getagent'));?>";
 function getAgent(){
 	var id = dijit.byId('agency').get('value');
-	if(id=='' || id==0){
+	if(id==''){
 		return false;
 	}
 	loading();
@@ -466,6 +466,7 @@ function CalculateTotal(){
     dijit.byId("total_payment").attr("value",totals);
     getPice();
     netTotal();
+    calculatebalance();
 }
 
 function getPice(){
@@ -475,6 +476,7 @@ function getPice(){
 	 totals=Number(total)+Number(other_fee);
 	 result=Number(totals)-price;
 	 dijit.byId("commision_fee").attr("value",result);
+	 calculatebalance();
 }
 
 function netTotal() {

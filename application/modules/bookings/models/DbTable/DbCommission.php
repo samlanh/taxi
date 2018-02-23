@@ -276,7 +276,7 @@ class Bookings_Model_DbTable_DbCommission extends Zend_Db_Table_Abstract
 		$sql="
 		SELECT 
 			cp.`id`,cp.`payment_no`,
-			CONCAT(a.`first_name`,' ',a.`last_name`) AS agentcy,
+			CONCAT(a.`last_name`,'(',customer_code,')') AS agentcy,
 			cp.`payment_date`,
 			(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
 			cp.`balance`,cp.`paid`,cp.`total_due`,cp.`status`
