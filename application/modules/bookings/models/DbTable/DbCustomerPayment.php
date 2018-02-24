@@ -210,7 +210,7 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 		SELECT cb.id,cb.`payment_no`,
 			CONCAT(c.`last_name`,'(',c.customer_code,')') AS customer,cb.`payment_date`,
 			(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cb.`payment_method` LIMIT 1) AS `payment_method`,
-			cb.`grand_total`,cb.`paid`,cb.`balance`,cb.`status`
+			cb.`balance`,cb.`paid`,cb.`grand_total`,cb.`status`
 		FROM 
 			`ldc_carbooking_payment` AS cb,
 			`ldc_customer` AS c
@@ -247,10 +247,10 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 					'customer_id'	  => $_data['customer'],
 					'payment_date'	  => $_data['payment_date'],
 					'payment_type'	  => 0,
-					'payment_method'	  => $_data['payment_method'],
-					'paid'	  => $_data['total_paid'],
-					'balance'	  => $_data['total_due'],
-					'grand_total'	  => $_data['amount'],
+					'payment_method'  => $_data['payment_method'],
+					'paid'	  		  => $_data['total_paid'],
+					'balance'	      => $_data['balance'],
+					'grand_total'	  => $_data['total_due'],
 // 					'amount'      => $_data['amount'],
 					'note'	  => $_data['remark'],
 					'status'	  => 1,
@@ -313,8 +313,8 @@ class Bookings_Model_DbTable_DbCustomerPayment extends Zend_Db_Table_Abstract
 					'payment_type'	  => 0,
 					'payment_method'	  => $_data['payment_method'],
 					'paid'	  => $_data['total_paid'],
-					'balance'	  => $_data['total_due'],
-					'grand_total'	  => $_data['amount'],
+					'balance'	  => $_data['balance'],
+					'grand_total'	  => $_data['total_due'],
 // 					'amount'      => $_data['amount'],
 					'note'	  => $_data['remark'],
 					'status'	  => 1,

@@ -25,7 +25,7 @@ class Bookings_CustomerpaymentController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("RECIEPT_NO","CUSTOMER","PAYMENT_DATE","PAYMENT_METHOD","TOTAL","PAID","BALANCE","STATUS",);
+			$collumns = array("RECIEPT_NO","CUSTOMER","PAYMENT_DATE","PAYMENT_METHOD","BALANCE","PAID","TOTAL_DUE","STATUS",);
 			$link=array(
 					'module'=>'bookings','controller'=>'customerpayment','action'=>'edit',
 			);

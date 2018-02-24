@@ -4,6 +4,7 @@ $url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-g
 $url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
 $frm=$this->frm;
 $commission = $this->customer_payment;
+ 
 ?>
 <meta charset="utf-8">
 <title><?php echo $tr->translate("RPT_COMMISSION_DETAIL");?></title>
@@ -71,17 +72,17 @@ span.label_value {
 							<table width="100%" style=" line-height: 18px; font-size: 14px; margin: 5px 0; " >
 								<tr>
 									<td width="40%" style=" line-height: 18px;" valign="top">
-										<span class="label_title"><?php echo $tr->translate("CUSTOMER_NAME");?>&nbsp;:&nbsp;&nbsp;<?php //echo $commission['customer'];?></span><br />
-										<span class="label_title"><?php echo $tr->translate("PHONE");?>&nbsp;:&nbsp;&nbsp;<?php //echo $commission['phone'];?></span><br />
-										<span class="label_title"><?php echo $tr->translate("EMAIL");?>&nbsp;:&nbsp;&nbsp;<?php //echo $commission['email'];?></span><br /> 
+										<span class="label_title"><?php echo $tr->translate("CUSTOMER_NAME");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['customer'];?></span><br />
+										<span class="label_title"><?php echo $tr->translate("PHONE");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['phone'];?></span><br />
+										<span class="label_title"><?php echo $tr->translate("EMAIL");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['email'];?></span><br /> 
 									</td>
 									<td width="40%" valign="top" style=" line-height: 18px;" valign="top">
-										<span class="label_title">Receipt N<sup>o</sup>&nbsp;:&nbsp;&nbsp;<?php //echo $commission['payment_no'];?></span><br />
-										<span class="label_title">Payment Date&nbsp;:&nbsp;&nbsp;<?php //echo date("d-M-Y",strtotime($commission['payment_date']));?></span><br />
+										<span class="label_title">Receipt N<sup>o</sup>&nbsp;:&nbsp;&nbsp;<?php echo $commission['payment_no'];?></span><br />
+										<span class="label_title">Payment Date&nbsp;:&nbsp;&nbsp;<?php echo date("d-M-Y",strtotime($commission['payment_date']));?></span><br />
 									</td>
 									<td width="20%" valign="top" align="right" style=" line-height: 18px;">
 										<span class="label_title">Total Payment</span><br />
-										<span class="label_value" style=" font-size: 20px;   font-weight: 700;    color: #0c0c0c;"><?php //echo "$ ".number_format($commission['paid'],2);?></span>
+										<span class="label_value" style=" font-size: 20px;   font-weight: 700;    color: #0c0c0c;"><?php echo "$ ".number_format($commission['paid'],2);?></span>
 									</td>
 								</tr>
 							</table>
@@ -128,7 +129,7 @@ span.label_value {
 								<tr>
 									<td colspan="2">&nbsp;</td>
 									<td colspan="2" align="right" ><span class="label_title">Payment Type&nbsp;</span></td>
-									<td align="center" class="one-td"><?php //echo $commission['payment_method'];?></td>
+									<td align="center" class="one-td"><?php echo $commission['payment_method'];?></td>
 								</tr>
 							</table>
 						</td>

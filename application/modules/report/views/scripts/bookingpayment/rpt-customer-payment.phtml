@@ -79,9 +79,9 @@ $frm=$this->frm;
 				                    <td><?php echo $tr->translate("CUSTOMER");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_DATE");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_METHOD");?></td>
-				                    <td><?php echo $tr->translate("TOTAL");?></td>
-				                    <td><?php echo $tr->translate("PAID");?></td>
 				                    <td><?php echo $tr->translate("BALANCE");?></td>
+				                    <td><?php echo $tr->translate("PAID");?></td>
+				                    <td><?php echo $tr->translate("TOTAL_DUE");?></td>
 				                    <td><?php echo $tr->translate("STATUS");?></td>
 				                    <td><?php echo $tr->translate("USER_NAME");?></td>
 				                </tr>
@@ -99,9 +99,9 @@ $frm=$this->frm;
 										<td align="left">&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-customer-payment-detail/id/<?php echo $row["id"]?>"><?php echo $row['customer'];?></a>&nbsp;</td>
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['payment_date']))?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_method'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['grand_total']!=0) echo '$&nbsp;'.number_format($row['grand_total'],2);?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['paid']!=0) echo '$&nbsp;'.number_format($row['paid'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['balance']!=0) echo '$&nbsp;'.number_format($row['balance'],2);?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['paid']!=0) echo '$&nbsp;'.number_format($row['paid'],2);?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['grand_total']!=0) echo '$&nbsp;'.number_format($row['grand_total'],2);?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['status'];?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['user_name'];?></td>
 									</tr>

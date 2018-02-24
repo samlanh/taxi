@@ -417,7 +417,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	$_db = new Application_Model_DbTable_DbGlobal();
       	$lang = $_db->getCurrentLang();
       	$array = array(1=>"name_en",2=>"name_kh");
-      	$sql=" SELECT cb.id,cb.`payment_no`,
+      	$sql=" SELECT cb.id,cb.`payment_no`,c.phone,c.email,
       	CONCAT(c.`last_name`,'(',c.customer_code,')') AS customer,cb.`payment_date`,
       	(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cb.`payment_method` LIMIT 1) AS `payment_method`,
       	cb.`grand_total`,cb.`paid`,cb.`balance`,
@@ -429,23 +429,8 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	WHERE
       	c.id = cb.`customer_id`
       	AND  cb.id=$payment_id";
-      	$order = "  ";
-      
-      	//       	if (!empty($search['adv_search'])){
-      	//       		$s_where = array();
-      	//       		$s_search = addslashes(trim($search['adv_search']));
-      	//       		$s_search = str_replace(' ', '', $s_search);
-      	//       		$s_where[] = " REPLACE(CONCAT(a.`last_name`,'(',a.driver_id,')'),' ','') 	LIKE '%{$s_search}%'";
-      	//       		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
-      	//       		$s_where[] = " REPLACE(cp.balance,' ','') LIKE '%{$s_search}%'";
-      	//       		$s_where[] = " REPLACE(cp.`paid`,' ','') 		LIKE '%{$s_search}%'";
-      	//       		$s_where[] = " REPLACE(cp.`total_due`,' ','') 	LIKE '%{$s_search}%'";
-      	//       		$where .=' AND ('.implode(' OR ',$s_where).')';
-      	//       	}
-      	//       	if ($search['status']>-1){
-      	//       		$where .=' AND cp.`status` = '.$search['status'];
-      	//       	}
-      	return $db->fetchAll($sql.$where.$order);
+      	$order = " LIMIT 1 ";
+      	return $db->fetchRow($sql.$order);
       }
       
       function getCustomerPaymentDetail($customer_payment_id){

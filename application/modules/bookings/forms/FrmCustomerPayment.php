@@ -128,9 +128,9 @@ class Bookings_Form_FrmCustomerPayment extends Zend_Dojo_Form{
 			$remark->setValue($data['note']);
 			$_amount->setValue($data['paid']);
 			$payment_method->setValue($data['payment_method']);
-			$balance->setValue($data['grand_total']);
+			$balance->setValue($data['balance']);
 			$total_paid->setValue($data['paid']);
-			$total_due->setValue($data['balance']);
+			$total_due->setValue($data['grand_total']);
 			
 			$_reciept_no->setValue($data['payment_no']);
 			$customer->setValue($data['customer_id']);
