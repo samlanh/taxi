@@ -394,20 +394,20 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 				AND cb.`status`>-1 ";
       	$order = "  ";
       
-//       	if (!empty($search['adv_search'])){
-//       		$s_where = array();
-//       		$s_search = addslashes(trim($search['adv_search']));
-//       		$s_search = str_replace(' ', '', $s_search);
-//       		$s_where[] = " REPLACE(CONCAT(a.`last_name`,'(',a.driver_id,')'),' ','') 	LIKE '%{$s_search}%'";
-//       		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
-//       		$s_where[] = " REPLACE(cp.balance,' ','') LIKE '%{$s_search}%'";
-//       		$s_where[] = " REPLACE(cp.`paid`,' ','') 		LIKE '%{$s_search}%'";
-//       		$s_where[] = " REPLACE(cp.`total_due`,' ','') 	LIKE '%{$s_search}%'";
-//       		$where .=' AND ('.implode(' OR ',$s_where).')';
-//       	}
-//       	if ($search['status']>-1){
-//       		$where .=' AND cp.`status` = '.$search['status'];
-//       	}
+      	if (!empty($search['adv_search'])){
+      		$s_where = array();
+      		$s_search = addslashes(trim($search['adv_search']));
+      		$s_search = str_replace(' ', '', $s_search);
+      		$s_where[] = " REPLACE(CONCAT(c.`last_name`,'(',c.customer_code,')'),' ','') 	LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(cb.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(cb.`grand_total`,' ','') LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(cb.`paid`,' ','') 		LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(cb.`balance`,' ','') 	LIKE '%{$s_search}%'";
+      		$where .=' AND ('.implode(' OR ',$s_where).')';
+      	}
+      	if ($search['status']>-1){
+      		$where .=' AND cb.`status` = '.$search['status'];
+      	}
       	return $db->fetchAll($sql.$where.$order);
       }
       
