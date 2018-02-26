@@ -32,7 +32,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				'class'=>'fullside',
 				'required'=>true,
 				'style'=>'color:red',
-				'placeholder'=>$this->tr->translate("Booking No")
+				'placeholder'=>$this->tr->translate("Booking No"),
+				'readOnly'=>true
 		));
 		$_booking_no->setValue($booking_code);
 		
@@ -55,7 +56,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$delivery_time->setValue('T00:00:00');
 		
 		$rows = $_db->getAllLocation();
-		$opt_location = array(0=>$this->tr->translate("CHOOSE_LOCTION"),-1=>$this->tr->translate("ADD_NEW"));
+		$opt_location = array(0=>$this->tr->translate(""),-1=>$this->tr->translate("ADD_NEW"));
 		if(!empty($rows)){
 			foreach($rows AS $row) {$opt_location[$row['id']]=$row['name'];};
 		}
@@ -71,7 +72,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 // 			$from_location->setValue($request->getParam("pickup_location"));
 // 		}
 		$rows = $_db->getAllLocation();
-		$opt_location = array(0=>$this->tr->translate("CHOOSE_LOCTION"),-1=>$this->tr->translate("ADD_NEW"));
+		$opt_location = array(0=>$this->tr->translate(""),-1=>$this->tr->translate("ADD_NEW"));
 		if(!empty($rows)){
 			foreach($rows AS $row) {
 				$opt_location[$row['id']]=$row['name'];
@@ -157,6 +158,9 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$remark = new Zend_Dojo_Form_Element_TextBox("remark");
 		$remark->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 		
+		$note = new Zend_Dojo_Form_Element_TextBox("note");
+		$note->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
+		
 		$other_booking_no = new Zend_Dojo_Form_Element_TextBox("other_booking_no");
 		$other_booking_no->setAttribs(array('dojoType'=>$this->text,'class'=>"fullside",));
 		
@@ -202,6 +206,30 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				'style'=>'color:red',
 				'placeholder'=>$this->tr->translate("FLY_NO")
 		));
+		
+		$cus_name = new Zend_Dojo_Form_Element_TextBox('cus_name');
+		$cus_name->setAttribs(array(
+				'dojoType'=>'dijit.form.TextBox',
+				'class'=>'fullside',
+				'placeholder'=>$this->tr->translate("CUSTOMER_NAME")
+		));
+		
+		$cus_phone = new Zend_Dojo_Form_Element_TextBox('cus_phone');
+		$cus_phone->setAttribs(array(
+				'dojoType'=>'dijit.form.ValidationTextBox',
+				'class'=>'fullside',
+				'placeholder'=>$this->tr->translate("CUS_PHONE"),
+				'required'=>true
+		));
+		
+		$cus_email = new Zend_Dojo_Form_Element_TextBox('cus_email');
+		$cus_email->setAttribs(array(
+				'dojoType'=>'dijit.form.ValidationTextBox',
+				'class'=>'fullside',
+				'placeholder'=>$this->tr->translate("CUS_EMAIL"),
+				'required'=>true
+		));
+		
 		$driver_fee = new Zend_Dojo_Form_Element_NumberTextBox("driver_fee");
 		$driver_fee->setAttribs(
 				array('dojoType'=>$this->number,
@@ -255,6 +283,10 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$balance->setValue($data['balance']);
 			$working_status->setValue($data['status_working']);
 			$vehicle_type->setValue($data['vehicletype_id']);
+			$note->setValue($data['note']);
+			$cus_name->setValue($data['cus_name']);
+			$cus_phone->setValue($data['cus_phone']);
+			$cus_email->setValue($data['cus_email']);
 			
 			$_fly_no->setValue($data['fly_no']);
 			$delivery_time->setValue($data['delivey_time']);
@@ -317,7 +349,11 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$total_paid,
 				$payment_note,
 				$other_booking_no,
-				$working_status
+				$working_status,
+				$note,
+				$cus_name,
+				$cus_phone,
+				$cus_email
 			));
 		return $this;
 	}

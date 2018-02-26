@@ -477,9 +477,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$array = array(1=>"name_en",2=>"name_kh");
 		$from_date=$search["from_book_date"];
 		$to_date=$search["to_book_date"];
-		$sql="
-		SELECT cb.id,cb.`booking_no`,
-			CONCAT(c.`last_name`) AS cus_name,
+		$sql=" SELECT cb.id,cb.`booking_no`,cb.cus_name,cb.cus_phone,cus_email,
 			(SELECT g.last_name FROM ldc_agency AS g WHERE g.id=cb.agency_id LIMIT 1) AS agency_name,
 			(SELECT v.title FROM ldc_vechicletye AS v WHERE v.id=cb.vehicletype_id LIMIT 1) AS vehicle_type,
 			l.`location_name` AS from_location,
@@ -491,12 +489,10 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
 			cb.`status`
 			FROM `ldc_carbooking` AS cb,
-			`ldc_customer` AS c,
 			`ldc_package_location` AS l,
 			`ldc_package_location` AS tl
 			WHERE 
-			c.`id` = cb.`customer_id` 
-			AND l.`id` = cb.`from_location`
+			    l.`id` = cb.`from_location`
 			AND tl.`id` = cb.`to_location`
 			AND cb.`status` >-1 ";
 		$where = '';
@@ -513,19 +509,20 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		if($search["search_text"] !=""){
 			$s_where=array();
 			$s_search=addslashes(trim($search['search_text']));
-			$s_where[]=" CONCAT(c.`first_name`,' ',c.`last_name`) LIKE '%{$s_search}%'";
-			$s_where[]=" cb.`booking_no` LIKE '%{$s_search}%'";
-			$s_where[]=" tl.`location_name` LIKE '%{$s_search}%'";
-			$s_where[]=" l.`location_name` LIKE '%{$s_search}%'";
-			$s_where[]=" cb.`price` LIKE '%{$s_search}%'";
-			$s_where[]=" cb.`commision_fee` LIKE '%{$s_search}%'";
-			$s_where[]=" cb.`other_fee` LIKE '%{$s_search}%'";
-			$s_where[]=" cb.`total` LIKE '%{$s_search}%'";
+			$s_search = str_replace(' ', '', $s_search);
+			$s_where[]="REPLACE(cb.cus_name,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(cb.cus_phone,' ','')  LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(cb.cus_email,' ','')  LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(cb.`booking_no`,' ','')     LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(tl.`location_name`,' ','')  LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(l.`location_name`,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(cb.`price`,' ','')          LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(cb.`commision_fee`,' ','')  LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(cb.`other_fee`,' ','')      LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(cb.`total`,' ','')          LIKE '%{$s_search}%'";
 			$where.=' AND ('.implode(' OR ',$s_where).')';
 		}
-		if ($search['customer']>0){
-			$where.=" AND cb.`customer_id`=".$search['customer'];
-		}
+		 
 // 		if ($search['delivery_time']>0){
 // 			$where.=" AND cb.`delivey_time`=".$search['delivery_time'];
 // 		}
@@ -539,7 +536,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$where.=" AND cb.`status_working`=".$search['working_status'];
 		}
 		$order=' ORDER BY cb.id DESC';
-		 
+		// echo $sql.$where.$order;
 		return $db->fetchAll($sql.$where.$order);
 	}
 	function getvehicleinfo($vehilce_id){ //add & edit driver
@@ -587,8 +584,12 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$booking_code = $_db->getNewCarBookingNO();
 			$_arrbooking=array(
 					'customer_id'	  => $_data['customer'],
-					//'driver_id'	  => $_data['driver'],
-// 					'vehicle_id'	  => $_data['vehicle'],
+					
+					'cus_name'	      => $_data['cus_name'],
+					'cus_phone'	      => $_data['cus_phone'],
+					'cus_email'	  	  => $_data['cus_email'],
+					'note'	  	      => $_data['note'],
+					
 					'vehicletype_id'  => $_data['vehicle_type'],
 					'agency_id'	  	  => $_data['agency'],
 					'booking_no'	  => $booking_code,
@@ -686,8 +687,12 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			
 			$_arrbooking=array(
 					'customer_id'	  => $_data['customer'],
-					//'driver_id'	  => $_data['driver'],
-					//'vehicle_id'	  => $_data['vehicle'],
+
+					'cus_name'	      => $_data['cus_name'],
+					'cus_phone'	      => $_data['cus_phone'],
+					'cus_email'	  	  => $_data['cus_email'],
+					'note'	  	      => $_data['note'],
+					
 					'vehicletype_id'  => $_data['vehicle_type'],
 					'agency_id'	  	  => $_data['agency'],
 // 					'booking_no'	  => $booking_code,

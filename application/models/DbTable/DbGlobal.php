@@ -883,6 +883,14 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	return $this->getAdapter()->fetchAll($sql);
   }
   
+  function getAllCustomerName(){
+  	$sql="SELECT cb.id AS num, CONCAT(REPLACE(cb.cus_phone,' ',''),'/',REPLACE(cb.cus_email,' ','')) AS id,cb.cus_name AS `name`
+			FROM ldc_carbooking AS cb
+	 		WHERE cb.`status`=1 and CONCAT(REPLACE(cb.cus_phone,' ',''),'/',REPLACE(cb.cus_email,' ','')) !=''
+	 		GROUP BY CONCAT(REPLACE(cb.cus_phone,' ',''),'/',REPLACE(cb.cus_email,' ',''))";
+  	return $this->getAdapter()->fetchAll($sql);
+  }
+  
   public function getAllDriver(){
   	$db= $this->getAdapter();
   	$sql="SELECT d.`id`,CONCAT(d.`last_name`,'(',d.`driver_id`,')') AS `name`

@@ -185,7 +185,7 @@
               	<li>
               	<?php if($action=='index' AND $moduless!='report' AND $moduless!='home'){?>
               		<a href="<?php echo $this->url(array('module'=>$moduless,'controller'=>$controllersss,'action'=>'add'),null,true); ?>"><?php echo $tr->translate('ADD');?> <i class="fa fa-plus-circle" aria-hidden="true"></i></a>
-              	<?php }elseif($action=='add' OR $action=='edit'){?>
+              	<?php }elseif($action=='add' OR $action=='edit' OR $action=='bookview'){?>
               		<a href="<?php echo $this->url(array('module'=>$moduless,'controller'=>$controllersss,'action'=>'index'),null,true); ?>"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> <?php echo $tr->translate('GO_BACK');?></a>
               	<?php }else {?>
               
