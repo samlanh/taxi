@@ -244,8 +244,11 @@ h4.car_title {
 		                   </div>
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("TOTAL_PAID")?>
 		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                   <div class="col-md-2 col-sm-2 col-xs-12">
 		                   <?php echo $frm->getElement('total_paid');?>
+		                   </div>
+		                   <div class="col-md-2 col-sm-2 col-xs-12">
+		                   <?php echo $frm->getElement('paid_status');?>
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -256,8 +259,11 @@ h4.car_title {
 		                   </div>
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("BALANCE")?>
 		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                   <div class="col-md-2 col-sm-2 col-xs-12">
 		                    	<?php echo $frm->getElement('balance');?>
+		                   </div>
+		                    <div class="col-md-2 col-sm-2 col-xs-12">
+		                    	<?php echo $frm->getElement('balanc_status');?>
 		                   </div>
 		                </div>
 		                <div class="text-center">
@@ -769,6 +775,31 @@ function addvehicleType(){
 	}
 }
 
+var urlbook_no="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'checkbookno'));?>";
+function checkBookNo(){
+	var book_no = dijit.byId('other_booking_no').get('value');
+	if(book_no==''){
+		return false;
+	}
+	dojo.xhrPost({
+	    url: urlbook_no,
+	    content:{
+	     'book_no':book_no, 
+	     },
+	    handleAs:"json",
+	    load: function(data) {
+	    	if(data.id){
+		    	alert("This Number have already!!!");
+		    	dijit.byId("other_booking_no").attr("value","");
+		    	dijit.byId("other_booking_no").focus();
+	    	}else{
+	    	}
+	    },
+	    error: function(err) {
+	     alert(err);
+	    }
+   });
+}
 
 </script>
 <!-- popup customer -->

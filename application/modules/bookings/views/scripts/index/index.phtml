@@ -1,8 +1,11 @@
 <?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
-<?php $frm =  $this->frm_search;?>
+<?php $frm =  $this->frm_search;
+?>
 <title><?php echo $tr->translate("Car Booking");?></title>
 <script type="text/javascript">
 dojo.ready(function(){
+	 $('select[name="datatable-responsive_length"]').val('25');
+	 $('select[name="datatable-responsive_length"]').change();
 });
 dojo.require("dojo.data.ItemFileWriteStore");  
 dojo.require("dijit.form.NumberTextBox");
@@ -11,6 +14,11 @@ dojo.require("dijit.form.Textarea");
 dojo.require("dijit.form.TimeTextBox");
 require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 </script>
+<script type="text/javascript">
+   
+ 
+
+ </script>
 <div class="row">
 	<div class="x_panel" >
 		 <div class="blog_form_title">
@@ -54,6 +62,71 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 					</div>
 				  </div>
 			</form>
-			<?php echo $this->list;?>
+    	 <div class="x_panel">
+	    	<div class="x_content">
+	    		<table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">';
+		    	<thead>
+		    		  <tr>  
+		    		  	  <th><?php echo $tr->translate("NUM")?></th> 
+		    		      <th><?php echo $tr->translate("BOOKING_NO")?></th> 
+		    		      <th><?php echo $tr->translate("BOOKING_DATE")?> </th> 
+		    	          <th><?php echo $tr->translate("DELIVERY_DATE")?></th> 
+		    	          <th><?php echo $tr->translate("DELIVERY_TIME")?></th> 
+		    	          <th><?php echo $tr->translate("OTHER_BOOKING_NO")?></th>
+		    		      <th><?php echo $tr->translate("FROM_LOCATION")?> </th> 
+		    	          <th><?php echo $tr->translate("TO_LOCATION")?></th> 
+		                  <th><?php echo $tr->translate("CUSTOMER_NAME")?></th>
+		                  <th><?php echo $tr->translate("CUS_PHONE")?></th> 
+		    	          <th><?php echo $tr->translate("CUS_EMAIL")?></th> 
+		    	          <th><?php echo $tr->translate("VEHICLE_TYPE")?></th> 
+		    	          <th><?php echo $tr->translate("TOTAL_PAID")?> </th> 
+		    	          <th><?php echo $tr->translate("NOT_PAID")?> </th> 
+		    	          <th><?php echo $tr->translate("TOTAL_PAYMENT")?> </th> 
+		    	          <th><?php echo $tr->translate("AGENCY_NAME")?> </th> 
+		    	          <th><?php echo $tr->translate("CAR_RENT_FEE")?> </th> 
+		    	          <th><?php echo $tr->translate("COMMISSION_FEE")?></th> 
+		    	          <th><?php echo $tr->translate("OTHER_FEE")?> </th> 
+		    	          <th><?php echo $tr->translate("GRAND_TOTAL")?></th> 
+		    	          <th><?php echo $tr->translate("DRIVER")?> </th> 
+		    	          <th><?php echo $tr->translate("DRIVER_FEE")?></th> 
+		    	          <th><?php echo $tr->translate("BOOKING_STATUS")?> </th> 
+		    	          <th><?php echo $tr->translate("STATUS")?></th> 
+		             </tr>
+		         </thead> 
+			     <tbody>
+				     <?php if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){?>
+				     <tr class=" alternate  normal" >
+				       <td class="text-center"> <?php echo $key+1?></td>
+				       <td class="text-center"> <a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $rs['booking_no']?></a></td> 
+				       <td class="text-center"> <?php echo date("d-m-Y",strtotime($rs['booking_date']));?></td> 
+				       <td class="text-center"> <?php echo date("d-m-Y",strtotime($rs['delivey_date']));?> </td>
+				       <td class="text-center"> <?php echo $rs['delivey_time']?></td>
+				       <td class="text-center"> <?php echo $rs['payment_booking_no']?></td> 
+				       <td class="text-center"> <?php echo $rs['from_location']?></td> 
+				       <td class="text-center"><?php echo $rs['to_location']?> </td>
+				       <td class="text-center"> <?php echo $rs['last_name']?></td>
+				       <td class="text-center"> <?php echo $rs['phone']?></td> 
+				       <td class="text-center"> <?php echo $rs['email']?></td> 
+				       <td class="text-center"><?php echo $rs['vehicle_type']?> </td>
+				       <td class="text-center"> <?php echo $rs['paid']?></td>
+				       
+				       
+				       <td class="text-center"> <?php echo $rs['payment_booking_no']?></td> 
+				       <td class="text-center"> <?php echo $rs['payment_booking_no']?></td> 
+				       <td class="text-center"><?php echo $rs['payment_booking_no']?> </td>
+				       <td class="text-center"> <?php echo $rs['payment_booking_no']?></td>
+				       <td class="text-center"> BB</td> 
+				       <td class="text-center">DD </td>
+				       <td class="text-center"> AAAA</td>
+				       <td class="text-center"> BB</td>
+				       <td class="text-center">DD </td>
+				       <td class="text-center"> AAAA</td>
+				        <td class="text-center"> </td>
+				     </tr>
+				     <?php }?>
+			     </tbody>
+			     </table>
+			   </div>
+			</div>
+			</div>
 		</div>
-	</div>

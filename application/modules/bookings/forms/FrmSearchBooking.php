@@ -58,19 +58,6 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$customer->setMultiOptions($opt_cu);
 		$customer->setValue($request->getParam("customer"));
 		
-		$row_cus= $_db->getAllCustomerName();
-		//print_r($row_cu);exit();
-		$opt_cu = array(0=>$this->tr->translate("SELECT_CUSTOMER"));
-		$customer_id = new Zend_Dojo_Form_Element_FilteringSelect("customer_id");
-		$customer_id->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside", 
-				'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
-		));
-		foreach ($row_cus as $rs){
-			$opt_cu[$rs["id"]] = $rs["id"];
-		}
-		$customer_id->setMultiOptions($opt_cu);
-		$customer_id->setValue($request->getParam("customer_id"));
-		
 		$row_dri = $_db->getAllDriver();
 		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
 		$driver_search = new Zend_Dojo_Form_Element_FilteringSelect("driver_search");
@@ -146,7 +133,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$date_type->setValue($request->getParam("date_type"));
 		
 		$this->addElements(array($date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
-				$customer_id,$driver_search,$vehicle_search,$agency_search,$payment_method_search,
+				 $driver_search,$vehicle_search,$agency_search,$payment_method_search,
 				$working_status
 				));
 		return $this;

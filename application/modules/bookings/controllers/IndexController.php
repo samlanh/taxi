@@ -22,7 +22,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 						'to_book_date'   => date("Y-m-d"),
 						'from_book_date' => date("Y-m-d"),
 						'search_text'    => "",
-						//'customer_id'       =>0,
+						//'customer'       =>0,
 						'working_status' =>-1,
 						'date_type'		 =>'1',
 						'agency_search'	 =>'0',
@@ -42,6 +42,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 					'module'=>'bookings','controller'=>'index','action'=>'bookview',
 			);
 			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('booking_no'=>$link,'cus_name'=>$link,'book_status'=>$book_status));
+		    $this->view->rows=$rs_rows;
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -275,6 +276,16 @@ class Bookings_indexController extends Zend_Controller_Action {
 			$db = new Group_Model_DbTable_DbClient();
 			$data = $this->getRequest()->getPost();
 			$code = $db->addServiceAjax($data);
+			print_r(Zend_Json::encode($code));
+			exit();
+		}
+	}
+	
+	function checkbooknoAction(){
+		if($this->getRequest()->isPost()){
+			$db = new Bookings_Model_DbTable_DbBooking();
+			$data = $this->getRequest()->getPost();
+			$code = $db->checkBookNo($data['book_no']);
 			print_r(Zend_Json::encode($code));
 			exit();
 		}
