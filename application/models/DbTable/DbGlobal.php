@@ -879,7 +879,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	return $row;
   }
   function getAllCustomers(){
-  	$sql="SELECT c.id,CONCAT(last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_customer AS c WHERE c.`status`=1 AND c.`last_name` !='' ORDER BY c.`last_name` ASC";
+  	$sql="SELECT c.id,CONCAT(last_name) AS `name` FROM ldc_customer AS c WHERE c.`status`=1 AND c.`last_name` !='' ORDER BY c.`last_name` ASC";
   	return $this->getAdapter()->fetchAll($sql);
   }
   

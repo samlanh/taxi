@@ -28,7 +28,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$from_book_date->setAttribs(array('dojoType'=>$this->date,'class'=>"fullside",'constraints'=>"{datePattern:'dd/MM/yyyy'}",
 				));
 		if($request->getParam("from_book_date")==""){
-			$from_book_date->setValue($c_date);
+			//$from_book_date->setValue($c_date);
 		}else{
 			$from_book_date->setValue($request->getParam("from_book_date"));
 		}
@@ -61,7 +61,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$row_dri = $_db->getAllDriver();
 		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
 		$driver_search = new Zend_Dojo_Form_Element_FilteringSelect("driver_search");
-		$driver_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$driver_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($row_dri as $rs){
 			$opt_dri[$rs["id"]] = $rs["name"];
 		}
@@ -71,7 +71,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$row_veh = $_db->getVehicleHasDriver();
 		$opt_vehi = array(0=>$this->tr->translate("SELECT_VEHICLE"));
 		$vehicle_search = new Zend_Dojo_Form_Element_FilteringSelect("vehicle_search");
-		$vehicle_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$vehicle_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($row_veh as $rs){
 			$opt_vehi[$rs["id"]] = $rs["name"];
 		}
@@ -81,7 +81,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$row_agen = $_db->getAllAgency();
 		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"));
 		$agency_search = new Zend_Dojo_Form_Element_FilteringSelect("agency_search");
-		$agency_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+		$agency_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
 				 'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
 				));
 		foreach ($row_agen as $rs){
@@ -93,7 +93,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$row_payment = $_db->getVewOptoinTypeByTypes(11);
 		$opt_payment = array(0=>$this->tr->translate("SELECT_PAYMENT_METHOD"));
 		$payment_method_search = new Zend_Dojo_Form_Element_FilteringSelect("payment_method_search");
-		$payment_method_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$payment_method_search->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($row_payment as $rs){
 			$opt_payment[$rs["id"]] = $rs["name"];
 		}
@@ -104,12 +104,22 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$row_status = $db_globle->getTbViews(17);
 		$opt_s = array('-1'=>$this->tr->translate("BOOKING_STATUS"));
 		$working_status = new Zend_Dojo_Form_Element_FilteringSelect("working_status");
-		$working_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside"));
+		$working_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($row_status as $rs){
 			$opt_s[$rs["key_code"]] = $rs["name_en"];
 		}
 		$working_status->setMultiOptions($opt_s);
 		$working_status->setValue($request->getParam("working_status"));
+		
+		$row_status = $db_globle->getTbViews(5);
+		$opt_s = array('-1'=>$this->tr->translate("SELECT_STATUS"));
+		$status = new Zend_Dojo_Form_Element_FilteringSelect("status");
+		$status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
+		foreach ($row_status as $rs){
+			$opt_s[$rs["key_code"]] = $rs["name_en"];
+		}
+		$status->setMultiOptions($opt_s);
+		$status->setValue($request->getParam("status"));
 		
 		$delivery_time = new Zend_Form_Element_Text("delivery_time");
 		$delivery_time->setAttribs(array('dojoType'=>'dijit.form.TimeTextBox','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
@@ -128,11 +138,11 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		
 		$opt_s = array('1'=>$this->tr->translate("BOOKING_DATE"),'2'=>$this->tr->translate("DATE_TO_RECEIVE"));
 		$date_type = new Zend_Dojo_Form_Element_FilteringSelect("date_type");
-		$date_type->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$date_type->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		$date_type->setMultiOptions($opt_s);
 		$date_type->setValue($request->getParam("date_type"));
 		
-		$this->addElements(array($date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
+		$this->addElements(array($status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
 				 $driver_search,$vehicle_search,$agency_search,$payment_method_search,
 				$working_status
 				));

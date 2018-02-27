@@ -20,18 +20,21 @@ class Bookings_indexController extends Zend_Controller_Action {
 			else{
 				$search = array(
 						'to_book_date'   => date("Y-m-d"),
-						'from_book_date' => date("Y-m-d"),
+						'from_book_date' => date("Y-m-01"),
 						'search_text'    => "",
-						//'customer'       =>0,
+						'customer'       =>0,
 						'working_status' =>-1,
-						'date_type'		 =>'1',
+						'date_type'		 =>'2',
 						'agency_search'	 =>'0',
 						'vehicle_type'	 =>'0',
-						//'delivery_time'	 =>'T00:00:00'
+						'driver_search'  =>0,
+						'agency_search'  =>0,
+						'status'       =>-1,
 				);
 			}
 			$rs_rows= $db->getAllCarBooking($search);
 			$glClass = new Application_Model_GlobalClass();
+			$rs_rows=$glClass->getHoursStudy($rs_rows);
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
 			$collumns = array("BOOKING_NO","CUSTOMER_NAME","CUS_PHONE","CUS_EMAIL","AGENCY_NAME","VEHICLE_TYPE","FROM_LOCATION","TO_LOCATION","BOOKING_DATE","DELIVERY_DATE","CAR_RENT_FEE","COMMISSION_FEE","OTHER_FEE","GRAND_TOTAL","DRIVER","DRIVER_FEE","BOOKING_STATUS","STATUS",);

@@ -525,9 +525,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$where.=' AND ('.implode(' OR ',$s_where).')';
 		}
 		 
-// 		if ($search['delivery_time']>0){
-// 			$where.=" AND cb.`delivey_time`=".$search['delivery_time'];
-// 		}
+		 
 		if ($search['agency_search']>0){
 			$where.=" AND cb.`agency_id`=".$search['agency_search'];
 		}
@@ -537,8 +535,20 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		if ($search['working_status']>-1){
 			$where.=" AND cb.`status_working`=".$search['working_status'];
 		}
-		$order=' ORDER BY cb.id DESC';
-		// echo $sql.$where.$order;
+		if ($search['driver_search']>0){
+			$where.=" AND cb.`driver_id`=".$search['driver_search'];
+		}
+		if ($search['agency_search']>0){
+			$where.=" AND cb.`agency_id`=".$search['agency_search'];
+		}
+		if ($search['customer']>0){
+			$where.=" AND cb.`customer_id`=".$search['customer'];
+		}
+		if ($search['status']>-1){
+			$where.=" AND cb.`status`=".$search['status'];
+		}
+		$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
+		//echo $sql.$where.$order;
 		return $db->fetchAll($sql.$where.$order);
 	}
 	function getvehicleinfo($vehilce_id){ //add & edit driver
@@ -592,12 +602,15 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
+			$_db = new Application_Model_DbTable_DbGlobal();
+			$client_code = $_db->getNewClientId();
 			$cus_id=0;
 			$row_cus=$this->checkingCustomer($_data['cus_phone'], $_data['cus_email']);
 			if(!empty($row_cus)){
 				$cus_id=$row_cus['id'];
 			}else{
 				$_cus=array(
+						'customer_code'=>$client_code,
 						'last_name'	  => $_data['cus_name'],
 					    'phone'	      => $_data['cus_phone'],
 					    'email'	  	  => $_data['cus_email'],
@@ -607,8 +620,6 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 				$this->_name="ldc_customer";
 				$cus_id=$this->insert($_cus);
 			}
-			
-			$_db = new Application_Model_DbTable_DbGlobal();
 			$booking_code = $_db->getNewCarBookingNO();
 			$_arrbooking=array(
 					'customer_id'	  => $cus_id,
@@ -684,6 +695,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 	
 	public function updateCarBooking($_data){
 		$db = $this->getAdapter();
+		$_db = new Application_Model_DbTable_DbGlobal();
+		$client_code = $_db->getNewClientId();
 		$db->beginTransaction();
 		try{
 			$commission_pay = $this->getTotalCommissionFee($_data['booking_id']);
@@ -716,6 +729,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 				$cus_id=$row_cus['id'];
 			}else{
 				$_cus=array(
+						'customer_code'=>$client_code,
 						'last_name'	  => $_data['cus_name'],
 						'phone'	      => $_data['cus_phone'],
 						'email'	  	  => $_data['cus_email'],

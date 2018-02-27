@@ -94,7 +94,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$row_dri = $_db->getAllDriver();
 		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"),);
 		$driver = new Zend_Dojo_Form_Element_FilteringSelect("driver");
-		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriverInfoByid();'));
+		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriverInfoByid();','autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($row_dri as $rs){
 			$opt_dri[$rs["id"]] = $rs["name"];
 		}
@@ -104,7 +104,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$row_veh = $dbbooking->getVehicleByCategory();
 		$opt_vehi = array(0=>$this->tr->translate("SELECT_VEHICLE"));
 		$vehicle = new Zend_Dojo_Form_Element_FilteringSelect("vehicle");
-		$vehicle->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCarInfor();'));
+		$vehicle->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCarInfor();','autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($row_veh as $rs){
 			$opt_vehi[$rs["id"]] = $rs["name"];
 		}
@@ -167,7 +167,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$row_payment = $_db->getVewOptoinTypeByTypes(11);
 		$opt_payment = array(0=>$this->tr->translate("SELECT_PAYMENT_METHOD"));
 		$payment_method = new Zend_Dojo_Form_Element_FilteringSelect("payment_method");
-		$payment_method->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$payment_method->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($row_payment as $rs){
 			$opt_payment[$rs["id"]] = $rs["name"];
 		}
@@ -241,7 +241,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$work_s = $_db->getTbViews(17);
 		$opt_s=array();
 		$working_status = new Zend_Dojo_Form_Element_FilteringSelect("working_status");
-		$working_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$working_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($work_s as $rs){
 			$opt_s[$rs["key_code"]] = $rs["name_en"];
 		}
@@ -250,7 +250,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$work_s = $_db->getTbViews(18);
 		$opt_s=array();
 		$paid_status = new Zend_Dojo_Form_Element_FilteringSelect("paid_status");
-		$paid_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$paid_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($work_s as $rs){
 			$opt_s[$rs["key_code"]] = $rs["name_en"];
 		}
@@ -259,7 +259,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$work_s = $_db->getTbViews(19);
 		$opt_s=array();
 		$balanc_status = new Zend_Dojo_Form_Element_FilteringSelect("balanc_status");
-		$balanc_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
+		$balanc_status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($work_s as $rs){
 			$opt_s[$rs["key_code"]] = $rs["name_en"];
 		}
