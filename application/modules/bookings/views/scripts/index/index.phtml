@@ -98,6 +98,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		    	          <th><?php echo $tr->translate("DRIVER")?> </th> 
 		    	          <th><?php echo $tr->translate("DRIVER_FEE")?></th> 
 		    	          <th><?php echo $tr->translate("BOOKING_STATUS")?> </th> 
+		    	          <th><?php echo $tr->translate("USER")?></th> 
 		    	          <th><?php echo $tr->translate("STATUS")?></th> 
 		             </tr>
 		         </thead> 
@@ -135,6 +136,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center"> <?php echo $rs['driver']?></td>
 				       <td class="text-center"><?php echo ($rs['driver_fee']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>
 				       <td class="text-center" style="background:#fff"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"> <?php echo $rs['book_status']?></a></td>
+				        <td class="text-center"> <?php echo $rs['user_name']?></td>
 				        <td class="text-center"> <?php echo $rs['status']?></td>
 				     </tr>
 				     <?php }?>

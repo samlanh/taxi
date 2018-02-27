@@ -487,7 +487,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			cb.`price`,cb.`commision_fee`,cb.`other_fee`,cb.`total`,
 			(SELECT CONCAT(d.`first_name`,' ',d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
 			(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
-			cb.`status`
+			cb.`status`,
+			(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_id LIMIT 1) AS user_name
 			FROM `ldc_carbooking` AS cb,
 			`ldc_package_location` AS l,
 			`ldc_package_location` AS tl,
@@ -551,6 +552,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		//echo $sql.$where.$order;
 		return $db->fetchAll($sql.$where.$order);
 	}
+	
 	function getvehicleinfo($vehilce_id){ //add & edit driver
 		$db = $this->getAdapter();
 		$sql='
