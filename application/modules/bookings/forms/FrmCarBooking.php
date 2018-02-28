@@ -329,13 +329,12 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$commision_fee->setAttribs(array('readonly'=>'readonly',));
 				$agency->setAttribs(array('readonly'=>'readonly',));
 			}
-			
-			$total_paid->setValue(0);
+			 
 			$total_payment->setValue($data['grand_total']);
 			if (!empty($chekcpayment)){
-				$balance->setValue(0);
-				$total_paid->setValue(0);
-				$total_payment->setValue(0);
+// 				$balance->setValue(0);
+// 				$total_paid->setValue(0);
+// 				$total_payment->setValue(0);
 				$payment_method->setAttribs(array('readonly'=>'readonly',));
 				$total_payment->setAttribs(array('readonly'=>'readonly',));
 				$balance->setAttribs(array('readonly'=>'readonly',));
