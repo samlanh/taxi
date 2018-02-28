@@ -52,6 +52,11 @@ h4.car_title {
 		<form action="" method="post" id="addbookingrental" dojoType="dijit.form.Form">
 			<script type="dojo/method" event="onSubmit">			
 				if(this.validate()) {
+					if(dijit.byId("delivery_time").get("value")==''){
+						alert("Please Chose Time");
+                        dijit.byId("delivery_time").focus();
+						return false;
+					}
 					var customer = dijit.byId('customer').get('value');
 					if(customer==0){
 						alert("<?php echo $tr->translate('PLEASE_SELECT_CUSTOMER')?>");

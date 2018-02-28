@@ -51,9 +51,21 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$delivery_date->setValue($request->getParam("delivery_date"));
 		}
 		
+	 /*
 		$delivery_time = new Zend_Form_Element_Text("delivery_time");
 		$delivery_time->setAttribs(array('dojoType'=>'dijit.form.TimeTextBox','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		$delivery_time->setValue('T00:00:00');
+		*/
+		
+		$db_glob=new Application_Model_GlobalClass();
+		$time=$db_glob->getTime();
+		$delivery_time = new Zend_Form_Element_Select("delivery_time");
+		$delivery_time->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+				'autoComplete'=>"false",
+				'queryExpr'=>'*${0}*'
+		));
+		$delivery_time->setMultiOptions($time);
+		
 		
 		$rows = $_db->getAllLocation();
 		$opt_location = array(0=>$this->tr->translate(""),-1=>$this->tr->translate("ADD_NEW"));
