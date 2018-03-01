@@ -4,6 +4,15 @@ $url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-g
 $url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
 $frm=$this->frm;
 ?>
+<script type="text/javascript">
+dojo.ready(function(){
+});
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.Textarea");
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+</script>
 <meta charset="utf-8">
 <title><?php echo $tr->translate("RPT_COMMISSION_PAYMENT");?></title>
 <form method="post">
@@ -16,6 +25,12 @@ $frm=$this->frm;
 		  	  <div class="form-group">
 				  <div class="col-md-2 col-xs-12 mg-10">
 				  	<?php echo $frm->getElement('adv_search');?>
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+					  <?php echo $frm->getElement('start_date');?>
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+					  <?php echo $frm->getElement('end_date');?>
 				  </div>
 				  <div class="col-md-2 col-xs-12 mg-10">
 					  <?php echo $frm->getElement('status');?>
@@ -78,6 +93,7 @@ $frm=$this->frm;
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
 				                    <td><?php echo $tr->translate("RECIEPT_NO");?></td>
 				                    <td><?php echo $tr->translate("AGENCY");?></td>
+				                     <td><?php echo $tr->translate("PHONE");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_DATE");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_METHOD");?></td>
 				                    <td><?php echo $tr->translate("BALANCE");?></td>
@@ -98,6 +114,7 @@ $frm=$this->frm;
 										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
 										<td align="left" >&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-commissionpaymentdetail/id/<?php echo $row["id"]?>"><?php echo $row['payment_no']; ?></a>&nbsp;</td>
 										<td align="left">&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-commissionpaymentdetail/id/<?php echo $row["id"]?>"><?php echo $row['agentcy'];?></a>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['phone'];?></td>	
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['payment_date']))?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_method'];?></td>	
 										

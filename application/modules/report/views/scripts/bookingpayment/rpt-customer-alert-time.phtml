@@ -116,9 +116,10 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				               $offet=strtotime("+2 hours");
 				               $gogletime=date("H:i:s",$offet);
 				               $time_now=date("H:i:s");
+				               
 				               $hour=0;
 				               if(!empty($this->d_customer)) foreach($this->d_customer as $key =>$row){
-				               	if($gogletime >= $row['time_zone']){
+				               	if($gogletime >= $row['time_zone'] && strtotime(date("Y-m-d"))==strtotime($row['delivey_date'])){
 				               		if($gogletime >= $row['time_zone']){
 				               			$time=$tr->translate("Nearly hours");
 				               		}
@@ -133,8 +134,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 										<td align="left">&nbsp;<?php  echo $row['cus_phone'];?>&nbsp;</td>
 										<td align="left">&nbsp;<?php  echo $row['from_location'];?>&nbsp;</td>
 										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['to_location']; ?></span>&nbsp;</td>	
-										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['booking_date']))?>&nbsp;</td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['delivey_date']))?> </td>	
+										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("D, d-M-Y",strtotime($row['booking_date']));?>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("D, d-M-Y",strtotime($row['delivey_date']));?> </td>	
 										<td align="center" style="line-height:15px;">&nbsp; <?php echo $row['driver'];?></td>
 										<td align="center" style="line-height:15px;">&nbsp; <?php echo $row['driver_phone'];?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php  echo $row['book_status'];?></td>

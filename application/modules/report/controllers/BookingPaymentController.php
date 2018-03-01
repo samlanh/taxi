@@ -92,8 +92,8 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  		$search = array(
 	  				'adv_search'=>'',
 	  				'status'=>-1,
-// 	  				'start_date'=> date('Y-m-d'),
-// 	  				'end_date'=>date('Y-m-d')
+	  				'start_date'=> date('Y-m-d'),
+	  				'end_date'=>date('Y-m-d')
 	  		);
 	  	}
 	  
@@ -128,8 +128,8 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  		$search = array(
 	  				'adv_search'=>'',
 	  				'status'=>-1,
-	  				// 	  				'start_date'=> date('Y-m-d'),
-	  		// 	  				'end_date'=>date('Y-m-d')
+	  				'start_date'=> date('Y-m-d'),
+	  				'end_date'=>date('Y-m-d')
 	  		);
 	  	}
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
@@ -183,9 +183,9 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	else{
 	  		$search = array(
 	  				'adv_search'=>'',
-	  				'status'=>-1,
-	  				// 'start_date'=> date('Y-m-d'),
-	  		// 	  				'end_date'=>date('Y-m-d')
+	  				'status'    =>-1,
+	  				'start_date'=> date('Y-m-d'),
+	  			  	'end_date'  =>date('Y-m-d')
 	  		);
 	  	}
 	  	 
@@ -254,7 +254,7 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	else{
 	  		$search = array(
 	  				    'to_book_date'   => date("Y-m-d"),
-	  					'from_book_date' => date("Y-m-d"),
+	  					'from_book_date' => date("Y-m-01"),
 	  					'search_text'    => "",
 	  					'customer'       =>0,
 	  					'working_status' =>-1,

@@ -193,7 +193,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	$array = array(1=>"name_en",2=>"name_kh");
       	$sql="SELECT 
 				cp.`id`,cp.`payment_no`,
-				CONCAT(a.`last_name`,'(',a.driver_id,')') AS driver_name,
+				CONCAT(a.`last_name`,'(',a.driver_id,')') AS driver_name,a.tel,
 				cp.`payment_date`,
 				(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
 				cp.`balance`,cp.`paid`,cp.`total_due`,
@@ -204,12 +204,15 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 				WHERE
 				a.`id` = cp.`driver_id`  ";
       	$order = "  ";
-      	 
+      	$from_date=(empty($search['start_date']))? '1': "cp.`payment_date` >= '".$search['start_date']." 00:00:00'";
+      	$to_date = (empty($search['end_date']))? '1': "cp.`payment_date` <= '".$search['end_date']." 23:59:59'";
+      	$where = "  AND ".$from_date." AND ".$to_date;
       	if (!empty($search['adv_search'])){
       		$s_where = array();
       		$s_search = addslashes(trim($search['adv_search']));
       		$s_search = str_replace(' ', '', $s_search);
       		$s_where[] = " REPLACE(CONCAT(a.`last_name`,'(',a.driver_id,')'),' ','') 	LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(a.`tel`,' ','') 	LIKE '%{$s_search}%'";
       		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
       		$s_where[] = " REPLACE(cp.balance,' ','') LIKE '%{$s_search}%'";
       		$s_where[] = " REPLACE(cp.`paid`,' ','') 		LIKE '%{$s_search}%'";
@@ -251,7 +254,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	$array = array(1=>"name_en",2=>"name_kh");
       	$sql="SELECT 
 			cp.`id`,cp.`payment_no`,
-			CONCAT(a.`last_name`,'(',customer_code,')') AS agentcy,
+			CONCAT(a.`last_name`,'(',customer_code,')') AS agentcy,a.phone,
 			cp.`payment_date`,
 			(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
 			cp.`balance`,cp.`paid`,cp.`total_due`,
@@ -262,25 +265,26 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 			WHERE
 			a.`id` = cp.`agency_id`";
       	$order = "  ";
-      
-//       	if (!empty($search['adv_search'])){
-//        		$s_where = array();
-//        		$s_search = addslashes(trim($search['adv_search']));
-//        		$s_search = str_replace(' ', '', $s_search);
-      
-//        		$s_where[] = " REPLACE(a.`last_name`,' ','') 	LIKE '%{$s_search}%'";
-//        		$s_where[] = " REPLACE(a.customer_code,' ','') 	LIKE '%{$s_search}%'";
-       		
-//       		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
-//        		$s_where[] = " REPLACE(dpd.`due_amount`,' ','') LIKE '%{$s_search}%'";
-//        		$s_where[] = " REPLACE(dpd.`paid`,' ','') 		LIKE '%{$s_search}%'";
-//        		$s_where[] = " REPLACE(dpd.`remain`,' ','') 	LIKE '%{$s_search}%'";
-//        		$s_where[] = "(SELECT b.booking_no FROM ldc_carbooking AS b WHERE b.id=dpd.booking_id LIMIT 1) LIKE '%{$s_search}%'";
-//        		$where .=' AND ('.implode(' OR ',$s_where).')';
-//        	}
-//       	if ($search['status']>-1){
-//       		$where .=' AND cp.`status` = '.$search['status'];
-//       	}
+      	$from_date=(empty($search['start_date']))? '1': "cp.`payment_date` >= '".$search['start_date']." 00:00:00'";
+      	$to_date = (empty($search['end_date']))? '1': "cp.`payment_date` <= '".$search['end_date']." 23:59:59'";
+      	$where = "  AND ".$from_date." AND ".$to_date;
+      	
+      	if (!empty($search['adv_search'])){
+       		$s_where = array();
+       		$s_search = addslashes(trim($search['adv_search']));
+       		$s_search = str_replace(' ', '', $s_search);
+       		$s_where[] = " REPLACE(CONCAT(a.`last_name`,'(',customer_code,')'),' ','') 	LIKE '%{$s_search}%'";
+       		$s_where[] = " REPLACE(a.customer_code,' ','') 	LIKE '%{$s_search}%'";
+       		$s_where[] = " REPLACE(a.phone,' ','') 	LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
+       		$s_where[] = " REPLACE(cp.`paid`,' ','') 		LIKE '%{$s_search}%'";
+       		$s_where[] = " REPLACE(cp.`balance`,' ','') 	LIKE '%{$s_search}%'";
+       		$s_where[] = " REPLACE(cp.`total_due`,' ','') 	LIKE '%{$s_search}%'";
+       		$where .=' AND ('.implode(' OR ',$s_where).')';
+       	}
+      	if ($search['status']>-1){
+      		$where .=' AND a.`status` = '.$search['status'];
+      	}
       	return $db->fetchAll($sql.$where.$order);
       }
       
@@ -382,7 +386,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	$lang = $_db->getCurrentLang();
       	$array = array(1=>"name_en",2=>"name_kh");
       	$sql=" SELECT cb.id,cb.`payment_no`,
-				CONCAT(c.`last_name`,'(',c.customer_code,')') AS customer,cb.`payment_date`,
+				CONCAT(c.`last_name`,'(',c.customer_code,')') AS customer,c.phone,cb.`payment_date`,
 				(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cb.`payment_method` LIMIT 1) AS `payment_method`,
 				cb.`grand_total`,cb.`paid`,cb.`balance`,
 			    (SELECT name_en FROM tb_view WHERE tb_view.key_code=cb.status AND tb_view.type=5 LIMIT 1) AS `status`,
@@ -394,12 +398,15 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 				c.id = cb.`customer_id`
 				AND cb.`status`>-1 ";
       	$order = "  ";
-      
+      	$from_date=(empty($search['start_date']))? '1': " cb.`payment_date` >= '".$search['start_date']." 00:00:00'";
+      	$to_date = (empty($search['end_date']))? '1': " cb.`payment_date` <= '".$search['end_date']." 23:59:59'";
+      	$where = "  AND ".$from_date." AND ".$to_date;
       	if (!empty($search['adv_search'])){
       		$s_where = array();
       		$s_search = addslashes(trim($search['adv_search']));
       		$s_search = str_replace(' ', '', $s_search);
       		$s_where[] = " REPLACE(CONCAT(c.`last_name`,'(',c.customer_code,')'),' ','') 	LIKE '%{$s_search}%'";
+      		$s_where[] = " REPLACE(c.phone,' ','') 			LIKE '%{$s_search}%'";
       		$s_where[] = " REPLACE(cb.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
       		$s_where[] = " REPLACE(cb.`grand_total`,' ','') LIKE '%{$s_search}%'";
       		$s_where[] = " REPLACE(cb.`paid`,' ','') 		LIKE '%{$s_search}%'";
@@ -551,6 +558,9 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	AND l.`id` = cb.`from_location`
       	AND tl.`id` = cb.`to_location`
       	AND cb.`status` >-1 ";
+      	$from_date=(empty($search['from_book_date']))? '1': "cb.`delivey_date` >= '".$search['from_book_date']." 00:00:00'";
+      	$to_date = (empty($search['to_book_date']))? '1': "cb.`delivey_date` <= '".$search['to_book_date']." 23:59:59'";
+      	$where = "  AND ".$from_date." AND ".$to_date;
       	if($search["search_text"] !=""){
       	$s_where=array();
       	$s_search=addslashes(trim($search['search_text']));

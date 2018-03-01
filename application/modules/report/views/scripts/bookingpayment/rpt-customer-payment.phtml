@@ -6,9 +6,15 @@ $frm=$this->frm;
 ?>
 <meta charset="utf-8">
 <title><?php echo $tr->translate("RPT_CUSTOMER_PAYMENT");?></title>
-<form method="post">
-	
-	</form>
+<script type="text/javascript">
+dojo.ready(function(){
+});
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.Textarea");
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+</script>
 <div class="row">
 	<div class="x_panel " >
 	<div style=" margin:0 auto; padding:0px 0.2cm">
@@ -18,6 +24,12 @@ $frm=$this->frm;
 				  	<?php echo $frm->getElement('adv_search');?>
 				  </div>
 				  <div class="col-md-2 col-xs-12 mg-10">
+					  <?php echo $frm->getElement('start_date');?>
+				  </div>
+				  <div class="col-md-2 col-xs-12 mg-10">
+					  <?php echo $frm->getElement('end_date');?>
+				  </div>
+				   <div class="col-md-2 col-xs-12 mg-10">
 					  <?php echo $frm->getElement('status');?>
 				  </div>
 				  <div class="col-md-2 col-xs-12 mg-10">
@@ -77,13 +89,14 @@ $frm=$this->frm;
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
 				                    <td><?php echo $tr->translate("RECIEPT_NO");?></td>
 				                    <td><?php echo $tr->translate("CUSTOMER");?></td>
+				                    <td><?php echo $tr->translate("CUS_PHONE");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_DATE");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_METHOD");?></td>
 				                    <td><?php echo $tr->translate("BALANCE");?></td>
 				                    <td><?php echo $tr->translate("PAID");?></td>
 				                    <td><?php echo $tr->translate("TOTAL_DUE");?></td>
-				                    <td><?php echo $tr->translate("STATUS");?></td>
 				                    <td><?php echo $tr->translate("USER_NAME");?></td>
+				                     <td><?php echo $tr->translate("STATUS");?></td>
 				                </tr>
 				               <?php  $status_drinver='';
 				               if(!empty($this->d_customer)) foreach($this->d_customer as $key =>$row){
@@ -97,13 +110,14 @@ $frm=$this->frm;
 										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
 										<td align="left" >&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-customer-payment-detail/id/<?php echo $row["id"]?>"><?php echo $row['payment_no']; ?></a>&nbsp;</td>
 										<td align="left">&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-customer-payment-detail/id/<?php echo $row["id"]?>"><?php echo $row['customer'];?></a>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['phone'];?></td>	
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['payment_date']))?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_method'];?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['balance']!=0) echo '$&nbsp;'.number_format($row['balance'],2);?></td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['paid']!=0) echo '$&nbsp;'.number_format($row['paid'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['grand_total']!=0) echo '$&nbsp;'.number_format($row['grand_total'],2);?></td>
-										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['status'];?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['user_name'];?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['status'];?></td>
 									</tr>
 								<?php }?>
 				            </table>
