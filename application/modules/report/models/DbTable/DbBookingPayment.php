@@ -548,7 +548,8 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	cb.`price`,cb.`commision_fee`,cb.`other_fee`,cb.`total`,
       	(SELECT CONCAT(d.`first_name`,' ',d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
       	(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
-      	cb.`status`,(SELECT d.`tel` FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver_phone,c.phone As cus_phone
+      	cb.`status`,(SELECT d.`tel` FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver_phone,c.phone As cus_phone,
+      	(SELECT name_en FROM tb_view WHERE tb_view.key_code=cb.status AND tb_view.type=5 LIMIT 1) AS `status`
       	FROM `ldc_carbooking` AS cb,
       	`ldc_customer` AS c,
       	`ldc_package_location` AS l,
@@ -557,7 +558,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	c.`id` = cb.`customer_id`
       	AND l.`id` = cb.`from_location`
       	AND tl.`id` = cb.`to_location`
-      	AND cb.`status` >-1 ";
+      	  ";
       	$from_date=(empty($search['from_book_date']))? '1': "cb.`delivey_date` >= '".$search['from_book_date']." 00:00:00'";
       	$to_date = (empty($search['to_book_date']))? '1': "cb.`delivey_date` <= '".$search['to_book_date']." 23:59:59'";
       	$where = "  AND ".$from_date." AND ".$to_date;

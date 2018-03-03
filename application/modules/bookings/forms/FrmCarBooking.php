@@ -221,8 +221,10 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		
 		$cus_name = new Zend_Dojo_Form_Element_TextBox('cus_name');
 		$cus_name->setAttribs(array(
-				'dojoType'=>'dijit.form.TextBox',
+				'dojoType'=>'dijit.form.ValidationTextBox',
 				'class'=>'fullside',
+				'required'=>true,
+				'onKeyup'=>'checkBookNo()',
 				'placeholder'=>$this->tr->translate("CUSTOMER_NAME")
 		));
 		
@@ -231,7 +233,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				'dojoType'=>'dijit.form.ValidationTextBox',
 				'class'=>'fullside',
 				'placeholder'=>$this->tr->translate("CUS_PHONE"),
-				'required'=>true
+				
 		));
 		
 		$cus_email = new Zend_Dojo_Form_Element_TextBox('cus_email');
@@ -239,7 +241,6 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				'dojoType'=>'dijit.form.ValidationTextBox',
 				'class'=>'fullside',
 				'placeholder'=>$this->tr->translate("CUS_EMAIL"),
-				'required'=>true
 		));
 		
 		$driver_fee = new Zend_Dojo_Form_Element_NumberTextBox("driver_fee");
@@ -276,6 +277,15 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$opt_s[$rs["key_code"]] = $rs["name_en"];
 		}
 		$balanc_status->setMultiOptions($opt_s);
+		
+		$work_s = $_db->getTbViews(5);
+		$opt_s=array();
+		$status = new Zend_Dojo_Form_Element_FilteringSelect("status");
+		$status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
+		foreach ($work_s as $rs){
+			$opt_s[$rs["key_code"]] = $rs["name_en"];
+		}
+		$status->setMultiOptions($opt_s);
 		 
 		$db=new Vehicle_Model_DbTable_DbVehicle();
 		$rows_veh_typ=$db->getAllVehicleType();
@@ -319,6 +329,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			$cus_email->setValue($data['email']);
 			$paid_status->setValue($data['paid_status']);
 			$balanc_status->setValue($data['balance_status']);
+			$status->setValue($data['status']);
 			
 			$_fly_no->setValue($data['fly_no']);
 			$delivery_time->setValue($data['delivey_time']);
@@ -386,7 +397,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$cus_phone,
 				$cus_email,
 				$paid_status,
-				$balanc_status
+				$balanc_status,
+				$status
 			));
 		return $this;
 	}

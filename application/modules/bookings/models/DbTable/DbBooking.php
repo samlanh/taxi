@@ -477,7 +477,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$array = array(1=>"name_en",2=>"name_kh");
 		$from_date=$search["from_book_date"];
 		$to_date=$search["to_book_date"];
-		$sql=" SELECT cb.id,cb.*,cb.`booking_no`,c.last_name,c.phone,c.email,
+		$sql=" SELECT cb.id,cb.*,cb.`booking_no`,c.last_name,c.phone,c.email,REPLACE(c.last_name,' ','') As check_name,REPLACE(cb.payment_booking_no,' ','') As check_book_no,
 			(SELECT g.last_name FROM ldc_agency AS g WHERE g.id=cb.agency_id LIMIT 1) AS agency_name,
 			(SELECT v.title FROM ldc_vechicletye AS v WHERE v.id=cb.vehicletype_id LIMIT 1) AS vehicle_type,
 			l.`location_name` AS from_location,
@@ -496,8 +496,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			WHERE 
 			c.id=cb.customer_id   
 			AND l.`id` = cb.`from_location`
-			AND tl.`id` = cb.`to_location`
-			AND cb.`status` >-1 ";
+			AND tl.`id` = cb.`to_location` ";
 		$where = '';
 		
 		if($search['date_type']==2){
@@ -548,7 +547,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		if ($search['status']>-1){
 			$where.=" AND cb.`status`=".$search['status'];
 		}
-		$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
+		$order=' ORDER BY cb.`delivey_date`,c.last_name,cb.booking_no,cb.delivey_time ASC';
+		//$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
 		//echo $sql.$where.$order;
 		return $db->fetchAll($sql.$where.$order);
 	}
@@ -588,15 +588,14 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		AND d.id =$driver_id ";
 		return $db->fetchRow($sql);
 	}
-	function checkingCustomer($cus_phone,$cus_email){
+	function checkingCustomer($cus_name){
 		$db = $this->getAdapter();
-		//$cus_name = str_replace(' ', '', $cus_name);
-		$cus_phone = str_replace(' ', '', $cus_phone);
-		$cus_email = str_replace(' ', '', $cus_email);
+		$cus_name = str_replace(' ', '', $cus_name);
+// 		$cus_phone = str_replace(' ', '', $cus_phone);
+// 		$cus_email = str_replace(' ', '', $cus_email);
 		$sql="SELECT id,last_name,phone,email FROM ldc_customer 
 		       WHERE  STATUS=1
-		       AND REPLACE(phone,' ','')='$cus_phone'
-		       AND REPLACE(email,' ','')='$cus_email'";
+		       AND REPLACE(last_name,' ','')='$cus_name'";
 		return $db->fetchRow($sql);
 	}
 	
@@ -607,7 +606,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$_db = new Application_Model_DbTable_DbGlobal();
 			$client_code = $_db->getNewClientId();
 			$cus_id=0;
-			$row_cus=$this->checkingCustomer($_data['cus_phone'], $_data['cus_email']);
+			$row_cus=$this->checkingCustomer($_data['cus_name']);
 			if(!empty($row_cus)){
 				$cus_id=$row_cus['id'];
 			}else{
@@ -653,6 +652,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'grand_total_after'	=>$_data['total_payment'],
 					'paid'	  		  	=> $_data['total_paid'],
 					'balance'	  	  	=> $_data['balance'],
+					'paid_after'	  	=> $_data['total_paid'],
+					'balance_after'	  	=> $_data['balance'],
 					'balance_status'	=> $_data['balanc_status'],
 					'paid_status'		=> $_data['paid_status'],
 					'status'	  		=> 1,
@@ -726,7 +727,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			}
 			
 			$cus_id=0;
-			$row_cus=$this->checkingCustomer($_data['cus_phone'], $_data['cus_email']);
+			$row_cus=$this->checkingCustomer($_data['cus_name']);
 			if(!empty($row_cus)){
 				$cus_id=$row_cus['id'];
 			}else{
@@ -772,9 +773,11 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'grand_total_after'=>$_data['total_payment'],
 					'paid'	  		  => $_data['total_paid'],
 					'balance'	  	  => $_data['balance'],
+					'paid_after'	  	=> $_data['total_paid'],
+					'balance_after'	  	=> $_data['balance'],
 					'balance_status'	=> $_data['balanc_status'],
 					'paid_status'		=> $_data['paid_status'],
-					'status'	  	  => 1,
+					'status'	  	  => $_data['status'],
 					'is_paid_to_driver'=> $is_driverpaid,
 					'is_customer_paid'=> 0,
 					'create_date'	  => date("Y-m-d H:i:s"),
@@ -868,6 +871,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 	}
 	
 	function addCarbookingPayment($_data){
+	   
 // 		$db = $this->getAdapter();
 // 		$db->beginTransaction();
 		try{
@@ -884,6 +888,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'grand_total'	  => $_data['total'],
 					'note'	  		  => $_data['payment_note'],
 					'paid_status'	  => $_data['paid_status'],
+					'balance_status'  => $_data['balanc_status'],
 					'status'	  	  => 1,
 					'create_date'	  => date("Y-m-d H:i:s"),
 					'modify_date'  	  =>date("Y-m-d H:i:s"),
@@ -1020,10 +1025,15 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		return $db->fetchAll($sql);
 	}
 	
-	function checkBookNo($book_no){
+	function checkBookNo($book_no,$cus_name){
 		$db = $this->getAdapter();
 		$book_no = str_replace(' ', '', $book_no);
-		$sql=" SELECT cb.id,cb.payment_booking_no AS book_no FROM ldc_carbooking AS cb WHERE REPLACE(cb.payment_booking_no,' ','')='$book_no'";
+		$cus_name = str_replace(' ', '', $cus_name);
+		$sql=" SELECT cb.id,cb.payment_booking_no AS book_no 
+	      FROM ldc_carbooking AS cb,ldc_customer AS c
+	      WHERE cb.customer_id=c.id
+	      AND REPLACE(cb.payment_booking_no,' ','')='$book_no'
+	      AND REPLACE(c.last_name,' ','')='$cus_name'";
 	    return $db->fetchRow($sql);
 	}
 }

@@ -110,7 +110,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				                    <td><?php echo $tr->translate("PHONE");?></td>
 			                        <td><?php echo $tr->translate("BOOKING_STATUS");?></td>
 			                        <td><?php echo $tr->translate("TIME_STATUS");?></td>
-			                         <th><?php echo $tr->translate("DELIVERY_TIME")?></th> 
+			                        <th><?php echo $tr->translate("DELIVERY_TIME")?></th> 
+			                        <th><?php echo $tr->translate("ACTIVE")?></th> 
 				                </tr>
 				               <?php  $status_drinver='';	
 				               $offet=strtotime("+2 hours");
@@ -141,6 +142,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 										<td align="center" style="line-height:15px;">&nbsp;<?php  echo $row['book_status'];?></td>
 										<td align="center" style="border: 1px solid #000;color: red;font-weight: bold;">&nbsp;<?php echo $time;?> </td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php  echo $row['delivey_time'];?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php  echo $row['status'];?></td>
 									</tr>
 								<?php }
 				              }?>

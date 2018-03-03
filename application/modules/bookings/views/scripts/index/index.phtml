@@ -7,6 +7,7 @@ dojo.ready(function(){
 	 $('select[name="datatable-responsive_length"]').val('25');
 	 $('select[name="datatable-responsive_length"]').change();
 	 dijit.byId("date_type").attr("value",2);
+	 dijit.byId("status").set("value",1);
 });
 dojo.require("dojo.data.ItemFileWriteStore");  
 dojo.require("dijit.form.NumberTextBox");
@@ -103,14 +104,20 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		             </tr>
 		         </thead> 
 			     <tbody>
-				     <?php  if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
+				     <?php $room_no='';$cus_name='';$book_no_color=''; if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
 				          if($rs['status_working']==0){
-				          	$status_working='style="background:#22bf59"';
+				          	$status_working='style="background:#c6ffda"';
 				          }else if($rs['status_working']==1){
 				          	$status_working='style="background:#fff"';
 				          }else{
-				          	$status_working='style="background:#b1c1b6"';
+				          	$status_working='style="background:#e4e4e4"';
 				          }
+				          if($rs['check_book_no']==$room_no && $rs['check_name']==$cus_name){
+				          	$book_no_color='style="background: #ffe5e5 !important;"';
+				          }else{
+				          	$book_no_color='';
+				          }
+				          $room_no=$rs['check_book_no'];$cus_name=$rs['check_name'];
 				     	?>
 				     <tr class=" alternate  normal" <?php echo $status_working;?>>
 				       <td class="text-center"> <?php echo $key+1?></td>
@@ -118,7 +125,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"> <?php echo date("d-M-Y",strtotime($rs['booking_date']));?></a></td> 
 				       <td class="text-center"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"> <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?> </a></td>
 				       <td class="text-center"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"> <?php echo $rs['delivey_time']?></a></td>
-				       <td class="text-center"> <?php echo $rs['payment_booking_no']?></td> 
+				       <td class="text-center" <?php echo $book_no_color;?>> <a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $rs['payment_booking_no']?></a></td> 
 				       <td class="text-center"> <?php echo $rs['from_location']?></td> 
 				       <td class="text-center"><?php echo $rs['to_location']?> </td>
 				       <td class="text-center"> <?php echo $rs['last_name']?></td>

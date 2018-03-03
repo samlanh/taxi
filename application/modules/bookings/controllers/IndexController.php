@@ -29,7 +29,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 						'vehicle_type'	 =>'0',
 						'driver_search'  =>0,
 						'agency_search'  =>0,
-						'status'       =>-1,
+						'status'       =>1,
 				);
 			}
 			$rs_rows= $db->getAllCarBooking($search);
@@ -288,7 +288,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 		if($this->getRequest()->isPost()){
 			$db = new Bookings_Model_DbTable_DbBooking();
 			$data = $this->getRequest()->getPost();
-			$code = $db->checkBookNo($data['book_no']);
+			$code = $db->checkBookNo($data['book_no'],$data['cus_name']);
 			print_r(Zend_Json::encode($code));
 			exit();
 		}

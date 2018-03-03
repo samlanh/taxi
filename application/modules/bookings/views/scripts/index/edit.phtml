@@ -264,10 +264,10 @@ h4.car_title {
 		                   </div>
 		                </div>
 		                <div class="form-group">
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php //echo $tr->translate("")?>
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("STATUS")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	
+		                    	 <?php echo $frm->getElement('status');?>
 		                   </div>
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("BALANCE")?>
 		                   </label>
@@ -831,6 +831,7 @@ function addvehicleType(){
 var urlbook_no="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'checkbookno'));?>";
 function checkBookNo(){
 	var book_no = dijit.byId('other_booking_no').get('value');
+	var cus_name = dijit.byId('cus_name').get('value');
 	if(book_no==''){
 		return false;
 	}
@@ -838,12 +839,14 @@ function checkBookNo(){
 	    url: urlbook_no,
 	    content:{
 	     'book_no':book_no, 
+	     'cus_name':cus_name, 
 	     },
 	    handleAs:"json",
 	    load: function(data) {
 	    	if(data.id){
 		    	alert("This Number have already!!!");
 		    	dijit.byId("other_booking_no").attr("value","");
+		    	dijit.byId("cus_name").attr("value","");
 		    	dijit.byId("other_booking_no").focus();
 	    	}else{
 	    	}

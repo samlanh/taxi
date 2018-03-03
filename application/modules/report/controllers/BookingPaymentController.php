@@ -260,7 +260,7 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  					'working_status' =>-1,
 	  					'date_type'		 =>'2',
 	  					'driver_search'  =>0,
-	  					'status'       =>-1,
+	  					'status'       =>1,
 	  		);
 	  	}
 	  	$glClass = new Application_Model_GlobalClass();
