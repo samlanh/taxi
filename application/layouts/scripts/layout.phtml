@@ -189,6 +189,9 @@
 		    </div>
 		</div>
 	</div>
+	<audio id="myAudio">
+	  <source src="<?php echo $this->baseUrl()?>/sound/sms-alert-4-daniel_simon.mp3" type="audio/ogg" />
+	</audio>
 	<script>
 		function loading(){
 		    document.getElementsByClassName("overlay")[0].style.display="block";
@@ -216,6 +219,50 @@
 					document.msExitFullscreen();
 				}
 			}
+		}
+		var g = new Date();
+		var n = new Date(g.getTime() + (0.5 * 60 * 30000));
+		var ss = n.getHours()+''+n.getMinutes()+''+n.getSeconds();
+		function GetClock(){
+			d = new Date();
+			nhour  = d.getHours();
+			nmin   = d.getMinutes();
+			nsec   = d.getSeconds();
+			if(nmin <= 9) {nmin = "0" +nmin;}
+			if(nsec <= 9) {nsec = "0" +nsec;}
+			
+			//var oldtime = d.setMinutes(nmin + 1);
+			//alert(ss+" = "+d.getHours()+''+d.getMinutes()+''+d.getSeconds());
+			if(ss<=d.getHours()+''+d.getMinutes()+''+d.getSeconds()){
+				n = new Date(d.getTime() + (0.5 * 60 * 30000));//1 sec
+				 ss = n.getHours()+''+n.getMinutes()+''+n.getSeconds();
+				 getAlertBokking();
+			}
+			//document.getElementById('clockbox').innerHTML= ss+" "+nhour+":"+nmin+":"+nsec+"  "+d.getHours()+''+d.getMinutes()+''+d.getSeconds();
+			setTimeout("GetClock()", 30000); //1 sec
+		}
+		window.onload=GetClock;
+		var x = document.getElementById("myAudio"); 
+
+		function playAudio() { 
+		    x.play(); 
+		}
+		var urlGetAlert = '<?php echo $this->url(array('module'=>'','controller' => 'index','action' => 'getalert'));?>';
+		function getAlertBokking(){
+			$.ajax({
+				url: urlGetAlert,
+				data: {id: ''},
+				type: "POST",
+				success:function(data){
+					var arrays = $.parseJSON(data);
+					document.getElementById('countAlertTop').innerHTML = arrays.countItems;
+					document.getElementById('menu1').innerHTML = arrays.listItems;
+					if(arrays.listItems!=""){
+						playAudio();
+					}
+				}
+				
+				});
 		}
 	</script>
 <?php }else{

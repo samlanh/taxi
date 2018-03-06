@@ -902,5 +902,81 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	return $this->getAdapter()->fetchAll($sql);
   }
 
+  public function getAlertBookingBefor2hour($php=null){
+  	$db = $this->getAdapter();
+  	$lang= $this->getCurrentLang();
+  	$array = array(1=>"name_en",2=>"name_kh");
+  	$now = date("Y-m-d");
+  	$nowTime = date("H:i:s");
+  	$now2Time = date("H:i:s",strtotime("+2 hour"));
+  	$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+  	$baseurl= Zend_Controller_Front::getInstance()->getBaseUrl();
+  	$sql="SELECT cb.id,cb.`booking_no`,
+		CONCAT(c.`last_name`,'(',customer_code,')') AS cus_name,
+		c.photo,
+		l.`location_name` AS from_location,
+		tl.`location_name` AS to_location,
+		cb.`booking_date`,
+		cb.`delivey_date`,
+		cb.delivey_time,cb.delivey_time AS time_zone,
+		cb.`price`,cb.`commision_fee`,cb.`other_fee`,cb.`total`,
+		(SELECT CONCAT(d.`first_name`,' ',d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
+		(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
+		cb.`status`,(SELECT d.`tel` FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver_phone,c.phone AS cus_phone,
+		(SELECT name_en FROM tb_view WHERE tb_view.key_code=cb.status AND tb_view.type=5 LIMIT 1) AS `status`
+		FROM `ldc_carbooking` AS cb,
+		`ldc_customer` AS c,
+		`ldc_package_location` AS l,
+		`ldc_package_location` AS tl
+		WHERE
+		c.`id` = cb.`customer_id`
+		AND l.`id` = cb.`from_location`
+		AND tl.`id` = cb.`to_location`
+		AND cb.`delivey_date` = '$now'
+		AND  (CAST(cb.delivey_time AS TIME)  <='$now2Time' AND  CAST(cb.delivey_time AS TIME)  >='$nowTime')
+  		";
+  		$row = $db->fetchAll($sql);
+  		if (!empty($php)) {
+  			return $row;
+  		}else{
+  			$countAlert = count($row);
+  			$string='';
+  			if (!empty($row)) foreach ($row as $sr){
+  				$photo =$baseurl."/images/user.png";
+  				if(!empty($sr['photo'])){
+  					$photo=$baseurl."/images/profile/".$sr['photo'];
+  				}
+  				$string.='
+  				<li>
+                      <a href="'.$baseurl.'/bookings/index/bookview/id/'.$sr['id'].'">
+                        <span class="image"><img src="'.$photo.'" alt="Profile Image" /></span>
+                        <span>
+                          <span>'.$sr['cus_name'].'</span>
+                          <span class="time">'.$sr['delivey_time'].'</span>
+                        </span>
+                        <span class="message">
+                         '.$sr['from_location'].' to '.$sr['to_location'].'
+                         <span class="bookstatus">'.$sr['book_status'].'</span>
+                        </span>
+                      </a>
+                    </li>
+  				';
+  			}
+  			if ($countAlert>10){
+  			$string.='
+  				<li>
+                   <div class="text-center">
+                     <a href="'.$baseurl.'/report/bookingpayment/rpt-customer-alert-time">
+                       <strong>See All Alerts</strong>
+                       <i class="fa fa-angle-right"></i>
+                     </a>
+                  </div>
+               </li>
+  			';
+  			}
+  			
+  			return array('listItems'=>$string,'countItems'=>$countAlert);
+  		}
+  }
 }
 ?>

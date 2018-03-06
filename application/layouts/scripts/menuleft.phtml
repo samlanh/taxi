@@ -7,6 +7,9 @@
 	$baseurl  = $this->baseUrl();
 	
 	$dbuser = new Application_Model_DbTable_DbUsers();
+	$glob = new Application_Model_DbTable_DbGlobal();
+	$alert = $glob->getAlertBookingBefor2hour(12);
+	$countAlert = count($alert);
 	
 	$session_user=new Zend_Session_Namespace('authcar');
 	$arr_module = $session_user->arr_acl;
@@ -125,6 +128,12 @@
 	$arr_module = $session_user->arr_module;
 	$arr_acl = $session_user->arr_acl;
 	?>
+	<style>
+		span.message span.bookstatus {
+		    color: #ff1605;
+		    font-weight: 600;
+		}
+	</style>
 		<!-- sidebar menu -->
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
               <div class="menu_section">
@@ -205,7 +214,45 @@
                     <li><a href="<?php echo $this->url(array('module'=>'','controller'=>'index','action'=>'logout','value'=>'1')); ?>"><i class="fa fa-sign-out pull-right"></i> <?php echo $tr->translate("SIGN_OUT");?></a></li>
                   </ul>
                 </li>
-
+				<li role="presentation" class="dropdown">
+                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-envelope-o"></i>
+                    <span id="countAlertTop" class="badge bg-green"><?php echo $countAlert;?></span>
+                  </a>
+                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+                  	<?php if (!empty($alert)) foreach ($alert as $key => $sr){ 
+                  		if(!empty($sr['photo'])){
+                  			$photo=$this->baseUrl()."/images/profile/".$sr['photo'];
+                  		}else{
+                  			$photo =$this->baseUrl()."/images/user.png";
+                  		}
+                  		?>
+                    <li>
+                      <a href="<?php echo $this->baseUrl()."/bookings/index/bookview/id/".$sr['id'];?>">
+                        <span class="image"><img src="<?php echo $photo;?>" alt="Profile Image" /></span>
+                        <span>
+                          <span><?php echo $sr['cus_name'];?></span>
+                          <span class="time"><?php echo $sr['delivey_time'];?></span>
+                        </span>
+                        <span class="message">
+                         <?php echo $sr['from_location']." to ".$sr['to_location'];?>
+                         <span class="bookstatus"><?php echo $sr['book_status'];?></span>
+                        </span>
+                      </a>
+                    </li>
+                    <?php if ($key==9){break;} }?>
+                    <?php if ($countAlert>10){?>
+                    <li>
+                      <div class="text-center">
+                        <a href="<?php echo $this->baseUrl()."/report/bookingpayment/rpt-customer-alert-time";?>">
+                          <strong>See All Alerts</strong>
+                          <i class="fa fa-angle-right"></i>
+                        </a>
+                      </div>
+                    </li>
+                    <?php }?>
+                  </ul>
+                </li>
               </ul>
             </nav>
           </div>
