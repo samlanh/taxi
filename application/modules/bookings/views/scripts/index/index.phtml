@@ -6,7 +6,7 @@
 dojo.ready(function(){
 	 $('select[name="datatable-responsive_length"]').val('25');
 	 $('select[name="datatable-responsive_length"]').change();
-	 dijit.byId("date_type").attr("value",2);
+	 //dijit.byId("date_type").attr("value",2);
 	 dijit.byId("status").set("value",1);
 });
 dojo.require("dojo.data.ItemFileWriteStore");  
@@ -126,8 +126,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"> <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?> </a></td>
 				       <td class="text-center"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"> <?php echo $rs['delivey_time']?></a></td>
 				       <td class="text-center" <?php echo $book_no_color;?>> <a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $rs['payment_booking_no']?></a></td> 
-				       <td class="text-center"> <?php echo $rs['from_location']?></td> 
-				       <td class="text-center"><?php echo $rs['to_location']?> </td>
+				       <td  > <?php echo $rs['from_location']?></td> 
+				       <td  ><?php echo $rs['to_location']?> </td>
 				       <td class="text-center"> <?php echo $rs['last_name']?></td>
 				       <td class="text-center"> <?php echo $rs['phone']?></td> 
 				       <td class="text-center"> <?php echo $rs['email']?></td> 

@@ -502,12 +502,12 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		if($search['date_type']==2){
 			$from_date =(empty($search['from_book_date']))? '1': "cb.`delivey_date` >= '".$search['from_book_date']." 00:00:00'";
 			$to_date = (empty($search['to_book_date']))? '1': "cb.`delivey_date` <= '".$search['to_book_date']." 23:59:59'";
-			$order=' ORDER BY cb.`delivey_date`,c.last_name,cb.booking_no,cb.delivey_time ASC';
+			$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
 		}
 		if($search['date_type']==1){
 			$from_date =(empty($search['from_book_date']))? '1': "cb.`booking_date` >= '".$search['from_book_date']." 00:00:00'";
 			$to_date = (empty($search['to_book_date']))? '1': "cb.`booking_date` <= '".$search['to_book_date']." 23:59:59'";
-			$order=' ORDER BY cb.`booking_date`,c.last_name,cb.booking_no,cb.delivey_time ASC';
+			$order=' ORDER BY cb.`booking_date`,cb.delivey_time ASC';
 		}
 		$where = "  AND ".$from_date." AND ".$to_date;
 		if($search["search_text"] !=""){

@@ -137,7 +137,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$vehicle_type->setMultiOptions($opt_payment);
 		$vehicle_type->setValue($request->getParam("vehicle_type"));
 		
-		$opt_s = array('1'=>$this->tr->translate("BOOKING_DATE"),'2'=>$this->tr->translate("DATE_TO_RECEIVE"));
+		$opt_s = array('2'=>$this->tr->translate("DATE_TO_RECEIVE"),'1'=>$this->tr->translate("BOOKING_DATE"),);
 		$date_type = new Zend_Dojo_Form_Element_FilteringSelect("date_type");
 		$date_type->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		$date_type->setMultiOptions($opt_s);
