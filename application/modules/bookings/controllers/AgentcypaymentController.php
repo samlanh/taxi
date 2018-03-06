@@ -7,6 +7,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
     	header('content-type: text/html; charset=utf8');
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
 	}
+	
 	public function indexAction(){
 		try{
 			$db = new Bookings_Model_DbTable_DbAgentcyPayment();
@@ -39,6 +40,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_search = $frm;
 	}
+	
 	public function addAction()
 	{
 		$db = new Bookings_Model_DbTable_DbAgentcyPayment();
@@ -78,6 +80,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
 	}
+	
 	function getagentAction(){
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
@@ -87,6 +90,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 			exit();
 		}
 	}
+	
 	function getcarbookingbyagencyAction(){
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();

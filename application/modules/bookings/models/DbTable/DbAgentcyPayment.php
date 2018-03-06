@@ -515,11 +515,11 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 	
 	function getAllAgentcyBooking($stu_id){
 		$db=$this->getAdapter();
-		$sql=" SELECT cb.id,cb.customer_id,cb.booking_no,c.last_name,cb.booking_date,
-       	cb.commision_fee,cb.grand_total,cb.paid_after,cb.balance
-      	FROM ldc_carbooking AS cb,ldc_customer AS c
-      	WHERE cb.customer_id=c.id
-      	AND cb.agency_id=$stu_id";
+		$sql=" SELECT cb.id,cb.payment_booking_no AS booking_no,c.last_name,DATE_FORMAT(cb.booking_date,'%d-%b-%Y') As booking_date,
+        	cb.commision_fee_after,cb.grand_total_after AS totals,cb.paid_after,cb.balance_after 
+			FROM  ldc_carbooking AS cb,ldc_customer AS c
+			WHERE cb.customer_id=c.id
+			AND cb.agency_id= $stu_id";
 		return $db->fetchAll($sql);
 	}
 	

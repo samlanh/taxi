@@ -46,6 +46,13 @@ h4.car_title {
 .head-td th {
     text-align: center;
 }
+th {
+     text-align: center;
+}
+
+td {
+     padding-left: 2px;
+}
 </style>
 <div class="clearfix"></div>
 <div class="x_panel">
@@ -193,7 +200,7 @@ h4.car_title {
 											</thead>
 										<tbody  >
 										     <div  id="showrecord"></div>
-											<input type="hidden"  id="record_row" name="record_row" value="0"  dojoType="dijit.form.TextBox" />
+											<input type="text"  id="record_row" name="record_row" value="0"  dojoType="dijit.form.TextBox" />
 										</tbody>
 										</table>
 										<input type="hidden" name="identity" id="identity"  value="" >
@@ -325,6 +332,7 @@ function calculateamount(index){
 	calBalance();
 	calculateAmountCheckByKeyup();
 }
+
 function calculateAmountCheckByKeyup(){
 	var rowId = $('#identity').val();
 	if(rowId==""){
@@ -344,85 +352,28 @@ function calculateAmountCheckByKeyup(){
 	dijit.byId('total_due').attr('value',due.toFixed(2));
 	dijit.byId('amount').attr('value',parseFloat(amount).toFixed(2));
 }
+
+function deleteRecord(index) {
+	var identity = $('#record_row').val();
+	var arrays = identity.split(',');
+	for(var i=0;i<arrays.length;i++) {
+		if(arrays[i] == index) arrays.splice(i,1);
+	}
+	var strings = arrays.join(',');
+	$('#record_row').val(strings);
+	$("#row_capital"+index).remove();
+	//netTotal();
+}
  
 url_getagentcy = '<?php echo $this->url(array('module'=>'bookings','controller'=>'agentcypayment','action'=>'get-agentcy-payments'));?>';
+r=0;
 function getAllAgentcyPayment(){
 	fund_title=0;
 	temp='';
 	agency_id  = dijit.byId('agency').get('value');
-	dojo.xhrPost({
-		url: url_getagentcy,
-		content:{
-			'agency_id':agency_id
-		},
-		handleAs:"json",
-		load: function(data) {
-			$("#table_order").html("");
- 
-			    template='<tr height="33px">';
-				template+='<th><?php echo $tr->translate("DEL");?></th>';
-				template+='<th><?php echo $tr->translate("NUM");?></th>';
-				template+='<th><?php echo $tr->translate("BOOK_ID");?></th>';
-				template+='<th ><?php echo $tr->translate("CUST_NAME");?></th>';
-				template+='<th ><?php echo $tr->translate("DATE_BOOKING");?></th>';
-				template+='<th><?php echo $tr->translate("TOTAL");?></th>';
-				template+=' <th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
-				template+='<th><?php echo $tr->translate("PAID");?></th>';
-				template+='<th><?php echo $tr->translate("PAYMENT_AMOUNT");?></th>';
-				template+='<th><?php echo $tr->translate("BALANCE");?></th>';
-				template+='<th><?php echo $tr->translate("TOTAL_AGENTCY");?></th>';
-				template+='<th><?php echo $tr->translate("TOTAL_OWNER");?></th>';
-			    template+='</tr>';
-			for(i=0;i<data.length;i++){  
-				if(fund_title!=1){
-					template='<tr height="33px">';
-					template+='<th><?php echo $tr->translate("DEL");?></th>';
-					template+='<th><?php echo $tr->translate("NUM");?></th>';
-					template+='<th><?php echo $tr->translate("BOOK_NO");?></th>';
-					template+='<th ><?php echo $tr->translate("CUST_NAME");?></th>';
-					template+='<th ><?php echo $tr->translate("DATE_BOOKING");?></th>';
-					template+=' <th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
-					template+='<th><?php echo $tr->translate("TOTAL");?></th>';
-					template+='<th><?php echo $tr->translate("PAID");?></th>';
-					template+='<th><?php echo $tr->translate("PAYMENT_AMOUNT");?></th>';
-					template+='<th><?php echo $tr->translate("BALANCE");?></th>';
-					template+='<th><?php echo $tr->translate("TOTAL_AGENTCY");?></th>';
-					template+='<th><?php echo $tr->translate("TOTAL_OWNER");?></th>';
-				    template+='</tr>';
-				    fund_title=1
-				}
-				index=i+1;
-				template+='<tr style="height:30px;" id="row_order_'+index+'">';
-		            template+='<td ><img onClick="deleteRecord('+index+')" src="<?php echo BASE_URL; ?>/images/icon/delete.gif" /></td>';
-					template+='<td >'+index+'</td>';
-					template+='<td >'+data[i].booking_no+'</td>';
-					template+='<td >'+data[i].last_name+'<input type="hidden" value='+data[i].customer_id+' id="customer_id'+index+'" name="customer_id'+index+'"/></td>';
-					template+='<td >'+data[i].booking_date+'</td>';
-					template+='<td >'+data[i].commision_fee+'<input type="hidden" value='+data[i].commision_fee+' id="commision_fee'+index+'" name="commision_fee'+index+'"/></td>';
-					template+='<td >'+data[i].grand_total+'<input type="hidden" value='+data[i].grand_total+' id="grand_total'+index+'" name="grand_total'+index+'"/></td>';
-					template+='<td >'+data[i].paid_after+'<input type="hidden" value='+data[i].paid_after+' id="paid_after'+index+'" name="paid_after'+index+'"/></td>';
-					template+='<td ><input type="number"  min="0" step="1" required="require" value="" id="payment_amount'+index+'" name="payment_amount'+index+'"  "/></td>';
-                template+="</tr>";
-				if($('#identity').val()!="") {
-					var identity = $('#identity').val();
-					$('#identity').val(identity+','+index);
-				} else {$('#identity').val(index);}
-			} 
-		$('#table_order').append(template);
-		
-		},error: function(err) {
-		}
-	});
-}
-
-r=0;
-function getAllcustomer(){
-	fund_title=0;
-	temp='';
-	agency_id  = dijit.byId('agency').get('value');
 	dojo.query("#showrecord").append('');
-	tmp='<table id="t_amountmoneytype" width="100%" style=" margin-top: 20px; border-collapse: collapse; " border="1">';
-	tmp+='<tr  style="background:#eee; font-size: 14px; height: 40px;font-weight: bold; margin-bottom: 10px;" id="head_title" class="head-title" align="center"></tr>';
+	tmp='<table id="t_amountmoneytype" width="100%" style=" margin-top: 20px; border-collapse: collapse;border:1px solid #bdbdbd;" border="" >';
+	tmp+='<tr  style="background:#eee;border:1px solid #bdbdbd;  font-size: 12px; height: 40px;font-weight: bold; margin-bottom: 10px;text-align: center;" id="head_title" class="head-title"></tr>';
 	tmp+='</table>';
 	dojo.query("#showrecord").append(tmp);
 	dojo.xhrPost({
@@ -431,15 +382,15 @@ function getAllcustomer(){
 			'agency_id':agency_id
 		},
 		handleAs:"json",
-		load: function(data) {
+		load: function(data){
 			alert(data);
 			dijit.byId('record_row').attr('value','');
 			if(data==''){
 				thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
 				thead+='<th><?php echo $tr->translate("NUM");?></th>';
-				thead+='<th><?php echo $tr->translate("BOOK_ID");?></th>';
-				thead+='<th ><?php echo $tr->translate("CUST_NAME");?></th>';
-				thead+='<th ><?php echo $tr->translate("DATE_BOOKING");?></th>';
+				thead+='<th><?php echo $tr->translate("BOOKING_NO");?></th>';
+				thead+='<th ><?php echo $tr->translate("CUSTOMER_NAME");?></th>';
+				thead+='<th ><?php echo $tr->translate("BOOKING_DATE");?></th>';
 				thead+='<th><?php echo $tr->translate("TOTAL");?></th>';
 				thead+=' <th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
 				thead+='<th><?php echo $tr->translate("PAID");?></th>';
@@ -455,11 +406,11 @@ function getAllcustomer(){
 				if(fund_title!=1){
 					thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
 					thead+='<th><?php echo $tr->translate("NUM");?></th>';
-					thead+='<th><?php echo $tr->translate("BOOK_ID");?></th>';
-					thead+='<th ><?php echo $tr->translate("CUST_NAME");?></th>';
-					thead+='<th ><?php echo $tr->translate("DATE_BOOKING");?></th>';
+					thead+='<th><?php echo $tr->translate("BOOKING_NO");?></th>';
+					thead+='<th style="margin-left:0px;width:200px;"><?php echo $tr->translate("CUSTOMER_NAME");?></th>';
+					thead+='<th ><?php echo $tr->translate("BOOKING_DATE");?></th>';
+					thead+='<th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
 					thead+='<th><?php echo $tr->translate("TOTAL");?></th>';
-					thead+=' <th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
 					thead+='<th><?php echo $tr->translate("PAID");?></th>';
 					thead+='<th><?php echo $tr->translate("PAYMENT_AMOUNT");?></th>';
 					thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
@@ -470,18 +421,17 @@ function getAllcustomer(){
 				}
 				temp='<td><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
 				temp+='<td>'+r+'</td>';
-				temp+='<td>'+r+'</td>';
-				temp+='<td>'+r+'</td>';
-				temp+='<td>'+r+'</td>';
-				temp+='<td>'+r+'</td>';
-			//	temp+='<td>'+data[i].borrow_no+'<input  type="hidden" value="'+data[i].borrow_id+'"  name="borrow_id_'+r+'"  id="borrow_id_'+r+'"  /></td>';
-			//	temp+='<td>'+data[i].book_name+"("+data[i].book_no+")"+'<input  type="hidden"   value="'+data[i].book_id+'"  name="book_id_'+r+'"  id="book_id_'+r+'"  /></td>';
-			//	temp+='<td>'+data[i].borr_qty+' ក្បាល<input  type="hidden"   value="'+data[i].borr_qty+'" required   name="borrow_qty_'+r+'"  id="borrow_qty_'+r+'"  /></td><input  type="hidden" value="'+data[i].borr_qty+'"  name="old_return_qty'+r+'"  id="old_return_qty'+r+'" dojoType="dijit.form.TextBox"   />';
-				temp+='<td><input  style="margin-left:0px;width:50px;font-weight:900; "  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].borr_qty+'"    name="return_qty_'+r+'"  id="return_qty_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"  onkeyup=" " required/></td>';
-			//	temp+='<td>'+setDate(data[i].return_date)+'<input  style="margin-left:0px;width:200px; "  type="hidden" data-dojo-props="constraints:{places:0}" value="'+data[i].return_date+'"    name="date_return_'+r+'"  id="date_return_'+r+'" dojoType="dijit.form.TextBox" /></td>';
-			//	temp+='<td><input  style="margin-left:0px;width:150px; "  type="text"  constraints='+'{datePattern:"dd/MM/yyyy"}'+'    value="now"    name="date_delay_'+r+'"  id="date_delay_'+r+'" dojoType="dijit.form.DateTextBox" readonly="true" /></td>';
-				temp+='<td><input  style="margin-left:0px;width:150px; "  type="text" data-dojo-props="constraints:{places:0}" value=""    name="note_'+r+'"  id="note_'+r+'" dojoType="dijit.form.TextBox" /></td>';
-				tmp='<tr style="border:1px solid #deafaf; font-size:14px;height:37px; !important;text-align:center;" id="row_capital'+r+'" >'
+				temp+='<td>'+data[i].booking_no+'</td>';
+				temp+='<td nowrap>'+data[i].last_name+'</td>';
+				temp+='<td nowrap>'+data[i].booking_date+'</td>';
+				temp+='<td><input  style="margin-left:0px;width:100px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].commision_fee_after+'"    name="commission_fee_'+r+'" id="commission_fee_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:100px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].totals+'"    name="total_'+r+'" id="total_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:100px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].paid_after+'" name="paid_'+r+'" id="paid_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
+				temp+='<td><input  style="margin-left:0px;width:100px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].borr_qty+'"   name="payment_amount'+r+'"  id="payment_amount'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " required/></td>';
+				temp+='<td><input  style="margin-left:0px;width:100px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].balance_after+'" name="balance_'+r+'"     id="balance_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" "  readonly="true"  /></td>';
+				temp+='<td><input  style="margin-left:0px;width:100px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].borr_qty+'"   name="total_agentcy_'+r+'"  id="total_agentcy_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"  /></td>';
+				temp+='<td><input  style="margin-left:0px;width:100px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].borr_qty+'"   name="total_owner_'+r+'"    id="total_owner_'+r+'" dojoType="dijit.form.NumberTextBox"  onkeyup=" " readonly="true"  /></td>';
+				tmp='<tr style="border:1px solid #bdbdbd; font-size:12px;height:37px; !important;text-align:center;" id="row_capital'+r+'" >'
 				tmp+="</tr>";
 				dojo.query("#t_amountmoneytype").append(tmp);
 				dojo.html.set(dojo.byId("row_capital"+r),temp, {
