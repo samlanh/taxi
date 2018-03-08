@@ -398,7 +398,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$sql="
 		SELECT d.*,
 		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs
-		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`first_name`!='' AND d.id=".$data['id'];
+		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`last_name`!='' AND d.id=".$data['id'];
 		$order=' LIMIT 1';
 		$row = $db->fetchRow($sql.$order);
 		
@@ -502,6 +502,10 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		if($search['date_type']==2){
 			$from_date =(empty($search['from_book_date']))? '1': "cb.`delivey_date` >= '".$search['from_book_date']." 00:00:00'";
 			$to_date = (empty($search['to_book_date']))? '1': "cb.`delivey_date` <= '".$search['to_book_date']." 23:59:59'";
+			
+			$from_time =(empty($search['start_time']))? '1': "cb.`delivey_time` >= '".$search['start_time']." 00:00:00'";
+			$to_time = (empty($search['delivery_time']))? '1': "cb.`delivey_time` <= '".$search['delivery_time']." 23:59:59'";
+			
 			$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
 		}
 		if($search['date_type']==1){
@@ -509,7 +513,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$to_date = (empty($search['to_book_date']))? '1': "cb.`booking_date` <= '".$search['to_book_date']." 23:59:59'";
 			$order=' ORDER BY cb.`booking_date`,cb.delivey_time ASC';
 		}
-		$where = "  AND ".$from_date." AND ".$to_date;
+		$where = "  AND ".$from_date." AND ".$to_date." AND ".$from_time." AND ".$to_time;
 		if($search["search_text"] !=""){
 			$s_where=array();
 			$s_search=addslashes(trim($search['search_text']));
@@ -1036,6 +1040,25 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 	      AND REPLACE(cb.payment_booking_no,' ','')='$book_no'
 	      AND REPLACE(c.last_name,' ','')='$cus_name'";
 	    return $db->fetchRow($sql);
+	}
+	
+	function deleteCarbooking($id){
+		$db = $this->getAdapter();
+		$db->beginTransaction();
+		try{
+			$this->_name='ldc_carbooking';
+			$where=" id = ".$id;
+			$_cus=array(
+					'status'	  => 0,
+					'user_id'     => $this->getUserId(),
+			);
+			$this->update($_cus, $where);
+			$db->commit();
+		}catch(exception $e){
+			Application_Form_FrmMessage::message("Application Error");
+			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			$db->rollBack();
+		}
 	}
 }
 ?>

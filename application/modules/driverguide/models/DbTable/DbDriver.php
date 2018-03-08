@@ -14,7 +14,7 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     	$lang= $dbgb->getCurrentLang();
     	$array = array(1=>"province_en_name",2=>"province_kh_name");
     	$arrayview = array(1=>"name_en",2=>"name_kh");
-    	$sql = "SELECT id,driver_id,first_name,last_name,
+    	$sql = "SELECT id,driver_id,last_name,
     	(SELECT ".$arrayview[$lang]." FROM `ldc_view` WHERE TYPE=1 AND key_code =$this->_name.`sex`) AS sex ,
     	tel,dob,pob,nationality,
     	group_num,home_num,street,commune,district,
@@ -35,7 +35,6 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     		$s_where=array();
     		$s_search=addslashes(trim($search['title']));
     		$s_where[]=" driver_id LIKE '%{$s_search}%'";
-    		$s_where[]=" first_name LIKE '%{$s_search}%'";
     		$s_where[]=" last_name LIKE '%{$s_search}%'";
     		$s_where[]=" tel LIKE '%{$s_search}%'";
     		$s_where[]=" pob LIKE '%{$s_search}%'";
@@ -82,7 +81,7 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     		}
     		$_arr = array(
 	    		'driver_id'=>$_data['client_no'],
-	    		'first_name'=>$_data['name_kh'],
+	    		//'first_name'=>$_data['name_kh'],
 	    		'last_name'=>$_data['name_en'],
 	    		'sex'=>$_data['sex'],
 	    		'dob'=>$_data['dob_client'],
@@ -161,7 +160,7 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
 	    	
 	    	$_arr = array(
 	    			'driver_id'=>$_data['client_no'],
-	    			'first_name'=>$_data['name_kh'],
+	    			//'first_name'=>$_data['name_kh'],
 	    			'last_name'=>$_data['name_en'],
 	    			'sex'=>$_data['sex'],
 	    			'dob'=>$_data['dob_client'],

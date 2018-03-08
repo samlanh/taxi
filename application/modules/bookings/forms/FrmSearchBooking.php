@@ -122,9 +122,28 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$status->setMultiOptions($opt_s);
 		$status->setValue($request->getParam("status"));
 		
-		$delivery_time = new Zend_Form_Element_Text("delivery_time");
+		/*$delivery_time = new Zend_Form_Element_Text("delivery_time");
 		$delivery_time->setAttribs(array('dojoType'=>'dijit.form.TimeTextBox','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		$working_status->setValue($request->getParam("delivery_time"));
+		*/
+		
+		$db_glob=new Application_Model_GlobalClass();
+		$time=$db_glob->getTime();
+		$delivery_time = new Zend_Form_Element_Select("delivery_time");
+		$delivery_time->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+				'autoComplete'=>"false",
+				'queryExpr'=>'*${0}*'
+		));
+		$delivery_time->setMultiOptions($time);
+		$delivery_time->setValue($request->getParam("delivery_time"));
+		
+		$start_time = new Zend_Form_Element_Select("start_time");
+		$start_time->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+				'autoComplete'=>"false",
+				'queryExpr'=>'*${0}*'
+		));
+		$start_time->setMultiOptions($time);
+		$start_time->setValue($request->getParam("start_time"));
 		
 		$db=new Vehicle_Model_DbTable_DbVehicle();
 		$rows_veh_typ=$db->getAllVehicleType();
@@ -143,13 +162,11 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$date_type->setMultiOptions($opt_s);
 		$date_type->setValue($request->getParam("date_type"));
 		
-		$this->addElements(array($status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
+		$this->addElements(array($start_time,$status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
 				 $driver_search,$vehicle_search,$agency_search,$payment_method_search,
 				$working_status
 				));
 		return $this;
 	}
-	
-	
 }
 

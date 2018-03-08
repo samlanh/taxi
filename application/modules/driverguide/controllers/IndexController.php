@@ -25,7 +25,7 @@ class Driverguide_indexController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,null);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("Driver's Id","First Name","Last Name","Gender","TEL","DOB","POB","Nationality","Group No","House No","Street No",
+			$collumns = array("Driver's Id","DRIVER_NAME","Gender","TEL","DOB","POB","Nationality","Group No","House No","Street No",
 					"Commune","District","Province","STATUS");
 			$link=array(
 					'module'=>'driverguide','controller'=>'index','action'=>'edit',

@@ -28,6 +28,9 @@ class Bookings_indexController extends Zend_Controller_Action {
 						'agency_search'	 =>'0',
 						'vehicle_type'	 =>'0',
 						'driver_search'  =>0,
+						
+						'start_time'  =>'',
+						'delivery_time'  =>'',
 						'agency_search'  =>0,
 						'status'       =>1,
 				);
@@ -292,6 +295,29 @@ class Bookings_indexController extends Zend_Controller_Action {
 			print_r(Zend_Json::encode($code));
 			exit();
 		}
+	}
+	
+	public function deleteAction(){
+		$id = $this->getRequest()->getParam("id");
+		$db = new Bookings_Model_DbTable_DbBooking();
+		echo "<script language='javascript'>
+		var txt;
+		var r = confirm('Do you really want to delete this row?');
+		if (r == true) {";
+		//$db->deleteSale($id);
+		echo "window.location ='".Zend_Controller_Front::getInstance()->getBaseUrl()."/bookings/index/deleteitem/id/".$id."'";
+		echo"}";
+		echo"else {";
+		echo "window.location ='".Zend_Controller_Front::getInstance()->getBaseUrl()."/bookings/index/'";
+		echo"}
+		</script>";
+	}
+	
+	function deleteitemAction(){
+		$id = $this->getRequest()->getParam("id");
+		$db = new Bookings_Model_DbTable_DbBooking();
+		$db->deleteCarbooking($id);
+		$this->_redirect("bookings/index/");
 	}
 	
 }

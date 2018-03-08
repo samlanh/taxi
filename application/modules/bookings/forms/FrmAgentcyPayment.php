@@ -21,9 +21,9 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$this->number = 'dijit.form.NumberTextBox';
 		$this->textareas = 'dijit.form.Textarea';
 	}
+	
 	public function FormBooking($data=null){
 		$request=Zend_Controller_Front::getInstance()->getRequest();
-		
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$booking_code = $_db->getNewCommissionPaymentNO();
 		$_reciept_no = new Zend_Dojo_Form_Element_ValidationTextBox('reciept_no');
@@ -94,6 +94,30 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 				));
 		$total_paid->setValue(0);
 		
+		$total_commission = new Zend_Dojo_Form_Element_NumberTextBox("total_commission_fee");
+		$total_commission->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$total_commission->setValue(0);
+		
+		$total_alls = new Zend_Dojo_Form_Element_NumberTextBox("total_alls");
+		$total_alls->setAttribs(
+				array(  'dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$total_alls->setValue(0);
+		
+		$total_all_paid = new Zend_Dojo_Form_Element_NumberTextBox("total_all_paid");
+		$total_all_paid->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$total_all_paid->setValue(0);
+		
 		$balance = new Zend_Dojo_Form_Element_NumberTextBox("balance");
 		$balance->setAttribs(
 				array('dojoType'=>$this->number,
@@ -101,6 +125,30 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 						'readonly'=>'readonly',
 				));
 		$balance->setValue(0);
+		
+		$all_balance = new Zend_Dojo_Form_Element_NumberTextBox("all_balance");
+		$all_balance->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$all_balance->setValue(0);
+		
+		$all_agentcy = new Zend_Dojo_Form_Element_NumberTextBox("all_agentcy");
+		$all_agentcy->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$all_agentcy->setValue(0);
+		
+		$total_owner = new Zend_Dojo_Form_Element_NumberTextBox("total_owner");
+		$total_owner->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$total_owner->setValue(0);
 		
 		$total_due = new Zend_Dojo_Form_Element_NumberTextBox("total_due");
 		$total_due->setAttribs(
@@ -124,7 +172,6 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$booking_date_end->setValue($c_date);
 		
 		if (!empty($data)){
-			
 			$_reciept_no->setValue($data['payment_no']);
 			$agency->setValue($data['agency_id']);
 			$payment_date->setValue(date("Y-m-d",strtotime($data['payment_date'])));
@@ -149,9 +196,14 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 				$balance,
 				$total_paid,
 				$total_due,
-				
+				$total_commission,
 				$booking_date_start,
-				$booking_date_end
+				$booking_date_end,
+				$total_all_paid,
+				$total_alls,
+				$all_balance,
+				$all_agentcy,
+				$total_owner
 			));
 		return $this;
 	}
