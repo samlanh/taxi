@@ -6,7 +6,7 @@ $frm=$this->frm_search;
   //print_r($this->rows);
 ?>
 <meta charset="utf-8">
-<title><?php echo $tr->translate("Vehicle Rental Price");?></title>
+<title><?php echo $tr->translate("RPT_INCOME_DETAIL");?></title>
 <script type="text/javascript">	
 	dojo.require("dijit.form.ValidationTextBox");
 	dojo.require('dijit.form.Form');	
@@ -70,7 +70,7 @@ $frm=$this->frm_search;
 				                	<td width="20%"></td>
 				                	<td width="60%" valign="top">
 				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
-				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("OTHER_EXPENSE");?></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("RPT_INCOME_DETAIL");?></h2>
 				                	</td>
 				                    <td width="20%"></td>
 				                </tr> 
@@ -89,7 +89,7 @@ $frm=$this->frm_search;
 				                    <td><?php echo $tr->translate("INVOICE");?></td>
 				                    <td><?php echo $tr->translate("CHEQUE_NO");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_TYPE");?></td>
-				                    <td><?php echo $tr->translate("EXPENSE_TYPE");?></td>
+				                    <td><?php echo $tr->translate("INCOME_TYPE");?></td>
 				                    <td><?php echo $tr->translate("TOTAL_AMOUNT");?></td>
 				                    <td><?php echo $tr->translate("DATE");?></td>
 				                    <td><?php echo $tr->translate("DESCRIPTION");?></td>
@@ -103,7 +103,7 @@ $frm=$this->frm_search;
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['invoice']?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['cheque_no']?></td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_type']?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['expen_type']?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['income_type']?></td>
 										<td align="left" style="line-height:15px;">&nbsp;$&nbsp;&nbsp;<?php echo number_format($row['total_amount'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['create_date']));?></td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['description']?></td>	

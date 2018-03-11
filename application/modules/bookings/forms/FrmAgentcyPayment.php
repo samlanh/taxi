@@ -47,7 +47,7 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$row_agen = $_db->getAllAgency();
 		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"));
 		$agency = new Zend_Dojo_Form_Element_FilteringSelect("agency");
-		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment()'));//getAllAgentcyPayment()
+		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment();'));//getAllAgentcyPayment()
 		foreach ($row_agen as $rs){
 			$opt_agen[$rs["id"]] = $rs["name"];
 		}
@@ -97,10 +97,23 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$total_commission = new Zend_Dojo_Form_Element_NumberTextBox("total_commission_fee");
 		$total_commission->setAttribs(
 				array('dojoType'=>$this->number,
-						'class'=>"fullside",
 						'readonly'=>'readonly',
 				));
 		$total_commission->setValue(0);
+		
+		$total_paid_commission = new Zend_Dojo_Form_Element_NumberTextBox("total_paid_commission");
+		$total_paid_commission->setAttribs(
+				array('dojoType'=>$this->number,
+				));
+		$total_paid_commission->setValue(0);
+		
+		$paid_commission = new Zend_Dojo_Form_Element_NumberTextBox("paid_commission");
+		$paid_commission->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$paid_commission->setValue(0);
 		
 		$total_alls = new Zend_Dojo_Form_Element_NumberTextBox("total_alls");
 		$total_alls->setAttribs(
@@ -203,7 +216,9 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 				$total_alls,
 				$all_balance,
 				$all_agentcy,
-				$total_owner
+				$total_owner,
+				$paid_commission,
+				$total_paid_commission
 			));
 		return $this;
 	}

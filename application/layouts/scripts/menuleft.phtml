@@ -88,7 +88,9 @@
 			if($rs['controller']=='index' AND $rs['module']=='expense' ){
 				$lblcontroller='EXPENSE';
 			}
-			
+			if($rs['controller']=='index' AND $rs['module']=='income' ){
+				$lblcontroller='INCOME';
+			}
 			if($module!=$rs['module']){
 				$newarray= array($rs['controller']=>$tr->translate(strtoupper($lblcontroller)));
 				$menu[$rs['module']]= $newarray;
@@ -123,6 +125,7 @@
 			'field-manager'=>'<i class="fa fa-window-restore" aria-hidden="true"></i>',
 			'agency'=>'<i class="fa fa-users" aria-hidden="true"></i>',
 			'expense'=>'<i class="fa fa-pencil-square" aria-hidden="true"></i>',
+			'income'=>'<i class="fa fa-pencil-square" aria-hidden="true"></i>',
 	);
 	
 	$arr_module = $session_user->arr_module;

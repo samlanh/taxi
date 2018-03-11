@@ -522,6 +522,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$s_where[]="REPLACE(c.phone,' ','')  LIKE '%{$s_search}%'";
 			$s_where[]="REPLACE(c.email,' ','')  LIKE '%{$s_search}%'";
 			$s_where[]="REPLACE(cb.`booking_no`,' ','')     LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(cb.`payment_booking_no`,' ','')     LIKE '%{$s_search}%'";
 			$s_where[]="REPLACE(tl.`location_name`,' ','')  LIKE '%{$s_search}%'";
 			$s_where[]="REPLACE(l.`location_name`,' ','')   LIKE '%{$s_search}%'";
 			$s_where[]="REPLACE(cb.`price`,' ','')          LIKE '%{$s_search}%'";

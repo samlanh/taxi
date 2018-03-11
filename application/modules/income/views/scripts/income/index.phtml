@@ -1,0 +1,115 @@
+<?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate("EXPENSE"));
+?>	
+<?php $frm =  $this->frm_search;
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+</script>
+<div class="row">
+	<div class="x_panel" >
+		 <div class="blog_form_title">
+		 	<h4><i class="fa fa-edit" aria-hidden="true"></i> <?php echo $tr->translate("EXPENSE")?></h4>
+		 </div>
+		<form id="list" name="list" action="" dojoType="dijit.form.Form" method="post">
+		  <div class="clearfix"></div>
+			<div class="form-group">
+				<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("title");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("payment_method");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("start_date");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement("end_date");?>
+		  		</div>
+		  		<div class="col-md-2 col-xs-12 mg-10">
+		  			<?php echo $frm->getElement('status_search');?>
+		  		</div>
+		  		<div class="col-md-1 col-xs-12 mg-10">
+		  			<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
+		  		</div>
+		  	</div>
+		</form>
+		<?php echo $this->list;?>
+	</div>
+</div>
+
+<script>
+/*Date.prototype.getAmPm = function () {
+	if( this.getHours() >= 12 ) { return 1 }; // pm
+	return 0; // am
+}
+
+var locale = {
+	en: {
+		month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September ', 'October', 'November', 'December'],
+		ampm: [ 'am', 'pm' ]
+	},
+	km: {
+		month: ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 
+'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'],
+		ampm: [ 'ព្រឹក', 'ល្ងាច' ]
+	}
+};
+
+var toLocaleNumber = function( num, lang, zeroPadding ) {
+	if( typeof num !== 'number' ) return null;
+
+	var numInteger = parseInt( num );
+	var numString = numInteger.toString();
+	
+	if( zeroPadding > 0 && numString.length < zeroPadding ) {
+		numString = '0' + numString;
+	}
+
+	// support only khmer
+	if( lang !== 'km' ) { return numString };
+
+	var khmerNumber = '';
+	var numbersKhmer = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
+
+	for( var i=0; i < numString.length; i++ ) {
+		khmerNumber += numbersKhmer[parseInt(numString[i])];
+	}
+
+	return khmerNumber;
+};
+
+var formatDate = function( d, lang ) {
+	var formattedDate = null;
+	var hours = d.getHours();
+	if( hours > 12 ) { hours -= 12; }; 
+
+	formattedDate = toLocaleNumber( d.getDate(), lang, 2 )
+		+ '-'
+		+ locale[lang]['month'][d.getMonth()]
+		+ '-'
+		+ toLocaleNumber( d.getFullYear(), lang )
+		+ ' '
+		+ toLocaleNumber( hours, lang, 2 )
+		+ ':'
+		+ toLocaleNumber( d.getMinutes(), lang, 2 )
+		+ ' '
+		+ locale[lang]['ampm'][d.getAmPm()];
+
+	return formattedDate;
+};
+
+
+$( document ).ready(function() {
+	var d = new Date('2014-02-03');
+	// for example: "28-May-2016 3:44 pm" "២៨-ឧសភា-២០១៦ ៣:៤៤ ល្ងាច"
+	 alert( formatDate( d, 'en' )+'='+formatDate( d, 'km' ) );
+	})
+	*/
+</script>

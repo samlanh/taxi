@@ -589,5 +589,41 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 		}
       return $db->fetchAll($sql.$where);
       }
+      
+      function getAllIncomeDetail($search = null){
+      	$db = $this->getAdapter();
+      	$sql = "SELECT e.id,e.title,e.invoice,e.payment_type,e.total_amount,e.cheque_no,create_date,
+      	(SELECT name_en FROM tb_view WHERE `key_code`=e.payment_type AND `type`=15 LIMIT 1) AS payment_type,
+      	ed.income_type_id,ed.total_amount,ed.description,
+      	(SELECT t.title FROM ln_income_type AS t WHERE t.id=ed.income_type_id LIMIT 1) AS income_type,
+      	(SELECT first_name FROM rms_users WHERE rms_users.id=e.user_id LIMIT 1) AS user_name,
+      	(SELECT name_en FROM tb_view WHERE tb_view.key_code=e.status AND tb_view.type=5 LIMIT 1) AS `status`
+      	FROM ln_income AS e,ln_income_detail AS ed
+      	WHERE e.id=ed.income_id ";
+      	$from_date =(empty($search['start_date']))? '1': "e.create_date >= '".$search['start_date']." 00:00:00'";
+      	$to_date = (empty($search['end_date']))? '1': "e.create_date <= '".$search['end_date']." 23:59:59'";
+      	$where = " AND ".$from_date." AND ".$to_date;
+      
+      	if(!empty($search['title'])){
+      		$s_where = array();
+      		$s_search = addslashes(trim($search['title']));
+      		$s_search = str_replace(' ', '', $s_search);
+      		$s_where[] = "REPLACE(e.invoice,' ','') LIKE '%{$s_search}%'";
+      		$s_where[] = "REPLACE(e.title,' ','') LIKE '%{$s_search}%'";
+      		$s_where[] = "REPLACE(e.cheque_no,' ','')  	LIKE '%{$s_search}%'";
+      		
+      		$s_where[] = "REPLACE((SELECT t.title FROM ln_income_type AS t WHERE t.id=ed.income_type_id LIMIT 1),' ','') LIKE '%{$s_search}%'";
+      		
+      		$where .=' AND ('.implode(' OR ',$s_where).')';
+      	}
+      	if($search['status_search']>-1){
+      		$where.= " AND e.status = ".$search['status_search'];
+      	}
+      	if($search['payment_method']>0){
+      		$where.= " AND e.payment_type = ".$search['payment_method'];
+      	}
+      	$order=" ORDER BY id DESC";
+      	return $db->fetchAll($sql.$where.$order);
+      }
  }
 

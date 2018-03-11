@@ -348,5 +348,22 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 				return array('id'=>$id,'client_code'=>$client_code);
 	}
 	
+	function addDriverAjax($data){
+		$this->_name='ldc_driver';
+		$d=$this->getAdapter();
+		$db = new Application_Model_DbTable_DbGlobal();
+		$id_client = $db->getDriverCode();
+		$_arr=array(
+				'driver_id'		=>$id_client,
+				'last_name'		=>$data['driver_name'],
+				'tel'			=>$data['driver_phone'],
+    			'create_date'	=>date("Y-m-d H:i:s"),
+				'status'  	    =>1,
+				'user_id'  	    =>$this->getUserId(),
+		);
+		$id=$this->insert($_arr);
+		$a=array('id'=>$id,'driver_id'=>$id_client);
+	    return $a;
+	}
 }
 

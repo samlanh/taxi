@@ -180,6 +180,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 	{
 		$id=$this->getRequest()->getParam('id');
 		$db = new Bookings_Model_DbTable_DbBooking();
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
 			$data['id']=$id;
@@ -198,6 +199,10 @@ class Bookings_indexController extends Zend_Controller_Action {
 		if (empty($row)){
 			$this->_redirect("/bookings/index");
 		}
+		$_db = new Application_Model_DbTable_DbGlobal();
+		$row_dri = $_db->getAllDriver();
+		array_unshift($row_dri,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->drivers=$row_dri;
 		//$this->view->driver_info = $db->getDriverInformation($row['driver_id']);
 		//$this->view->vehicle_info = $db->getvehicleinfo($row['vehicle_id']);
 		
@@ -320,5 +325,14 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$this->_redirect("bookings/index/");
 	}
 	
+	function addDriverAction(){
+		if($this->getRequest()->isPost()){
+			$db = new Group_Model_DbTable_DbClient();
+			$data = $this->getRequest()->getPost();
+			$code = $db->addDriverAjax($data);
+			print_r(Zend_Json::encode($code));
+			exit();
+		}
+	}
 }
 

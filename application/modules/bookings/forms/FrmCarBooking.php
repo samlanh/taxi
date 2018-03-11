@@ -104,9 +104,9 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$customer->setMultiOptions($opt_cu);
 		
 		$row_dri = $_db->getAllDriver();
-		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"),);
+		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"),'-1'=>$this->tr->translate("ADD_NEW"));
 		$driver = new Zend_Dojo_Form_Element_FilteringSelect("driver");
-		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriverInfoByid();','autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
+		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getDriverInfoByid();getPopupFormDriver();','autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		foreach ($row_dri as $rs){
 			$opt_dri[$rs["id"]] = $rs["name"];
 		}
