@@ -86,7 +86,7 @@ class Expense_ExpensetypeController extends Zend_Controller_Action {
 		}
 		$this->view->id=$row['id'];
 		$fm = new Group_Form_FrmCustype();
-		$frm = $fm->FrmAddCustomerType($row);
+		$frm = $fm->FrmAddExpenType($row);
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_custype = $frm;
 	}
