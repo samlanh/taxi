@@ -233,7 +233,7 @@ td {
 					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
 	                    <div class="col-md-9 col-sm-9 col-xs-9">
 	                    	<div class="col-md-12 col-sm-12 col-xs-12">
-	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_PAID')?>
+	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_AMOUNT_AFTER')?>
 			                   </label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
 			                    	<?php echo $frm->getElement('total_all_paid');?>
@@ -252,7 +252,7 @@ td {
 					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
 	                    <div class="col-md-9 col-sm-9 col-xs-9">
 	                    	<div class="col-md-12 col-sm-12 col-xs-12">
-	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_PAID')?>
+	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('PAYMENT_AMOUNT')?>
 			                   </label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
 			                    	<?php echo $frm->getElement('total_paid');?>
@@ -321,12 +321,21 @@ function calculateAllTotle(r){
 
 	commission_fee=dijit.byId("commission_fee_"+r).get("value");
 	total_commission_fee=dijit.byId("total_commission_fee_"+r).get("value");
+	commission_fee=isNaN(commission_fee)?0:commission_fee;
+	total_commission_fee=isNaN(total_commission_fee)?0:total_commission_fee;
+	if(commission_fee < total_commission_fee){
+		alert("Paid commission can not bigger commission fee !!!");
+		dijit.byId("total_commission_fee_"+r).set("value",commission_fee);
+		dijit.byId("total_commission_fee_"+r).focus();
+		netTotal();
+		return false;
+	}
 	
 	payment_amount=isNaN(payment_amount)?0:payment_amount;
 	total_all_paid=isNaN(total_all_paid)?0:total_all_paid;
 	total_paid=isNaN(total_paid)?0:total_paid;
 	if(total<payment_amount){
-		alert("Paid Can not bigger total !!!");
+		alert("Paid can not bigger total !!!");
 		dijit.byId("payment_amount"+r).set("value",total);
 		dijit.byId("balance_"+r).set("value",Number(total)-Number(dijit.byId("payment_amount"+r).get("value")));
 		dijit.byId("payment_amount"+r).focus();
@@ -405,16 +414,17 @@ function getAllAgentcyPayment(){
 				thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
 				thead+='<th><?php echo $tr->translate("NUM");?></th>';
 				thead+='<th nowrap><?php echo $tr->translate("BOOKING_NO");?></th>';
-				thead+='<th ><?php echo $tr->translate("CUSTOMER_NAME");?></th>';
-				thead+='<th nowrap><?php echo $tr->translate("BOOKING_DATE");?></th>';
-				thead+='<th><?php echo $tr->translate("TOTAL");?></th>';
+				thead+='<th style="margin-left:0px;width:200px;"><?php echo $tr->translate("CUSTOMER_NAME");?></th>';
+				thead+='<th ><?php echo $tr->translate("BOOKING_DATE");?></th>';
 				thead+='<th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
 				thead+='<th><?php echo $tr->translate("PAID_COMMISSION_FEE");?></th>';
-				thead+='<th><?php echo $tr->translate("PAID");?></th>';
+				thead+='<th><?php echo $tr->translate("DUE_BEFORE");?></th>';
+				thead+='<th><?php echo $tr->translate("PAID_AMOUNT");?></th>';
+				thead+='<th><?php echo $tr->translate("DUE");?></th>';
 				thead+='<th><?php echo $tr->translate("PAYMENT_AMOUNT");?></th>';
 				thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
-				thead+='<th><?php echo $tr->translate("PAID_STATUS");?></th>';
-				thead+='<th><?php echo $tr->translate("BALANC_STATUS");?></th>';
+				thead+='<th nowrap><?php echo $tr->translate("PAID_STATUS");?></th>';
+				thead+='<th nowrap><?php echo $tr->translate("BALANC_STATUS");?></th>';
 				fund_title=1;
 				dojo.query("#head_title").append(thead);
 			}
@@ -431,11 +441,12 @@ function getAllAgentcyPayment(){
 					thead+='<th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
 					thead+='<th><?php echo $tr->translate("PAID_COMMISSION_FEE");?></th>';
 					thead+='<th><?php echo $tr->translate("DUE_BEFORE");?></th>';
+					thead+='<th><?php echo $tr->translate("PAID_AMOUNT");?></th>';
 					thead+='<th><?php echo $tr->translate("DUE");?></th>';
 					thead+='<th><?php echo $tr->translate("PAYMENT_AMOUNT");?></th>';
 					thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
-					thead+='<th><?php echo $tr->translate("PAID_STATUS");?></th>';
-					thead+='<th><?php echo $tr->translate("BALANC_STATUS");?></th>';
+					thead+='<th nowrap><?php echo $tr->translate("PAID_STATUS");?></th>';
+					thead+='<th nowrap><?php echo $tr->translate("BALANC_STATUS");?></th>';
 					fund_title=1;
 					dojo.query("#head_title").append(thead);
 				}
@@ -455,14 +466,16 @@ function getAllAgentcyPayment(){
 				temp+='<td nowrap>'+data[i].last_name+'<input type="hidden"  value="'+data[i].customer_id+'"   name="customer_id_'+r+'" id="customer_id_'+r+'" dojoType="dijit.form.TextBox" /></td>';
 				temp+='<td nowrap>'+data[i].booking_date+'</td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].commision_fee_after+'"    name="commission_fee_'+r+'" id="commission_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].commision_fee_after+'"    name="total_commission_fee_'+r+'" id="total_commission_fee_'+r+'" dojoType="dijit.form.NumberTextBox" calculateAllTotle('+r+')/></td>';
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].total+'"    name="total_'+r+'" id="total_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].commision_fee_after+'"    name="total_commission_fee_'+r+'" id="total_commission_fee_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup="calculateAllTotle('+r+')"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].total+'"    name="total_'+r+'" id="total_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
+
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].paid_after+'"    name="paid_befor_'+r+'" id="paid_befor_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].total_after+'" name="total_after_'+r+'" id="total_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].total_after+'"   name="payment_amount'+r+'"  id="payment_amount'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup="calculateAllTotle('+r+')" required/></td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].balance_after+'" name="balance_'+r+'"     id="balance_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" "  readonly="true"  /></td>';
-				temp+='<td>'+data[i].status_paid+'<input type="hidden"  value="'+data[i].paid_status+'"   name="paid_status_'+r+'" id="paid_status_'+r+'" dojoType="dijit.form.TextBox" /></td>';
-				temp+='<td>'+data[i].status_balance+'<input type="hidden"  value="'+data[i].balance_status+'"   name="balance_status_'+r+'" id="balance_status_'+r+'" dojoType="dijit.form.TextBox" /></td>';
-				tmp='<tr style="border:1px solid #bdbdbd; font-size:12px;height:37px; !important;text-align:center;" id="row_capital'+r+'" >'
+				temp+='<td nowrap>'+data[i].status_paid+'<input type="hidden"  value="'+data[i].paid_status+'"   name="paid_status_'+r+'" id="paid_status_'+r+'" dojoType="dijit.form.TextBox" /></td>';
+				temp+='<td nowrap>'+data[i].status_balance+'<input type="hidden"  value="'+data[i].balance_status+'"   name="balance_status_'+r+'" id="balance_status_'+r+'" dojoType="dijit.form.TextBox" /></td>';
+				tmp='<tr style="border:1px solid #bdbdbd; font-size:12px;height:37px; !important;text-align:center;background:#ffff" id="row_capital'+r+'" >'
 				tmp+="</tr>";
 				dojo.query("#t_amountmoneytype").append(tmp);
 				dojo.html.set(dojo.byId("row_capital"+r),temp, {

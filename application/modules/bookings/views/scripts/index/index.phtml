@@ -1,5 +1,7 @@
 <?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
 <?php $frm =  $this->frm_search;
+
+$db_s=new Bookings_Model_DbTable_DbServiceType();
 ?>
 <title><?php echo $tr->translate("Car Booking");?></title>
 <style>
@@ -36,7 +38,7 @@
 </style>
 <script type="text/javascript">
 dojo.ready(function(){
-	 $('select[name="datatable-responsive_length"]').val('25');
+	 $('select[name="datatable-responsive_length"]').val('50');
 	 $('select[name="datatable-responsive_length"]').change();
 	 //dijit.byId("date_type").attr("value",2);
 	 dijit.byId("status").set("value",1);
@@ -146,20 +148,29 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		             </tr>
 		             </thead>
 			     <tbody>
-				     <?php $room_no='';$cus_name='';$book_no_color=''; if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
+				     <?php 
+				     $date_late='';$duplicate='';
+				     $room_no='';$cus_name='';$book_no_color=''; if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
 				          if($rs['status_working']==0){
-				          	$status_working='style="background:#c6ffda"';
+				          	if (strtotime($rs['delivey_date']) <= time() && $rs['status_working']==0) {
+				          		$status_working='style="background: #ff0f0f57 !important;"';
+				          	} else {
+				          		$status_working='style="background:#c6ffda"';
+				          	}
 				          }else if($rs['status_working']==1){
 				          	$status_working='style="background:#fff"';
 				          }else{
 				          	$status_working='style="background:#e4e4e4"';
 				          }
-				          if($rs['check_book_no']==$room_no && $rs['check_name']==$cus_name){
-				          	$book_no_color='style="background: #ffe5e5 !important;"';
-				          }else{
-				          	$book_no_color='';
-				          }
 				          $room_no=$rs['check_book_no'];$cus_name=$rs['check_name'];
+				          
+				          $doupli_cat=$db_s->checkNumberBooking($rs['numbooking']);
+				          
+				          if($doupli_cat['number_book']>=2){
+				          	$duplicate='background: #ffff66 !important;';
+				          }else{
+				          	$duplicate='';
+				          }
 				     	?>
 				     <tr class=" alternate  normal" <?php echo $status_working;?>>
 				       <td class="text-center"> <?php echo $key+1?></td>
@@ -167,11 +178,12 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td><?php echo date("d-M-Y",strtotime($rs['booking_date']));?> </td> 
 				       <td class="text-center"> <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?> </td>
 				       <td class="text-center"> <?php echo $rs['delivey_time']?> </td>
-				       <td class="text-center" style="text-align:left;" <?php echo $book_no_color;?>> 
+				       <td class="text-center" style="text-align:left; <?php echo $duplicate;?>" > 
 				       				<div class="dropdown">
 									  <span class="glyphicon glyphicon-triangle-bottom"></span>
 									  <div class="dropdown-content">
 									    <a href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("EDIT")?></a>
+									     <a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("PREPARE_CAR")?></a>
 									    <a href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("DELETE")?></a>
 									  </div>
 									</div>
@@ -184,6 +196,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 									  <span class="glyphicon glyphicon-triangle-bottom"></span>
 									  <div class="dropdown-content">
 									    <a href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("EDIT")?></a>
+									    <a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("PREPARE_CAR")?></a>
 									    <a href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("DELETE")?></a>
 									  </div>
 									</div>

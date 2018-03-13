@@ -52,6 +52,12 @@ h4.car_title {
 		<form action="" method="post" id="addbookingrental" dojoType="dijit.form.Form">
 			<script type="dojo/method" event="onSubmit">			
 				if(this.validate()) {
+					if(dijit.byId("other_booking_no").get("value")=='' &&  dijit.byId("cus_name").get("value")==''
+					   && dijit.byId("cus_phone").get("value")=='' && dijit.byId("cus_email").get("value")==''){
+						alert("Please enter any field​!!!");
+                        dijit.byId("cus_name").focus();
+						return false;
+					}
 					if(dijit.byId("delivery_time").get("value")==''){
 						alert("Please Chose Time");
                         dijit.byId("delivery_time").focus();

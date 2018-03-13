@@ -37,7 +37,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$to_book_date->setAttribs(array('dojoType'=>$this->date,'class'=>"fullside",'constraints'=>"{datePattern:'dd/MM/yyyy'}",
 		));
 		if($request->getParam("to_book_date")==""){
-			$to_book_date->setValue($c_date);
+			//$to_book_date->setValue($c_date);
 		}else{
 			$to_book_date->setValue($request->getParam("to_book_date"));
 		}

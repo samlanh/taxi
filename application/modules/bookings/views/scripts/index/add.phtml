@@ -56,6 +56,13 @@ h4.car_title {
                         dijit.byId("delivery_time").focus();
 						return false;
 					}
+					if(dijit.byId("other_booking_no").get("value")=='' &&  dijit.byId("cus_name").get("value")==''
+					   && dijit.byId("cus_phone").get("value")=='' && dijit.byId("cus_email").get("value")==''){
+						alert("Please enter any field​!!!");
+                        dijit.byId("cus_name").focus();
+						return false;
+					}
+					
 					var total_paid = dijit.byId('total_paid').get('value');
 					if(total_paid>0){
 						var payment_method = dijit.byId('payment_method').get('value');

@@ -19,7 +19,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 			}
 			else{
 				$search = array(
-						'to_book_date'   => date("Y-m-d"),
+						'to_book_date'   => date("2019-03-15"),
 						'from_book_date' => date("Y-m-01"),
 						'search_text'    => "",
 						'customer'       =>0,

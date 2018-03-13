@@ -174,7 +174,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$note->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 		
 		$other_booking_no = new Zend_Dojo_Form_Element_TextBox("other_booking_no");
-		$other_booking_no->setAttribs(array('dojoType'=>$this->text,'class'=>"fullside",'onkeyup'=>'checkBookNo();'));
+		$other_booking_no->setAttribs(array('dojoType'=>$this->text,'class'=>"fullside",));
 		
 		$row_payment = $_db->getVewOptoinTypeByTypes(11);
 		$opt_payment = array(0=>$this->tr->translate("SELECT_PAYMENT_METHOD"));
@@ -223,8 +223,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$cus_name->setAttribs(array(
 				'dojoType'=>'dijit.form.ValidationTextBox',
 				'class'=>'fullside',
-				'required'=>true,
-				'onKeyup'=>'checkBookNo()',
+				//'required'=>true,
+				//'onKeyup'=>'checkBookNo()',
 				'placeholder'=>$this->tr->translate("CUSTOMER_NAME")
 		));
 		
@@ -354,7 +354,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			}
 			 
 			$total_payment->setValue($data['grand_total']);
-			if (!empty($chekcpayment)){
+		/*	if (!empty($chekcpayment)){
 // 				$balance->setValue(0);
 // 				$total_paid->setValue(0);
 // 				$total_payment->setValue(0);
@@ -364,6 +364,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$total_paid->setAttribs(array('readonly'=>'readonly',));
 				$payment_note->setAttribs(array('readonly'=>'readonly',));
 			}
+			*/
 		}
 		
 		$this->addElements(array(

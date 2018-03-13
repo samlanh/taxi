@@ -485,10 +485,11 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			cb.`booking_date`,
 			cb.`delivey_date`,
 			cb.`price`,cb.`commision_fee`,cb.`other_fee`,cb.`total`,
-			(SELECT CONCAT(d.`first_name`,' ',d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
+			(SELECT CONCAT(d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
 			(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
 			cb.`status`,
-			(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_id LIMIT 1) AS user_name
+			(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_id LIMIT 1) AS user_name,
+			REPLACE(cb.payment_booking_no,' ','') AS numbooking
 			FROM `ldc_carbooking` AS cb,
 			`ldc_package_location` AS l,
 			`ldc_package_location` AS tl,
@@ -601,7 +602,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 // 		$cus_email = str_replace(' ', '', $cus_email);
 		$sql="SELECT id,last_name,phone,email FROM ldc_customer 
 		       WHERE  STATUS=1
-		       AND REPLACE(last_name,' ','')='$cus_name'";
+		       AND  id=$cus_name";
 		return $db->fetchRow($sql);
 	}
 	
@@ -611,11 +612,11 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		try{
 			$_db = new Application_Model_DbTable_DbGlobal();
 			$client_code = $_db->getNewClientId();
-			$cus_id=0;
-			$row_cus=$this->checkingCustomer($_data['cus_name']);
-			if(!empty($row_cus)){
-				$cus_id=$row_cus['id'];
-			}else{
+// 			$cus_id=0;
+// 			$row_cus=$this->checkingCustomer($_data['cus_name']);
+// 			if(!empty($row_cus)){
+// 				$cus_id=$row_cus['id'];
+// 			}else{
 				$_cus=array(
 						'customer_code'=>$client_code,
 						'last_name'	  => $_data['cus_name'],
@@ -626,7 +627,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 						);
 				$this->_name="ldc_customer";
 				$cus_id=$this->insert($_cus);
-			}
+// 			}
 			$booking_code = $_db->getNewCarBookingNO();
 			$_arrbooking=array(
 					'customer_id'	  => $cus_id,
@@ -733,10 +734,10 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			}
 			
 			$cus_id=0;
-			$row_cus=$this->checkingCustomer($_data['cus_name']);
-			if(!empty($row_cus)){
-				$cus_id=$row_cus['id'];
-			}else{
+// 			$row_cus=$this->checkingCustomer($_data['customer_id']);
+// 			if(!empty($row_cus)){
+// 				$cus_id=$row_cus['id'];
+// 			}else{
 				$_cus=array(
 						'customer_code'=>$client_code,
 						'last_name'	  => $_data['cus_name'],
@@ -747,7 +748,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 				);
 				$this->_name="ldc_customer";
 				$cus_id=$this->insert($_cus);
-			}
+// 			}
 			
 			$_arrbooking=array(
 					'customer_id'	  => $cus_id,
@@ -1061,5 +1062,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			$db->rollBack();
 		}
 	}
+	
+	
 }
 ?>
