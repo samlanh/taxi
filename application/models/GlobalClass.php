@@ -61,6 +61,7 @@ public function getOptonsHtmlTranslate($sql, $display, $value){
    	foreach($db->fetchAll($sql) as $r){
    		$option .= '<option value="'.$r[$value].'">'.htmlspecialchars($tr->translate(strtoupper($r[$display])), ENT_QUOTES).'</option>';
    	}
+   	
    	return $option;
    }   
    public function getImgAttachStatus($rows,$base_url, $case=''){

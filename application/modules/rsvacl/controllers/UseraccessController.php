@@ -182,6 +182,7 @@ public function addAction()
     	
     	}
     }
+    
 	public function editAction()
     {	
     	$this->_redirect('rsvacl/useraccess/index');
