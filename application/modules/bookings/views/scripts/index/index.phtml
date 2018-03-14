@@ -166,7 +166,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				          
 				          $doupli_cat=$db_s->checkNumberBooking($rs['numbooking']);
 				          
-				          if($doupli_cat['number_book']>=2){
+				          if($doupli_cat['number_book']>=2 && $rs['status_working']==0){
 				          	$duplicate='background: #ffff66 !important;';
 				          }else{
 				          	$duplicate='';

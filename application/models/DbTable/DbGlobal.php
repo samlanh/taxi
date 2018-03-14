@@ -760,8 +760,24 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	$rows = $db->fetchAll($sql);
   	return $rows;
   }
+ function getVihecleIds(){
+ 	$db=$this->getAdapter();
+ 	$sql=" SELECT d.`vehicle_id` FROM `ldc_driver` AS d WHERE d.`status`=1 AND d.vehicle_id!=0 AND d.vehicle_id!=''";
+ 	$row= $db->fetchAll($sql);
+ 	$option='';
+ 	$coma='';
+ 	if(!empty($row))foreach($row As $key=>$rs){
+ 		if($key>0){
+ 			$coma=',';
+ 		}
+ 		$option.=$coma.$rs['vehicle_id'];
+ 	}
+ 	return $option;
+ }
+  
   function getVehicleAvailableList($vehicle_id=null){
   	$db = $this->getAdapter();
+  	$car_id=$this->getVihecleIds();
   	$sql='SELECT v.id,
 		CONCAT(m.`title`," ",mo.`title`," ",smo.`title`," (",v.`reffer`,")") AS `name`
 		FROM `ldc_vehicle` AS v,
@@ -776,9 +792,9 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 		AND v.`status`=1 
   	';
   	if (!empty($vehicle_id)){
-  		$sql.=" AND (v.`id` NOT IN (SELECT d.`vehicle_id` FROM `ldc_driver` AS d WHERE d.`status`=1) OR v.`id`=$vehicle_id)";
+  		$sql.=" AND v.`id` NOT IN ('$vehicle_id')";
   	}else{
-  		$sql.=" AND v.`id` NOT IN (SELECT d.`vehicle_id` FROM `ldc_driver` AS d WHERE d.`status`=1)";
+  		$sql.=" AND v.`id` NOT IN ('$car_id')";
   	}
   	return $db->fetchAll($sql);
   }

@@ -10,27 +10,6 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
     function indexAction(){
 	  	
 	 }
-	 
-// 	  function rptDriverPaymentAction(){
-// 	  	if($this->getRequest()->isPost()){
-// 	  		$search = $this->getRequest()->getPost();
-// 	  	}
-// 	  	else{
-// 	  		$search = array(
-// 	  				'adv_search'=>'',
-// 	  				'status'=>-1,
-// 	  				'start_date'=> date('Y-m-d'),
-// 	  				'end_date'=>date('Y-m-d'));
-// 	  	}
-	  	
-// 	  	$db = new Report_Model_DbTable_DbBookingPayment();
-// 		$this->view->rows = $db->getAllVehiclePrice($search);
-		
-// 		$frm = new Application_Form_FrmAdvanceSearch();
-// 		$form = $frm->AdvanceSearch();
-// 		Application_Model_Decorator::removeAllDecorator($form);
-// 		$this->view->frm = $form;
-// 	  }
 	  
 	  function rptVehiclemaintenanceAction(){
 	  	if($this->getRequest()->isPost()){
@@ -38,7 +17,8 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	}
 	  	else{
 	  		$search = array(
-	  				'adv_search'=>'',
+	  				'title'=>'',
+	  				'payment_method'=>'payment_method',
 	  				'status'=>-1,
 	  				'start_date'=> date('Y-m-d'),
 	  				'end_date'=>date('Y-m-d'));
@@ -47,10 +27,10 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
 	  	$this->view->rows = $db->getAllExpenseMaintenance($search);
 	  
-	  	$frm = new Application_Form_FrmAdvanceSearch();
-	  	$form = $frm->AdvanceSearch();
-	  	Application_Model_Decorator::removeAllDecorator($form);
-	  	$this->view->frm = $form;
+	  	$frm = new Expense_Form_FrmSearchInfo();
+	  	$frm =$frm->search();
+	  	Application_Model_Decorator::removeAllDecorator($frm);
+	  	$this->view->frm_search = $frm;
 	  }
 	  
 	  function rptVehiclemaintenanceDetailAction(){

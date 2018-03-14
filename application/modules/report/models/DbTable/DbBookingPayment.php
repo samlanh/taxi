@@ -77,28 +77,23 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 		      	SUM(total_amount) as total_amount,create_date,
 		      	(SELECT first_name FROM rms_users WHERE rms_users.id=m.user_id LIMIT 1) AS user_name,`status`
 		      	FROM ln_expense_maintenance AS m  ";
-//       	$from_date =(empty($search['start_date']))? '1': "m.create_date >= '".$search['start_date']." 00:00:00'";
-//       	$to_date = (empty($search['end_date']))? '1': "m.create_date <= '".$search['end_date']." 23:59:59'";
-//       	$where = " WHERE ".$from_date." AND ".$to_date;
-      	$where=" where 1";
-//       	if(!empty($search['title'])){
-//       		$s_where = array();
-//       		$s_search = addslashes(trim($search['title']));
-//       		$s_search = str_replace(' ', '', $s_search);
-//       		$s_where[] = "REPLACE(m.invoice,' ','') LIKE '%{$s_search}%'";
-//       		$s_where[] = "REPLACE(m.title,' ','') LIKE '%{$s_search}%'";
-//       		$s_where[] = "REPLACE(m.cheque_no,' ','')  	LIKE '%{$s_search}%'";
-//       		$where .=' AND ('.implode(' OR ',$s_where).')';
-//       	}
-//       	if($search['status_search']>-1){
-//       		$where.= " AND m.status = ".$search['status_search'];
-//       	}
-//       	if($search['payment_method']>0){
-//       		$where.= " AND m.payment_type = ".$search['payment_method'];
-//       	}
-//       	if($search['vehicle_id']>0){
-//       		$where.= " AND m.vehicle_id = ".$search['vehicle_id'];
-//       	}
+      	$from_date =(empty($search['start_date']))? '1': "m.create_date >= '".$search['start_date']." 00:00:00'";
+      	$to_date = (empty($search['end_date']))? '1': "m.create_date <= '".$search['end_date']." 23:59:59'";
+      	$where = " WHERE ".$from_date." AND ".$to_date;
+      	if(!empty($search['title'])){
+      		$s_where = array();
+      		$s_search = addslashes(trim($search['title']));
+      		$s_search = str_replace(' ', '', $s_search);
+      		$s_where[] = "REPLACE(m.invoice,' ','') LIKE '%{$s_search}%'";
+      		$s_where[] = "REPLACE(m.cheque_no,' ','')  	LIKE '%{$s_search}%'";
+      		$where .=' AND ('.implode(' OR ',$s_where).')';
+      	}
+      	if($search['status_search']>-1){
+      		$where.= " AND m.status = ".$search['status_search'];
+      	}
+      	if($search['payment_method']>0){
+      		$where.= " AND m.payment_type = ".$search['payment_method'];
+      	}
       	$order=" GROUP BY vehicle_id ORDER BY id DESC";
       	//echo $sql.$where;
       	return $db->fetchAll($sql.$where.$order);
@@ -106,7 +101,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       
       function getDriverInfor($id){
       	$db=$this->getAdapter();
-      	$sql="SELECT em.id,em.vehicle_id,em.*,
+      	$sql="SELECT em.id,em.vehicle_id,em.*, 
 		        d.driver_id,d.first_name,d.last_name,d.sex,d.photo,d.dob,d.nationality,d.tel,d.id_card,
 		        (SELECT name_en FROM tb_view WHERE key_code=d.sex AND TYPE=13 LIMIT 1)AS gender
 		        FROM ln_expense_maintenance AS em,ldc_vehicle AS v,ldc_driver AS d
@@ -130,9 +125,8 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 				 (SELECT sm.title FROM `ldc_submodel` AS sm WHERE sm.id=v.`sub_model`) AS sub_model,
 				 (SELECT vt.`title` FROM `ldc_vechicletye` AS vt WHERE vt.id=v.`car_type` LIMIT 1) AS `type`,
 				 (SELECT e.`capacity` FROM `ldc_engince` AS e WHERE e.id=v.`engine`) AS `engine`
-     		 FROM ln_expense_maintenance AS em,ldc_vehicle AS v,ldc_driver AS d
+     		 FROM ln_expense_maintenance AS em,ldc_vehicle AS v
 		       WHERE em.vehicle_id=v.id
-		       AND v.id=d.vehicle_id 
 		       AND em.id=$id";
       	return $db->fetchRow($sql);
       }

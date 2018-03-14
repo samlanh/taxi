@@ -1,10 +1,17 @@
-<?php $filter = $this->frm_search;
+<?php $frm = $this->frm_search;
 $tr = Application_Form_FrmLanguages::getCurrentlanguage();
 $url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
 $url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
-$frm=$this->frm;
+//$frm=$this->frm;
 // print_r($this->rows);
 ?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+</script>
 <meta charset="utf-8">
 <title><?php echo $tr->translate("Vehicle Rental Price");?></title>
 <form method="post">
@@ -14,23 +21,27 @@ $frm=$this->frm;
 	<div class="x_panel " >
 		<form method="post">
 			<div style=" margin:0 auto; padding:0px 0.2cm">
-		  	  <div class="form-group">
-				  <div class="col-md-2 col-xs-12 mg-10">
-				  	<?php echo $frm->getElement('adv_search');?>
-				  </div>
-				  <div class="col-md-2 col-xs-12 mg-10">
-					   <?php echo $frm->getElement('status');?>
-				  </div>
-				  <div class="col-md-2 col-xs-12 mg-10">
-					  <?php echo $frm->getElement('btn_search');?>
-				  </div>
-				   <div class="col-md-2 col-xs-12 mg-10">
-				 	 
-				  </div>
-				  <div class="col-md-2 col-xs-12 mg-10">
-					   
-				  </div>
-			  </div>
+		  	   <div class="form-group">
+					<div class="col-md-2 col-xs-12 mg-10">
+			  			<?php echo $frm->getElement("title");?>
+			  		</div>
+			  		<div class="col-md-2 col-xs-12 mg-10">
+			  			<?php echo $frm->getElement("payment_method");?>
+			  		</div>
+			  		
+			  		<div class="col-md-2 col-xs-12 mg-10">
+			  			<?php echo $frm->getElement("start_date");?>
+			  		</div>
+			  		<div class="col-md-2 col-xs-12 mg-10">
+			  			<?php echo $frm->getElement("end_date");?>
+			  		</div>
+			  		<div class="col-md-2 col-xs-12 mg-10">
+			  			<?php echo $frm->getElement('status_search');?>
+			  		</div>
+			  		<div class="col-md-1 col-xs-12 mg-10">
+			  			<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
+			  		</div>
+			  	</div>
 			  </div>
 		</form>
 		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
@@ -76,10 +87,11 @@ $frm=$this->frm;
 				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
 				                 <tr class="header">
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
-				                     
-				                    <td><?php echo $tr->translate("VEHICLE_REF_NO");?></td>
+				                    <th class="totalbr" ><?php echo $tr->translate('INVOICE')?></th> 
+						            <th class="totalbr"><?php echo $tr->translate('CHEQUE_NO')?></th>
+						            <td><?php echo $tr->translate("VEHICLE_REF_NO");?></td>
 				                    <td><?php echo $tr->translate("PAYMENT_TYPE");?></td>
-				                    
+				                     <td><?php echo $tr->translate("EXPENSE_TYPE");?></td>
 				                    <td><?php echo $tr->translate("TOTAL_AMOUNT");?></td>
 				                    <td><?php echo $tr->translate("CTEATE_DATE");?></td>
 				                    <td><?php echo $tr->translate("USER_NAME");?></td>
@@ -88,8 +100,11 @@ $frm=$this->frm;
 				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
 									<tr align="center" style="line-height: 18px; background: #fff;">
 										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
-										<td align="left" style="line-height:15px;"><a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-vehiclemaintenance-detail/id/<?php echo $row["id"]?>">&nbsp;<?php echo $row['car_no'];?></a></td>	
-										<td align="left" style="line-height:15px;"><a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-vehiclemaintenance-detail/id/<?php echo $row["id"]?>">&nbsp;<?php echo $row['title'];?></a></td>	
+										<td align="left" style="line-height:15px;"><a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-vehiclemaintenance-detail/id/<?php echo $row["id"]?>">&nbsp;<?php echo $row['invoice'];?></a></td>
+										<td align="left" style="line-height:15px;"><a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-vehiclemaintenance-detail/id/<?php echo $row["id"]?>">&nbsp;<?php echo $row['cheque_no'];?></a></td>
+										<td align="left" style="line-height:15px;"><a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-vehiclemaintenance-detail/id/<?php echo $row["id"]?>">&nbsp;<?php echo $row['car_no'];?></a></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['payment_type']?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['title'];?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;$&nbsp;&nbsp;<?php echo number_format($row['total_amount'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['create_date']));?></td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['user_name'];?></td>

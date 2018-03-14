@@ -8,6 +8,7 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     	$session_user=new Zend_Session_Namespace('authcar');
     	return $session_user->user_id;
     }
+    
     function getAllDriverGuide($search=null){
     	$db = $this->getAdapter();
     	$dbgb = new Application_Model_DbTable_DbGlobal();
@@ -49,6 +50,7 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
     	$order=' ORDER BY id DESC';
     	return $db->fetchAll($sql.$where.$order);
     }
+    
     function addDriver($_data){
     	$db = $this->getAdapter();
     	$db->beginTransaction();
