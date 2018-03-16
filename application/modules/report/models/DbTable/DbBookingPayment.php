@@ -293,9 +293,9 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 					l.`location_name` AS from_location,
 					tl.`location_name` AS to_location,
 					cb.`booking_date`,
-					cb.`delivey_date`,
+					cb.`delivey_date`,cb.delivey_time,
 					cb.`price`,cb.`commision_fee`,cb.`other_fee`,cb.`total`,
-					(SELECT CONCAT(d.`first_name`,' ',d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
+					(SELECT CONCAT(d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
 					(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
 					cb.`status`
 					FROM `ldc_carbooking` AS cb,
@@ -306,7 +306,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 					c.`id` = cb.`customer_id` 
 					AND l.`id` = cb.`from_location`
 					AND tl.`id` = cb.`to_location`
-					AND cb.`status` >-1 ";
+					AND cb.`status` >-1 AND cb.status_working=0 ";
 			if($search["adv_search"] !=""){
 				$s_where=array();
 				$s_search=addslashes(trim($search['adv_search']));
@@ -330,7 +330,9 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 			$search['end_date']=date("Y-m-d", strtotime($search['end_date'].$str_next));
 			$to_date = (empty($search['end_date']))? '1': " cb.`delivey_date` <= '".$search['end_date']." 23:59:59'";
 			$where .= " AND ".$to_date;
-	      	return $db->fetchAll($sql.$where);
+			
+			$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
+	      	return $db->fetchAll($sql.$where.$order);
       }
       
       function getCommissionPaymentById($id){

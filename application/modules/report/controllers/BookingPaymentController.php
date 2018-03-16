@@ -149,7 +149,10 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	}
 	  	$this->view->search=$search;
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
-	  	$row=$this->view->row_customer = $db->getCustomerNearlyPayment($search);
+	  	$row=$db->getCustomerNearlyPayment($search);
+	  	$glClass = new Application_Model_GlobalClass();
+	  	$rs_rows=$glClass->getHoursStudy($row);
+	  	$row=$this->view->row_customer = $rs_rows;
 	  	$frm = new Application_Form_FrmAdvanceSearch();
 	  	$form = $frm->AdvanceSearch();
 	  	Application_Model_Decorator::removeAllDecorator($form);

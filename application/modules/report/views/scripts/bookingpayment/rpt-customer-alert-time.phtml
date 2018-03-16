@@ -74,6 +74,12 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				tr.header td {
 				    padding: 5px;
 				}
+				table { page-break-inside:auto }
+				tr{ page-break-inside:avoid; page-break-after:auto; }
+				#header {
+					 display: table-header-group;
+					 page-break-inside:avoid; page-break-after:auto;
+				}
 				</style>
 				<table style="font-family: 'Khmer OS Content'; width:100%;">
 					<tr>
@@ -97,6 +103,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				    <tr>
 				    	<td>
 				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+				                 <thead> 
 				                 <tr class="header">
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
 				                    <td><?php echo $tr->translate("BOOKING_NO");?></td>
@@ -113,6 +120,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 			                        <th><?php echo $tr->translate("DELIVERY_TIME")?></th> 
 			                        <th><?php echo $tr->translate("ACTIVE")?></th> 
 				                </tr>
+				                 </thead> 
 				               <?php  $status_drinver='';	
 				               $offet=strtotime("+2 hours");
 				               $gogletime=date("H:i:s",$offet);

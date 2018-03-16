@@ -61,6 +61,12 @@ $frm=$this->frm_search;
 				tr.header td {
 				    padding: 5px;
 				}
+table { page-break-inside:auto }
+tr{ page-break-inside:avoid; page-break-after:auto; }
+#header {
+	 display: table-header-group;
+	 page-break-inside:avoid; page-break-after:auto;
+}
 				</style>
 				<table style="font-family: 'Khmer OS Content'; width:100%;">
 					<tr>
@@ -84,6 +90,7 @@ $frm=$this->frm_search;
 				    <tr>
 				    	<td>
 				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+				                <thead> 
 				                 <tr class="header">
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
 				                    <td><?php echo $tr->translate("INVOICE");?></td>
@@ -96,6 +103,7 @@ $frm=$this->frm_search;
 				                    <td><?php echo $tr->translate("USER_NAME");?></td>
 				                    <td><?php echo $tr->translate("STATUS");?></td>
 				                </tr>
+				                </thead>
 				               <?php $total=0;
 				               if(!empty($this->rows)) foreach($this->rows as $key =>$row){?>
 									<tr align="center" style="line-height: 18px; background: #fff;">

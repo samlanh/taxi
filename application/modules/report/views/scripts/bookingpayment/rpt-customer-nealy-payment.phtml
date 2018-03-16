@@ -61,6 +61,14 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				tr.header td {
 				    padding: 5px;
 				}
+				
+				table { page-break-inside:auto }
+				tr{ page-break-inside:avoid; page-break-after:auto; }
+				#header {
+					 display: table-header-group;
+					 page-break-inside:avoid; page-break-after:auto;
+				}
+				
 				</style>
 				<table style="font-family: 'Khmer OS Content'; width:100%;">
 					<tr>
@@ -84,6 +92,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				    <tr>
 				    	<td>
 				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+				               <thead> 
 				                 <tr class="header">
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
 				                    <td><?php echo $tr->translate("BOOKING_NO");?></td>
@@ -92,6 +101,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				                    <td><?php echo $tr->translate("TO_LOCATION");?></td>
 				                    <td><?php echo $tr->translate("BOOKING_DATE");?></td>
 				                    <td><?php echo $tr->translate("DELIVERY_DATE");?></td>
+				                    <td><?php echo $tr->translate("DELIVERY_TIME");?></td>
 				                    <td><?php echo $tr->translate("CAR_RENT_FEE");?></td>
 				                    <td><?php echo $tr->translate("COMMISSION_FEE");?></td>
 			                        <td><?php echo $tr->translate("OTHER_FEE");?></td>
@@ -102,7 +112,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 			                        <td><?php echo $tr->translate("RETURN_DATE");?></td>
 			                        <td><?php echo $tr->translate("REMAIN_DAY");?></td>
 				                </tr>
-				                
+				                 </thead> 
 				               <?php  $status_drinver='';
 				               if(!empty($this->row_customer)) foreach($this->row_customer as $key =>$row){
 				               	
@@ -120,6 +130,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 										<td align="left"><span style="line-height:15px;">&nbsp;<?php echo $row['to_location']; ?></span>&nbsp;</td>	
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['booking_date']))?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['delivey_date']))?> </td>	
+										<td class="text-center">&nbsp;  <?php echo $row['delivey_time']?> </td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['price']!=0) echo '$&nbsp;'.number_format($row['price'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['commision_fee']!=0) echo '$&nbsp;'.number_format($row['commision_fee'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['other_fee']!=0) echo '$&nbsp;'.number_format($row['other_fee'],2);?></td>
