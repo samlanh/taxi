@@ -619,5 +619,89 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	$order=" ORDER BY id DESC";
       	return $db->fetchAll($sql.$where.$order);
       }
+      
+      function getAllCarBookingPayment($search){
+      	$db = $this->getAdapter();
+      	$glob=new Application_Model_DbTable_DbGlobal();
+      	$lang= $glob->getCurrentLang();
+      	$array = array(1=>"name_en",2=>"name_kh");
+      	$from_date=$search["from_book_date"];
+      	$to_date=$search["to_book_date"];
+      	$sql=" SELECT cb.id,cb.*,cb.`booking_no`,c.last_name,c.phone,c.email,
+      	(SELECT g.last_name FROM ldc_agency AS g WHERE g.id=cb.agency_id LIMIT 1) AS agency_name,
+      	(SELECT v.title FROM ldc_vechicletye AS v WHERE v.id=cb.vehicletype_id LIMIT 1) AS vehicle_type,
+      	l.`location_name` AS from_location,
+      	tl.`location_name` AS to_location,
+      	cb.`booking_date`,
+      	cb.`delivey_date`,
+      	cb.`price`,cb.`commision_fee`,cb.`other_fee`,cb.`total`,
+      	(SELECT CONCAT(d.`first_name`,' ',d.`last_name`) FROM `ldc_driver` AS d WHERE d.`id` = cb.`driver_id` LIMIT 1) AS driver,cb.driver_fee,
+      	(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
+      	(SELECT name_en FROM tb_view WHERE tb_view.key_code=cb.status AND tb_view.type=5 LIMIT 1) AS `status`,
+      	(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.paid_status AND v.type=18 LIMIT 1) AS p_status,
+        (SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.balance_status AND v.type=19 LIMIT 1) AS b_status,
+      	(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_id LIMIT 1) AS user_name
+      	FROM `ldc_carbooking` AS cb,
+      	`ldc_package_location` AS l,
+      	`ldc_package_location` AS tl,
+      	ldc_customer AS c
+      	WHERE
+      	c.id=cb.customer_id
+      	AND l.`id` = cb.`from_location`
+      	AND tl.`id` = cb.`to_location`
+      	AND cb.`status` >-1 ";
+      	$where = '';
+      
+      	if($search['date_type']==2){
+      	$from_date =(empty($search['from_book_date']))? '1': "cb.`delivey_date` >= '".$search['from_book_date']." 00:00:00'";
+      	$to_date = (empty($search['to_book_date']))? '1': "cb.`delivey_date` <= '".$search['to_book_date']." 23:59:59'";
+      	}
+      	if($search['date_type']==1){
+      		$from_date =(empty($search['from_book_date']))? '1': "cb.`booking_date` >= '".$search['from_book_date']." 00:00:00'";
+      		$to_date = (empty($search['to_book_date']))? '1': "cb.`booking_date` <= '".$search['to_book_date']." 23:59:59'";
+      	}
+      	$where = "  AND ".$from_date." AND ".$to_date;
+      	if($search["search_text"] !=""){
+      	$s_where=array();
+      	$s_search=addslashes(trim($search['search_text']));
+      	$s_search = str_replace(' ', '', $s_search);
+      	$s_where[]="REPLACE(c.last_name,' ','')   LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(c.phone,' ','')  LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(c.email,' ','')  LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(cb.`booking_no`,' ','')     LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(cb.`payment_booking_no`,' ','')     LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(tl.`location_name`,' ','')  LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(l.`location_name`,' ','')   LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(cb.`price`,' ','')          LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(cb.`commision_fee`,' ','')  LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(cb.`other_fee`,' ','')      LIKE '%{$s_search}%'";
+      	$s_where[]="REPLACE(cb.`total`,' ','')          LIKE '%{$s_search}%'";
+      	$where.=' AND ('.implode(' OR ',$s_where).')';
+      	}
+      	if ($search['agency_search']>0){
+      	$where.=" AND cb.`agency_id`=".$search['agency_search'];
+      	}
+      	if ($search['vehicle_type']>0){
+      	$where.=" AND cb.`vehicletype_id`=".$search['vehicle_type'];
+      	}
+      	if ($search['working_status']>-1){
+      	$where.=" AND cb.`status_working`=".$search['working_status'];
+      	}
+      	if ($search['driver_search']>0){
+      	$where.=" AND cb.`driver_id`=".$search['driver_search'];
+      	}
+      	if ($search['agency_search']>0){
+      	$where.=" AND cb.`agency_id`=".$search['agency_search'];
+      	}
+       if ($search['customer']>0){
+      				$where.=" AND cb.`customer_id`=".$search['customer'];
+       }
+      if ($search['status']>-1){
+      $where.=" AND cb.`status`=".$search['status'];
+      }
+      $order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
+      //echo $sql.$where.$order;
+      return $db->fetchAll($sql.$where.$order);
+      }
  }
 
