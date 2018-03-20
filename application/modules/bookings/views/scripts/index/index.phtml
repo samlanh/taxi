@@ -132,6 +132,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		    	          <th><?php echo $tr->translate("CUS_EMAIL")?></th> 
 		    	          <th><?php echo $tr->translate("VEHICLE_TYPE")?></th> 
 		    	          <th><?php echo $tr->translate("TOTAL_PAID")?> </th> 
+		    	          <th><?php echo $tr->translate("NoPay")?> </th> 
+		    	          <th><?php echo $tr->translate("Cost")?> </th> 
 		    	          <th><?php echo $tr->translate("BALANCE")?> </th> 
 		    	          <th><?php echo $tr->translate("TOTAL_PAYMENT")?> </th> 
 		    	          <th><?php echo $tr->translate("AGENCY_NAME")?> </th> 
@@ -160,7 +162,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				          }else if($rs['status_working']==1){
 				          	$status_working='style="background:#fff"';
 				          }else{
-				          	$status_working='style="background:#e4e4e4"';
+				          	$status_working='style="background:#a59e9e"';
 				          }
 				          $room_no=$rs['check_book_no'];$cus_name=$rs['check_name'];
 				          
@@ -182,9 +184,9 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       				<div class="dropdown">
 									  <span class="glyphicon glyphicon-triangle-bottom"></span>
 									  <div class="dropdown-content">
-									    <a href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("EDIT")?></a>
-									     <a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("PREPARE_CAR")?></a>
-									    <a href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("DELETE")?></a>
+									    <a  target="_blank" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("EDIT")?></a>
+									    <a  target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("PREPARE_CAR")?></a>
+									    <a  href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("DELETE")?></a>
 									  </div>
 									</div>
 				       <?php echo $rs['payment_booking_no']?></td> 
@@ -195,15 +197,19 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <div class="dropdown" >
 									  <span class="glyphicon glyphicon-triangle-bottom"></span>
 									  <div class="dropdown-content">
-									    <a href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("EDIT")?></a>
-									    <a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("PREPARE_CAR")?></a>
-									    <a href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("DELETE")?></a>
+									    <a  target="_blank" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("EDIT")?></a>
+									    <a  target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("PREPARE_CAR")?></a>
+									    <a   href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("DELETE")?></a>
 									  </div>
 									</div>
 				        <?php echo $rs['phone']?></td> 
 				       <td class="text-center"> <?php echo $rs['email']?></td> 
 				       <td class="text-center"><?php echo $rs['vehicle_type']?> </td>
 				       <td class="text-center"> <?php echo ($rs['paid']==0)?"":"$&nbsp;".number_format($rs["paid"],2);?> </td>
+				       
+				       <td class="text-center"> <?php echo ($rs['total']==0)?"":"$&nbsp;".number_format($rs["total"],2);?> </td>
+				       <td class="text-center"> <?php echo ($rs['price']==0)?"":"$&nbsp;".number_format($rs["price"],2);?> </td>
+				       
 				       <td class="text-center"> <?php echo ($rs['balance']==0)?"":"$&nbsp;".number_format($rs["balance"],2);?></td> 
 				       <td class="text-center">  <?php echo ($rs['grand_total_after']==0)?"":"$&nbsp;".number_format($rs["grand_total_after"],2);?></td> 
 				       <td class="text-center"><?php echo $rs['agency_name']?> </td>
@@ -215,8 +221,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center"><?php echo ($rs['driver_fee']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>
 				       <td class="text-center" style="background:#fff"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"> <?php echo $rs['book_status']?></a></td>
 				       <td class="text-center" nowrap="nowrap">
-				        <a style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><span style="color: blue;line-height:0px;">Edit</span></a>&nbsp;|
-				        <a style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><span style="color: red;line-height:0px;">Delete</span></a>
+				        <a  target="_blank" style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><span style="color: blue;line-height:0px;">Edit</span></a>&nbsp;|
+				        <a   style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><span style="color: red;line-height:0px;">Delete</span></a>
 				        </td>
 				        <td class="text-center"> <?php echo $rs['user_name']?></td>
 				        <td class="text-center"> <?php echo $rs['status']?></td>
@@ -231,7 +237,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 			        <td width="10%"></td>
 			        <td style="background:#fff;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Prepaired</td>
 			        <td width="10%"></td>
-			        <td style="background:#e4e4e4;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Cancal</td>
+			        <td style="background:#a59e9e;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Cancal</td>
 			        <td width="10%"></td>
 			        <td style="background:#ff0f0f57;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Late</td>
 			        <td width="10%"></td>

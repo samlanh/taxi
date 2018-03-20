@@ -1032,15 +1032,15 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		return $db->fetchAll($sql);
 	}
 	
-	function checkBookNo($book_no,$cus_name){
+	function checkBookNo($book_no){
 		$db = $this->getAdapter();
 		$book_no = str_replace(' ', '', $book_no);
-		$cus_name = str_replace(' ', '', $cus_name);
+		//$cus_name = str_replace(' ', '', $cus_name);
 		$sql=" SELECT cb.id,cb.payment_booking_no AS book_no 
 	      FROM ldc_carbooking AS cb,ldc_customer AS c
 	      WHERE cb.customer_id=c.id
 	      AND REPLACE(cb.payment_booking_no,' ','')='$book_no'
-	      AND REPLACE(c.last_name,' ','')='$cus_name'";
+	     ";
 	    return $db->fetchRow($sql);
 	}
 	

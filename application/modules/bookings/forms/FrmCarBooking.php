@@ -174,7 +174,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$note->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 		
 		$other_booking_no = new Zend_Dojo_Form_Element_TextBox("other_booking_no");
-		$other_booking_no->setAttribs(array('dojoType'=>$this->text,'class'=>"fullside",));
+		$other_booking_no->setAttribs(array('dojoType'=>$this->text,'class'=>"fullside",'onKeyup'=>'checkBookNo()',));
 		
 		$row_payment = $_db->getVewOptoinTypeByTypes(11);
 		$opt_payment = array(0=>$this->tr->translate("SELECT_PAYMENT_METHOD"));

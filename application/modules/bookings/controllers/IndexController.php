@@ -296,7 +296,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 		if($this->getRequest()->isPost()){
 			$db = new Bookings_Model_DbTable_DbBooking();
 			$data = $this->getRequest()->getPost();
-			$code = $db->checkBookNo($data['book_no'],$data['cus_name']);
+			$code = $db->checkBookNo($data['book_no']);
 			print_r(Zend_Json::encode($code));
 			exit();
 		}

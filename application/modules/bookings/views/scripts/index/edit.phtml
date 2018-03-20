@@ -837,7 +837,7 @@ function addvehicleType(){
 var urlbook_no="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'checkbookno'));?>";
 function checkBookNo(){
 	var book_no = dijit.byId('other_booking_no').get('value');
-	var cus_name = dijit.byId('cus_name').get('value');
+	//var cus_name = dijit.byId('cus_name').get('value');
 	if(book_no==''){
 		return false;
 	}
@@ -845,14 +845,14 @@ function checkBookNo(){
 	    url: urlbook_no,
 	    content:{
 	     'book_no':book_no, 
-	     'cus_name':cus_name, 
+	     //'cus_name':cus_name, 
 	     },
 	    handleAs:"json",
 	    load: function(data) {
 	    	if(data.id){
 		    	alert("This Number have already!!!");
-		    	dijit.byId("other_booking_no").attr("value","");
-		    	dijit.byId("cus_name").attr("value","");
+		    	//dijit.byId("other_booking_no").attr("value","");
+		    	//dijit.byId("cus_name").attr("value","");
 		    	dijit.byId("other_booking_no").focus();
 	    	}else{
 	    	}
