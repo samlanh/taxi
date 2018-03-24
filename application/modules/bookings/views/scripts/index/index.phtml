@@ -131,13 +131,13 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		                  <th><?php echo $tr->translate("CUS_PHONE")?></th> 
 		    	          <th><?php echo $tr->translate("CUS_EMAIL")?></th> 
 		    	          <th><?php echo $tr->translate("VEHICLE_TYPE")?></th> 
-		    	          <th><?php echo $tr->translate("TOTAL_PAID")?> </th> 
 		    	          <th><?php echo $tr->translate("NoPay")?> </th> 
-		    	          <th><?php echo $tr->translate("Cost")?> </th> 
+		    	          <th><?php echo $tr->translate("Company Price")?> </th> 
+		    	          <th><?php echo $tr->translate("CARPRICE")?> </th> 
 		    	          <th><?php echo $tr->translate("BALANCE")?> </th> 
 		    	          <th><?php echo $tr->translate("TOTAL_PAYMENT")?> </th> 
 		    	          <th><?php echo $tr->translate("AGENCY_NAME")?> </th> 
-		    	          <th><?php echo $tr->translate("CAR_RENT_FEE")?> </th> 
+		    	          
 		    	          <th><?php echo $tr->translate("COMMISSION_FEE")?></th> 
 		    	          <th><?php echo $tr->translate("OTHER_FEE")?> </th> 
 		    	          <th><?php echo $tr->translate("GRAND_TOTAL")?></th> 
@@ -168,7 +168,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				          
 				          $doupli_cat=$db_s->checkNumberBooking($rs['numbooking']);
 				          
-				          if($doupli_cat['number_book']>=2 && $rs['status_working']==0){
+				          if($doupli_cat['number_book']>=2 ){
 				          	$duplicate='background: #ffff66 !important;';
 				          }else{
 				          	$duplicate='';
@@ -213,7 +213,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center"> <?php echo ($rs['balance']==0)?"":"$&nbsp;".number_format($rs["balance"],2);?></td> 
 				       <td class="text-center">  <?php echo ($rs['grand_total_after']==0)?"":"$&nbsp;".number_format($rs["grand_total_after"],2);?></td> 
 				       <td class="text-center"><?php echo $rs['agency_name']?> </td>
-				       <td class="text-center"><?php echo ($rs['total']==0)?"":"$&nbsp;".number_format($rs["total"],2);?>  </td>
+				      
 				       <td class="text-center"> <?php echo ($rs['commision_fee']==0)?"":"$&nbsp;".number_format($rs["commision_fee"],2);?></td> 
 				       <td class="text-center"><?php echo ($rs['other_fee']==0)?"":"$&nbsp;".number_format($rs["other_fee"],2);?> </td>
 				       <td class="text-center"> <?php echo ($rs['grand_total']==0)?"":"$&nbsp;".number_format($rs["grand_total"],2);?></td>
