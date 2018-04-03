@@ -527,7 +527,7 @@ public function getOptonsHtmlTranslate($sql, $display, $value){
 					'23:30:00'=>'11:30 PM',
 					'23:45:00'=>'11:45 PM',
 			);
-			return $hours[$row['delivey_time']]=$row;
+			//return $row['time']=$hours[$row['time']];
 		}
 		
 		public function getHoursStudy($rows){

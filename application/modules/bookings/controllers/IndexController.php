@@ -232,7 +232,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$this->view->id = $id;
 		$row = $db->getViewCarbookingById($id);
 		$glClass = new Application_Model_GlobalClass();
-		$row=$glClass->getTimeView($row);
+		//$row=$glClass->getTimeView($row);
 		
 		if(!empty($row['driver_id'])){
 			$this->view->driver_info = $db->getDriverInformation($row['driver_id']);
