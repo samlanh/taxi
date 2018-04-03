@@ -353,16 +353,31 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 		$d=$this->getAdapter();
 		$db = new Application_Model_DbTable_DbGlobal();
 		$id_client = $db->getDriverCode();
+		
+		if($data['vehicle_ref_no']!=""){
+    			$car=array(
+    					'reffer'=>$data['vehicle_ref_no'],
+    					'car_type'=>$data['car_type'],
+    					'status'=>1,
+    					'create_date'=>date("Y-m-d H:i:s"),
+    					'modify_date'=>date("Y-m-d H:i:s"),
+    					);
+    			$this->_name="ldc_vehicle";
+    			$car_id=$this->insert($car);
+    		}else{
+    			$car_id=0;
+    		}
+		
 		$_arr=array(
 				'driver_id'		=>$id_client,
 				'last_name'		=>$data['driver_name'],
 				'tel'			=>$data['driver_phone'],
-				//'vehicle_ref_no'=>$data['vehicle_ref_no'],
-				//'car_type'		=>$data['car_type'],
+				'vehicle_id'	=>$car_id,
     			'create_date'	=>date("Y-m-d H:i:s"),
 				'status'  	    =>1,
 				'user_id'  	    =>$this->getUserId(),
 		);
+		$this->_name="ldc_driver";
 		$id=$this->insert($_arr);
 		$a=array('id'=>$id,'driver_id'=>$id_client);
 	    return $a;

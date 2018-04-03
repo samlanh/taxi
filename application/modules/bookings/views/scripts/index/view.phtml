@@ -155,7 +155,7 @@ code {
 							<div class="col-md-8 col-sm-8 col-xs-12">
 								<ul class="list-unstyled">
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['first_name'])){ echo $this->driver_info['first_name']." ".$this->driver_info['last_name'];}?></span>
+                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['last_name'])){ echo $this->driver_info['first_name']." ".$this->driver_info['last_name'];}?></span>
                               		</li>
                               		<li>
                               			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['sexs'])){ echo $this->driver_info['sexs'];}?></span>
@@ -165,6 +165,12 @@ code {
                               		</li>
                               		<li>
                               			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['tel'])){ echo $this->driver_info['tel'];}?></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref.No')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['vehicle_ref_no'])){ echo $this->driver_info['tel'];}?></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('VEHICLE_TYPE')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['tel'])){ echo $this->driver_info['car_type'];}?></span>
                               		</li>
                               	</ul>
 							</div>

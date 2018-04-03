@@ -357,11 +357,13 @@ function getDriver(type){
 
 var urldriver_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getdrivercar'));?>";
 function getDriverInfoByid(){
+	
 	var id = dijit.byId('driver').get('value');
 	if(id==''){
 		return false;
 	}
 	//loading();
+	 
 	dojo.xhrPost({
 	    url: urldriver_car,
 	    content:{
@@ -373,10 +375,10 @@ function getDriverInfoByid(){
 	    	if(dijit.byId('driver').get('value')==data.driver_id ){
 	    		document.getElementsByClassName("overlay")[0].style.display="none";
 	    	}
-	    	dijit.byId('driver').set('value',data.driver_id);
+	    	//dijit.byId('driver').set('value',data.driver_id);
 	    },
 	    error: function(err) {
-	     alert(err);
+	     //alert(err);
 	    }
    });
 }
@@ -427,7 +429,6 @@ function addDriver(){
 			form: dojo.byId("frm_vehicle_type"),
 			handleAs:"json",
 			load: function(data) {
-				
 				var Itemmake = {					
 						id: data.id,
 					    name: dijit.byId('driver_name').get('value')+'('+data.driver_id+')',
@@ -446,7 +447,7 @@ function addDriver(){
 </script>
 
 <div class="dijitHidden">
-	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_vehicle_type" title="<?php echo $tr->translate("Add Vehicle Type")?>">
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_vehicle_type" title="<?php echo $tr->translate("DRIVER_NAME")?>">
 		<form id='frm_vehicle_type' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 		<table class="height" >
 			<tr>
@@ -459,7 +460,7 @@ function addDriver(){
 				<td><input dojoType="dijit.form.ValidationTextBox" id="driver_phone" name="driver_phone" value="" type="text"></td>
 			</tr>
 			<tr><td colspan="2" style="height: 5px;" ></td></tr>
-			<!-- 
+			  
 			<tr>
 				<td><?php echo $tr->translate("Vehicle Ref.No")?></td>
 				<td><input dojoType="dijit.form.ValidationTextBox"  id="vehicle_ref_no" name="vehicle_ref_no" value="" type="text"></td>
@@ -470,7 +471,7 @@ function addDriver(){
 				<td><?php echo $frm->getElement('car_type');?></td>
 			</tr>
 			<tr><td colspan="2" style="height: 5px;" ></td></tr>
-			 -->
+			 
 			<tr>
 				<td colspan="2" align="center">
 				<input type="button"  name="s_cancel" id="s_cancel"  label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 

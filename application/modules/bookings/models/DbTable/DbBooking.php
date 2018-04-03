@@ -398,7 +398,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$sql="
 		SELECT d.*,
 		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs,
-		(SELECT t.title FROM ldc_vechicletye AS t WHERE t.id=d.car_type LIMIT 1) AS vehicle_type
+		(SELECT v.reffer FROM ldc_vehicle AS v WHERE v.id=d.vehicle_id LIMIT 1)AS vehicle_ref_nos,
+		(SELECT t.title FROM ldc_vechicletye AS t WHERE t.id=(SELECT v.car_type FROM ldc_vehicle AS v WHERE v.id=d.vehicle_id LIMIT 1) LIMIT 1) AS car_types
 		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`last_name`!='' AND d.id=".$data['id'];
 		$order=' LIMIT 1';
 		$row = $db->fetchRow($sql.$order);
@@ -466,10 +467,10 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			<span class="span_title">'.$tr->translate('PHONE').'</span> : <span class="span_value">'.$row['tel'].'</span>
 			</li>
 			<li>
-			<span class="span_title">'.$tr->translate('Vehicle Ref.No').'</span> : <span class="span_value">'.$row['vehicle_ref_no'].'</span>
+			<span class="span_title">'.$tr->translate('Vehicle Ref.No').'</span> : <span class="span_value">'.$row['vehicle_ref_nos'].'</span>
 			</li>
 			<li>
-			<span class="span_title">'.$tr->translate('VEHICLE_TYPE').'</span> : <span class="span_value">'.$row['vehicle_type'].'</span>
+			<span class="span_title">'.$tr->translate('VEHICLE_TYPE').'</span> : <span class="span_value">'.$row['car_types'].'</span>
 			</li>
 			</ul>
 			</div>
@@ -604,8 +605,11 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$lang= $dbgb->getCurrentLang();
 		$arrayview = array(1=>"name_en",2=>"name_kh");
 		$sql=" SELECT d.*,
-		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs
-		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`first_name`!=''
+		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs,
+		(SELECT v.reffer FROM ldc_vehicle AS v WHERE v.id=d.vehicle_id LIMIT 1)AS vehicle_ref_no,
+		 (SELECT t.title FROM ldc_vechicletye AS t WHERE t.id=
+		 (SELECT v.car_type FROM ldc_vehicle AS v WHERE v.id=d.vehicle_id LIMIT 1) LIMIT 1) AS car_type
+		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`last_name`!=''
 		AND d.id =$driver_id ";
 		return $db->fetchRow($sql);
 	}
