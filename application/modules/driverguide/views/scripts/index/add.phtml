@@ -54,11 +54,20 @@ ul.list-unstyled li span.span_value {
 <form id='add_client' action="<?php echo $this->url(array('module'=>'driverguide','controller'=>'index','action'=>'add')); ?>" enctype="multipart/form-data" dojoType="dijit.form.Form" method="post">
 	<script type="dojo/method" event="onSubmit">			
 			if(this.validate()) {
+             /*
+				if(dijit.byId('vehicle').get('value')==0){
+					alert('vehicle required!!!');
+					dijit.byId('vehicle').focus();
+					return false;
+			    }
+*/
+
 				if(dijit.byId('province').get('value')==0){
 					alert('Province required');
 					dijit.byId('province').focus();
 					return false;
 			    }
+                
 				loading();
 				return true;
 			} else {
@@ -104,10 +113,10 @@ ul.list-unstyled li span.span_value {
 						                   <div class="col-md-4 col-sm-4 col-xs-12">
 						                   		<?php echo $frm->getElement('client_no');?>
 						                   </div>
-						                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Gender")?>
+						                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DOB")?>
 							                </label>
 							                <div class="col-md-4 col-sm-4 col-xs-12">
-							                  		<?php echo $frm->getElement('sex');?>
+							                  	<?php  echo $frm->getElement('dob_client');?>
 							                 </div>
 						                </div>
 						                <div class="form-group">
@@ -115,35 +124,28 @@ ul.list-unstyled li span.span_value {
 							                   <div class="col-md-4 col-sm-4 col-xs-12">
 							                   		<?php  echo $frm->getElement('name_en');?>
 							                   </div> 
-						                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Nationality")?>
+						                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("POB")?></label>
+							                 <div class="col-md-4 col-sm-4 col-xs-12">
+							                 		<?php  echo $frm->getElement('pob');?>
+							                 </div>
+						                </div>
+						                 <div class="form-group">
+						                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Nationality")?>
 							                 </label>
 							                 <div class="col-md-4 col-sm-4 col-xs-12">
 							                   		<?php echo $frm->getElement('nationality');?>
 							                 </div>
-						                </div>
-						                 <div class="form-group">
-						                 	
-							                <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Document Type")?>
-						                   </label>
-						                   <div class="col-md-4 col-sm-4 col-xs-12">
-						                   		<input id="client_d_type" required="true"/>
-						                   </div>
-						                 </div>
-						                 <div class="form-group">
-						                  	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DOB")?></label>
-							                 <div class="col-md-4 col-sm-4 col-xs-12">
-							                 		<?php  echo $frm->getElement('dob_client');?>
-							                 </div>
-							                  <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Document Number")?>
+							               <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Document Number")?>
 						                   </label>
 						                   <div class="col-md-4 col-sm-4 col-xs-12">
 						                   		<?php  echo $frm->getElement('national_id');?>
 						                   </div>
 						                 </div>
+						                  
 						                  <div class="form-group">
-						                 	 <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("POB")?></label>
+						                 	 <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Gender")?></label>
 							                 <div class="col-md-4 col-sm-4 col-xs-12">
-							                 		<?php  echo $frm->getElement('pob');?>
+							                 		<?php echo $frm->getElement('sex');?>
 							                 </div>
 							                 <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Note")?>
 							                   </label>
@@ -266,10 +268,20 @@ ul.list-unstyled li span.span_value {
 					               </div>
 					                <div class="col-md-12 col-sm-12 col-xs-12" style=" padding-top: 10px;  background: #f7f7f7;">
 						              	 <div class="form-group">
-							                 <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE")?>
+							                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE")?>
 							                   </label>
-							                   <div class="col-md-4 col-sm-4 col-xs-12">
+							                   <div class="col-md-2 col-sm-2 col-xs-12">
 							                   		<?php  echo $frm->getElement('vehicle');?>
+							                   </div>
+							                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Vehicle Ref.No.')?>
+							                   </label>
+							                   <div class="col-md-2 col-sm-2 col-xs-12">
+							                   		 <?php echo $frm->getElement('vehicle_ref_no');?>
+							                   </div>
+							                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE_TYPE")?>
+							                   </label>
+							                   <div class="col-md-2 col-sm-2 col-xs-12">
+							                   		 <?php echo $frm->getElement('vehicle_type');?>
 							                   </div>
 						                  </div>
 					                </div>
@@ -449,11 +461,129 @@ function getVehicleInfo(){
 		load: function(data) {
 			document.getElementById('blog_car').innerHTML =data;
 			document.getElementsByClassName("overlay")[0].style.display="none";
-			
 		},
 		error: function(err) {
 			alert(err);
 		}
 	});
 }
+
+var url_getrefferVehicle = '<?php echo $this->url(array('module'=>'driverguide','controller'=>'index','action'=>'getreffervehicle')); ?>';
+function getRefferVehicleInfo(){
+	vehicle = dijit.byId('vehicle').get('value');
+	if(vehicle==0){
+		dijit.byId("vehicle_ref_no").attr("disabled",false);
+		dijit.byId("vehicle_type").attr("disabled",false);
+		dijit.byId("vehicle_ref_no").attr("value","");
+		dijit.byId("vehicle_type").attr("value","");
+		return false;
+	}
+	dojo.xhrPost({
+		url: url_getrefferVehicle,
+		content:{
+ 			'vehicle':vehicle
+ 			},
+		handleAs:"json",
+		load: function(data) {
+			dijit.byId("vehicle_ref_no").attr("value",data.reffer);
+			dijit.byId("vehicle_type").attr("value",data.car_type);
+			dijit.byId("vehicle_ref_no").attr("disabled",true);
+			dijit.byId("vehicle_type").attr("disabled",true);
+		},
+		error: function(err) {
+			alert(err);
+		}
+	});
+}
+
+function getPopupFormVehicleType(){
+	dijit.byId("car_save").attr("disabled",false);
+	vehicle_type = dijit.byId('vehicle_type').get('value');
+	if(vehicle_type==-1){
+		dijit.byId("pop_vehicle_type").show();
+	}
+}
+
+var vehicletype_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->rows_veh_typasname));?> );
+var url_vehicletype = '<?php echo $this->url(array('module'=>'vehicle','controller'=>'vehicletype','action'=>'addvehiceltype')); ?>';
+function addvehicleType(){
+	if(dijit.byId('frm_vehicle_type').validate()){
+		dijit.byId("car_save").attr("disabled",true);
+		dojo.xhrPost({
+			url: url_vehicletype,
+			form: dojo.byId("frm_vehicle_type"),
+			handleAs:"json",
+			load: function(data) {
+				var Itemmake = {					
+						id: data,
+					    name: dijit.byId('vehicletype_title').get('value')
+				};			
+				addDataToSelectbox(dijit.byId('vehicle_type'), vehicletype_store, Itemmake, data);
+				dijit.byId('frm_vehicle_type').reset();
+				dijit.byId("pop_vehicle_type").hide();
+			},
+			error: function(err) {
+				alert(err);
+			}
+		});
+	}
+}
+
+function getPopupCar(){
+	//dijit.byId("vehicle").attr("disabled",false);
+	vehicle = dijit.byId('vehicle').get('value');
+	if(vehicle==-1){
+		dijit.byId("pop_car_new").show();
+	}
+}
+
 </script>
+
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_vehicle_type" title="<?php echo $tr->translate("Add Vehicle Type")?>">
+		<form id='frm_vehicle_type' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table class="height" >
+			<tr>
+				<td><?php echo $tr->translate("TITLE")?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="vehicletype_title" name="vehicletype_title" value="" type="text"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" id="car_save"
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addvehicleType();"/>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+</div>
+
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_car_new" title="<?php echo $tr->translate("Add Vehicle")?>">
+		<form id='frm_car_new' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table class="height" >
+			<tr>
+				<td><?php echo $tr->translate('Vehicle Ref.No.')?></td>
+				<td><?php echo $frm->getElement('vehicle_ref_no');?></td>
+			</tr>
+			<tr>
+				<td height="5px;" colspan="2"></td>
+			</tr>
+			<tr>
+				<td><?php echo $tr->translate("VEHICLE_TYPE")?></td>
+				<td><?php echo $frm->getElement('vehicle_type');?></td>
+			</tr>
+			<tr>
+				<td height="5px;" colspan="2"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+				  	<input type="button"  label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" id="btn_save"
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addvehicleType();"/>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+</div>
+ 

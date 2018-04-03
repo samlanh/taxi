@@ -119,12 +119,27 @@ class Bookings_Model_DbTable_DbServiceType extends Zend_Db_Table_Abstract
 	function checkNumberBooking($num){
 		$db=$this->getAdapter();
 		$book_no = str_replace(' ', '', $num);
+		$book_no=addslashes(trim($book_no));
 		$sql="SELECT COUNT(b.payment_booking_no) AS number_book, b.payment_booking_no
 		FROM ldc_carbooking AS b
 		WHERE b.status=1 
 		AND b.payment_booking_no!=''
 		AND REPLACE(b.payment_booking_no,' ','')='$book_no'
 		GROUP BY b.payment_booking_no";
+		return $db->fetchRow($sql);
+	}
+	
+	function checkCustomerBooking($num){
+		$db=$this->getAdapter();
+		$cus_name=addslashes(trim($num));
+		$cus_name = str_replace(' ', '', $cus_name);
+		$sql="SELECT COUNT(c.last_name) AS cus_name, b.payment_booking_no
+		FROM ldc_carbooking AS b,ldc_customer AS c
+		WHERE b.customer_id=c.id 
+		AND b.status=1 
+		AND c.last_name!=''
+		AND REPLACE(c.last_name,' ','')='$cus_name'
+		GROUP BY c.last_name";
 		return $db->fetchRow($sql);
 	}
 }

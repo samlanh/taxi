@@ -205,7 +205,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 		$acc_no = $db->fetchOne($sql);
 		$new_acc_no= (int)$acc_no+1;
 		$acc_no= strlen((int)$acc_no+1);
-	
+	    
 		$row = $this->getSystemSetting('driver_prefix');
 		$pre = ($row['value']);
 		for($i = $acc_no;$i<3;$i++){
@@ -778,7 +778,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   function getVehicleAvailableList($vehicle_id=null){
   	$db = $this->getAdapter();
   	$car_id=$this->getVihecleIds();
-  	$sql='SELECT v.id,
+  /*	$sql='SELECT v.id,
 		CONCAT(m.`title`," ",mo.`title`," ",smo.`title`," (",v.`reffer`,")") AS `name`
 		FROM `ldc_vehicle` AS v,
 		`ldc_make` AS m,
@@ -790,7 +790,9 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 		v.`sub_model` = smo.`id` AND
 		v.is_sale !=1 
 		AND v.`status`=1 
-  	';
+  	';*/
+  	$sql="SELECT v.id,CONCAT(v.reffer,(SELECT CONCAT('(',vt.title,')') FROM ldc_vechicletye AS vt WHERE vt.id=v.car_type LIMIT 1)) AS name
+    		 FROM ldc_vehicle AS v WHERE v.status=1";
   	if (!empty($vehicle_id)){
   		$sql.=" AND v.`id` NOT IN ('$vehicle_id')";
   	}else{
@@ -798,6 +800,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	}
   	return $db->fetchAll($sql);
   }
+  
   function getVehicleHasDriver(){
   	$db = $this->getAdapter();
   	$sql='SELECT v.id,

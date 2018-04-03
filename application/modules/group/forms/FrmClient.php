@@ -632,12 +632,14 @@ $district->setValue($data['district']);
 				'style'=>'color:red;'
 		));
 		$_id_no = new Zend_Form_Element_Hidden('id');
+		$_vehicle_id = new Zend_Form_Element_Hidden('vehicle_id');
+		$old_photo = new Zend_Form_Element_Hidden('old_photo');
 		
 		$_vehicle = new Zend_Dojo_Form_Element_FilteringSelect('vehicle');
 		$_vehicle->setAttribs(array(
 				'dojoType'=>'dijit.form.FilteringSelect',
 				'class'=>'fullside',
-				'onChange'=>'getVehicleInfo();',
+				'onChange'=>'getVehicleInfo();getRefferVehicleInfo();',
 		));
 		$option = array("0"=>$this->tr->translate("SELECT_VEHICLE"));
 		if($data!=null){
@@ -649,6 +651,27 @@ $district->setValue($data['district']);
 			$option[$row['id']]=$row['name'];
 		}
 		$_vehicle->setMultiOptions($option);
+		
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typ=$db->getAllVehicleType();
+		$opt_payment = array(0=>$this->tr->translate("SELECT_VECHICLE_TYPE"),-1=>$this->tr->translate("Add Vehicle Type"));
+		$vehicle_type = new Zend_Dojo_Form_Element_FilteringSelect("vehicle_type");
+		$vehicle_type->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
+				'onchange'=>'getPopupFormVehicleType()'
+		));
+		foreach ($rows_veh_typ as $rs){
+			$opt_payment[$rs["id"]] = $rs["title"];
+		}
+		$vehicle_type->setMultiOptions($opt_payment);
+		
+		
+		$vehicle_ref_no = new Zend_Dojo_Form_Element_TextBox('vehicle_ref_no');
+		$vehicle_ref_no->setAttribs(array(
+				'dojoType'=>'dijit.form.ValidationTextBox',
+				'class'=>'fullside',
+				'required'=>true
+		));
+			
 		
 		if($data!=null){
 			$_id_no->setValue($data['id']);
@@ -678,6 +701,10 @@ $district->setValue($data['district']);
 			
 			$_status->setValue($data['status']);
 			$_vehicle->setValue($data['vehicle_id']);
+			$vehicle_type->setValue($data['car_type']);
+			$vehicle_ref_no->setValue($data['vehicle_ref_no']);
+			$_vehicle_id->setValue($data['vehicle_id']);
+			$old_photo->setValue($data['photo']);
 		}
 		$this->addElements(array(
 				$province,$expired_date,$issued_date,$registered_date,$id_card,$district,$commune,$streetnum,$groupnum,
@@ -687,7 +714,11 @@ $district->setValue($data['district']);
 				$nationality,$_id,$photo,$national_id,
 				$_email,$_namekh,$_nameen,$_sex,$_id_no,
 				$_phone,$_desc,$_status,$_clientno,$_dob,$att_file,$pob,
-				$_vehicle
+				$_vehicle,
+				$vehicle_type,
+				$vehicle_ref_no,
+				$_vehicle_id,
+				$old_photo
 				));
 		return $this;
 	

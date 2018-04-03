@@ -2,7 +2,7 @@
    $tr = Application_Form_FrmLanguages::getCurrentlanguage();
    echo $this->headTitle($tr->translate("BOOKING_VIEW"));
    $frm = $this->frm;
-   
+  
 ?>
 <script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
 <script type="text/javascript">
@@ -44,6 +44,17 @@ h4.car_title {
     text-align: center;
     padding: 2px 0;
 }
+
+body{
+	    color: #3f3f3f;
+	    background: #156086;
+	    font-weight: 400;
+	    line-height: 1.471;
+	    font-size: 96%;
+	    font-family: "Helvetica Neue",Roboto,Arial,"Droid Sans",sans-serif,'Kh Battambang','Khmer Battambang';
+	    font-size: 13px;
+}
+
 </style>
 <div class="clearfix"></div>
 <div class="x_panel">
@@ -136,16 +147,17 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('from_location');?>
 		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE")?>
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER_FEE")?><?php //echo $tr->translate("VEHICLE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php //echo $frm->getElement('vehicle');?>
-		                    	<select name="vehicle" id="vehicle" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*" onchange="getCareInfoByid();">
+		                    	<select name="vehicle" id="vehicle" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*" onchange="getCareInfoByid();"  style="display:none" >
 								       <option value="0" label=" "><?php echo $tr->translate("SELECT_VEHICLE")?></option>
 								       <?php if(!empty($this->cars)) foreach ($this->cars As $car){?>
 								       <option value="<?php echo $car['id']?>" label=" "><?php echo $car['name']?></option>
 								       <?php }?>
 								</select>
+								<?php echo $frm->getElement('driver_fee');?>
 		                   </div>
 		                </div>
 		                 <div class="form-group">
@@ -154,31 +166,32 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('to_location');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER_FEE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('driver_fee');?>
-		                   </div>
-		                </div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("REMARK")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('remark');?>
-		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("BOOKING_STATUS")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+		                   		<?php echo $tr->translate("BOOKING_STATUS")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('working_status');?>
 		                   </div>
 		                </div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DESCRIPTION")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('remark');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+		                   			<?php echo $tr->translate("NOTE")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('note');?>
+		                   </div>
+		                </div>
 		                  
 		                <div class="text-center">
+		                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">  </label>
 							<input type="button" value="GO_BACK" label="<?php echo $tr->translate('GO_BACK');?>" id="back" dojoType="dijit.form.Button" 
 										iconClass="dijitIconUndo" onclick="window.history.back();" />
 							<input class="button_success" type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVE_CLOSE');?>" id="save_close" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 	
-							<input class="button_success" type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVE_NEW');?>" id="save_new" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
-									
 						</div>
 	       			</div>
 	       			<div class="col-md-4 col-sm-4 col-xs-12">
@@ -220,26 +233,54 @@ h4.car_title {
 						
 						
 						<div class="title_form_blog " style=" margin: 0;">
-	       					<h4 style=" font-size: 14px;"><i class="fa  fa-car" aria-hidden="true"></i> <?php echo $tr->translate('Vehicle Infomation')?></h4>
+	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('Customer Information')?></h4>
 	       				</div>
 	       				<div id="vehiclesss" class="cus_info col-md-12 col-sm-12 col-xs-12">
-	       					<h4 class="car_title"></h4>
-		       				<div class="col-md-4 col-sm-4 col-xs-12">
-				               	<div class="image-box infor">
-									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/no_car.png';?>" alt=""  />
-								</div>
-							</div>
 							<div class="col-md-8 col-sm-8 col-xs-12">
 								<ul class="list-unstyled">
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref.No.')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('OTHER_BOOKING_NO')?></span> : <span class="span_value"><?php echo $this->row['payment_booking_no']?></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('YEAR')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('CUSTOMER_NAME')?></span> : <span class="span_value"><?php echo $this->row['last_name']?></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Color')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('CUS_PHONE')?></span> : <span class="span_value"><?php echo $this->row['phone']?></span>
                               		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate('CUS_EMAIL')?></span> : <span class="span_value"><?php echo $this->row['email']?></span>
+                              		</li>
+                              		 
+                              	</ul>
+							</div>
+							 
+							<div class="col-md-8 col-sm-8 col-xs-12">
+								<ul class="list-unstyled">
+								    <li>
+                              			<h4 class="car_title" style="text-align: left;"><?php echo $tr->translate('Payment Information')?> :  </h4>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate("Company Price")?></span> :<span class="span_value" style="font-weight: 900;">&nbsp;<?php echo ($this->row['total']==0)?"":"$&nbsp;".number_format($this->row["total"],2);?></span>
+                              		</li> 
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate("CARPRICE")?></span> :<span class="span_value"style="font-weight: 900;">&nbsp;<?php echo ($this->row['price']==0)?"":"$&nbsp;".number_format($this->row["price"],2);?></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate("OTHER_FEE")?></span> :<span class="span_value" style="font-weight: 900;">&nbsp;<?php echo ($this->row['other_fee']==0)?"":"$&nbsp;".number_format($this->row["other_fee"],2);?> </span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate("TOTAL_SERVICE")?></span> :<span class="span_value" style="font-weight: 900;">&nbsp;<?php echo ($this->row['total_service']==0)?"":"$&nbsp;".number_format($this->row["total_service"],2);?></span>
+                              		</li>
+                              		 <li>
+                              			<span class="span_title"><?php echo $tr->translate("GRAND_TOTAL")?></span> :<span class="span_value" style="font-weight: 900;">&nbsp;<?php echo ($this->row['grand_total']==0)?"":"$&nbsp;".number_format($this->row["grand_total"],2);?></span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate("NoPay")?></span> :<span class="span_value" style="font-weight: 900;">&nbsp;<?php echo ($this->row['paid']==0)?"":"$&nbsp;".number_format($this->row["paid"],2);?> </span>
+                              		</li>
+                              		<li>
+                              			<span class="span_title"><?php echo $tr->translate("BALANCE")?></span> :<span class="span_value" style="font-weight: 900;">&nbsp;<?php echo ($this->row['balance']==0)?"":"$&nbsp;".number_format($this->row["balance"],2);?></span>
+                              		</li>
+                              		
                               	</ul>
 							</div>
 						</div>
@@ -262,6 +303,7 @@ require(["dojo/ready"], function(ready){
        	   dijit.byId("vehicle").attr("value",'<?php echo $this->row['vehicle_id'];?>');
            getDriverInfoByid();
            getCareInfoByid();
+           dijit.byId("vehicle").hide();
         }
        
         dijit.byId("agency").attr("disabled", true);
@@ -354,7 +396,7 @@ function getCareInfoByid(){
 	     },
 	    handleAs:"json",
 	    load: function(data) {
-	    	document.getElementById('vehiclesss').innerHTML =data;
+	    	//document.getElementById('vehiclesss').innerHTML =data;
 	        document.getElementsByClassName("overlay")[0].style.display="none";
 	    },
 	    error: function(err) {
@@ -385,6 +427,7 @@ function addDriver(){
 			form: dojo.byId("frm_vehicle_type"),
 			handleAs:"json",
 			load: function(data) {
+				
 				var Itemmake = {					
 						id: data.id,
 					    name: dijit.byId('driver_name').get('value')+'('+data.driver_id+')',
@@ -415,6 +458,19 @@ function addDriver(){
 				<td><?php echo $tr->translate("PHONE")?></td>
 				<td><input dojoType="dijit.form.ValidationTextBox" id="driver_phone" name="driver_phone" value="" type="text"></td>
 			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<!-- 
+			<tr>
+				<td><?php echo $tr->translate("Vehicle Ref.No")?></td>
+				<td><input dojoType="dijit.form.ValidationTextBox"  id="vehicle_ref_no" name="vehicle_ref_no" value="" type="text"></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("VEHICLE_TYPE")?></td>
+				<td><?php echo $frm->getElement('car_type');?></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			 -->
 			<tr>
 				<td colspan="2" align="center">
 				<input type="button"  name="s_cancel" id="s_cancel"  label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
@@ -427,3 +483,4 @@ function addDriver(){
 		</form>
 	</div>
 </div>
+

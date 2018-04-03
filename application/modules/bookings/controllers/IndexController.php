@@ -1,14 +1,14 @@
 <?php
 class Bookings_indexController extends Zend_Controller_Action {
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
-	//protected $tr = null;
+	protected $tr = null;
 	
     public function init()
     {    	
      /* Initialize action controller here */
     	header('content-type: text/html; charset=utf8');
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
-    	 $tr = Application_Form_FrmLanguages::getCurrentlanguage();
+    	 $this->tr = Application_Form_FrmLanguages::getCurrentlanguage();
 	}
 	
 	public function indexAction(){
@@ -210,6 +210,50 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$form = $frm->FormBooking($row);
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
+		
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typAsname=$db->getAllVehicleTypeAsName();
+		array_unshift($rows_veh_typAsname, array ( 'id' => 0, 'name' =>$this->tr->translate("Choose Vehicle Type")), array ( 'id' => -1, 'name' =>$this->tr->translate("Add Vehicle Type")) );
+		$this->view->rows_veh_typasname=$rows_veh_typAsname;
+	}
+	
+	public function viewAction()
+	{
+		$id=$this->getRequest()->getParam('id');
+		$db = new Bookings_Model_DbTable_DbBooking();
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		if($this->getRequest()->isPost()){
+			$data = $this->getRequest()->getPost();
+			$data['id']=$id;
+			$booking_id=$db->addDrivert($data);
+			$this->_redirect("/bookings/index");
+		}
+		$id=$this->getRequest()->getParam('id');
+		$this->view->id = $id;
+		$row = $db->getViewCarbookingById($id);
+		$glClass = new Application_Model_GlobalClass();
+		$row=$glClass->getTimeView($row);
+		 
+		if(!empty($row['vehicletype_id'])){
+			$result=$this->view->cars=$db->getVehicleByCarType($row['vehicletype_id']);
+			//print_r($result);exit();
+		}
+		$this->view->row = $row;
+		if (empty($row)){
+			$this->_redirect("/bookings/index");
+		}
+		$_db = new Application_Model_DbTable_DbGlobal();
+		$row_dri = $_db->getAllDriver();
+		array_unshift($row_dri,array('id' => -1,'name' => $tr->translate("ADD_NEW"),));
+		$this->view->drivers=$row_dri;
+		$frm = new Bookings_Form_FrmCarBooking();
+		$form = $frm->FormBooking($row);
+		Application_Model_Decorator::removeAllDecorator($form);
+		$this->view->frm = $form;
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typAsname=$db->getAllVehicleTypeAsName();
+		array_unshift($rows_veh_typAsname, array ( 'id' => 0, 'name' =>$this->tr->translate("Choose Vehicle Type")), array ( 'id' => -1, 'name' =>$this->tr->translate("Add Vehicle Type")) );
+		$this->view->rows_veh_typasname=$rows_veh_typAsname;
 	}
 	
 	function getcustomerAction(){

@@ -198,7 +198,7 @@ h4.car_title {
 		                   </div>
 		                </div>
 		                <div class="form-group">
-		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DESCRIPT")?>
+		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DESCRIPTION")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('remark');?>
@@ -207,6 +207,9 @@ h4.car_title {
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('note');?>
+		                    	<div style="display: none;">
+		                    	<?php echo $frm->getElement('working_status');?>
+		                    	</div>
 		                   </div>
 		                </div>
 		                <div class="title_form_blog">

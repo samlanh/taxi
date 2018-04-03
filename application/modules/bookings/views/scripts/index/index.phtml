@@ -140,6 +140,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		    	          
 		    	          <th><?php echo $tr->translate("COMMISSION_FEE")?></th> 
 		    	          <th><?php echo $tr->translate("OTHER_FEE")?> </th> 
+		    	           <th><?php echo $tr->translate("TOTAL_SERVICE")?> </th> 
 		    	          <th><?php echo $tr->translate("GRAND_TOTAL")?></th> 
 		    	          <th><?php echo $tr->translate("DRIVER")?> </th> 
 		    	          <th><?php echo $tr->translate("DRIVER_FEE")?></th> 
@@ -151,7 +152,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		             </thead>
 			     <tbody>
 				     <?php 
-				     $date_late='';$duplicate='';
+				     $date_late='';$duplicate='';$cus_dubplicate='';
 				     $room_no='';$cus_name='';$book_no_color=''; if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
 				          if($rs['status_working']==0){
 				          	if (strtotime($rs['delivey_date']) <= time() && $rs['status_working']==0) {
@@ -167,11 +168,17 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				          $room_no=$rs['check_book_no'];$cus_name=$rs['check_name'];
 				          
 				          $doupli_cat=$db_s->checkNumberBooking($rs['numbooking']);
-				          
+				          $cusdubplicate=$db_s->checkCustomerBooking($rs['check_name']);
 				          if($doupli_cat['number_book']>=2 ){
 				          	$duplicate='background: #ffff66 !important;';
 				          }else{
 				          	$duplicate='';
+				          }
+				          
+				          if($cusdubplicate['cus_name']>=2 ){
+				          	$cus_dubplicate='background: #ffff66 !important;';
+				          }else{
+				          	$cus_dubplicate='';
 				          }
 				     	?>
 				     <tr class=" alternate  normal" <?php echo $status_working;?>>
@@ -187,12 +194,13 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 									    <a  target="_blank" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("EDIT")?></a>
 									    <a  target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("PREPARE_CAR")?></a>
 									    <a  href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("DELETE")?></a>
+									    <a   href="<?php echo $this->baseUrl();?>/bookings/index/view/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("VIEW")?></a>
 									  </div>
 									</div>
 				       <?php echo $rs['payment_booking_no']?></td> 
 				       <td  > <?php echo $rs['from_location']?></td> 
 				       <td  ><?php echo $rs['to_location']?> </td>
-				       <td class="text-center"> <?php echo $rs['last_name']?></td>
+				       <td class="text-center"style="text-align:left; <?php echo $cus_dubplicate;?>" > <?php echo $rs['last_name']?></td>
 				       <td class="text-center" style="text-align:left;">
 				       <div class="dropdown" >
 									  <span class="glyphicon glyphicon-triangle-bottom"></span>
@@ -200,6 +208,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 									    <a  target="_blank" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("EDIT")?></a>
 									    <a  target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("PREPARE_CAR")?></a>
 									    <a   href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("DELETE")?></a>
+									    <a   href="<?php echo $this->baseUrl();?>/bookings/index/view/id/<?php echo $rs["id"]?>"><?php echo $tr->translate("VIEW")?></a>
 									  </div>
 									</div>
 				        <?php echo $rs['phone']?></td> 
@@ -216,6 +225,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				      
 				       <td class="text-center"> <?php echo ($rs['commision_fee']==0)?"":"$&nbsp;".number_format($rs["commision_fee"],2);?></td> 
 				       <td class="text-center"><?php echo ($rs['other_fee']==0)?"":"$&nbsp;".number_format($rs["other_fee"],2);?> </td>
+				       <td class="text-center"><?php echo ($rs['total_service']==0)?"":"$&nbsp;".number_format($rs["total_service"],2);?> </td>
 				       <td class="text-center"> <?php echo ($rs['grand_total']==0)?"":"$&nbsp;".number_format($rs["grand_total"],2);?></td>
 				       <td class="text-center"> <?php echo $rs['driver']?></td>
 				       <td class="text-center"><?php echo ($rs['driver_fee']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>

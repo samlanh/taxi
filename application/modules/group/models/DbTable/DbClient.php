@@ -357,6 +357,8 @@ class Group_Model_DbTable_DbClient extends Zend_Db_Table_Abstract
 				'driver_id'		=>$id_client,
 				'last_name'		=>$data['driver_name'],
 				'tel'			=>$data['driver_phone'],
+				//'vehicle_ref_no'=>$data['vehicle_ref_no'],
+				//'car_type'		=>$data['car_type'],
     			'create_date'	=>date("Y-m-d H:i:s"),
 				'status'  	    =>1,
 				'user_id'  	    =>$this->getUserId(),

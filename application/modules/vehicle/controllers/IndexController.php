@@ -47,8 +47,8 @@ class Vehicle_indexController extends Zend_Controller_Action {
 		$model = $db->getAllMake();
 		//array_unshift($model, array ( 'id' => -1, 'name' => 'Selected Make') );
 		$this->view->all_make=$model;
-		
 	}
+	
 	public function addAction(){
 		if($this->getRequest()->isPost()){
 			$data=$this->getRequest()->getPost();

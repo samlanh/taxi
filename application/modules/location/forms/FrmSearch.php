@@ -84,7 +84,20 @@ Class Location_Form_FrmSearch extends Zend_Dojo_Form{
 		$province->setMultiOptions($opt);
 		$province->setValue($request->getParam("province"));
 		
-		$this->addElements(array($_service_type,$_title,$_status,$_driver_type,$province,$_location_type));
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typ=$db->getAllVehicleType();
+		$opt_payment = array(0=>$this->tr->translate("SELECT_VECHICLE_TYPE"),-1=>$this->tr->translate("Add Vehicle Type"));
+		$vehicle_type = new Zend_Dojo_Form_Element_FilteringSelect("vehicle_type");
+		$vehicle_type->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
+				'onchange'=>'getPopupFormVehicleType()'
+		));
+		foreach ($rows_veh_typ as $rs){
+			$opt_payment[$rs["id"]] = $rs["title"];
+		}
+		$vehicle_type->setMultiOptions($opt_payment);
+		$vehicle_type->setValue($request->getParam('vehicle_type'));
+		
+		$this->addElements(array($vehicle_type,$_service_type,$_title,$_status,$_driver_type,$province,$_location_type));
 	
 		return $this;
 	}

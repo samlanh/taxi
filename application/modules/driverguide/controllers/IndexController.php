@@ -1,11 +1,14 @@
 <?php
 class Driverguide_indexController extends Zend_Controller_Action {
+	protected $tr = null;
     public function init()
     {    	
      /* Initialize action controller here */
-    	$this->tr= Application_Form_FrmLanguages::getCurrentlanguage();
+    	$this->tr = Application_Form_FrmLanguages::getCurrentlanguage();
     	header('content-type: text/html; charset=utf8');
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
+    	//$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+    	
 	}
 	public function indexAction(){
 		try{
@@ -17,7 +20,6 @@ class Driverguide_indexController extends Zend_Controller_Action {
 				$search = array(
 						'title' => '',
 						'status_search' => -1,
-// 						'driver_type'=>-1,
 						'province'=>-1,
 				);
 			}	
@@ -25,12 +27,12 @@ class Driverguide_indexController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,null);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("Driver's Id","DRIVER_NAME","Gender","TEL","DOB","POB","Nationality","Group No","House No","Street No",
+			$collumns = array("VEHICLE_TYPE","vehicle_ref_no","Driver's Id","DRIVER_NAME","Gender","TEL","DOB","POB","Nationality","Group No","House No","Street No",
 					"Commune","District","Province","STATUS");
 			$link=array(
 					'module'=>'driverguide','controller'=>'index','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('driver_id'=>$link,'first_name'=>$link,'last_name'=>$link,'sex'=>$link,'tel'=>$link,'dob'=>$link));
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('car_type'=>$link,'car_number'=>$link, 'driver_id'=>$link,'first_name'=>$link,'last_name'=>$link,'sex'=>$link,'tel'=>$link,'dob'=>$link));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -70,11 +72,18 @@ class Driverguide_indexController extends Zend_Controller_Action {
 		
 		$dbpop = new Application_Form_FrmPopupGlobal();
 		$this->view->frm_popup_clienttype = $dbpop->frmPopupclienttype();
+		
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typAsname=$db->getAllVehicleTypeAsName();
+		array_unshift($rows_veh_typAsname, array ( 'id' => 0, 'name' =>$this->tr->translate("Choose Vehicle Type")), array ( 'id' => -1, 'name' =>$this->tr->translate("Add Vehicle Type")) );
+		$this->view->rows_veh_typasname=$rows_veh_typAsname;
 	}
 	public function editAction(){
+		$id = $this->getRequest()->getParam("id");
 		$db_model = new Driverguide_Model_DbTable_DbDriver();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
+			$data['id']=$id;
 			try{
 					$id= $db_model->updateDriver($data);
 					$this->_redirect("/driverguide");
@@ -110,6 +119,16 @@ class Driverguide_indexController extends Zend_Controller_Action {
 			$data = $this->getRequest()->getPost();
 			$db_com = new Driverguide_Model_DbTable_DbDriver();
 			$id = $db_com->getvehicleinfo($data['vehicle']);
+			print_r(Zend_Json::encode($id));
+			exit();
+		}
+	}
+	
+	function getreffervehicleAction(){
+		if($this->getRequest()->isPost()){
+			$data = $this->getRequest()->getPost();
+			$db_com = new Driverguide_Model_DbTable_DbDriver();
+			$id = $db_com->getReffervehicleinfo($data['vehicle']);
 			print_r(Zend_Json::encode($id));
 			exit();
 		}

@@ -397,7 +397,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		$arrayview = array(1=>"name_en",2=>"name_kh");
 		$sql="
 		SELECT d.*,
-		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs
+		(SELECT ldc_view.".$arrayview[$lang]." FROM `ldc_view` WHERE ldc_view.type=1 AND key_code =d.`sex` LIMIT 1) AS sexs,
+		(SELECT t.title FROM ldc_vechicletye AS t WHERE t.id=d.car_type LIMIT 1) AS vehicle_type
 		FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`last_name`!='' AND d.id=".$data['id'];
 		$order=' LIMIT 1';
 		$row = $db->fetchRow($sql.$order);
@@ -429,6 +430,12 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 		<li>
 		<span class="span_title">'.$tr->translate('PHONE').'</span> : <span class="span_value"></span>
 		</li>
+		<li>
+		<span class="span_title">'.$tr->translate('Vehicle Ref.No').'</span> : <span class="span_value"></span>
+		</li>
+		<li>
+		<span class="span_title">'.$tr->translate('VEHICLE_TYPE').'</span> : <span class="span_value"></span>
+		</li>
 		</ul>
 		</div>
 		';
@@ -457,6 +464,12 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			</li>
 			<li>
 			<span class="span_title">'.$tr->translate('PHONE').'</span> : <span class="span_value">'.$row['tel'].'</span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('Vehicle Ref.No').'</span> : <span class="span_value">'.$row['vehicle_ref_no'].'</span>
+			</li>
+			<li>
+			<span class="span_title">'.$tr->translate('VEHICLE_TYPE').'</span> : <span class="span_value">'.$row['vehicle_type'].'</span>
 			</li>
 			</ul>
 			</div>
@@ -489,7 +502,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			(SELECT $array[$lang] FROM tb_view AS v WHERE v.key_code=cb.status_working AND v.type=17 LIMIT 1) book_status,
 			cb.`status`,
 			(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_id LIMIT 1) AS user_name,
-			REPLACE(cb.payment_booking_no,' ','') AS numbooking
+			REPLACE(cb.payment_booking_no,' ','') AS numbooking,
+			(SELECT SUM(sd.total_amount)  FROM ldc_booking_service_detial  AS sd WHERE sd.carbooking_id=cb.id) AS total_service
 			FROM `ldc_carbooking` AS cb,
 			`ldc_package_location` AS l,
 			`ldc_package_location` AS tl,
@@ -752,6 +766,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			
 			$_arrbooking=array(
 					'customer_id'	  => $cus_id,
+					'remark'	  	  => $_data['remark'],
 					'note'	  	      => $_data['note'],
 					'vehicletype_id'  => $_data['vehicle_type'],
 					'agency_id'	  	  => $_data['agency'],
@@ -773,8 +788,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'due_after'	  	  => $_data['total'],
 					//'driver_fee'	  => $_data['driver_fee'],
 					//'driver_fee_after'=> $driver_feeafter,
-					'remark'	  	  => $_data['remark'],
-					'status_working'  =>0,
+					
+					'status_working'  =>$_data['working_status'],
 					'payment_booking_no'=>$_data['other_booking_no'],
 					'grand_total'	  =>$_data['total_payment'],
 					'grand_total_after'=>$_data['total_payment'],
@@ -869,11 +884,25 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 				AND cp.`status`=1";
 		return $db->fetchRow($sql);
 	}
+	
 	function getCarbookingById($id){
 		$db = $this->getAdapter();
-		$sql="SELECT cb.*,c.last_name,c.phone,c.email
+		$sql="SELECT cb.*,c.last_name,c.phone,c.email,
+		(SELECT SUM(sd.total_amount)  FROM ldc_booking_service_detial  AS sd WHERE sd.carbooking_id=cb.id) AS total_service
 			     FROM `ldc_carbooking` AS cb,ldc_customer AS c
 			     WHERE c.id=cb.customer_id AND cb.`id` = $id LIMIT 1";
+		return $db->fetchRow($sql);
+	}
+	
+	function getViewCarbookingById($id){
+		$db = $this->getAdapter();
+		$sql="SELECT cb.*,c.last_name,c.phone,c.email,
+		(SELECT SUM(sd.total_amount)  FROM ldc_booking_service_detial  AS sd WHERE sd.carbooking_id=cb.id) AS total_service,
+		(SELECT  l.location_name  FROM `ldc_package_location` AS l WHERE l.status=1 AND l.id=cb.from_location LIMIT 1) AS f_location,
+		(SELECT  l.location_name  FROM `ldc_package_location` AS l WHERE l.status=1 AND l.id=cb.to_location LIMIT 1) AS t_location,
+		cb.delivey_time AS `time`
+			     FROM `ldc_carbooking` AS cb,ldc_customer AS c
+			     WHERE c.id=cb.customer_id AND cb.`id`= $id LIMIT 1";
 		return $db->fetchRow($sql);
 	}
 	
@@ -943,6 +972,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 	}
 	
 	function addDrivert($_data){
+		//print_r($_data);exit();
 		try{
 			$_db = new Application_Model_DbTable_DbGlobal();
 			$payment_no = $_db->getNewPaymentNO();
@@ -955,6 +985,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'driver_fee'	  => $_data['driver_fee'],
 					'driver_fee_after'=> $_data['driver_fee'],
 					'remark'	  	  => $_data['remark'],
+					'note'	  	      => $_data['note'],
 					'modify_date'  	  =>date("Y-m-d H:i:s"),
 					'user_id'      	  => $this->getUserId(),
 			);

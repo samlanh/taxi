@@ -299,6 +299,16 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		}
 		$vehicle_type->setMultiOptions($opt_payment);
 		
+		$car_type = array(0=>$this->tr->translate("SELECT_VECHICLE_TYPE"),-1=>$this->tr->translate("Add Vehicle Type"));
+		$car_type = new Zend_Dojo_Form_Element_FilteringSelect("car_type");
+		$car_type->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
+				'onchange'=>'getPopupFormVehicleType()'
+		));
+		foreach ($rows_veh_typ as $rs){
+			$opt_payment[$rs["id"]] = $rs["title"];
+		}
+		$car_type->setMultiOptions($opt_payment);
+		
 		if (!empty($data)){
 			$dbbooking = new Bookings_Model_DbTable_DbBooking();
 			$chekcpayment = $dbbooking->checkBookingHasPayment($data['id']);
@@ -350,7 +360,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 			}
 			if ($data['is_paid_commission']==1){
 				$commision_fee->setAttribs(array('readonly'=>'readonly',));
-				$agency->setAttribs(array('readonly'=>'readonly',));
+				//$agency->setAttribs(array('readonly'=>'readonly',));
 			}
 			 
 			$total_payment->setValue($data['grand_total']);
@@ -399,7 +409,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 				$cus_email,
 				$paid_status,
 				$balanc_status,
-				$status
+				$status,
+				$car_type
 			));
 		return $this;
 	}
