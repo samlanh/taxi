@@ -152,21 +152,31 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		             </thead>
 			     <tbody>
 				     <?php 
-				     $date_late='';$duplicate='';$cus_dubplicate='';
+				     $date_late='';$duplicate='';$cus_dubplicate='';$color='';$paid_color='';
 				     $room_no='';$cus_name='';$book_no_color=''; if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
 				          if($rs['status_working']==0){
 				          	if (strtotime($rs['delivey_date']) <= time() && $rs['status_working']==0) {
 				          		$status_working='style="background: #ff0f0f57 !important;"';
+				          		$color='#ff0f0f57';
 				          	} else {
 				          		$status_working='style="background:#c6ffda"';
+				          		$color='#c6ffda';
 				          	}
 				          }else if($rs['status_working']==1){
 				          	$status_working='style="background:#fff"';
+				          	$color='#fff';
 				          }else{
 				          	$status_working='style="background:#a59e9e"';
+				          	$color='#a59e9e';
 				          }
-				          $room_no=$rs['check_book_no'];$cus_name=$rs['check_name'];
+				           
+				          if($rs['balance_after']==0 ){
+				          	$paid_color='style="background:#c2d9ef"';
+				          }else{
+				          	$paid_color='';
+				          }
 				          
+				          $room_no=$rs['check_book_no'];$cus_name=$rs['check_name'];
 				          $doupli_cat=$db_s->checkNumberBooking($rs['numbooking']);
 				          $cusdubplicate=$db_s->checkCustomerBooking($rs['check_name']);
 				          if($doupli_cat['number_book']>=2 ){
@@ -181,10 +191,10 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				          	$cus_dubplicate='';
 				          }
 				     	?>
-				     <tr class=" alternate  normal" <?php echo $status_working;?>>
+				     <tr class=" alternate  normal"   onclick="setColor(this,'lightgrey','<?php echo $color;?>')" <?php echo $status_working;?>>
 				       <td class="text-center"> <?php echo $key+1?></td>
 				       <td class="text-center"> <?php echo $rs['booking_no']?></td> 
-				       <td><?php echo date("d-M-Y",strtotime($rs['booking_date']));?> </td> 
+				       <td><?php echo date("d-M-Y h:i:sa",strtotime($rs['create_date']));?> </td> 
 				       <td class="text-center"> <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?> </td>
 				       <td class="text-center"> <?php echo $rs['delivey_time']?> </td>
 				       <td class="text-center" style="text-align:left; <?php echo $duplicate;?>" > 
@@ -214,12 +224,12 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				        <?php echo $rs['phone']?></td> 
 				       <td class="text-center"> <?php echo $rs['email']?></td> 
 				       <td class="text-center"><?php echo $rs['vehicle_type']?> </td>
-				       <td class="text-center"> <?php echo ($rs['paid']==0)?"":"$&nbsp;".number_format($rs["paid"],2);?> </td>
+				       <td class="text-center" <?php echo $paid_color;?>> <?php echo ($rs['paid']==0)?"":"$&nbsp;".number_format($rs["paid"],2);?> </td>
 				       
 				       <td class="text-center"> <?php echo ($rs['total']==0)?"":"$&nbsp;".number_format($rs["total"],2);?> </td>
 				       <td class="text-center"> <?php echo ($rs['price']==0)?"":"$&nbsp;".number_format($rs["price"],2);?> </td>
 				       
-				       <td class="text-center"> <?php echo ($rs['balance']==0)?"":"$&nbsp;".number_format($rs["balance"],2);?></td> 
+				       <td class="text-center"> <?php echo ($rs['balance_after']==0)?"":"$&nbsp;".number_format($rs["balance_after"],2);?></td> 
 				       <td class="text-center">  <?php echo ($rs['grand_total_after']==0)?"":"$&nbsp;".number_format($rs["grand_total_after"],2);?></td> 
 				       <td class="text-center"><?php echo $rs['agency_name']?> </td>
 				      
@@ -261,5 +271,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 			
 	
 <script>
- 
+function setColor(el, BG1, BG2) {
+	el.style.background = (el.style.background == BG1) ? BG2 : BG1;
+	}
+
 </script>

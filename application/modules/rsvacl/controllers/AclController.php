@@ -81,7 +81,8 @@ class RsvAcl_AclController extends Zend_Controller_Action
 				     	  //End write log file
 				
 						Application_Form_FrmMessage::message('INSERT_SUCCESS');
-// 						Application_Form_FrmMessage::redirector('/rsvAcl/acl/index');																			
+						$this->_redirect("/rsvacl/acl/add");
+						//Application_Form_FrmMessage::redirector('/rsvAcl/acl');																			
 // 				}else {
 // 					Application_Form_FrmMessage::message('Action had existed already');
 // 				}

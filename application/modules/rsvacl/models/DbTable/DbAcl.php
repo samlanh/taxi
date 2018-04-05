@@ -102,7 +102,9 @@ class RsvAcl_Model_DbTable_DbAcl extends Zend_Db_Table_Abstract
 		$data['label']=$arr['label'];
 		$data['module']=$arr['module'];   
 		$data['controller']=$arr['controller'];   
-		$data['action']=$arr['action'];   	
+		$data['action']=$arr['action'];
+		$data['rank']=$arr['order'];
+		$data['is_menu']=$arr['type'];
      	$data['status']='1';
     	return $this->insert($data); 
 	}	
@@ -114,7 +116,10 @@ class RsvAcl_Model_DbTable_DbAcl extends Zend_Db_Table_Abstract
 		$data['label']=$arr['label'];
 		$data['module']=$arr['module'];
 		$data['controller']=$arr['controller'];
-		$data['action']=$arr['action'];  	
+		$data['action']=$arr['action'];  
+		$data['rank']=$arr['order'];
+		$data['is_menu']=$arr['type'];
+		$data['status']=$arr['status'];
     	$where=$this->getAdapter()->quoteInto('acl_id=?',$acl_id);
 		$this->update($data,$where); 
 	}

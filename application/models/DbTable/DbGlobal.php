@@ -997,5 +997,12 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   			return array('listItems'=>$string,'countItems'=>$countAlert);
   		}
   }
+  
+  function getAllBranch(){
+  	$db = $this->getAdapter();
+  	$sql=" SELECT br_id,branch_namekh,branch_nameen FROM `rms_branch` WHERE STATUS=1 AND branch_namekh!='' ";
+  	$sql.=$this->getAccessPermission('br_id');
+  	return $db->fetchAll($sql);
+  }
 }
 ?>

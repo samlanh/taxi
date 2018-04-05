@@ -8,9 +8,7 @@
 
 ?>
 
-<div class="btn" align="right">
-	<input  type="button" value="ត្រលប់​ក្រោយ" label="ត្រលប់​ក្រោយ" id="btadd" dojoType="dijit.form.Button" onclick="window.location = '<?php echo $cancel_url; ?>';"/>
-</div>
+ 
 <form action="" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">										
 			if(this.validate()) {								
@@ -35,6 +33,7 @@
 											missingMessage="Label" class='fullside'/>
 										</td>
 									</tr>
+									<tr><td style="height:5px;"></td></tr>
 									<tr>
 										<td>Module</td>
 										<td width="300px">
@@ -43,6 +42,7 @@
 											missingMessage="Invalid Module!" class='fullside'/>
 										</td>
 									</tr>
+									<tr><td style="height:5px;"></td></tr>
 									<tr>
 										<td>Contoller</td>
 										<td width="200px">
@@ -51,6 +51,7 @@
 											missingMessage="Invalid Controller!" class='fullside'/>
 										</td>
 									</tr>
+									<tr><td style="height:5px;"></td></tr>
 									<tr>
 										<td>Action</td>
 										<td width="200px">
@@ -58,7 +59,35 @@
 											dojoType="dijit.form.ValidationTextBox" value=""
 											missingMessage="Invalid Action!" class='fullside'/>
 										</td>
-									</tr>						
+									</tr>		
+									<tr><td style="height:5px;"></td></tr>
+									<tr>
+										<td>Order</td>
+										<td width="200px">
+											<input type="text"  name="order" dojoType="dijit.form.TextBox" class='fullside'/>
+										</td>
+									</tr>
+									<tr><td style="height:5px;"></td></tr>
+									<tr>
+										<td>Type</td>
+										<td width="200px">
+											<select class="fullside" name="type" dojoType="dijit.form.FilteringSelect" >
+											    <option value="1">MEMU</option>
+												<option value="0">NOT_MENU</option>
+											</select>
+										</td>
+									</tr>
+									<tr><td style="height:5px;"></td></tr>
+									<tr>
+										<td>Status</td>
+										<td width="200px">
+											<select class="fullside" name="status" dojoType="dijit.form.FilteringSelect" >
+											    <option value="1">Active</option>
+												<option value="0">Deactive</option>
+											</select>
+										</td>
+									</tr>	
+									<tr><td style="height:5px;"></td></tr>				
 								</table>
 							</td>							
 						</tr>
