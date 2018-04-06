@@ -47,7 +47,7 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$row_agen = $_db->getAllAgency();
 		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"));
 		$agency = new Zend_Dojo_Form_Element_FilteringSelect("agency");
-		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment();'));//getAllAgentcyPayment()
+		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment();getAgencyPaid()'));//getAllAgentcyPayment()
 		foreach ($row_agen as $rs){
 			$opt_agen[$rs["id"]] = $rs["name"];
 		}
@@ -98,6 +98,7 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$total_commission->setAttribs(
 				array('dojoType'=>$this->number,
 						'readonly'=>'readonly',
+						'class'=>"fullside",
 				));
 		$total_commission->setValue(0);
 		
@@ -184,6 +185,36 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		));
 		$booking_date_end->setValue($c_date);
 		
+		$agency_paid = new Zend_Dojo_Form_Element_NumberTextBox("agency_paid");
+		$agency_paid->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$agency_paid->setValue(0);
+		$agency_balance = new Zend_Dojo_Form_Element_NumberTextBox("agency_balance");
+		$agency_balance->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$agency_balance->setValue(0);
+		
+		$total_driver_paid = new Zend_Dojo_Form_Element_NumberTextBox("total_driver_paid");
+		$total_driver_paid->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$total_driver_paid->setValue(0);
+		$driver_balance = new Zend_Dojo_Form_Element_NumberTextBox("driver_balance");
+		$driver_balance->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$driver_balance->setValue(0);
+		
 		if (!empty($data)){
 			$_reciept_no->setValue($data['payment_no']);
 			$agency->setValue($data['agency_id']);
@@ -218,7 +249,11 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 				$all_agentcy,
 				$total_owner,
 				$paid_commission,
-				$total_paid_commission
+				$total_paid_commission,
+				$agency_paid,
+				$agency_balance,
+				$total_driver_paid,
+				$driver_balance
 			));
 		return $this;
 	}

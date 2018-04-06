@@ -515,16 +515,40 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 	
 	function getAllAgentcyBooking($stu_id){
 		$db=$this->getAdapter();
-		$sql="SELECT cb.id,cb.payment_booking_no AS booking_no,c.last_name,DATE_FORMAT(cb.booking_date,'%d-%b-%Y') AS booking_date,cb.customer_id,
+		$_db = new Application_Model_DbTable_DbGlobal();
+		$lang = $_db->getCurrentLang();
+		$array = array(1=>"name_en",2=>"name_kh");
+		
+		$sql="SELECT cb.id,cb.payment_booking_no,booking_no,c.last_name,DATE_FORMAT(cb.booking_date,'%d-%b-%Y') AS booking_date,cb.customer_id,cb.`price`,
         	cb.commision_fee_after,cb.grand_total as total,cb.grand_total_after AS total_after,cb.paid_after,cb.balance_after,cb.paid_status,cb.balance_status,
         	cb.paid_status,cb.balance_status,
-        	(SELECT v.name_kh FROM tb_view AS v WHERE v.key_code=cb.paid_status AND v.type=18) AS status_paid,
-        	(SELECT v.name_kh FROM tb_view AS v WHERE v.key_code=cb.balance_status AND v.type=19) AS status_balance
+        	(SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.paid_status AND v.type=18) AS status_paid,
+        	(SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.balance_status AND v.type=19) AS status_balance,
+        	
+        	(SELECT SUM(c.paid_after) FROM `ldc_carbooking` AS c WHERE c.paid_status=2)   AS agency_paid,
+        	(SELECT SUM(c.balance_after) FROM `ldc_carbooking` AS c WHERE c.balance_status=2)   AS agency_balance,
+		    (SELECT SUM(b.paid_after) FROM `ldc_carbooking`AS b WHERE b.paid_status=1)   AS driver_paid ,
+		    (SELECT SUM(b.balance_after) FROM `ldc_carbooking`AS b WHERE b.balance_status=1)   AS driver_balance
+        	
 			FROM  ldc_carbooking AS cb,ldc_customer AS c
 			WHERE cb.customer_id=c.id
 			AND cb.balance_after>0
 			AND cb.agency_id= $stu_id";
 		return $db->fetchAll($sql);
+	}
+	
+	function getAgencyPayment($agency_id){
+		$db=$this->getAdapter();
+		$sql="SELECT  
+        	 (SELECT SUM(c.paid_after) FROM `ldc_carbooking` AS c WHERE c.paid_status=2)   AS agency_paid,
+        	 (SELECT SUM(c.balance_after) FROM `ldc_carbooking` AS c WHERE c.balance_status=2)   AS agency_balance,
+			 (SELECT SUM(b.paid_after) FROM `ldc_carbooking`AS b WHERE b.paid_status=1)   AS driver_paid ,
+			 (SELECT SUM(b.balance_after) FROM `ldc_carbooking`AS b WHERE b.balance_status=1)   AS driver_balance
+			FROM  ldc_carbooking AS cb,ldc_customer AS c
+			WHERE cb.customer_id=c.id
+			AND cb.balance_after>0
+			AND cb.agency_id= $agency_id";
+		return $db->fetchRow($sql);
 	}
 	
 }
