@@ -1,6 +1,6 @@
 <?php
 
-class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
+class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 {
 	protected $_name ="ldc_agencyclear_payment";
 	public static function getUserId(){
@@ -307,21 +307,20 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$lang = $_db->getCurrentLang();
 		$array = array(1=>"name_en",2=>"name_kh");
-		
 		$sql="SELECT cb.id,cb.payment_booking_no,booking_no,c.last_name,DATE_FORMAT(cb.booking_date,'%d-%b-%Y') AS booking_date,cb.customer_id,cb.`price`,
-        	  cb.commision_fee_after,cb.grand_total AS total,cb.grand_total_after AS total_after,cb.paid_after,cb.balance_after,cb.paid_status,cb.balance_status,
+        	  cb.grand_total AS total,cb.grand_total_after AS total_after,cb.paid_after,cb.balance_after,cb.paid_status,cb.balance_status,
         	  cb.paid_status,cb.balance_status,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.paid_status AND v.type=18 AND cb.paid_after!=0 LIMIT 1),'') AS status_paid,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.balance_status AND v.type=19 AND cb.balance_after!=0 LIMIT 1),'') AS status_balance,
-        	  cb.`is_paid_commission`
-			FROM  ldc_carbooking AS cb,ldc_customer AS c
-			WHERE cb.customer_id=c.id 
-			AND cb.is_paid_commission=0";
+        	  cb.`driver_fee_after`, cb.`is_paid_to_driver`
+			  FROM  ldc_carbooking AS cb,ldc_customer AS c
+			  WHERE cb.customer_id=c.id 
+			  AND cb.is_paid_to_driver=0 ";
 		$and='';
 		if($type==1){
 			$and=" AND cb.id=".$id;
 		}else{
-			$and=" AND cb.agency_id=".$id;
+			$and=" AND cb.driver_id=".$id;
 		}
 		return $db->fetchAll($sql.$and);
 	}
@@ -337,7 +336,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 			 FROM  ldc_carbooking AS cb,ldc_customer AS c
 			 WHERE cb.customer_id=c.id
 			 AND cb.balance_after>0
-			 AND cb.agency_id=$agency_id";
+			 AND cb.driver_id=$agency_id";
 		
 		return $db->fetchRow($sql);
 	}

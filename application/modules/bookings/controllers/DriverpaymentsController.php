@@ -1,5 +1,5 @@
 <?php
-class Bookings_AgentcypaymentController extends Zend_Controller_Action {
+class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
     public function init()
     {    	
@@ -10,7 +10,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	
 	public function indexAction(){
 		try{
-			$db = new Bookings_Model_DbTable_DbAgentcyPayment();
+			$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
 			if($this->getRequest()->isPost()){
 				$search=$this->getRequest()->getPost();
 			}
@@ -43,7 +43,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	
 	public function addAction()
 	{
-		$db = new Bookings_Model_DbTable_DbAgentcyPayment();
+		$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
 			$booking_id=$db->addAgencyPayment($data);
@@ -54,7 +54,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 			}
 // 			Application_Form_FrmMessage::redirectUrl("/booking/carrentalbooking/add");
 		}
-		$frm = new Bookings_Form_FrmAgentcyPayment();
+		$frm = new Bookings_Form_FrmDriverPaymentNew();
 		$form = $frm->FormBooking();
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
@@ -62,7 +62,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	
 	public function editAction()
 	{
-		$db = new Bookings_Model_DbTable_DbAgentcyPayment();
+		$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
 			$booking_id=$db->updateCommissionPayment($data);
@@ -75,7 +75,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 		if (empty($row)){
 			$this->_redirect("/bookings/agentcypayment");
 		}
-		$frm = new Bookings_Form_FrmAgentcyPayment();
+		$frm = new Bookings_Form_FrmDriverPaymentNew();
 		$form = $frm->FormBooking($row);
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
@@ -84,7 +84,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	function getagentAction(){
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$db = new Bookings_Model_DbTable_DbAgentcyPayment();
+			$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
 			$row = $db->getAgencyInfor($data["agency"]);
 			print_r(Zend_Json::encode($row));
 			exit();
@@ -94,7 +94,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	function getcarbookingbyagencyAction(){
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$db_com = new Bookings_Model_DbTable_DbAgentcyPayment();
+			$db_com = new Bookings_Model_DbTable_DbDriverPaymentNew();
 			$id = $db_com->getCarbookingCommissionAgent($data);
 			print_r(Zend_Json::encode($id));
 			exit();
@@ -104,18 +104,18 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	function getcarbookingbyagencyeditAction(){
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$db_com = new Bookings_Model_DbTable_DbAgentcyPayment();
+			$db_com = new Bookings_Model_DbTable_DbDriverPaymentNew();
 			$id = $db_com->getCarbookingCommissionAgentForEdit($data);
 			print_r(Zend_Json::encode($id));
 			exit();
 		}
 	}
 	
-	function getAgentcyPaymentsAction(){
+	function getDriverPaymentsAction(){
 		if($this->getRequest()->isPost()){
 			$data=$this->getRequest()->getPost();
-			$db = new Bookings_Model_DbTable_DbAgentcyPayment();
-			$gty= $db->getAllAgentcyBooking($data['agency_id'],$data['type']);
+			$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
+			$gty= $db->getAllAgentcyBooking($data['driver_id'],$data['type']);
 			print_r(Zend_Json::encode($gty));
 			exit();
 		}
@@ -125,8 +125,8 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	function getAgentcyPaidAction(){
 		if($this->getRequest()->isPost()){
 			$data=$this->getRequest()->getPost();
-			$db = new Bookings_Model_DbTable_DbAgentcyPayment();
-			$gty= $db->getAgencyPayment($data['agency'],$data['row_id']);
+			$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
+			$gty= $db->getAgencyPayment($data['driver'],$data['row_id']);
 			print_r(Zend_Json::encode($gty));
 			exit();
 		}

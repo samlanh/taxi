@@ -862,6 +862,34 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	return $pre.$new_acc_no;
   }
   
+  public function getNewAgencyPaymentNO(){
+  	$this->_name='ldc_agencyclear_payment';
+  	$db = $this->getAdapter();
+  	$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+  	$acc_no = $db->fetchOne($sql);
+  	$new_acc_no= (int)$acc_no+1;
+  	$acc_no= strlen((int)$acc_no+1);
+  	$pre = 'CA';
+  	for($i = $acc_no;$i<4;$i++){
+  		$pre.='0';
+  	}
+  	return $pre.$new_acc_no;
+  }
+  
+  public function getCearDriverPaymentNO(){
+  	$this->_name='ldc_driverclear_payment';
+  	$db = $this->getAdapter();
+  	$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+  	$acc_no = $db->fetchOne($sql);
+  	$new_acc_no= (int)$acc_no+1;
+  	$acc_no= strlen((int)$acc_no+1);
+  	$pre = 'CD';
+  	for($i = $acc_no;$i<4;$i++){
+  		$pre.='0';
+  	}
+  	return $pre.$new_acc_no;
+  }
+  
   public function getNewDriverPaymentNO(){
   	$this->_name='ldc_driver_payment';
   	$db = $this->getAdapter();
@@ -1004,5 +1032,18 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   	$sql.=$this->getAccessPermission('br_id');
   	return $db->fetchAll($sql);
   }
+  
+  function getAllBookingNo(){
+  	$db = $this->getAdapter();
+  	$sql=" SELECT  cb.`id`,cb.booking_no AS `name` FROM `ldc_carbooking` AS cb WHERE cb.`is_paid_commission`=0";
+  	return $db->fetchAll($sql);
+  }
+  
+  function getAllDriverBookingNo(){
+  	$db = $this->getAdapter();
+  	$sql=" SELECT  cb.`id`,cb.booking_no AS `name` FROM `ldc_carbooking` AS cb WHERE cb.`is_paid_to_driver`=0";
+  	return $db->fetchAll($sql);
+  }
+  
 }
 ?>

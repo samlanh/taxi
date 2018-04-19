@@ -1,5 +1,5 @@
 <?php
-class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
+class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 	protected $tr = null;
 	protected $btn =null;//text validate
 	protected $filter = null;
@@ -25,7 +25,7 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 	public function FormBooking($data=null){
 		$request=Zend_Controller_Front::getInstance()->getRequest();
 		$_db = new Application_Model_DbTable_DbGlobal();
-		$booking_code = $_db->getNewAgencyPaymentNO();
+		$booking_code = $_db->getCearDriverPaymentNO();
 		$_reciept_no = new Zend_Dojo_Form_Element_ValidationTextBox('reciept_no');
 		$_reciept_no->setAttribs(array(
 				'dojoType'=>'dijit.form.ValidationTextBox',
@@ -53,6 +53,15 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		}
 		$agency->setMultiOptions($opt_agen);
 		
+		$row_dri = $_db->getAllDriver();
+		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
+		$driver = new Zend_Dojo_Form_Element_FilteringSelect("driver");
+		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment(2);'));
+		foreach ($row_dri as $rs){
+			$opt_dri[$rs["id"]] = $rs["name"];
+		}
+		$driver->setMultiOptions($opt_dri);
+		
 		$remark = new Zend_Dojo_Form_Element_TextBox("remark");
 		$remark->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 		
@@ -65,14 +74,14 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		}
 		$payment_method->setMultiOptions($opt_payment);
 		
-		$opt_payment = array(1=>$this->tr->translate("BOOKING_NO"),2=>$this->tr->translate("AGENCY_NAME"));
+		$opt_payment = array(1=>$this->tr->translate("BOOKING_NO"),2=>$this->tr->translate("DRIVER_NAME"));
 		$payment_by = new Zend_Dojo_Form_Element_FilteringSelect("payment_by");
 		$payment_by->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getPaymentBy()'));
 		$payment_by->setMultiOptions($opt_payment);
 		
 		
 		
-		$booking_nos = $_db->getAllBookingNo();
+		$booking_nos = $_db->getAllDriverBookingNo();
 		$opt_b = array(0=>$this->tr->translate("SELECT_BOOKING_NO"));
 		$invoice= new Zend_Dojo_Form_Element_FilteringSelect("invoice");
 		$invoice->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment(1)',
@@ -219,7 +228,6 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$paid_agen->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
-						'required'=>true,
 						'readonly'=>'readonly',
 				));
 		 
@@ -309,7 +317,8 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 				$paid_agen,
 				$status,
 				$payment_by,
-				$invoice
+				$invoice,
+				$driver
 			));
 		return $this;
 	}

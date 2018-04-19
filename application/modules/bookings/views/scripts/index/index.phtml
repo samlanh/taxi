@@ -135,13 +135,13 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		    	          <th><?php echo $tr->translate("Company Price")?> </th> 
 		    	          <th><?php echo $tr->translate("CARPRICE")?> </th> 
 		    	          <th><?php echo $tr->translate("BALANCE")?> </th> 
-		    	          <th><?php echo $tr->translate("TOTAL_PAYMENT")?> </th> 
+		    	          <th><?php echo $tr->translate("GRAND_TOTAL")?> </th> 
 		    	          <th><?php echo $tr->translate("AGENCY_NAME")?> </th> 
 		    	          
 		    	          <th><?php echo $tr->translate("COMMISSION_FEE")?></th> 
-		    	          <th><?php echo $tr->translate("OTHER_FEE")?> </th> 
-		    	           <th><?php echo $tr->translate("TOTAL_SERVICE")?> </th> 
-		    	          <th><?php echo $tr->translate("GRAND_TOTAL")?></th> 
+		    	          
+		    	           <th><?php echo $tr->translate("Other Service Type")?> </th> 
+		    	          
 		    	          <th><?php echo $tr->translate("DRIVER")?> </th> 
 		    	          <th><?php echo $tr->translate("DRIVER_FEE")?></th> 
 		    	          <th><?php echo $tr->translate("BOOKING_STATUS")?> </th> 
@@ -152,7 +152,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		             </thead>
 			     <tbody>
 				     <?php 
-				     $date_late='';$duplicate='';$cus_dubplicate='';$color='';$paid_color='';
+				     $date_late='';$duplicate='';$cus_dubplicate='';$color='';$paid_color='';$agen_color='';
 				     $room_no='';$cus_name='';$book_no_color=''; if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
 				          if($rs['status_working']==0){
 				          	if (strtotime($rs['delivey_date']) <= time() && $rs['status_working']==0) {
@@ -174,6 +174,13 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				          	$paid_color='style="background:#c2d9ef"';
 				          }else{
 				          	$paid_color='';
+				          }
+				          
+				          //check agency payment 
+				          if($rs['is_paid_commission']==1 ){
+				          	$agen_color='style="background:#808080"';
+				          }else{
+				          	$agen_color='';
 				          }
 				          
 				          $room_no=$rs['check_book_no'];$cus_name=$rs['check_name'];
@@ -224,19 +231,18 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				        <?php echo $rs['phone']?></td> 
 				       <td class="text-center"> <?php echo $rs['email']?></td> 
 				       <td class="text-center"><?php echo $rs['vehicle_type']?> </td>
-				       <td class="text-center" <?php echo $paid_color;?>> <?php echo ($rs['paid']==0)?"":"$&nbsp;".number_format($rs["paid"],2);?> </td>
+				       <td class="text-center" <?php //echo $paid_color;?>> <?php echo ($rs['paid']==0)?"":"$&nbsp;".number_format($rs["paid"],2);?> </td>
 				       
 				       <td class="text-center"> <?php echo ($rs['total']==0)?"":"$&nbsp;".number_format($rs["total"],2);?> </td>
 				       <td class="text-center"> <?php echo ($rs['price']==0)?"":"$&nbsp;".number_format($rs["price"],2);?> </td>
 				       
 				       <td class="text-center"> <?php echo ($rs['balance_after']==0)?"":"$&nbsp;".number_format($rs["balance_after"],2);?></td> 
-				       <td class="text-center">  <?php echo ($rs['grand_total_after']==0)?"":"$&nbsp;".number_format($rs["grand_total_after"],2);?></td> 
-				       <td class="text-center"><?php echo $rs['agency_name']?> </td>
+				       <td class="text-center">  <?php echo ($rs['grand_total']==0)?"":"$&nbsp;".number_format($rs["grand_total"],2);?></td> 
+				       <td class="text-center" <?php echo $agen_color;?>><?php echo $rs['agency_name']?> </td>
 				      
 				       <td class="text-center"> <?php echo ($rs['commision_fee']==0)?"":"$&nbsp;".number_format($rs["commision_fee"],2);?></td> 
-				       <td class="text-center"><?php echo ($rs['other_fee']==0)?"":"$&nbsp;".number_format($rs["other_fee"],2);?> </td>
+				       
 				       <td class="text-center"><?php echo ($rs['total_service']==0)?"":"$&nbsp;".number_format($rs["total_service"],2);?> </td>
-				       <td class="text-center"> <?php echo ($rs['grand_total']==0)?"":"$&nbsp;".number_format($rs["grand_total"],2);?></td>
 				       <td class="text-center"> <?php echo $rs['driver']?></td>
 				       <td class="text-center"><?php echo ($rs['driver_fee']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>
 				       <td class="text-center" style="background:#fff"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"> <?php echo $rs['book_status']?></a></td>
