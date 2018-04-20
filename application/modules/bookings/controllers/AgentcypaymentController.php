@@ -126,7 +126,7 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 		if($this->getRequest()->isPost()){
 			$data=$this->getRequest()->getPost();
 			$db = new Bookings_Model_DbTable_DbAgentcyPayment();
-			$gty= $db->getAgencyPayment($data['agency'],$data['row_id']);
+			$gty= $db->getAgencyPayment($data['agency'],$data['row_id'],$data['type']);
 			print_r(Zend_Json::encode($gty));
 			exit();
 		}

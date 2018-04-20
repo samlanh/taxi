@@ -513,7 +513,8 @@ function getAllAgentcyPayment(type){
 					thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
 					thead+='<th><?php echo $tr->translate("STATUS");?></th>';
 					fund_title=1;
-					
+					 
+					//dijit.byId("agency").attr("value",data[i].agency_id); 
 					dojo.query("#head_title").append(thead);
 				}
 				if(data[i].paid_status==1){
@@ -578,7 +579,12 @@ function getAllAgentcyPayment(type){
 
 urlagent_paid = '<?php echo $this->url(array('module'=>'bookings','controller'=>'agentcypayment','action'=>'get-agentcy-paid'));?>';
 function getAgencyPaid(){
-	var id = dijit.byId('agency').get('value');
+	var type=dijit.byId("payment_by").get("value");
+	if(type==1){
+		var id = dijit.byId('invoice').get('value');
+	}else{
+		var id = dijit.byId('agency').get('value');
+	}
 	var identity = $('#row_id').val();
 	if(identity==''){
 		dijit.byId("total_commission_fee").attr("value",0);
@@ -594,6 +600,7 @@ function getAgencyPaid(){
 	    content:{
 	     'agency':id,
 	     'row_id':identity,
+	     'type':type
 	     },
 	    handleAs:"json",
 	    load: function(data) {

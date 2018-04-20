@@ -17,34 +17,29 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$lang = $_db->getCurrentLang();
 		$array = array(1=>"name_en",2=>"name_kh");
-		$sql="
-		SELECT 
-			cp.`id`,cp.`payment_no`,
-			CONCAT(a.`last_name`,'(',customer_code,')') AS agentcy,
-			cp.`payment_date`,
-			(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
-			cp.`balance`,cp.`paid`,cp.`total_due`,cp.`status`
-			FROM `ldc_commission_payment` AS cp,
-			`ldc_agency` AS a
-			WHERE
-			a.`id` = cp.`agency_id` AND
-			 cp.`status`>-1 AND cp.`payment_date`>='$from_date' AND cp.`payment_date`<='$to_date'";
+		$sql=" SELECT d.id,d.`payment_no`,(SELECT CONCAT(n.`last_name`,'(',n.`customer_code`,')') 
+ 	           FROM `ldc_agency` AS n WHERE n.`status` =1 AND n.id=d.`agency_id` LIMIT 1) AS agency_name,
+ 	           d.`payment_date`, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
+		       d.`total_commission`,d.`total_agen_recived`,d.`paid_agen` ,
+		       (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=12 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
+		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,d.`status`
+		      FROM `ldc_agencyclear_payment` AS d  ";
 		$where = '';
-		if($search["search_text"] !=""){
-			$s_where=array();
-			$s_search=addslashes(trim($search['search_text']));
-			$s_where[]=" CONCAT(a.`first_name`,' ',a.`last_name`) LIKE '%{$s_search}%'";
-			$s_where[]=" cp.`payment_no` LIKE '%{$s_search}%'";
-			$s_where[]=" cp.`balance` LIKE '%{$s_search}%'";
-			$s_where[]=" cp.`paid` LIKE '%{$s_search}%'";
-			$s_where[]=" cp.`total_due` LIKE '%{$s_search}%'";
-			$where.=' AND ('.implode(' OR ',$s_where).')';
-		}
-		if ($search['agency_search']>0){
-			$where.=" AND cp.`agency_id`=".$search['agency_search'];
-		}
-		$order=' ORDER BY cp.id DESC';
-		return $db->fetchAll($sql.$where.$order);
+// 		if($search["search_text"] !=""){
+// 			$s_where=array();
+// 			$s_search=addslashes(trim($search['search_text']));
+// 			$s_where[]=" CONCAT(a.`first_name`,' ',a.`last_name`) LIKE '%{$s_search}%'";
+// 			$s_where[]=" cp.`payment_no` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cp.`balance` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cp.`paid` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cp.`total_due` LIKE '%{$s_search}%'";
+// 			$where.=' AND ('.implode(' OR ',$s_where).')';
+// 		}
+// 		if ($search['agency_search']>0){
+// 			$where.=" AND cp.`agency_id`=".$search['agency_search'];
+// 		}
+// 		$order=' ORDER BY cp.id DESC';
+		return $db->fetchAll($sql.$where);
 	}
 	
 	public function addAgencyPayment($_data){
@@ -313,7 +308,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
         	  cb.paid_status,cb.balance_status,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.paid_status AND v.type=18 AND cb.paid_after!=0 LIMIT 1),'') AS status_paid,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.balance_status AND v.type=19 AND cb.balance_after!=0 LIMIT 1),'') AS status_balance,
-        	  cb.`is_paid_commission`
+        	  cb.`is_paid_commission`,cb.`agency_id`
 			FROM  ldc_carbooking AS cb,ldc_customer AS c
 			WHERE cb.customer_id=c.id 
 			AND cb.is_paid_commission=0";
@@ -326,8 +321,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 		return $db->fetchAll($sql.$and);
 	}
 	
-	function getAgencyPayment($agency_id,$row_id){
-		
+	function getAgencyPayment($agency_id,$row_id,$type){
 		$db=$this->getAdapter();
 		$sql="SELECT  cb.id,
         	 (SELECT SUM(c.paid_after) FROM `ldc_carbooking` AS c WHERE c.paid_status=2 		AND c.id  IN (".$row_id.") )   AS agency_paid,
@@ -336,10 +330,13 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 			 (SELECT SUM(b.balance_after) FROM `ldc_carbooking`AS b WHERE b.balance_status=1 	AND b.id  IN (".$row_id.") )   AS driver_balance
 			 FROM  ldc_carbooking AS cb,ldc_customer AS c
 			 WHERE cb.customer_id=c.id
-			 AND cb.balance_after>0
-			 AND cb.agency_id=$agency_id";
-		
-		return $db->fetchRow($sql);
+			 AND cb.balance_after>0 ";
+		if($type==1){
+			$and=" AND cb.id=$agency_id";
+		}else{
+			$and=" AND cb.agency_id=$agency_id";
+		}
+		return $db->fetchRow($sql.$and);
 	}
 	
 }
