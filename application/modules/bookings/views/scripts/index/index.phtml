@@ -145,6 +145,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		    	          <th><?php echo $tr->translate("DRIVER")?> </th> 
 		    	          <th><?php echo $tr->translate("DRIVER_FEE")?></th> 
 		    	          <th><?php echo $tr->translate("BOOKING_STATUS")?> </th> 
+		    	           <th><?php echo $tr->translate("NOTE")?> </th> 
 		    	          <th><?php echo $tr->translate("STATUS")?> </th> 
 		    	          <th><?php echo $tr->translate("USER")?></th> 
 		    	          <th><?php echo $tr->translate("STATUS")?></th> 
@@ -152,7 +153,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		             </thead>
 			     <tbody>
 				     <?php 
-				     $date_late='';$duplicate='';$cus_dubplicate='';$color='';$paid_color='';$agen_color='';
+				     $date_late='';$duplicate='';$cus_dubplicate='';$color='';$paid_color='';$agen_color='';$drive_color='';
 				     $room_no='';$cus_name='';$book_no_color=''; if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
 				          if($rs['status_working']==0){
 				          	if (strtotime($rs['delivey_date']) <= time() && $rs['status_working']==0) {
@@ -178,9 +179,16 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				          
 				          //check agency payment 
 				          if($rs['is_paid_commission']==1 ){
-				          	$agen_color='style="background:#808080"';
+				          	$agen_color='style="background:#33FF6E"';
 				          }else{
 				          	$agen_color='';
+				          }
+				          
+				          //check driver payment
+				          if($rs['is_paid_to_driver']==1 ){
+				          	$drive_color='style="background:#33FF6E"';
+				          }else{
+				          	$drive_color='';
 				          }
 				          
 				          $room_no=$rs['check_book_no'];$cus_name=$rs['check_name'];
@@ -201,7 +209,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				     <tr class=" alternate  normal"   onclick="setColor(this,'lightgrey','<?php echo $color;?>')" <?php echo $status_working;?>>
 				       <td class="text-center"> <?php echo $key+1?></td>
 				       <td class="text-center"> <?php echo $rs['booking_no']?></td> 
-				       <td><?php echo date("d-M-Y h:i:sa",strtotime($rs['create_date']));?> </td> 
+				       <td><?php echo date("d-M-Y H:i",strtotime($rs['create_date']));?> </td> 
 				       <td class="text-center"> <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?> </td>
 				       <td class="text-center"> <?php echo $rs['delivey_time']?> </td>
 				       <td class="text-center" style="text-align:left; <?php echo $duplicate;?>" > 
@@ -240,12 +248,13 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center">  <?php echo ($rs['grand_total']==0)?"":"$&nbsp;".number_format($rs["grand_total"],2);?></td> 
 				       <td class="text-center" <?php echo $agen_color;?>><?php echo $rs['agency_name']?> </td>
 				      
-				       <td class="text-center"> <?php echo ($rs['commision_fee']==0)?"":"$&nbsp;".number_format($rs["commision_fee"],2);?></td> 
+				       <td class="text-center"> <?php echo ($rs['commision_fee_after']==0)?"":"$&nbsp;".number_format($rs["commision_fee_after"],2);?></td> 
 				       
 				       <td class="text-center"><?php echo ($rs['total_service']==0)?"":"$&nbsp;".number_format($rs["total_service"],2);?> </td>
-				       <td class="text-center"> <?php echo $rs['driver']?></td>
-				       <td class="text-center"><?php echo ($rs['driver_fee']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>
+				       <td class="text-center" <?php echo $drive_color;?>> <?php echo $rs['driver']?></td>
+				       <td class="text-center"><?php echo ($rs['driver_fee_after']==0)?"":"$&nbsp;".number_format($rs["driver_fee_after"],2);?> </td>
 				       <td class="text-center" style="background:#fff"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"> <?php echo $rs['book_status']?></a></td>
+				       <td align="left"> <?php echo $rs['note']?></td>
 				       <td class="text-center" nowrap="nowrap">
 				        <a  target="_blank" style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><span style="color: blue;line-height:0px;">Edit</span></a>&nbsp;|
 				        <a   style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><span style="color: red;line-height:0px;">Delete</span></a>
@@ -260,14 +269,16 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 			   <table>
 			     <tr>
 			        <td style="background:#c6ffda;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Pending</td>
-			        <td width="10%"></td>
+			        <td width="5%"></td>
 			        <td style="background:#fff;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Prepaired</td>
-			        <td width="10%"></td>
+			        <td width="5%"></td>
 			        <td style="background:#a59e9e;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Cancal</td>
-			        <td width="10%"></td>
+			        <td width="5%"></td>
 			        <td style="background:#ff0f0f57;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Late</td>
-			        <td width="10%"></td>
+			        <td width="5%"></td>
 			        <td style="background:#ffff66;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Duplicate</td>
+			         <td width="5%"></td>
+			        <td style="background:#33FF6E;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;Payment Already</td>
 			     </tr>
 			   </table>
 			</div>

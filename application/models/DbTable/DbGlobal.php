@@ -1041,7 +1041,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   
   function getAllDriverBookingNo(){
   	$db = $this->getAdapter();
-  	$sql=" SELECT  cb.`id`,cb.booking_no AS `name` FROM `ldc_carbooking` AS cb WHERE cb.`is_paid_to_driver`=0";
+  	$sql="SELECT  cb.`id`,cb.booking_no AS `name` FROM `ldc_carbooking` AS cb WHERE cb.`is_paid_to_driver`=0 AND cb.`status_working`=1 AND cb.status =1";
   	return $db->fetchAll($sql);
   }
   

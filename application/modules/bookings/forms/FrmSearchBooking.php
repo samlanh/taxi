@@ -162,7 +162,25 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$date_type->setMultiOptions($opt_s);
 		$date_type->setValue($request->getParam("date_type"));
 		
-		$this->addElements(array($start_time,$status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
+		$start_date = new Zend_Dojo_Form_Element_DateTextBox("start_date");
+		$start_date->setAttribs(array('dojoType'=>$this->date,'class'=>"fullside",'constraints'=>"{datePattern:'dd/MM/yyyy'}",
+		));
+		if($request->getParam("start_date")==""){
+			//$to_book_date->setValue($c_date);
+		}else{
+			$start_date->setValue($request->getParam("start_date"));
+		}
+		
+		$end_date = new Zend_Dojo_Form_Element_DateTextBox("end_date");
+		$end_date->setAttribs(array('dojoType'=>$this->date,'class'=>"fullside",'constraints'=>"{datePattern:'dd/MM/yyyy'}",
+		));
+		if($request->getParam("end_date")==""){
+			$end_date->setValue($c_date);
+		}else{
+			$end_date->setValue($request->getParam("end_date"));
+		}
+		
+		$this->addElements(array($end_date,$start_date,$start_time,$status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
 				 $driver_search,$vehicle_search,$agency_search,$payment_method_search,
 				$working_status
 				));

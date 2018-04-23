@@ -12,41 +12,45 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 	 
 	function getAllDriverClearPayment($search){
 		$db = $this->getAdapter();
-		$from_date=$search["from_book_date"];
-		$to_date=$search["to_book_date"];
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$lang = $_db->getCurrentLang();
 		$array = array(1=>"name_en",2=>"name_kh");
-		$sql=" SELECT d.id,d.`payment_no`,(SELECT CONCAT(n.`last_name`,'(',n.`driver_id`,')') 
+		$sql=" SELECT d.id,d.`payment_no`,
+				(SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_driverclear_payment_detail` AS pd WHERE pd.driverclear_id=d.id LIMIT 1)  ) AS booking_nos,
+				(SELECT CONCAT(n.`last_name`,'(',n.`driver_id`,')') 
  	           FROM `ldc_driver` AS n WHERE n.`status` =1 AND n.id=d.`driver_id` LIMIT 1) AS driver_name,
  	            d.`payment_date`, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
 		       d.`total_driver_fee`,d.`total_driver_recived`,d.`paid_driver` ,
 		      (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=12 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
 		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,d.`status`,d.`status`
-		      FROM `ldc_driverclear_payment` AS d 	  ";
+		      FROM `ldc_driverclear_payment` AS d ";
 		$where = '';
-// 		if($search["search_text"] !=""){
-// 			$s_where=array();
-// 			$s_search=addslashes(trim($search['search_text']));
-// 			$s_where[]=" CONCAT(a.`first_name`,' ',a.`last_name`) LIKE '%{$s_search}%'";
-// 			$s_where[]=" cp.`payment_no` LIKE '%{$s_search}%'";
-// 			$s_where[]=" cp.`balance` LIKE '%{$s_search}%'";
-// 			$s_where[]=" cp.`paid` LIKE '%{$s_search}%'";
-// 			$s_where[]=" cp.`total_due` LIKE '%{$s_search}%'";
-// 			$where.=' AND ('.implode(' OR ',$s_where).')';
-// 		}
-// 		if ($search['agency_search']>0){
-// 			$where.=" AND cp.`agency_id`=".$search['agency_search'];
-// 		}
-// 		$order=' ORDER BY cp.id DESC';
-		return $db->fetchAll($sql.$where);
+		$from_date =(empty($search['start_date']))? '1': "d.`payment_date` >= '".$search['start_date']." 00:00:00'";
+		$to_date = (empty($search['end_date']))? '1': " d.`payment_date` <= '".$search['end_date']." 23:59:59'";
+		$where = " where ".$from_date." AND ".$to_date;
+		if($search["search_text"] !=""){
+			$s_search=addslashes(trim($search['search_text']));
+			$s_search = str_replace(' ', '', $s_search);
+			$s_where[]="REPLACE(d.`payment_no`,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(d.`total_driver_fee`,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(d.`total_driver_recived`,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE((SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_driverclear_payment_detail` AS pd WHERE pd.driverclear_id=d.id LIMIT 1)),' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(d.`paid_driver`,' ','')   LIKE '%{$s_search}%'";
+			$where.=' AND ('.implode(' OR ',$s_where).')';
+		}
+		
+		if ($search['driver_search']>0){
+			$where.=" AND d.driver_id=".$search['driver_search'];
+		}
+		$order=' ORDER BY d.id DESC';
+		return $db->fetchAll($sql.$where.$order);
 	}
 	
 	public function addDriverPayment($_data){
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
-			$agency='';
+			$agency=$_data['driver_old'];;
 			$invoice='';
 			if(empty($_data['driver'])){
 				$_data['driver']=$agency;
@@ -307,10 +311,10 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
         	  cb.paid_status,cb.balance_status,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.paid_status AND v.type=18 AND cb.paid_after!=0 LIMIT 1),'') AS status_paid,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.balance_status AND v.type=19 AND cb.balance_after!=0 LIMIT 1),'') AS status_balance,
-        	  cb.`driver_fee_after`, cb.`is_paid_to_driver`
+        	  cb.`driver_fee_after`, cb.`is_paid_to_driver`,cb.`driver_id`
 			  FROM  ldc_carbooking AS cb,ldc_customer AS c
 			  WHERE cb.customer_id=c.id 
-			  AND cb.is_paid_to_driver=0 ";
+			  AND cb.is_paid_to_driver=0 AND cb.`status_working`=1 AND cb.status =1 ";
 		$and='';
 		if($type==1){
 			$and=" AND cb.id=".$id;

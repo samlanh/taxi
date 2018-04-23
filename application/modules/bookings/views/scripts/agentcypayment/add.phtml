@@ -118,6 +118,7 @@ td {
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('agency');?>
+		                    	<input type="hidden"  id="agency_old" name="agency_old" value=""  dojoType="dijit.form.TextBox" />
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -141,7 +142,11 @@ td {
 			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("STATUS")?>
 			                   </label>
 			                   <div class="col-md-4 col-sm-4 col-xs-12">
-			                    	<?php echo $frm->getElement('status');?>
+			                    	<?php //echo $frm->getElement('status');?>
+			                    	<select name="status" id="status" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*"  >
+									       <option value="1" label=" "><?php echo $tr->translate("Male")?></option>
+									        <option value="2" label=" "><?php echo $tr->translate("Female")?></option>
+									</select>
 			                   </div>
 		                </div>
 	       			</div>
@@ -246,7 +251,7 @@ td {
 					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
 	                    <div class="col-md-9 col-sm-9 col-xs-9">
 	                    	<div class="col-md-12 col-sm-12 col-xs-12">
-	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('Total  Agency Recieved')?>
+	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('Total Agency Recieved')?>
 			                   </label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
 			                   		 <?php echo $frm->getElement('total_agen_recived');?>
@@ -441,13 +446,13 @@ function deleteRecordId(index) {
 function getPaymentBy(){
 	payment_by=dijit.byId("payment_by").get("value");
 	if(payment_by==1){
-		dijit.byId("agency").attr("disabled",true); 
-		dijit.byId("invoice").attr("disabled",false); 
+		dijit.byId("agency").attr("readOnly",true); 
+		dijit.byId("invoice").attr("readOnly",false); 
 		getAllAgentcyPayment(1);
 	}else{
 		getAllAgentcyPayment(2);
-		dijit.byId("agency").attr("disabled",false); 
-		dijit.byId("invoice").attr("disabled",true); 
+		dijit.byId("agency").attr("readOnly",false); 
+		dijit.byId("invoice").attr("readOnly",true); 
 	}
 }
 
@@ -513,8 +518,7 @@ function getAllAgentcyPayment(type){
 					thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
 					thead+='<th><?php echo $tr->translate("STATUS");?></th>';
 					fund_title=1;
-					 
-					//dijit.byId("agency").attr("value",data[i].agency_id); 
+					dijit.byId("agency_old").attr("value",data[i].agency_id); 
 					dojo.query("#head_title").append(thead);
 				}
 				if(data[i].paid_status==1){

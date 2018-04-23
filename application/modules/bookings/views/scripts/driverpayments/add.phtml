@@ -118,6 +118,7 @@ td {
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('driver');?>
+		                    	<input type="hidden"  id="driver_old" name="driver_old" value=""  dojoType="dijit.form.TextBox" />
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -513,7 +514,7 @@ function getAllAgentcyPayment(type){
 					thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
 					thead+='<th><?php echo $tr->translate("STATUS");?></th>';
 					fund_title=1;
-					
+					dijit.byId("driver_old").attr("value",data[i].driver_id); 
 					dojo.query("#head_title").append(thead);
 				}
 				if(data[i].paid_status==1){
@@ -587,7 +588,7 @@ function getAgencyPaid(){
 	}
 	 
 	var identity = $('#row_id').val();
-	alert(identity);
+	 
 	if(identity==''){
 		dijit.byId("total_commission_fee").attr("value",0);
 		dijit.byId("total_alls").attr("value",0);

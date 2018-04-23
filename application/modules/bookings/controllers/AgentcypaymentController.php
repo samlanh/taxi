@@ -16,17 +16,17 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 			}
 			else{
 				$search = array(
-						'to_book_date' => date("Y-m-d"),
-						'from_book_date' => date("Y-m-d"),
-						'search_text' => "",
-						'agency_search'=>0,
+						'start_date' => date("Y-m-01"),
+						'end_date' 	 => date("Y-m-d"),
+						'search_text'    => "",
+						'agency_search'	 =>0,
 				);
 			}
-			$rs_rows= $db->getAllCommissionPayment($search);
+			$rs_rows= $db->getAllAgencyPayment($search);
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("RECIEPT_NO","AGENCY","PAYMENT_DATE","PAYMENT_METHOD","BALANCE","PAID","TOTAL_DUE","STATUS",);
+			$collumns = array("RECIEPT_NO","BOOKING_NO","AGENCY","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_COMMISSION","Total Agency Recieved","PAID","PAID_STATUS","USER_NAME","STATUS");
 			$link=array(
 					'module'=>'bookings','controller'=>'agentcypayment','action'=>'edit',
 			);
@@ -48,9 +48,9 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 			$data = $this->getRequest()->getPost();
 			$booking_id=$db->addAgencyPayment($data);
 			if(isset($data['save_new'])){
-				//$this->_redirect("/bookings/agentcypayment/add");
+				$this->_redirect("/bookings/agentcypayment/add");
 			}else{
-				//$this->_redirect("/bookings/agentcypayment");
+				$this->_redirect("/bookings/agentcypayment");
 			}
 // 			Application_Form_FrmMessage::redirectUrl("/booking/carrentalbooking/add");
 		}

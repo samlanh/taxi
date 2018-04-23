@@ -16,17 +16,17 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 			}
 			else{
 				$search = array(
-						'to_book_date' => date("Y-m-d"),
-						'from_book_date' => date("Y-m-d"),
+						'start_date' => date("Y-m-d"),
+						'end_date' => date("Y-m-d"),
 						'search_text' => "",
-						'agency_search'=>0,
+						'driver_search'=>0,
 				);
 			}
 			$rs_rows= $db->getAllDriverClearPayment($search);
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("RECIEPT_NO","DRIVER_NAME","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_DRIVER_FEE","Total Driver Recieved","PAID","PAID_STATUS","USER_NAME","STATUS",);
+			$collumns = array("RECIEPT_NO","BOOKING_NO","DRIVER_NAME","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_DRIVER_FEE","Total Driver Recieved","PAID","PAID_STATUS","USER_NAME","STATUS",);
 			$link=array(
 					'module'=>'bookings','controller'=>'agentcypayment','action'=>'edit',
 			);
