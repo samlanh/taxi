@@ -17,7 +17,7 @@ class location_LocationController extends Zend_Controller_Action {
 				$search = array(
 // 						'service_type'=>0,
 						'title' => '',
-						'status_search' => -1,
+						'status_search' => 1,
 // 						'location_type' => -1
 						'province'=>-1,
 				);

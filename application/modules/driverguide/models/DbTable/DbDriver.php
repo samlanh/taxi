@@ -186,7 +186,12 @@ class Driverguide_Model_DbTable_DbDriver extends Zend_Db_Table_Abstract
 	    		$this->_name="ldc_vehicle";
 	    		$where=" id=".$_data['vehicle_id'];
 	    		$car_id=$_data['vehicle_id'];
-	    		$this->update($car, $where);
+	    		 if(!empty($car_id)){
+	    		 	$this->update($car, $where);
+	    		 }else{
+	    		 	$car_id=$this->insert($car);
+	    		 }
+	    		
 	    	}else{
 	    		$car_id=$_data['vehicle'];
 	    	}

@@ -9,6 +9,7 @@ class Location_Model_DbTable_DbLocation extends Zend_Db_Table_Abstract
     	$cud = $db->getUserId();
     	return $cud;
     }
+    
     public function addPackage($_data){
     	$db = $this->getAdapter();
     	$db->beginTransaction();
@@ -75,6 +76,7 @@ class Location_Model_DbTable_DbLocation extends Zend_Db_Table_Abstract
     	}
     	
     }
+    
     public function updatePackage($_data){
     	$db = $this->getAdapter();
     	$db->beginTransaction();
@@ -112,66 +114,66 @@ class Location_Model_DbTable_DbLocation extends Zend_Db_Table_Abstract
     		$where=$this->getAdapter()->quoteInto("package_id=?", $_data['id']);
     		$this->update($arr, $where);
     		
-    		$ids = explode(',', $_data['record_row']);
-    		$detail_list="";
-    		foreach ($ids as $i){
-    			if (!empty($_data['old_photoid'.$i])){
-    				if (empty($detail_list)){
-    					$detail_list=$_data['old_photoid'.$i];
-    				}else{$detail_list=$detail_list.",".$_data['old_photoid'.$i];
-    				}
-    			}
-    		}
-    		if (!empty($detail_list)){
-    			$this->_name="ldc_picture_location";
-    			$where = "id NOT IN (".$detail_list.")";
-    			$this->delete($where);
-    		}
+//     		$ids = explode(',', $_data['record_row']);
+//     		$detail_list="";
+//     		foreach ($ids as $i){
+//     			if (!empty($_data['old_photoid'.$i])){
+//     				if (empty($detail_list)){
+//     					$detail_list=$_data['old_photoid'.$i];
+//     				}else{$detail_list=$detail_list.",".$_data['old_photoid'.$i];
+//     				}
+//     			}
+//     		}
+//     		if (!empty($detail_list)){
+//     			$this->_name="ldc_picture_location";
+//     			$where = "id NOT IN (".$detail_list.")";
+//     			$this->delete($where);
+//     		}
     		
-    		$photoname = str_replace(" ", "_", $_data['location_name'].'-location');
-    		$image_name='';
-    			foreach ($ids as $i){
-    				if (!empty($_data['old_photoid'.$i])){
-    					if (!empty($_FILES['photo'.$i]['name'])){
-    						$ss = 	explode(".", $_FILES['photo'.$i]['name']);
-    						$new_image_name = $photoname.$i.".".end($ss);
-    						$tmp = $_FILES['photo'.$i]['tmp_name'];
-    						if(move_uploaded_file($tmp, $part.$new_image_name)){
-    							$image_name = $new_image_name;
-    						}
-    					}else{
-    						$image_name = $_data['old_photo'.$i];
-    					}
-    					$arr = array(
-    							'location_id'=> $_data['id'],
-    							'pic_title'=>$image_name,
-    							'status'=>$_data['status'],
-    							'date'=>date("Y-m-d")
-    					);
-    					$where = ' id = '.$_data['old_photoid'.$i];
-						$this->update($arr, $where);
-    				}else{
-    					if (!empty($_FILES['photo'.$i]['name'])){
-    						$ss = 	explode(".", $_FILES['photo'.$i]['name']);
-    						$new_image_name = $photoname.$i.".".end($ss);
-    						$tmp = $_FILES['photo'.$i]['tmp_name'];
-    						if(move_uploaded_file($tmp, $part.$new_image_name)){
-    							$image_name = $new_image_name;
-    						}
+//     		$photoname = str_replace(" ", "_", $_data['location_name'].'-location');
+//     		$image_name='';
+//     			foreach ($ids as $i){
+//     				if (!empty($_data['old_photoid'.$i])){
+//     					if (!empty($_FILES['photo'.$i]['name'])){
+//     						$ss = 	explode(".", $_FILES['photo'.$i]['name']);
+//     						$new_image_name = $photoname.$i.".".end($ss);
+//     						$tmp = $_FILES['photo'.$i]['tmp_name'];
+//     						if(move_uploaded_file($tmp, $part.$new_image_name)){
+//     							$image_name = $new_image_name;
+//     						}
+//     					}else{
+//     						$image_name = $_data['old_photo'.$i];
+//     					}
+//     					$arr = array(
+//     							'location_id'=> $_data['id'],
+//     							'pic_title'=>$image_name,
+//     							'status'=>$_data['status'],
+//     							'date'=>date("Y-m-d")
+//     					);
+//     					$where = ' id = '.$_data['old_photoid'.$i];
+// 						$this->update($arr, $where);
+//     				}else{
+//     					if (!empty($_FILES['photo'.$i]['name'])){
+//     						$ss = 	explode(".", $_FILES['photo'.$i]['name']);
+//     						$new_image_name = $photoname.$i.".".end($ss);
+//     						$tmp = $_FILES['photo'.$i]['tmp_name'];
+//     						if(move_uploaded_file($tmp, $part.$new_image_name)){
+//     							$image_name = $new_image_name;
+//     						}
     					
-    					}else{
-    						$image_name = "";
-    					}
-    					$arr = array(
-    							'location_id'=> $_data['id'],
-    							'pic_title'=>$image_name,
-    							'status'=>$_data['status'],
-    							'date'=>date("Y-m-d")
-    					);
-    					$this->insert($arr);
-    				}
+//     					}else{
+//     						$image_name = "";
+//     					}
+//     					$arr = array(
+//     							'location_id'=> $_data['id'],
+//     							'pic_title'=>$image_name,
+//     							'status'=>$_data['status'],
+//     							'date'=>date("Y-m-d")
+//     					);
+//     					$this->insert($arr);
+//     				}
     				
-    			}
+//     			}
 
     		$db->commit();
     	}catch(Exception $e){
@@ -214,15 +216,11 @@ class Location_Model_DbTable_DbLocation extends Zend_Db_Table_Abstract
     	$sql = " SELECT  id,location_name, (SELECT ".$array[$lang]." FROM `ldc_province` WHERE id=province_id) AS province_name,
                  modify_date,$this->_name.`status`
                  FROM $this->_name WHERE is_package !=1 AND location_name!='' ";
-    	$order=" order by id DESC";
-    	
     	$where = '';
     	if(!empty($search['title'])){
-    		$s_where=array();
-    		$s_search=addslashes($search['title']);
-    		$s_where[]=" location_name LIKE '%{$s_search}%'";
-    		$s_where[]=" (SELECT title_en FROM `ldc_province` WHERE id=province_id) LIKE '%{$s_search}%'";
-    		$s_where[]=" (SELECT title_kh FROM `ldc_province` WHERE id=province_id) LIKE '%{$s_search}%'";
+    		$s_search=addslashes(trim($search['title']));
+			$s_search = str_replace(' ', '', $s_search);
+			$s_where[]="REPLACE(location_name,' ','')   LIKE '%{$s_search}%'";
     		$where.=' AND ('.implode(' OR ', $s_where).')';
     	}
     	if($search['status_search']>-1){
@@ -231,6 +229,7 @@ class Location_Model_DbTable_DbLocation extends Zend_Db_Table_Abstract
     	if($search['province']>-1){
     		$where.= " AND province_id = ".$db->quote($search['province']);
     	}
+    	$order=" order by id DESC";
     	//     	$arrayview = array(1=>"name_en",2=>"name_kh");
     	//     	(SELECT ".$array_ser[$lang]." FROM ldc_service_type as st WHERE st.id = service_type limit 1) as service_type,
     	//     	(SELECT lt.title FROM `ldc_locationtype` AS lt WHERE lt.id = ldc_package_location.`locationtype_id` LIMIT 1) AS location_type,
@@ -240,6 +239,7 @@ class Location_Model_DbTable_DbLocation extends Zend_Db_Table_Abstract
     	//     	if($search['location_type']>-1){
     	//     		$where.= " AND locationtype_id = ".$db->quote($search['location_type']);
     	//     	}
+    	//echo $sql.$where;
     	return $db->fetchAll($sql.$where.$order);
     }
     /*----------------------------package----------------------------*/
