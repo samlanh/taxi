@@ -4,6 +4,7 @@ $url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-g
 $url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
 $frm=$this->frm;
 $commission = $this->commision_payment;
+//print_r($commission);
 ?>
 <meta charset="utf-8">
 <title><?php echo $tr->translate("RPT_COMMISSION_DETAIL");?></title>
@@ -48,6 +49,7 @@ span.label_value {
  
 				</style>
 				<table width="100%"  class="print" cellspacing="0"  cellpadding="0" style=" font-family: 'Khmer OS Battambang' !important; white-space:nowrap;">
+				
 					<tr >
 						<td colspan="3"  style="" align="center" valign="top">
 							<table width="100%" style=" line-height: 18px;font-size: 14px;margin-bottom: 0px;background: #8495a2;    color: #fff;" >
@@ -71,17 +73,17 @@ span.label_value {
 							<table width="100%" style=" line-height: 18px; font-size: 14px; margin: 5px 0; " >
 								<tr>
 									<td width="40%" style=" line-height: 18px;" valign="top">
-										<span class="label_title"><?php echo $tr->translate("AGENCY_NAME");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['agentcy'];?></span><br />
-										<span class="label_title"><?php echo $tr->translate("PHONE");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['phone'];?></span><br />
-										<span class="label_title"><?php echo $tr->translate("EMAIL");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['email'];?></span><br /> 
+										<span class="label_title"><?php echo $tr->translate("AGENCY_NAME");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['agency_name'];?></span><br />
+										<span class="label_title"><?php echo $tr->translate("PHONE");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['agency_phone'];?></span><br />
+										<span class="label_title"><?php echo $tr->translate("EMAIL");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['agency_email'];?></span><br /> 
 									</td>
-									<td width="40%" valign="top" style=" line-height: 18px;" valign="top">
+									<td width="40%" valign="top" align="right" style=" line-height: 18px;">
+										<span class="label_title"> </span><br />
+										<span class="label_value" style=" font-size: 20px;   font-weight: 700;    color: #0c0c0c;"><?php //echo "$ ".number_format($commission['paid'],2);?></span>
+									</td>
+									<td width="20%" valign="top" style=" line-height: 18px;" valign="top">
 										<span class="label_title">Receipt N<sup>o</sup>&nbsp;:&nbsp;&nbsp;<?php echo $commission['payment_no'];?></span><br />
 										<span class="label_title">Payment Date&nbsp;:&nbsp;&nbsp;<?php echo date("d-M-Y",strtotime($commission['payment_date']));?></span><br />
-									</td>
-									<td width="20%" valign="top" align="right" style=" line-height: 18px;">
-										<span class="label_title">Total Payment</span><br />
-										<span class="label_value" style=" font-size: 20px;   font-weight: 700;    color: #0c0c0c;"><?php echo "$ ".number_format($commission['paid'],2);?></span>
 									</td>
 								</tr>
 							</table>
@@ -91,49 +93,70 @@ span.label_value {
 						<td  valign="top" colspan="3" style="  border-top: solid 2px #8495a2;height: 0px;">&nbsp;</td>
 					</tr>
 					<tr>
-						<td colspan="3" valign="top">
+						<td colspan="3" valign="top"  id="exportExcel">
 							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0" >
 								<tr class="header" style="background: #e4e4e4">
 									<td class="row-value">No</td>
 									<td class="row-value">Booking No</td>
 									<td class="row-value">Comission Fee</td>
-									<td class="row-value">Paid</td>
-									<td class="one-td row-value" >Balance</td>
+									<td class="row-value one-td" >ប្រាក់នៅភ្នាក់ងារ</td>
 								</tr>
-								<?php $i=0; 
+								<?php $i=0;  
 								$total_paid=0;
-								$total_remain=0;
+								$total_commistion=0;
+								$total_all_a_re=0;
 								foreach ($this->commision_detail as $com){ $i++;
-								$total_remain = $total_remain + $com['remain'];
-								$total_paid = $total_paid + $com['paid'];
+								$total_agency_re=0;
+								$total_commistion=$total_commistion+$com['gency_fee'];
+								//$total_remain = $total_remain + $com['remain'];
+								//$total_paid = $total_paid + $com['paid'];
+								if($com['paid_status']==2 || $com['balance_satatus']==2){
+									$total_agency_re=$com['paid']+$com['balance'];
+									$total_all_a_re=$total_all_a_re+$total_agency_re;
+								}
 								?>
 								<tr>
 									<td  class="row-td" align="center" ><?php echo $i;?></td>
-									<td  class="row-td" align="center"><?php echo $com['booking_no'];?></td>
-									<td  class="row-td" align="center"><?php echo "$ ".number_format($com['due_amount'],2);?></td>
-									<td  class="row-td" align="center"><?php echo "$ ".number_format($com['paid'],2);?></td>
-									<td  class="one-td "  align="center"><?php echo "$ ".number_format($com['remain'],2);?></td>
+									<td  class="row-td" align="left">&nbsp;<?php echo $com['booking_no'];?></td>
+									<td  class="row-td" align="center"><?php echo "$ ".number_format($com['gency_fee'],2);?></td>
+									<td  class="one-td" align="left">&nbsp;<?php echo "$ ".number_format($total_agency_re,2);?></td>
+									 
 								</tr>
 								<?php }?>
 								<tr>
-									<td colspan="2">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">Total Paid&nbsp;</span></td>
-									<td align="center" class="one-td" ><?php echo "$ ".number_format($total_paid,2);?></td>
+									<td colspan="1">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title">Total Commission&nbsp;</span></td>
+									<td align="left" class="one-td" >&nbsp;<?php echo "$ ".number_format($total_commistion,2);?></td>
 								</tr>
 								<tr>
-									<td colspan="2">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">Total Balance&nbsp;</span></td>
-									<td align="center" class="one-td"><?php echo "$ ".number_format($total_remain,2);?></td>
+									<td colspan="1">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title">ប្រាក់នៅភ្នាក់ងារ&nbsp;</span></td>
+									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($total_all_a_re,2);?></td>
 								</tr>
 								<tr>
-									<td colspan="2">&nbsp;</td>
-									<td colspan="2" align="right" ><span class="label_title">Payment Type&nbsp;</span></td>
-									<td align="center" class="one-td"><?php echo $commission['payment_method'];?></td>
+								<?php $paid=0;
+								    if($total_commistion<$total_all_a_re){
+								    	$str='Agency Paid';
+								    	$paid=$total_all_a_re-$total_commistion;
+								    }else{
+								    	$str='Payment To Agency';
+								    	$paid=$total_commistion-$total_all_a_re;
+								    }
+								?>
+									<td colspan="1">&nbsp;</td>
+									<td colspan="2" align="right" ><span class="label_title"><?php echo $str;?>&nbsp;</span></td>
+									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($paid,2);?></td>
+								</tr>
+								<tr>
+									<td colspan="1">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title">Balance&nbsp;</span></td>
+									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($paid-$this->commision_payment['paid_agen'],2);?></td>
 								</tr>
 							</table>
 						</td>
 					</tr>
 				</table>
+				 
 			</div>
 		</div>
 	</div>

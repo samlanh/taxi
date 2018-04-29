@@ -750,6 +750,9 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					$is_driverpaid =1;
 				}
 			}
+			//delelete commmist
+			$sql = "DELETE FROM ldc_agencyclear_payment_detail WHERE booking_id=".$_data['booking_id'];
+			$db->query($sql);
 			
 			$cus_id=0;
 // 			$row_cus=$this->checkingCustomer($_data['customer_id']);
@@ -784,8 +787,8 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'qty'	  		  => 1,
 					'price'	  		  => $_data['price'],
 					'commision_fee'	  => $_data['commision_fee'],
-					'commision_fee_after'=> $commision_fee_after,
-					'is_paid_commission'=> $is_commissionpaid,
+					'commision_fee_after'=> $_data['commision_fee'],
+					'is_paid_commission'=> 0,
 					'other_fee'	  	  => $_data['other_fee'],
 					'total'	  		  => $_data['total'],
 					'due'	  		  => $_data['total'],

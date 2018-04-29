@@ -108,16 +108,16 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  		$search = array(
 	  				'adv_search'=>'',
 	  				'status'=>-1,
-	  				'start_date'=> date('Y-m-d'),
+	  				'start_date'=> date('Y-m-01'),
 	  				'end_date'=>date('Y-m-d')
 	  		);
 	  	}
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
 	  	$row=$this->view->d_payment = $db->getAllCommission($search);
-	  	$frm = new Application_Form_FrmAdvanceSearch();
-	  	$form = $frm->AdvanceSearch();
-	  	Application_Model_Decorator::removeAllDecorator($form);
-	  	$this->view->frm = $form;
+	  	$frm = new Bookings_Form_FrmSearchBooking();
+		$frm =$frm->FormSearch();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm_search = $frm;
 	  }
 	  
 	  function rptCommissionpaymentdetailAction(){

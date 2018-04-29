@@ -21,7 +21,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
  	           FROM `ldc_agency` AS n WHERE n.`status` =1 AND n.id=d.`agency_id` LIMIT 1) AS agency_name,
  	           d.`payment_date`, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
 		       d.`total_commission`,d.`total_agen_recived`,d.`paid_agen` ,
-		       (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=12 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
+		       (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=13 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
 		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,d.`status`
 		      FROM `ldc_agencyclear_payment` AS d  ";
 		$where =' ';
@@ -96,6 +96,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 				$commission = $this->getCarbookingById($_data['carbooking_id'.$i]);
 				$paid=$this->getAgencyPaidById($_data['carbooking_id'.$i]);
 				$balance=$this->getAgencyBalanceById($_data['carbooking_id'.$i]);
+				$array=array();
 				if (!empty($commission)){
 					$dueafter =$commission['commision_fee_after']-$_data['gency_fee_'.$i];
 					if ($dueafter>0){
@@ -105,17 +106,15 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 					}
 					if(!empty($paid)){
 						$paid_after=$paid['paid_after']-$_data['paid_after_'.$i];
+						$array['paid_after']=$paid_after;
 					}
 					if(!empty($balance)){
+						echo
 						$balance_after=$balance['balance_after']-$_data['balance_after_'.$i];
+						$array['balance_after']=$balance_after;
 					}
-					
-					$array=array(
-							'is_paid_commission'=>$is_agency_paid,
-							'commision_fee_after'=>$dueafter,
-							'paid_after'		=>$paid_after,
-							'balance_after'		=>$balance_after,
-					);
+					$array['commision_fee_after']=$dueafter;
+					$array['is_paid_commission']=$is_agency_paid;
 					$this->_name="ldc_carbooking";
 					$where = " id =".$_data['carbooking_id'.$i];
 					$this->update($array, $where);

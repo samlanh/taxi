@@ -630,4 +630,17 @@ function getAgencyPaid(){
 	    }
 	   });
 }
+
+function calCulatePrice(){
+	var total_comission=dijit.byId("total_commission_fee").get("value");
+	var total_age_re=dijit.byId("total_agen_recived").get("value");
+	var rs=0;
+	if(total_comission<total_age_re){
+		rs=Number(total_age_re)-Number(total_comission);
+		dijit.byId("paid_agen").attr("value",rs);
+	}else{
+		rs=Number(total_comission)-Number(total_age_re);
+		dijit.byId("paid_agen").attr("value",rs);
+	}
+}
 </script>

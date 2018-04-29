@@ -228,7 +228,8 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 		$paid_agen->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
-						'readonly'=>'readonly',
+						//'readonly'=>'readonly',
+		                'onKeyup'=>'calCulatePrice()'
 				));
 		 
 		

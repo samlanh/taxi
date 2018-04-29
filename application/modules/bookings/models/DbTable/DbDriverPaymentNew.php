@@ -93,6 +93,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 				$driver_fee = $this->getCarbookingById($_data['carbooking_id'.$i]);
 				$paid=$this->getAgencyPaidById($_data['carbooking_id'.$i]);
 				$balance=$this->getAgencyBalanceById($_data['carbooking_id'.$i]);
+				$array=array();
 				if (!empty($driver_fee)){
 					$dueafter =$driver_fee['driver_fee_after']-$_data['gency_fee_'.$i];
 					if ($dueafter>0){
@@ -102,17 +103,15 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 					}
 					if(!empty($paid)){
 						$paid_after=$paid['paid_after']-$_data['paid_after_'.$i];
+						$array['paid_after']=$paid_after;
 					}
 					if(!empty($balance)){
 						$balance_after=$balance['balance_after']-$_data['balance_after_'.$i];
+						$array['balance_after']=$balance_after;
 					}
+					$array['is_paid_to_driver']=$is_driver_paid;
+					$array['driver_fee_after']=$dueafter;
 					
-					$array=array(
-							'is_paid_to_driver'=>$is_driver_paid,
-							'driver_fee_after'=>$dueafter,
-							'paid_after'	  =>$paid_after,
-							'balance_after'	  =>$balance_after,
-					);
 					$this->_name="ldc_carbooking";
 					$where = " id =".$_data['carbooking_id'.$i];
 					$this->update($array, $where);

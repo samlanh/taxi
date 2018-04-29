@@ -240,47 +240,44 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	return $db->fetchRow($sql);
       }
       
-      function getAllCommission($search){
-      	$db=$this->getAdapter();
-      	$where =" ";
-      	$_db = new Application_Model_DbTable_DbGlobal();
-      	$lang = $_db->getCurrentLang();
-      	$array = array(1=>"name_en",2=>"name_kh");
-      	$sql="SELECT 
-			cp.`id`,cp.`payment_no`,
-			CONCAT(a.`last_name`,'(',customer_code,')') AS agentcy,a.phone,
-			cp.`payment_date`,
-			(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
-			cp.`balance`,cp.`paid`,cp.`total_due`,
-			(SELECT first_name FROM rms_users WHERE rms_users.id=cp.user_id LIMIT 1) AS user_name,
-			(SELECT name_en FROM tb_view WHERE tb_view.key_code=cp.status AND tb_view.type=5 LIMIT 1) AS `status`
-			FROM `ldc_commission_payment` AS cp,
-			`ldc_agency` AS a
-			WHERE
-			a.`id` = cp.`agency_id`";
-      	$order = "  ";
-      	$from_date=(empty($search['start_date']))? '1': "cp.`payment_date` >= '".$search['start_date']." 00:00:00'";
-      	$to_date = (empty($search['end_date']))? '1': "cp.`payment_date` <= '".$search['end_date']." 23:59:59'";
-      	$where = "  AND ".$from_date." AND ".$to_date;
-      	
-      	if (!empty($search['adv_search'])){
-       		$s_where = array();
-       		$s_search = addslashes(trim($search['adv_search']));
-       		$s_search = str_replace(' ', '', $s_search);
-       		$s_where[] = " REPLACE(CONCAT(a.`last_name`,'(',customer_code,')'),' ','') 	LIKE '%{$s_search}%'";
-       		$s_where[] = " REPLACE(a.customer_code,' ','') 	LIKE '%{$s_search}%'";
-       		$s_where[] = " REPLACE(a.phone,' ','') 	LIKE '%{$s_search}%'";
-      		$s_where[] = " REPLACE(cp.`payment_no`,' ','') 	LIKE '%{$s_search}%'";
-       		$s_where[] = " REPLACE(cp.`paid`,' ','') 		LIKE '%{$s_search}%'";
-       		$s_where[] = " REPLACE(cp.`balance`,' ','') 	LIKE '%{$s_search}%'";
-       		$s_where[] = " REPLACE(cp.`total_due`,' ','') 	LIKE '%{$s_search}%'";
-       		$where .=' AND ('.implode(' OR ',$s_where).')';
-       	}
-      	if ($search['status']>-1){
-      		$where .=' AND a.`status` = '.$search['status'];
-      	}
-      	return $db->fetchAll($sql.$where.$order);
-      }
+      function getAllCommission($search=null){
+		$db = $this->getAdapter();
+		$_db = new Application_Model_DbTable_DbGlobal();
+		$lang = $_db->getCurrentLang();
+		$array = array(1=>"name_en",2=>"name_kh");
+		$sql=" SELECT d.id,d.`payment_no`,
+			   (SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_agencyclear_payment_detail` AS pd WHERE pd.clearagency_id=d.id LIMIT 1)  ) AS booking_nos,
+		       (SELECT CONCAT(n.`last_name`,'(',n.`customer_code`,')') 
+ 	           FROM `ldc_agency` AS n WHERE n.`status` =1 AND n.id=d.`agency_id` LIMIT 1) AS agency_name,
+ 	           d.`payment_date`, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
+		       d.`total_commission`,d.`total_agen_recived`,d.`paid_agen` ,
+		       (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=13 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
+		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name, 
+		      (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=2 AND v.`status`=d.`status` LIMIT 1) AS `status`
+		      FROM `ldc_agencyclear_payment` AS d  ";
+		$where =' ';
+		$from_date =(empty($search['start_date']))? '1': "d.`payment_date` >= '".$search['start_date']." 00:00:00'";
+		$to_date = (empty($search['end_date']))? '1': " d.`payment_date` <= '".$search['end_date']." 23:59:59'";
+		$where = " where ".$from_date." AND ".$to_date;
+		
+		if($search["search_text"] !=""){
+			$s_where=array();
+			$s_search=addslashes(trim($search['search_text']));
+			$s_search = str_replace(' ', '', $s_search);
+			$s_where[]="REPLACE(d.`payment_no`,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(d.`total_commission`,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(d.`total_agen_recived`,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE(d.`paid_agen`,' ','')   LIKE '%{$s_search}%'";
+			$s_where[]="REPLACE((SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_agencyclear_payment_detail` AS pd WHERE pd.clearagency_id=d.id LIMIT 1)),' ','')   LIKE '%{$s_search}%'";
+			$where.=' AND ('.implode(' OR ',$s_where).')';
+		}
+		
+		if ($search['agency_search']>0){
+			$where.=" AND d.`agency_id`=".$search['agency_search'];
+		}
+		$order=' ORDER BY d.id DESC ';
+		return $db->fetchAll($sql.$where.$order);
+	}
       
       function getCustomerNearlyPayment($search){
 	        $db = $this->getAdapter();
@@ -336,23 +333,22 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       }
       
       function getCommissionPaymentById($id){
-      	$db=$this->getAdapter();
-      	$where =" ";
-      	$_db = new Application_Model_DbTable_DbGlobal();
-      	$lang = $_db->getCurrentLang();
-      	$array = array(1=>"name_en",2=>"name_kh");
-      	$sql="SELECT 
-			cp.`id`,cp.`payment_no`,
-			CONCAT(a.`last_name`,'(',customer_code,')') AS agentcy,a.phone,a.email,
-			cp.`payment_date`,
-			(SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=cp.`payment_method` LIMIT 1) AS `payment_method`,
-			cp.`balance`,cp.`paid`,cp.`total_due`,
-			(SELECT first_name FROM rms_users WHERE rms_users.id=cp.user_id LIMIT 1) AS user_name,
-			(SELECT name_en FROM tb_view WHERE tb_view.key_code=cp.status AND tb_view.type=5 LIMIT 1) AS `status`
-			FROM `ldc_commission_payment` AS cp,
-			`ldc_agency` AS a
-			WHERE
-			a.`id` = cp.`agency_id` AND cp.id=".$id." LIMIT 1";
+      	$db = $this->getAdapter();
+		$_db = new Application_Model_DbTable_DbGlobal();
+		$lang = $_db->getCurrentLang();
+		$array = array(1=>"name_en",2=>"name_kh");
+		$sql=" SELECT d.id,d.`payment_no`,
+			   (SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_agencyclear_payment_detail` AS pd WHERE pd.clearagency_id=d.id LIMIT 1)  ) AS booking_nos,
+		       (SELECT CONCAT(n.`last_name`,'(',n.`customer_code`,')') 
+ 	           FROM `ldc_agency` AS n WHERE n.`status` =1 AND n.id=d.`agency_id` LIMIT 1) AS agency_name,
+ 	           d.`payment_date`, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
+		       d.`total_commission`,d.`total_agen_recived`,d.`paid_agen` ,
+		       (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=13 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
+		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name, 
+		      (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=2 AND v.`status`=d.`status` LIMIT 1) AS `status`,
+		      (SELECT   n.phone FROM `ldc_agency` AS n WHERE n.`status` =1 AND n.id=d.`agency_id` LIMIT 1) AS agency_phone,
+ 	           (SELECT   n.email FROM `ldc_agency` AS n WHERE n.`status` =1 AND n.id=d.`agency_id` LIMIT 1) AS agency_email
+		      FROM `ldc_agencyclear_payment` AS d where d.id=$id";
       	return $db->fetchRow($sql);
       }
       function getCommissionPaymentDetail($commission_payment_id){
@@ -360,8 +356,9 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	$sql="SELECT pd.*,
 		(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_no,
 		(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_date 
-		FROM `ldc_commission_payment_detail` AS pd 
-		WHERE pd.`commission_payment_id`=$commission_payment_id";
+		FROM `ldc_agencyclear_payment_detail` AS pd ,`ldc_agencyclear_payment` AS a
+		WHERE pd.`clearagency_id`=a.`id`
+		AND pd.`clearagency_id`=$commission_payment_id";
       	return $db->fetchAll($sql);
       }
       

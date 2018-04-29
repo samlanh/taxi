@@ -220,7 +220,7 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
 						'required'=>true,
-						'readonly'=>'readonly',
+						'onKeyup'=>'calCulatePrice()'
 				));
 		 
 		
