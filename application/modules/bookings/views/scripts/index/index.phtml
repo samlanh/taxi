@@ -208,7 +208,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				     <tr class=" alternate  normal"   onclick="setColor(this,'lightgrey','<?php echo $color;?>')" <?php echo $status_working;?>>
 				       <td class="text-center"> <?php echo $key+1?></td>
 				       <td class="text-center"> <?php echo $rs['booking_no']?></td> 
-				       <td><?php echo date("d-M-Y H:i",strtotime($rs['create_date']));?> </td> 
+				       <td><?php echo date("d-M-Y",strtotime($rs['booking_date'])).'&nbsp;'.date("H:i",strtotime($rs['create_date']));?> </td> 
 				       <td class="text-center"> <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?> </td>
 				       <td class="text-center"> <?php echo $rs['delivey_time']?> </td>
 				       <td class="text-center" style="text-align:left; <?php echo $duplicate;?>" > 
