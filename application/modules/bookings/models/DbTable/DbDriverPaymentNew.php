@@ -11,18 +11,21 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 	}
 	 
 	function getAllDriverClearPayment($search){
+		$tr = Application_Form_FrmLanguages::getCurrentlanguage();
 		$db = $this->getAdapter();
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$lang = $_db->getCurrentLang();
 		$array = array(1=>"name_en",2=>"name_kh");
+		$print=$tr->translate("PRINT");
+		$edit=$tr->translate("EDIT");
 		$sql=" SELECT d.id,d.`payment_no`,
-				(SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_driverclear_payment_detail` AS pd WHERE pd.driverclear_id=d.id LIMIT 1)  ) AS booking_nos,
+				 
 				(SELECT CONCAT(n.`last_name`,'(',n.`driver_id`,')') 
  	           FROM `ldc_driver` AS n WHERE n.`status` =1 AND n.id=d.`driver_id` LIMIT 1) AS driver_name,
- 	            d.`payment_date`, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
+ 	           DATE_FORMAT(d.`payment_date`, '%d-%b-%Y')As payment_date, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
 		       d.`total_driver_fee`,d.`total_driver_recived`,d.`paid_driver` ,
 		      (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=12 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
-		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,d.`status`,d.`status`
+		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,d.`status`,d.`status`,'$print'
 		      FROM `ldc_driverclear_payment` AS d ";
 		$where = '';
 		$from_date =(empty($search['start_date']))? '1': "d.`payment_date` >= '".$search['start_date']." 00:00:00'";
@@ -76,6 +79,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 					'driver_paid'      	  	=> $_data['agency_paid'],
 					'driver_balance'      	=> $_data['agency_balance'],
 					'total_alls'      	  	=> $_data['total_alls'],
+					'total_profit'			=> ($_data['total_alls'])-($_data['total_commission_fee']),
 					'paid_type'       		=> $_data['paid_type'],
 					'status'      	  		=> $_data['status'],
 					'user_id'      	  		=> $this->getUserId(),
@@ -92,7 +96,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 				 
 				$driver_fee = $this->getCarbookingById($_data['carbooking_id'.$i]);
 				$paid=$this->getAgencyPaidById($_data['carbooking_id'.$i]);
-				$balance=$this->getAgencyBalanceById($_data['carbooking_id'.$i]);
+			//	$balance=$this->getAgencyBalanceById($_data['carbooking_id'.$i]);
 				$array=array();
 				if (!empty($driver_fee)){
 					$dueafter =$driver_fee['driver_fee_after']-$_data['gency_fee_'.$i];
@@ -105,10 +109,10 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 						$paid_after=$paid['paid_after']-$_data['paid_after_'.$i];
 						$array['paid_after']=$paid_after;
 					}
-					if(!empty($balance)){
-						$balance_after=$balance['balance_after']-$_data['balance_after_'.$i];
-						$array['balance_after']=$balance_after;
-					}
+// 					if(!empty($balance)){
+// 						$balance_after=$balance['balance_after']-$_data['balance_after_'.$i];
+// 						$array['balance_after']=$balance_after;
+// 					}
 					$array['is_paid_to_driver']=$is_driver_paid;
 					$array['driver_fee_after']=$dueafter;
 					
@@ -123,7 +127,8 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 						'driver_fee'	=>$_data['gency_fee_'.$i],
 						'conpany_price'	=>$_data['conpany_price_'.$i],
 						'paid'			=>$_data['paid_after_'.$i],
-						'balance'		=>$_data['balance_after_'.$i],
+						//'balance'		=>$_data['balance_after_'.$i],
+				        'note'			=>$_data['note_'.$i],
 						'all_total'		=>$_data['all_total_'.$i],
 						'paid_status'	=>$_data['paid_status_'.$i],
 						'balance_satatus'=>$_data['balance_status_'.$i],
@@ -310,7 +315,14 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
         	  cb.paid_status,cb.balance_status,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.paid_status AND v.type=18 AND cb.paid_after!=0 LIMIT 1),'') AS status_paid,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.balance_status AND v.type=19 AND cb.balance_after!=0 LIMIT 1),'') AS status_balance,
-        	  cb.`driver_fee_after`, cb.`is_paid_to_driver`,cb.`driver_id`
+        	  cb.`driver_fee_after`, cb.`is_paid_to_driver`,cb.`driver_id`,
+        	  
+        	  cb.booking_no,DATE_FORMAT(cb.`delivey_date`, '%d-%b-%Y') AS date_delivey,TIME_FORMAT(cb.`delivey_time`,'%H:%i')AS `time`,
+        	  (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`from_location`) AS from_loc ,
+        	  (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`to_location`) AS to_loc ,
+        	  (SELECT c.`title` FROM `ldc_vechicletye` AS c WHERE c.id=cb.`vehicletype_id`) AS car_type ,
+        	  cb.`paid`,cb.`driver_fee`
+        	  
 			  FROM  ldc_carbooking AS cb,ldc_customer AS c
 			  WHERE cb.customer_id=c.id 
 			  AND cb.is_paid_to_driver=0 AND cb.`status_working`=1 AND cb.status =1 ";
@@ -324,7 +336,6 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 	}
 	
 	function getAgencyPayment($agency_id,$row_id,$type){
-		
 		$db=$this->getAdapter();
 		$sql="SELECT  cb.id,
         	 (SELECT SUM(c.paid_after) FROM `ldc_carbooking` AS c WHERE c.paid_status=2 		AND c.id  IN (".$row_id.") )   AS agency_paid,
@@ -343,5 +354,6 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 		return $db->fetchRow($sql.$and);
 	}
 	
+	 
 }
 ?>

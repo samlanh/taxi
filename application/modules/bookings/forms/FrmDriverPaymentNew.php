@@ -56,7 +56,7 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 		$row_dri = $_db->getAllDriver();
 		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
 		$driver = new Zend_Dojo_Form_Element_FilteringSelect("driver");
-		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment(2);'));
+		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment(2);getDriverInfoByid()'));
 		foreach ($row_dri as $rs){
 			$opt_dri[$rs["id"]] = $rs["name"];
 		}
@@ -147,6 +147,22 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 						'readonly'=>'readonly',
 				));
 		$total_alls->setValue(0);
+		
+		$profit= new Zend_Dojo_Form_Element_NumberTextBox("profit");
+		$profit->setAttribs(
+				array(  'dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$profit->setValue(0);
+		
+		$total_comission= new Zend_Dojo_Form_Element_NumberTextBox("total_comission");
+		$total_comission->setAttribs(
+				array(  'dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+				));
+		$total_comission->setValue(0);
 		
 		$total_all_paid = new Zend_Dojo_Form_Element_NumberTextBox("total_all_paid");
 		$total_all_paid->setAttribs(
@@ -319,7 +335,9 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 				$status,
 				$payment_by,
 				$invoice,
-				$driver
+				$driver,
+				$profit,
+				$total_comission
 			));
 		return $this;
 	}

@@ -1,11 +1,13 @@
 <?php
 class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
+	protected $tr = null;
     public function init()
     {    	
      /* Initialize action controller here */
     	header('content-type: text/html; charset=utf8');
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
+    	$this->tr = Application_Form_FrmLanguages::getCurrentlanguage();
 	}
 	
 	public function indexAction(){
@@ -26,11 +28,15 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("RECIEPT_NO","BOOKING_NO","DRIVER_NAME","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_DRIVER_FEE","Total Driver Recieved","PAID","PAID_STATUS","USER_NAME","STATUS",);
+			$collumns = array("RECIEPT_NO","DRIVER_NAME","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_DRIVER_FEE","Total Driver Recieved","PAID","PAID_STATUS","USER_NAME","STATUS","ACTION");
 			$link=array(
-					'module'=>'bookings','controller'=>'agentcypayment','action'=>'edit',
+					'module'=>'bookings','controller'=>'driverpayments','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'agentcy'=>$link));
+			$link_print=array( 
+					'module'=>'report','controller'=>'bookingpayment','action'=>'rpt-driver-paymentdetail',
+			);
+			$print=$this->tr->translate("PRINT");
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'driver_name'=>$link,'payment_date'=>$link,$print=>$link_print,));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -73,7 +79,7 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 		$row = $db->getCommissionPaymentByID($id);
 		$this->view->row =$row;
 		if (empty($row)){
-			$this->_redirect("/bookings/agentcypayment");
+			$this->_redirect("/bookings/driverpayments");
 		}
 		$frm = new Bookings_Form_FrmDriverPaymentNew();
 		$form = $frm->FormBooking($row);
@@ -131,6 +137,16 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 			exit();
 		}
 	
+	}
+	
+	function driverInfoAction(){
+		if($this->getRequest()->isPost()){
+			$data = $this->getRequest()->getPost();
+			$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
+			$row = $db->getDriverInfor($data["driver_id"]);
+			print_r(Zend_Json::encode($row));
+			exit();
+		}
 	}
 }
 
