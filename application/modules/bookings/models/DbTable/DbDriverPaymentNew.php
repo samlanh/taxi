@@ -125,7 +125,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 						'driverclear_id'=>$driver_id,
 						'booking_id'	=>$_data['carbooking_id'.$i],
 						'driver_fee'	=>$_data['gency_fee_'.$i],
-						'conpany_price'	=>$_data['conpany_price_'.$i],
+						//'conpany_price'	=>$_data['conpany_price_'.$i],
 						'paid'			=>$_data['paid_after_'.$i],
 						//'balance'		=>$_data['balance_after_'.$i],
 				        'note'			=>$_data['note_'.$i],
@@ -147,127 +147,121 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 		}
 	}
 	
-	public function updateCommissionPayment($_data){
+	public function updateDriverPayment($_data){
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
-			$_db = new Application_Model_DbTable_DbGlobal();
-// 			$reciept_no = $_db->getNewCommissionPaymentNO();
-			$_arrcommission=array(
-// 					'payment_no'	  => $reciept_no,
-					'agency_id'	  => $_data['agency'],
-					'payment_date'	  => $_data['payment_date'],
-					'payment_type'	  => 0,
-					'payment_method'	  => $_data['payment_method'],
-					'paid'	  => $_data['total_paid'],
-					'balance'	  => $_data['balance'],
-					'total_due'	  => $_data['total_due'],
-					'amount'      => $_data['amount'],
-					'note'	  => $_data['remark'],
-					'status'	  => 1,
-					'create_date'=> date("Y-m-d H:i:s"),
-					'modify_date'  =>date("Y-m-d H:i:s"),
-					'user_id'      => $this->getUserId(),
-			);
-			$this->_name="ldc_commission_payment";
-			$where = ' id = '.$_data['payment_id'];
-			$this->update($_arrcommission, $where);
-			$id_commission_payment = $_data['payment_id'];
+			$agency=$_data['driver_old'];;
+			$invoice='';
+			if(empty($_data['driver'])){
+				$_data['driver']=$agency;
+			}
+			if(empty($_data['invoice'])){
+				$_data['invoice']=$invoice;
+			}
 			
-			$row = $this->getCommissionPaymentDetail($id_commission_payment);
-			if (!empty($row)) foreach ($row as $pay_detail){
-				$rowpaymentdetail = $this->getCommissionPaymentAndBookingId($_data['payment_id'], $pay_detail['booking_id']);
+			$row_detail=$this->getDriverClearDetail($_data['hidden_id']);
+			if(!empty($row_detail)){
+				foreach ($row_detail As $row){
+					$driver_fee = $this->getCarbookingById($row['booking_id']);
+					$paid=$this->getAgencyPaidById($row['booking_id']);
+					$array=array();
+					if (!empty($driver_fee)){
+						$dueafter =$driver_fee['driver_fee_after']+$row['driver_fee'];
+						if(!empty($paid)){
+							$paid_after=$paid['paid_after']+$row['paid'];
+							$array['paid_after']=$paid_after;
+						}
+						$array['is_paid_to_driver']=0;
+						$array['driver_fee_after']=$dueafter;
+						$this->_name="ldc_carbooking";
+						$where = " id =".$row['booking_id'];
+						$this->update($array, $where);
+					}
+				}
+			}
+			
 				
-				if (!empty($rowpaymentdetail)){
-					$bookingafter = $this->getCarbookingById($pay_detail['booking_id']);
-					$duevalu=$rowpaymentdetail['paid'];
-					
-					$paymenttailByBooking = $this->getSumCommissionPaymentDetailByBookingId($pay_detail['booking_id'], $pay_detail['id']);// get other pay amount on this Booking on other commission payment
-					$dueafters = $bookingafter['commision_fee_after']+$duevalu;
-					if (!empty($paymenttailByBooking['tolalpayamount'])){
-						$duevalu = ($rowpaymentdetail['commision_fee']-$paymenttailByBooking['tolalpayamount']);
-						$dueafters =$duevalu;
-					}
-					
-					if ($dueafters>0){
-						$is_payments=0;
-					}else{
-						$is_payments=1;
-					}
-					$array=array(
-							'is_paid_commission'=>$is_payments,
-							'commision_fee_after'=>$dueafters,
-					);
-					$this->_name="ldc_carbooking";
-					$where = " id =".$pay_detail['booking_id'];
-					$this->update($array, $where);
-				}
-			}
-			
-			$ids = explode(',', $_data['identity']);
-			$detailidlist = '';
+			$_gency=array(
+					'payment_no'	  => $_data['reciept_no'],
+					'driver_id'	  	  => $_data['driver'],
+					'payment_date'	  => $_data['payment_date'],
+					'payment_method'  => $_data['payment_by'],
+					'payment_type'	  => $_data['payment_method'],
+					'note'  		  => $_data['remark'],
+					'create_date'	  => date("Y-m-d H:i:s"),
+					'modify_date'  	  => date("Y-m-d H:i:s"),
+						
+					'total_driver_fee'      => $_data['total_commission_fee'],
+					'total_driver_recived'  => $_data['total_agen_recived'],
+					'paid_driver'      	  	=> $_data['paid_agen'],
+						
+					'driver_paid'      	  	=> $_data['agency_paid'],
+					'driver_balance'      	=> $_data['agency_balance'],
+					'total_alls'      	  	=> $_data['total_alls'],
+					'total_profit'			=> ($_data['total_alls'])-($_data['total_commission_fee']),
+					'paid_type'       		=> $_data['paid_type'],
+					'status'      	  		=> $_data['status'],
+					'user_id'      	  		=> $this->getUserId(),
+			);
+			$this->_name="ldc_driverclear_payment";
+			$where=" id=".$_data['hidden_id'];  
+		    $this->update($_gency, $where);
+		    
+		    $sql = "DELETE FROM ldc_driverclear_payment_detail WHERE driverclear_id=".$_data['hidden_id'];  
+		    $db->query($sql);
+				
+			$ids = explode(',', $_data['record_row']);
+			$driver_fee=0;
+			$paid_after=0;
+			$balance_after=0;
 			foreach ($ids as $i){
-				if (empty($detailidlist)){
-					if (!empty($_data['detailid'.$i])){
-						$detailidlist= $_data['detailid'.$i];
-					}
-				}else{
-					if (!empty($_data['detailid'.$i])){
-						$detailidlist = $detailidlist.",".$_data['detailid'.$i];
-					}
-				}
-			}
-			// delete old payment detail that don't have on new payment detail after edit
-			$this->_name="ldc_commission_payment_detail";
-			$where2=" commission_payment_id = ".$id_commission_payment;
-			if (!empty($detailidlist)){ // check if has old payment detail  detail id
-				$where2.=" AND id NOT IN (".$detailidlist.")";
-			}
-			$this->delete($where2);
-			
-			$dueafter=0;
-			foreach ($ids as $i){
-				$is_payment =0;
-				$booking = $this->getCarbookingById($_data['carbooking_id'.$i]);
-				$paid = $_data['payment_amount'.$i];
-	
-				if (!empty($booking)){
-					$dueafter =$booking['commision_fee_after']-$paid;
+				$is_driver_paid =0;
+					
+				$driver_fee = $this->getCarbookingById($_data['carbooking_id'.$i]);
+				$paid=$this->getAgencyPaidById($_data['carbooking_id'.$i]);
+				//	$balance=$this->getAgencyBalanceById($_data['carbooking_id'.$i]);
+				$array=array();
+				if (!empty($driver_fee)){
+					$dueafter =$driver_fee['driver_fee_after']-$_data['gency_fee_'.$i];
 					if ($dueafter>0){
-						$is_payment=0;
+						$is_driver_paid=0;
 					}else{
-						$is_payment=1;
+						$is_driver_paid=1;
 					}
-					$array=array(
-							'is_paid_commission'=>$is_payment,
-							'commision_fee_after'=>$dueafter,
-					);
+					if(!empty($paid)){
+						$paid_after=$paid['paid_after']-$_data['paid_after_'.$i];
+						$array['paid_after']=$paid_after;
+					}
+					// 					if(!empty($balance)){
+					// 						$balance_after=$balance['balance_after']-$_data['balance_after_'.$i];
+					// 						$array['balance_after']=$balance_after;
+					// 					}
+					$array['is_paid_to_driver']=$is_driver_paid;
+					$array['driver_fee_after']=$dueafter;
+						
 					$this->_name="ldc_carbooking";
 					$where = " id =".$_data['carbooking_id'.$i];
 					$this->update($array, $where);
 				}
-				if (!empty($_data['detailid'.$i])){
-					$arrs = array(
-							'commission_payment_id'=>$id_commission_payment,
-							'booking_id'=>$_data['carbooking_id'.$i],
-							'due_amount'=>$_data['commision_fee'.$i],
-							'paid'=>$_data['payment_amount'.$i],
-							'remain'=>$_data['remain'.$i],
-					);
-					$this->_name ='ldc_commission_payment_detail';
-					$where12 =" id= ".$_data['detailid'.$i];
-					$this->update($arrs, $where12);
-				}else{
-					$arrs = array(
-							'commission_payment_id'=>$id_commission_payment,
-							'booking_id'=>$_data['carbooking_id'.$i],
-							'due_amount'=>$_data['commision_fee'.$i],
-							'paid'=>$_data['payment_amount'.$i],
-							'remain'=>$_data['remain'.$i],
-					);
-					$this->_name ='ldc_commission_payment_detail';
-					$this->insert($arrs);
-				}
+	
+				$arrs = array(
+						'driverclear_id'=>$_data['hidden_id'],
+						'booking_id'	=>$_data['carbooking_id'.$i],
+						'driver_fee'	=>$_data['gency_fee_'.$i],
+						//'conpany_price'	=>$_data['conpany_price_'.$i],
+						'paid'			=>$_data['paid_after_'.$i],
+						//'balance'		=>$_data['balance_after_'.$i],
+						'note'			=>$_data['note_'.$i],
+						'all_total'		=>$_data['all_total_'.$i],
+						'paid_status'	=>$_data['paid_status_'.$i],
+						'balance_satatus'=>$_data['balance_status_'.$i],
+						'is_clear'		=>1,
+						'user_id'      	=> $this->getUserId(),
+						'status'		=>1,
+				);
+				$this->_name ='ldc_driverclear_payment_detail';
+				$this->insert($arrs);
 			}
 			$db->commit();
 		}catch(exception $e){
@@ -276,6 +270,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 			$db->rollBack();
 		}
 	}
+	
 	function getCarbookingById($id){
 		$db = $this->getAdapter();
 		$sql="SELECT c.* FROM `ldc_carbooking` AS c WHERE c.`id` = $id LIMIT 1";
@@ -354,6 +349,29 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 		return $db->fetchRow($sql.$and);
 	}
 	
+	function getDriverClearById($id){
+		$db = $this->getAdapter();
+		$sql=" SELECT cd.id,cd.`payment_method`,cdd.`booking_id`,cd.`payment_no`,cd.driver_id,cd.payment_date,cd.payment_type,cd.note,cd.total_driver_fee,
+	    cd.total_driver_recived,cd.paid_driver,cd.total_alls,cd.total_profit,cd.paid_type,cd.driver_paid,
+        cd.`status`
+        FROM `ldc_driverclear_payment` AS cd ,`ldc_driverclear_payment_detail` AS cdd
+        WHERE  cd.`id`=cdd.`driverclear_id` AND cd.id=$id GROUP BY cd.`id`";
+		return $db->fetchRow($sql);
+	}
+	
+	function getDriverClearDetail($id){
+		$db = $this->getAdapter();
+		$sql=" SELECT   cb.`customer_id`,cdd.`booking_id`,cb.booking_no,DATE_FORMAT(cb.`delivey_date`, '%d-%b-%Y') AS date_delivey,TIME_FORMAT(cb.`delivey_time`,'%H:%i')AS `time`,
+        (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`from_location`) AS from_loc ,
+        (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`to_location`) AS to_loc ,
+        (SELECT c.`title` FROM `ldc_vechicletye` AS c WHERE c.id=cb.`vehicletype_id`) AS car_type ,
+        cdd.`all_total`,cdd.`driver_fee`, cdd.`paid`,cdd.`note`,cdd.`paid_status`,cdd.`balance_satatus`
+        FROM `ldc_driverclear_payment` AS cd ,`ldc_driverclear_payment_detail` AS cdd,`ldc_carbooking` AS cb
+        WHERE  cd.`id`=cdd.`driverclear_id` AND cd.status=1
+        AND cb.`id`=cdd.`booking_id`
+        AND cdd.`driverclear_id`=$id";
+		return $db->fetchAll($sql);
+	}
 	 
 }
 ?>

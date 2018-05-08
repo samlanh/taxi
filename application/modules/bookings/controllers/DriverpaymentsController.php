@@ -68,19 +68,22 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 	
 	public function editAction()
 	{
+		$id=$this->getRequest()->getParam('id');
 		$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$booking_id=$db->updateCommissionPayment($data);
-				$this->_redirect("/bookings/agentcypayment");
+			$booking_id=$db->updateDriverPayment($data);
+			if(isset($data['save_new'])){
+				$this->_redirect("/bookings/driverpayments/add");
+			}else{
+				$this->_redirect("/bookings/driverpayments");
+			}
+// 			Application_Form_FrmMessage::redirectUrl("/booking/carrentalbooking/add");
 		}
-		$id=$this->getRequest()->getParam('id');
-		$this->view->id = $id;
-		$row = $db->getCommissionPaymentByID($id);
-		$this->view->row =$row;
-		if (empty($row)){
-			$this->_redirect("/bookings/driverpayments");
-		}
+		$row=$db->getDriverClearById($id);
+		$row_detail=$db->getDriverClearDetail($id);
+		$this->view->row=$row;
+		$this->view->rows=$row_detail;
 		$frm = new Bookings_Form_FrmDriverPaymentNew();
 		$form = $frm->FormBooking($row);
 		Application_Model_Decorator::removeAllDecorator($form);

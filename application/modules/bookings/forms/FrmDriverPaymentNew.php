@@ -285,23 +285,33 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 		$opt_status = array();
 		$status = new Zend_Dojo_Form_Element_FilteringSelect("status");
 		$status->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",));
-		foreach ($row_payment as $rs){
+		foreach ($row_status as $rs){
 			$opt_status[$rs["id"]] = $rs["name"];
 		}
 		$status->setMultiOptions($opt_status);
 		
 		if (!empty($data)){
+			 
 			$_reciept_no->setValue($data['payment_no']);
-			$agency->setValue($data['agency_id']);
-			$payment_date->setValue(date("Y-m-d",strtotime($data['payment_date'])));
+			$payment_by->setValue($data['payment_method']);
+			$_reciept_no->setValue($data['payment_no']);
+			$invoice->setValue($data['booking_id']);
+			$driver->setValue($data['driver_id']);
+			$payment_date->setValue($data['payment_date']);
+			$payment_method->setValue($data['payment_type']);
 			$remark->setValue($data['note']);
-			$_amount->setValue($data['amount']);
-			$payment_method->setValue($data['payment_method']);
-// 			$total_payment->setValue($data['booking_no']);
-			$balance->setValue($data['balance']);
-			$total_paid->setValue($data['paid']);
-			$total_due->setValue($data['total_due']);
+			$status->setValue($data['status']);
+			$total_commission->setValue($data['total_driver_fee']);
+			$total_agen_recived->setValue($data['total_driver_recived']);
+			$paid_agen->setValue($data['paid_driver']);
+			$total_alls->setValue($data['total_alls']);
+			$profit->setValue($data['total_profit']);
+			$agency_paid->setValue($data['driver_paid']);
 			
+			$driver->setAttribs(array('readonly'=>'readonly',));
+			$invoice->setAttribs(array('readonly'=>'readonly',));
+			$payment_by->setAttribs(array('readonly'=>'readonly',));
+			 
 		}
 		
 		$this->addElements(array(

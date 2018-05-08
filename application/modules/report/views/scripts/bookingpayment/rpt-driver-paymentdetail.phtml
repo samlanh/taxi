@@ -103,7 +103,7 @@ span.label_value {
 									<td class="row-value"><?php echo $tr->translate("TO_LOCATION");?></td>
 									<td class="row-value"><?php echo $tr->translate("Driver Fee");?> </td>
 									<td class="row-value"><?php echo $tr->translate("ប្រាក់នៅអ្នកបើកបរ");?> </td>
-									<td class="row-value"><?php echo $tr->translate("REMARK");?> </td>​
+									<td class="row-value one-td"><?php echo $tr->translate("REMARK");?> </td>​
 								</tr>
 								<?php $i=0; 
 								$total_paid=0;
@@ -126,18 +126,22 @@ span.label_value {
 									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo "$ ".number_format($com['driver_fee'],2);?></td>
 									<td  class="row-td one-td">&nbsp;<?php echo "$ ".number_format($total_agency_re,2);?></td>
-									<td  class="row-td" >&nbsp;<?php echo $com['note'];?></td>
+									<td  class="one-td" >&nbsp;<?php echo $com['note'];?></td>
 								</tr>
 								<?php }?>
 								<tr>
 									<td colspan="3">&nbsp;</td>
 									<td colspan="2" align="right"><span class="label_title">Total Driver Fee&nbsp;</span></td>
-									<td align="center" class="one-td" ><?php echo "$ ".number_format($total_commistion,2);?></td>
+									<td  class="one-td" ><?php echo "$ ".number_format($total_commistion,2);?></td>
+									<td class="one-td"></td>
+									<td class="one-td"></td>
 								</tr>
 								<tr>
 									<td colspan="3">&nbsp;</td>
 									<td colspan="2" align="right"><span class="label_title">ប្រាក់នៅអ្នកបើកបរសរុប&nbsp;</span></td>
-									<td align="center" class="one-td"><?php echo "$ ".number_format($total_all_a_re,2);?></td>
+									<td class="one-td"><?php echo "$ ".number_format($total_all_a_re,2);?></td>
+									<td class="one-td"></td>
+									<td class="one-td"></td>
 								</tr>
 								<tr>
 								<?php $paid=0;
@@ -152,14 +156,18 @@ span.label_value {
 									<td colspan="3">&nbsp;</td>
 									<td colspan="2" align="right" ><span class="label_title"><?php echo $str;?>&nbsp;</span></td>
 									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($paid,2);?></td>
+									<td class="one-td"></td>
+									<td class="one-td"></td>
 								</tr>
 								<tr>
 									<td colspan="3">&nbsp;</td>
 									<td colspan="2" align="right"><span class="label_title">Balance&nbsp;</span></td>
 									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($paid-$this->commision_payment['paid_driver'],2);?></td>
+									<td class="one-td"></td>
+									<td class="one-td"></td>
 								</tr>
 								<tr>
-								    <td height="15px;"></td>
+								    <td height="100px;"></td>
 								</tr>
 								<tr>
 				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="center"​ colspan="3" >
@@ -168,7 +176,8 @@ span.label_value {
 								           //$username = $session_user->fullname;
 						       			?>
 				                       <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
-				                   			   ហត្ថលេខា និងឈ្មោះអ្នកបើកបរ<br/>
+				                   			<!--   ហត្ថលេខា និងឈ្មោះអ្នកបើកបរ<br/> --> 
+				                   			<hr>
 				                       		​​Driver's Signature and full name <br/>
 				                       <?php echo 'កាលបរិច្ឆេទ Date: ថ្ងៃទី......ខែ.........ឆ្នាំ............'?>
 				                       
@@ -180,7 +189,8 @@ span.label_value {
 								           $username = $session_user->fullname;
 						       			?>
 				                        <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
-				                       		ហត្ថលេខា និងឈ្មោះអ្នកគិតលុយ<br/>
+				                       		<!--  ហត្ថលេខា និងឈ្មោះអ្នកគិតលុយ<br/> --> 
+				                       		<hr>
 				                       		Accounter's Signature and full name <br/>
 				                       <?php echo 'កាលបរិច្ឆេទ Date: ថ្ងៃទី......ខែ.........ឆ្នាំ............'?>
 				                   </td>

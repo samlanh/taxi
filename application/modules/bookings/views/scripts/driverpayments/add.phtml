@@ -100,7 +100,7 @@ td {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('payment_by');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("BOOKING_NO")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Receipt N<sup>o")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('reciept_no');?>
@@ -533,7 +533,7 @@ function getAllAgentcyPayment(type){
 				
 				thead+='<th><?php echo $tr->translate("All Total");?></th>';
 				thead+='<th><?php echo $tr->translate("Driver Fee");?></th>';
-				thead+='<th><?php echo $tr->translate("Company Price");?></th>';
+				//thead+='<th><?php //echo $tr->translate("Company Price");?></th>';
 				thead+='<th><?php echo $tr->translate("PAID");?></th>';
 				//thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
 				thead+='<th><?php echo $tr->translate("OTHER");?></th>';
@@ -557,7 +557,7 @@ function getAllAgentcyPayment(type){
 					thead+='<th nowrap><?php echo $tr->translate("VEHICLE_TYPE");?></th>';
 					thead+='<th><?php echo $tr->translate("All Total");?></th>';
 					thead+='<th><?php echo $tr->translate("Driver Fee");?></th>';
-					thead+='<th><?php echo $tr->translate("Company Price");?></th>';
+					//thead+='<th><?php //echo $tr->translate("Company Price");?></th>';
 					thead+='<th><?php echo $tr->translate("PAID");?></th>';
 					//thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
 					thead+='<th><?php echo $tr->translate("OTHER");?></th>';
@@ -591,7 +591,7 @@ function getAllAgentcyPayment(type){
 				temp+='<td nowrap>'+data[i].car_type+'</td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].total_after+'"    name="all_total_'+r+'" id="all_total_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].driver_fee_after+'"    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
+				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
 
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].paid_after+'"    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
 				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
