@@ -1,11 +1,13 @@
 <?php
 class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
+	protected $tr = null;
     public function init()
     {    	
      /* Initialize action controller here */
     	header('content-type: text/html; charset=utf8');
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
+    	$this->tr = Application_Form_FrmLanguages::getCurrentlanguage();
 	}
 	
 	public function indexAction(){
@@ -26,11 +28,15 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("RECIEPT_NO","BOOKING_NO","AGENCY","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_COMMISSION","Total Agency Recieved","PAID","PAID_STATUS","USER_NAME","STATUS");
+			$collumns = array("RECIEPT_NO","BOOKING_NO","AGENCY","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_COMMISSION","Total Agency Recieved","PAID","PAID_STATUS","USER_NAME","STATUS","ACTION");
 			$link=array(
 					'module'=>'bookings','controller'=>'agentcypayment','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'agentcy'=>$link));
+			$link_print=array(
+					'module'=>'report','controller'=>'bookingpayment','action'=>'rpt-commissionpaymentdetail',
+			);
+			$print=$this->tr->translate("PRINT");
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'agentcy'=>$link,$print=>$link_print,));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -48,11 +54,11 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 			$data = $this->getRequest()->getPost();
 			$booking_id=$db->addAgencyPayment($data);
 			if(isset($data['save_new'])){
-				$this->_redirect("/bookings/agentcypayment/add");
+				Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment/add");
 			}else{
-				$this->_redirect("/bookings/agentcypayment");
+				Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment");
 			}
-// 			Application_Form_FrmMessage::redirectUrl("/booking/carrentalbooking/add");
+			Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment");
 		}
 		$frm = new Bookings_Form_FrmAgentcyPayment();
 		$form = $frm->FormBooking();

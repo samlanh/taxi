@@ -327,7 +327,8 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 		}else{
 			$and=" AND cb.driver_id=".$id;
 		}
-		return $db->fetchAll($sql.$and);
+		$order=" ORDER BY cb.`booking_no`,cb.`delivey_date` ASC ";
+		return $db->fetchAll($sql.$and.$order);
 	}
 	
 	function getAgencyPayment($agency_id,$row_id,$type){
@@ -370,7 +371,8 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
         WHERE  cd.`id`=cdd.`driverclear_id` AND cd.status=1
         AND cb.`id`=cdd.`booking_id`
         AND cdd.`driverclear_id`=$id";
-		return $db->fetchAll($sql);
+		$order=" ORDER BY cb.`booking_no`,cb.`delivey_date` ASC ";
+		return $db->fetchAll($sql.$order);
 	}
 	 
 }

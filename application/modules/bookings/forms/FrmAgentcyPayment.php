@@ -47,7 +47,10 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$row_agen = $_db->getAllAgency();
 		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"));
 		$agency = new Zend_Dojo_Form_Element_FilteringSelect("agency");
-		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment(2);'));//getAllAgentcyPayment()
+		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+				'autoComplete'=>"false",
+				'queryExpr'=>'*${0}*',
+				'onChange'=>'getAllAgentcyPayment(2);getDriverInfoByid();'));//getAllAgentcyPayment()
 		foreach ($row_agen as $rs){
 			$opt_agen[$rs["id"]] = $rs["name"];
 		}

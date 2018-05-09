@@ -382,5 +382,15 @@ class Bookings_indexController extends Zend_Controller_Action {
 			exit();
 		}
 	}
+	
+	function getagencyinfoAction(){
+		if($this->getRequest()->isPost()){
+			$data = $this->getRequest()->getPost();
+			$db = new Bookings_Model_DbTable_DbBooking();
+			$row = $db->getAgencyInfo($data);
+			print_r(Zend_Json::encode($row));
+			exit();
+		}
+	}
 }
 

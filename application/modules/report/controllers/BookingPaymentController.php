@@ -203,7 +203,7 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  		else{
 	  			$search = array(
 	  					'to_book_date'   => date("Y-m-d"),
-	  					'from_book_date' => date("Y-m-d"),
+	  					'from_book_date' => date("Y-m-01"),
 	  					'search_text'    => "",
 	  					'customer'       =>0,
 	  					'working_status' =>-1,
@@ -215,6 +215,7 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  					'status'       =>-1,
 	  			);
 	  		}
+	  		$this->view->search=$search;
 	  		$rs_rows= $db->getAllCarBooking($search);
 	  		$glClass = new Application_Model_GlobalClass();
 	  		$rs_rows=$glClass->getHoursStudy($rs_rows);
@@ -246,6 +247,7 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  					'status'       =>1,
 	  		);
 	  	}
+	  	$this->view->search=$search;
 	  	$glClass = new Application_Model_GlobalClass();
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
 	  	$row=$db->getCustomerAlertTime($search);
@@ -306,6 +308,45 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  		$rs_rows=$glClass->getHoursStudy($rs_rows);
 	  		$this->view->result=$rs_rows;
 	  	  
+	  	}catch (Exception $e){
+	  		Application_Form_FrmMessage::message("Application Error");
+	  		Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+	  	}
+	  	$frm = new Bookings_Form_FrmSearchBooking();
+	  	$frm =$frm->FormSearch();
+	  	Application_Model_Decorator::removeAllDecorator($frm);
+	  	$this->view->frm_search = $frm;
+	  }
+	  
+	  function rptBookingClearedAction(){ 
+	  	try{
+	  		$db = new Bookings_Model_DbTable_DbBookingCleared();
+	  		if($this->getRequest()->isPost()){
+	  			$search=$this->getRequest()->getPost();
+	  		}
+	  		else{
+	  			$search = array(
+	  					'to_book_date'   => date("Y-m-d"),
+	  					'from_book_date' => date("Y-m-01"),
+	  					'search_text'    => "",
+	  					'customer'       =>0,
+	  					'working_status' =>-1,
+	  					'date_type'		 =>'2',
+	  					'agency_search'	 =>'0',
+	  					'vehicle_type'	 =>'0',
+	  					'driver_search'  =>0,
+	  	
+	  					'start_time'  =>'',
+	  					'delivery_time'  =>'',
+	  					'agency_search'  =>0,
+	  					'status'       =>1,
+	  			);
+	  		}
+	  		
+	  		$rs_rows= $db->getAllBookingClearedPayment($search);
+	  		$list = new Application_Form_Frmtable();
+	  		$this->view->rows=$rs_rows;
+	  		$this->view->search=$search;
 	  	}catch (Exception $e){
 	  		Application_Form_FrmMessage::message("Application Error");
 	  		Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());

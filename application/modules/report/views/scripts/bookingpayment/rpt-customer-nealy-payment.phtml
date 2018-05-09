@@ -103,10 +103,9 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				                    <td><?php echo $tr->translate("BOOKING_DATE");?></td>
 				                    <td><?php echo $tr->translate("DELIVERY_DATE");?></td>
 				                    <td><?php echo $tr->translate("DELIVERY_TIME");?></td>
-				                    <td><?php echo $tr->translate("CAR_RENT_FEE");?></td>
-				                    <td><?php echo $tr->translate("COMMISSION_FEE");?></td>
-			                        <td><?php echo $tr->translate("OTHER_FEE");?></td>
-			                        <td><?php echo $tr->translate("GRAND_TOTAL");?></td>
+				                    
+				                    
+				                    
 			                        <td><?php echo $tr->translate("DRIVER");?></td>
 			                        <td><?php echo $tr->translate("DRIVER_FEE");?></td>
 			                        <td><?php echo $tr->translate("BOOKING_STATUS");?></td>
@@ -132,10 +131,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['booking_date']))?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['delivey_date']))?> </td>	
 										<td class="text-center">&nbsp;  <?php echo $row['delivey_time']?> </td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['price']!=0) echo '$&nbsp;'.number_format($row['price'],2);?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['commision_fee']!=0) echo '$&nbsp;'.number_format($row['commision_fee'],2);?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['other_fee']!=0) echo '$&nbsp;'.number_format($row['other_fee'],2);?></td>
-										<td align="center" style="line-height:15px;">&nbsp;<?php if($row['total']!=0) echo '$&nbsp;'.number_format($row['total'],2);?></td>
+										 
 										<td align="center" style="line-height:15px;">&nbsp; <?php echo $row['driver'];?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php if($row['total']!=0) echo '$&nbsp;'.number_format($row['driver_fee'],2);?> </td>	
 										<td align="center" style="line-height:15px;">&nbsp;<?php  echo $row['book_status'];?></td>

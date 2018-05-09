@@ -56,7 +56,10 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 		$row_dri = $_db->getAllDriver();
 		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
 		$driver = new Zend_Dojo_Form_Element_FilteringSelect("driver");
-		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAllAgentcyPayment(2);getDriverInfoByid()'));
+		$driver->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+				'autoComplete'=>"false",
+				'queryExpr'=>'*${0}*',
+				'onChange'=>'getAllAgentcyPayment(2);getDriverInfoByid()'));
 		foreach ($row_dri as $rs){
 			$opt_dri[$rs["id"]] = $rs["name"];
 		}

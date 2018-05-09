@@ -7,6 +7,7 @@ $frm=$this->frm_search;
 ?>
 <script type="text/javascript">
 dojo.ready(function(){
+	dijit.byId("to_book_date").attr("value",'<?php echo $this->search['to_book_date']?>');
 });
 dojo.require("dojo.data.ItemFileWriteStore");  
 dojo.require("dijit.form.NumberTextBox");
@@ -21,6 +22,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 	</form>
 <div class="row">
 	<div class="x_panel " >
+		
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
 		<form id="list" name="list" action="" dojoType="dijit.form.Form" method="post">
 			  	<div class="clearfix"></div>
 				  <div class="form-group">
@@ -65,7 +68,6 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 					</div>
 				  </div>
 			</form>
-		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
 			<div id="divPrint" style="width: 100%;">
 				<style>
 				.style{
@@ -117,28 +119,24 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				            <table id="exportExcel" border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
 				              <thead>
 				                <tr class="header">  
-				    		  	  <th><?php echo $tr->translate("NUM")?></th> 
-				    		      <th><?php echo $tr->translate("BOOKING_NO")?></th> 
+				    		  	  <th style="10%"><?php echo $tr->translate("NUM")?></th> 
+				    		      <th style="10%"><?php echo $tr->translate("BOOKING_NO")?></th> 
 				    		      <th><?php echo $tr->translate("BOOKING_DATE")?> </th> 
 				    	          <th><?php echo $tr->translate("DELIVERY_DATE")?></th> 
 				    	          <th><?php echo $tr->translate("DELIVERY_TIME")?></th> 
 				    	          <th><?php echo $tr->translate("OTHER_BOOKING_NO")?></th>
 				    		      <th><?php echo $tr->translate("FROM_LOCATION")?> </th> 
 				    	          <th><?php echo $tr->translate("TO_LOCATION")?></th> 
-				                  <th><?php echo $tr->translate("CUSTOMER_NAME")?></th>
-				                  <th><?php echo $tr->translate("CUS_PHONE")?></th> 
-				    	          <th><?php echo $tr->translate("CUS_EMAIL")?></th> 
+				                
+				    	          
 				    	          <th><?php echo $tr->translate("VEHICLE_TYPE")?></th> 
-				    	          <th><?php echo $tr->translate("TOTAL_PAID")?> </th> 
+				    	          
+				    	          <th><?php echo $tr->translate("NoPay")?> </th> 
+				    	          <th><?php echo $tr->translate("Company Price")?> </th> 
+				    	          <th><?php echo $tr->translate("CARPRICE")?> </th> 
 				    	          <th><?php echo $tr->translate("BALANCE")?> </th> 
-				    	          <th><?php echo $tr->translate("TOTAL_PAYMENT")?> </th> 
-				    	          <th><?php echo $tr->translate("AGENCY_NAME")?> </th> 
-				    	          <th><?php echo $tr->translate("CAR_RENT_FEE")?> </th> 
-				    	          <th><?php echo $tr->translate("COMMISSION_FEE")?></th> 
-				    	          <th><?php echo $tr->translate("OTHER_FEE")?> </th> 
-				    	          <th><?php echo $tr->translate("GRAND_TOTAL")?></th> 
-				    	          <th><?php echo $tr->translate("DRIVER")?> </th> 
-				    	          <th><?php echo $tr->translate("DRIVER_FEE")?></th> 
+				    	          <th><?php echo $tr->translate("GRAND_TOTAL")?> </th> 
+				    	           
 				    	          <th><?php echo $tr->translate("BOOKING_STATUS")?> </th> 
 				    	           <th><?php echo $tr->translate("USER")?></th> 
 				    	          <th><?php echo $tr->translate("STATUS")?></th> 
@@ -147,32 +145,25 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				               <?php  $status_drinver='';
 				               if(!empty($this->result)) foreach($this->result as $key =>$rs){
 				               	?> 
-									<tr class=" alternate  normal" style="background:#fff" >
-								       <td class="text-center">&nbsp;<?php echo $key+1?></td>
-								       <td class="text-center">&nbsp;<?php echo $rs['booking_no']?> </td> 
-								       <td class="text-center">&nbsp; <?php echo date("d-M-Y",strtotime($rs['booking_date']));?> </td> 
-								       <td class="text-center">&nbsp; <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?>  </td>
-								       <td class="text-center">&nbsp;  <?php echo $rs['delivey_time']?> </td>
-								       <td class="text-center">&nbsp; <?php echo $rs['payment_booking_no']?></td> 
-								       <td class="text-center">&nbsp; <?php echo $rs['from_location']?></td> 
-								       <td class="text-center">&nbsp;<?php echo $rs['to_location']?> </td>
-								       <td class="text-center">&nbsp; <?php echo $rs['last_name']?></td>
-								       <td class="text-center">&nbsp; <?php echo $rs['phone']?></td> 
-								       <td class="text-center">&nbsp; <?php echo $rs['email']?></td> 
-								       <td class="text-center">&nbsp;<?php echo $rs['vehicle_type']?> </td>
-								       <td class="text-center">&nbsp; <?php echo ($rs['paid']==0)?"":"$&nbsp;".number_format($rs["paid"],2);?> </td>
-								       <td class="text-center">&nbsp; <?php echo ($rs['balance']==0)?"":"$&nbsp;".number_format($rs["balance"],2);?></td> 
-								       <td class="text-center">&nbsp;  <?php echo ($rs['grand_total_after']==0)?"":"$&nbsp;".number_format($rs["grand_total_after"],2);?></td> 
-								       <td class="text-center">&nbsp;<?php echo $rs['agency_name']?> </td>
-								       <td class="text-center">&nbsp;<?php echo ($rs['total']==0)?"":"$&nbsp;".number_format($rs["total"],2);?>  </td>
-								       <td class="text-center">&nbsp; <?php echo ($rs['commision_fee']==0)?"":"$&nbsp;".number_format($rs["commision_fee"],2);?></td> 
-								       <td class="text-center">&nbsp;<?php echo ($rs['other_fee']==0)?"":"$&nbsp;".number_format($rs["other_fee"],2);?> </td>
-								       <td class="text-center">&nbsp; <?php echo ($rs['grand_total']==0)?"":"$&nbsp;".number_format($rs["grand_total"],2);?></td>
-								       <td class="text-center">&nbsp; <?php echo $rs['driver']?></td>
-								       <td class="text-center">&nbsp;<?php echo ($rs['driver_fee']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>
-								       <td class="text-center" >&nbsp;  <?php echo $rs['book_status']?> </td>
-								       <td class="text-center">&nbsp; <?php echo $rs['user_name']?></td>
-								        <td class="text-center">&nbsp; <?php echo $rs['status']?></td>
+									<tr  style="background:#fff" >
+								       <td class="">&nbsp;<?php echo $key+1?></td>
+								       <td class="">&nbsp;<?php echo $rs['booking_no']?> </td> 
+								       <td class="">&nbsp; <?php echo date("d-M-Y",strtotime($rs['booking_date']));?> </td> 
+								       <td class="">&nbsp; <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?>  </td>
+								       <td class="">&nbsp;  <?php echo $rs['delivey_time']?> </td>
+								       <td class="">&nbsp; <?php echo $rs['payment_booking_no']?></td> 
+								       <td class="">&nbsp; <?php echo $rs['from_location']?></td> 
+								       <td class="">&nbsp;<?php echo $rs['to_location']?> </td>
+								       <td class="">&nbsp;<?php echo $rs['vehicle_type']?> </td>
+										<td class="text-center" <?php //echo $paid_color;?>> <?php echo ($rs['paid']==0)?"":"$&nbsp;".number_format($rs["paid"],2);?> </td>	       
+										<td class="text-center"> <?php echo ($rs['total']==0)?"":"$&nbsp;".number_format($rs["total"],2);?> </td>
+							       		<td class="text-center"> <?php echo ($rs['price']==0)?"":"$&nbsp;".number_format($rs["price"],2);?> </td>
+							       		<td class="text-center"> <?php echo ($rs['balance_after']==0)?"":"$&nbsp;".number_format($rs["balance_after"],2);?></td> 
+							       		<td class="text-center">  <?php echo ($rs['grand_total']==0)?"":"$&nbsp;".number_format($rs["grand_total"],2);?></td> 	       
+								       
+								       <td class="" >&nbsp;  <?php echo $rs['book_status']?> </td>
+								       <td class="">&nbsp; <?php echo $rs['user_name']?></td>
+								        <td class="">&nbsp; <?php echo $rs['status']?></td>
 								     </tr>
 								<?php }?>
 				            </table>

@@ -1,17 +1,22 @@
 <?php 
    $tr = Application_Form_FrmLanguages::getCurrentlanguage();
-   echo $this->headTitle($tr->translate("Commission Payment"));
+   echo $this->headTitle($tr->translate("AGENTCYPAYMENT"));
    $frm = $this->frm;
 ?>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
 <script type="text/javascript">
-dojo.ready(function(){
-});
-dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dojo.data.ItemFileWriteStore"); 
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+ 
+dojo.require("dojo.html");
+dojo.require("dojo.NodeList-manipulate");
 dojo.require("dijit.form.NumberTextBox");
 dojo.require("dijit.form.DateTextBox");
 dojo.require("dijit.form.Textarea");
+dojo.require("dijit.form.TimeTextBox");
 dojo.require("dojo.parser");
-require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+ 
 </script>
 <style>
 div.cus_info{
@@ -41,6 +46,13 @@ h4.car_title {
 .head-td th {
     text-align: center;
 }
+th {
+     text-align: center;
+}
+
+td {
+     padding-left: 2px;
+}
 </style>
 <div class="clearfix"></div>
 <div class="x_panel">
@@ -48,11 +60,10 @@ h4.car_title {
 		<form action="" method="post" id="addbookingrental" dojoType="dijit.form.Form">
 			<script type="dojo/method" event="onSubmit">			
 				if(this.validate()) {
-					var agency = dijit.byId('agency').get('value');
-					if(agency==0){
-						alert("<?php echo $tr->translate('PLEASE_SELECT_AGENCY')?>");
-						dijit.byId('agency').focus(); 
-						return false;
+					 var rowId = dijit.byId('record_row').get("value");
+                     if(rowId=='' || rowId==0){ 
+		            	 alert("Recode not found!");
+						 return false;
 					}
 					var total_paid = dijit.byId('total_paid').get('value');
 					if(total_paid>0){
@@ -72,7 +83,7 @@ h4.car_title {
       	 <div class="col-md-12 col-xs-12 forms_padding">
 	          <div class="x_panel">
 	              <div class="x_title">
-	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('Commission Payment')?></h2>
+	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('AGENTCYPAYMENT')?></h2>
 	                 <ul class="nav navbar-right panel_toolbox">
 	                    <li>
 	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -82,17 +93,32 @@ h4.car_title {
           		</div>
 	       		<div class="x_content">
 	       			<div class="col-md-8 col-sm-8 col-xs-12">
-		                <div class="form-group">
+	       			
+	       				<div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("PAYMENT_BY")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('payment_by');?>
+		                   </div>
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("RECIEPT_NO")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('reciept_no');?>
-		                    	<input type="hidden" dojoType="dijit.form.TextBox" name="payment_id" id="payment_id" value="<?php echo $this->row['id'];?>" >
 		                   </div>
+		                </div>
+	       			
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("INVOICE_NO")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('invoice');?>
+		                   </div>
+		                   
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('agency');?>
+		                    	<input type="hidden"  id="agency_old" name="agency_old" value=""  dojoType="dijit.form.TextBox" />
 		                   </div>
 		                </div>
 		                <div class="form-group">
@@ -108,15 +134,19 @@ h4.car_title {
 		                   </div>
 		                </div>
 		            	  <div class="form-group">
-	                   		   <label class="control-label col-md-2 col-sm-2 col-xs-4" for="first-name"><?php echo $tr->translate('BALANCE')?>
+	                   		   <label class="control-label col-md-2 col-sm-2 col-xs-4" for="first-name"><?php echo $tr->translate('DESCRIPTION')?>
 			                   </label>
 			                  <div class="col-md-4 col-sm-4 col-xs-12">
-			                    	<?php echo $frm->getElement('balance');?>
+			                    	<?php echo $frm->getElement('remark');?>
 			                   </div>
-			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AMOUNT")?>
+			                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("STATUS")?>
 			                   </label>
 			                   <div class="col-md-4 col-sm-4 col-xs-12">
-			                    	<?php echo $frm->getElement('amount');?>
+			                    	<?php //echo $frm->getElement('status');?>
+			                    	<select name="status" id="status" dojoType="dijit.form.FilteringSelect" class="fullside" autoComplete="false" queryExpr="*${0}*"  >
+									       <option value="1" label=" "><?php echo $tr->translate("Male")?></option>
+									        <option value="2" label=" "><?php echo $tr->translate("Female")?></option>
+									</select>
 			                   </div>
 		                </div>
 	       			</div>
@@ -124,7 +154,7 @@ h4.car_title {
 						<div class="title_form_blog " style=" margin: 0;">
 	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('AGENCY_INFO')?></h4>
 	       				</div>
-	       				<div id="agent_info" class="cus_info col-md-12 col-sm-12 col-xs-12">
+	       				<div id="driver_html" class="cus_info col-md-12 col-sm-12 col-xs-12">
 		       				<div class="col-md-4 col-sm-4 col-xs-12">
 				               	<div class="image-box infor">
 									<img id="profile_wiew" src="<?php echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
@@ -151,7 +181,9 @@ h4.car_title {
 	       			</div>
 	       		</div>
 	       		<div class="x_content">
+	       		<!-- 
 	       			<div class="col-md-12 col-sm-12 col-xs-12 bg" style="background: #dbe8f9;    padding: 10px;    margin: 10px 0;    border: solid 1px #ccc;">
+		                  	
 		                  	 <div class="col-md-12 col-sm-12 col-xs-12">
 			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('DATE')?></label>
 			                	<div class="col-md-3 col-sm-3 col-xs-3">
@@ -166,65 +198,111 @@ h4.car_title {
 												iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="getCommissionAgent();" />
 			                    </div>
 		                   </div>
+		                   
 		                   <div class="col-md-12 col-sm-12 col-xs-12">
 			                   	<div class="col-md-2 col-sm-2 col-xs-2">
 			                   		<input type="checkbox" class="checkbox"  name="check_all" id="check_all" value="all" OnChange="CheckAllTotal(0);" style=" height: initial; display: inline-block;"  />&nbsp;
 									<span style="vertical-align: top;"><?php echo $tr->translate('ALL');?></span>
 			                   	</div>
 		                   </div>
-	             	   </div>
-		                <table id="table_parent" class="table" style="margin: 0 auto; width: 100%;  " >
+		                  
+	             	   </div>  -->
+		                 
+						<table id="table_parent" class="table" style="margin: 0 auto; width: 100%;  " >
 							<thead>
 								<tr>
 									<td colspan="8">
 										<table class="table" style=" border: 1px #ccc solid;  ">
 											<thead>
-												<tr id="head-title" class="head-td" align="center">
-													<th>&nbsp;</th>
-													<th ><?php echo $tr->translate("NUM");?></th>
-													<th ><?php echo $tr->translate("BOOKING_DATE");?></th>
-													<th ><?php echo $tr->translate("BOOKING_NO");?></th>
-													<th ><?php echo $tr->translate("COMMISSION_BEFORE");?></th>
-													<th ><?php echo $tr->translate("COMMISSION_FEE");?></th>
-													<th ><?php echo $tr->translate("AMOUNT");?></th>
-													<th ><?php echo $tr->translate("REMAIN");?></th>
-												</tr>
+											 
 											</thead>
-											<tbody id="table_row">
-											<tbody>
+										<tbody  >
+										     <div  id="showrecord"></div>
+											<input type="hidden"  id="record_row" name="record_row" value="0"  dojoType="dijit.form.TextBox" />
+											<input type="hidden"  id="row_id" name="row_id" value=""  dojoType="dijit.form.TextBox" />
+										</tbody>
 										</table>
-										
 										<input type="hidden" name="identity" id="identity"  value="" >
 										<input type="hidden" name="old_identity" id="old_identity"  value="" >
 									</td>
 								</tr>
 							</thead>
 						</table>
-						<div class="form-group">
-		                   <div class="col-md-6 col-sm-6 col-xs-12">
-		                    	<?php echo $frm->getElement('remark');?>
-		                   </div>
-		                    <div class="col-md-6 col-sm-6 col-xs-12">
-		                   		<div class="col-md-12 col-sm-12 col-xs-12">
-		                   		 <label class="control-label col-md-4 col-sm-4 col-xs-4" for="first-name"><?php echo $tr->translate('TOTAL_PAID')?>
-				                   </label>
-				                   <div class="col-md-8 col-sm-8 col-xs-8">
-				                    	<?php echo $frm->getElement('total_paid');?>
-				                   </div>
-		                   		</div>
-		                   		<div class="col-md-12 col-sm-12 col-xs-12">
-		                   		 <label class="control-label col-md-4 col-sm-4 col-xs-4" for="first-name"><?php echo $tr->translate('TOTAL_DUE')?>
-				                   </label>
-				                   <div class="col-md-8 col-sm-8 col-xs-8">
-				                    	<?php echo $frm->getElement('total_due');?>
-				                   </div>
-		                   		</div>
-		                   </div>
-		           	  	</div>
+				    
+                    <div class="form-group">
+					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
+	                    <div class="col-md-9 col-sm-9 col-xs-9">
+	                    	<div class="col-md-12 col-sm-12 col-xs-12">
+	                    	 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_COMMISSION')?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-3">
+			                    	<?php echo $frm->getElement('total_commission_fee');?>
+			                   </div>
+	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_AMOUNT')?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-3">
+			                    	<?php echo $frm->getElement('total_alls');?>
+			                   </div>
+	                   		</div>
+	                   	</div> 
+	                  </div>
+				      
+                    <div class="form-group">
+					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
+	                    <div class="col-md-9 col-sm-9 col-xs-9">
+	                    	<div class="col-md-12 col-sm-12 col-xs-12">
+	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('Total Agency Recieved')?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-3">
+			                   		 <?php echo $frm->getElement('total_agen_recived');?>
+			                   </div>
+			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display:none">
+			                    	<?php echo $frm->getElement('agency_paid');?>
+			                   </div>
+	                   		</div>
+	                   	</div> 
+	                  </div>
+	                  <div class="form-group">
+					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
+	                    <div class="col-md-9 col-sm-9 col-xs-9">
+	                    	<div class="col-md-12 col-sm-12 col-xs-12">
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name" align="right"> <label id="lb_name_agency"></label>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-3">
+			                    	<?php echo $frm->getElement('paid_agen');?>
+			                   </div>
+			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display:none">
+			                    	<?php echo $frm->getElement('agency_balance');?>
+			                   </div>
+	                   		</div>
+	                   	</div> 
+	                  </div>
+			        
+	                  <div class="form-group">
+					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
+	                    <div class="col-md-9 col-sm-9 col-xs-9">
+	                    	<div class="col-md-12 col-sm-12 col-xs-12">
+	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php //echo $tr->translate('status')?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display:none">
+			                    	<?php //echo $frm->getElement('paid_type');?>
+			                    	
+			                    	<select name="paid_type" id="paid_type"  class="fullside" dojoType="dijit.form.FilteringSelect"  >
+										<option value="1"><?php echo $tr->translate('Agency Paid')?></option>
+										<option value="2"><?php echo $tr->translate('Payment To Agency')?></option>
+									</select>
+			                   </div>
+			                    
+	                   		</div>
+	                   	</div> 
+	                  </div>
+	                  
+				      <div class="clearfix"></div>          
 		               <div class="text-center">
 							<input type="button" value="GO_BACK" label="<?php echo $tr->translate('GO_BACK');?>" id="back" dojoType="dijit.form.Button" 
 										iconClass="dijitIconUndo" onclick="window.history.back();" />
 							<input class="button_success" type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVE_CLOSE');?>" id="save_close" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 	
+							<input class="button_success" type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVE_NEW');?>" id="save_new" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
 						</div>
 	       		</div>
        		</div>
@@ -234,22 +312,12 @@ h4.car_title {
 </div>
 
 <script type="text/javascript">
+dojo.require("dojo.data.ItemFileWriteStore");
+dojo.require("dojo.NodeList-manipulate");
+dojo.require("dojo.html");
 require(["dojo/ready"], function(ready){
 	ready(function(){
-		$(window).keydown(function(event){
-			$(":focus").each(function() {
-				if($( "#"+$(this).attr("id") ).hasClass( "dijitTextArea" )){
-				  
-				}else{
-					if(event.keyCode == 13) {
-						  event.preventDefault();
-						return false;
-					}
-				}
-			});
-		  });
-		getCommissionAgent(1);
-		getAgent();
+		getPaymentBy();
 	});
 });
 
@@ -273,218 +341,341 @@ function getAgent(){
 	   });
 }
 
-var keyindex=1;
-var urlcommissionagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'commissionpayment','action'=>'getcarbookingbyagencyedit'));?>";
-function getCommissionAgent(type=""){
-	var id = dijit.byId('agency').get('value');
-	var start_date = dijit.byId('booking_date_start').get('value');
-	var end_date = dijit.byId('booking_date_end').get('value');
-	var day = start_date.getDate();
-	if(day <= 9) {day = "0" +day;}
-	var m = start_date.getMonth()+1;
-	if(m <= 9) {m = "0" +m;}
-	var year = start_date.getFullYear();
-	start_date = year+"-"+m+"-"+day;
 
-	var day = end_date.getDate();
-	if(day <= 9) {day = "0" +day;}
-	var m = end_date.getMonth()+1;
-	if(m <= 9) {m = "0" +m;}
-	var year = end_date.getFullYear();
-	end_date = year+"-"+m+"-"+day;
-	loading();
-	payment_id = dijit.byId('payment_id').get('value');
+function calculateAllTotle(r){
+	var rowId = $('#record_row').val();
+	if(rowId==""){
+		return false;
+	}
+
+	total=dijit.byId("total_after_"+r).get("value");
+	payment_amount=dijit.byId("payment_amount"+r).get("value");
+
+	commission_fee=dijit.byId("commission_fee_"+r).get("value");
+	total_commission_fee=dijit.byId("total_commission_fee_"+r).get("value");
+	commission_fee=isNaN(commission_fee)?0:commission_fee;
+	total_commission_fee=isNaN(total_commission_fee)?0:total_commission_fee;
+	if(commission_fee < total_commission_fee){
+		alert("Paid commission can not bigger commission fee !!!");
+		dijit.byId("total_commission_fee_"+r).set("value",commission_fee);
+		dijit.byId("total_commission_fee_"+r).focus();
+		netTotal();
+		return false;
+	}
+	
+	payment_amount=isNaN(payment_amount)?0:payment_amount;
+	total_all_paid=isNaN(total_all_paid)?0:total_all_paid;
+	total_paid=isNaN(total_paid)?0:total_paid;
+	if(total<payment_amount){
+		alert("Paid can not bigger total !!!");
+		dijit.byId("payment_amount"+r).set("value",total);
+		dijit.byId("balance_"+r).set("value",Number(total)-Number(dijit.byId("payment_amount"+r).get("value")));
+		dijit.byId("payment_amount"+r).focus();
+		netTotal();
+		return false;
+	}
+	dijit.byId("balance_"+r).set("value",Number(total)-Number(payment_amount));
+	
+	netTotal();
+}
+
+function netTotal(){
+	var rowId = $('#record_row').val();
+	if(rowId==""){
+		return false;
+	}
+	var commission_fee=0;
+	var total_commission_fee=0;
+	var total_alls = 0;
+	var total_all_paid = 0;
+	var total_paid=0;
+	var balance=0;
+	var total_balance=0;
+	var rowIDArray = rowId.split(',');
+		for(var n = 0; n < rowIDArray.length; n++) {
+			total_alls+= parseFloat(dijit.byId('all_total_'+rowIDArray[n]).get('value'));
+			commission_fee+= parseFloat(dijit.byId('gency_fee_'+rowIDArray[n]).get('value'));
+			
+	/*		total_commission_fee+= parseFloat(dijit.byId('total_commission_fee_'+rowIDArray[n]).get('value'));
+			total_alls+= parseFloat(dijit.byId('total_'+rowIDArray[n]).get('value'));
+			total_all_paid+= parseFloat(dijit.byId('total_after_'+rowIDArray[n]).get('value'));
+			total_paid+= parseFloat(dijit.byId('payment_amount'+rowIDArray[n]).get('value'));
+			balance+= parseFloat(dijit.byId('balance_'+rowIDArray[n]).get('value'));
+	*/
+		}
+	dijit.byId('total_alls').attr('value',parseFloat(total_alls).toFixed(2));
+	dijit.byId('total_commission_fee').attr('value',parseFloat(commission_fee).toFixed(2));
+/*
+	dijit.byId('total_paid_commission').attr('value',parseFloat(total_commission_fee).toFixed(2));
+	dijit.byId('total_alls').attr('value',parseFloat(total_alls).toFixed(2));
+	dijit.byId('total_all_paid').attr('value',parseFloat(total_all_paid).toFixed(2));
+	dijit.byId('total_paid').attr('value',parseFloat(total_paid).toFixed(2));
+	dijit.byId('balance').attr('value',parseFloat(balance).toFixed(2));
+	dijit.byId('all_balance').attr('value',parseFloat(total_all_paid).toFixed(2));
+*/
+}
+
+function deleteRecord(index) {
+	var identity = $('#record_row').val();
+	var arrays = identity.split(',');
+	for(var i=0;i<arrays.length;i++) {
+		if(arrays[i] == index) arrays.splice(i,1);
+	}
+	var strings = arrays.join(',');
+	$('#record_row').val(strings);
+	$("#row_capital"+index).remove();
+	
+	deleteRecordId(index);
+	getAgencyPaid();
+	netTotal();
+}
+
+function deleteRecordId(index) {
+	var identity = $('#row_id').val();
+	var arrays = identity.split(',');
+	var ind=dijit.byId("carbooking_id"+index).get("value");
+	//alert(ind);
+	for(var i=0;i<arrays.length;i++) {
+		if(arrays[i] == ind) arrays.splice(i,1);
+	}
+	var strings = arrays.join(',');
+	//alert(strings);
+	$('#row_id').val(strings);
+}
+
+function getPaymentBy(){
+	payment_by=dijit.byId("payment_by").get("value");
+	if(payment_by==1){
+		dijit.byId("agency").attr("readOnly",true); 
+		dijit.byId("invoice").attr("readOnly",false); 
+		getAllAgentcyPayment(1);
+	}else{
+		getAllAgentcyPayment(2);
+		dijit.byId("agency").attr("readOnly",false); 
+		dijit.byId("invoice").attr("readOnly",true); 
+	}
+}
+
+url_getagentcy = '<?php echo $this->url(array('module'=>'bookings','controller'=>'agentcypayment','action'=>'get-agentcy-payments'));?>';
+r=0;
+function getAllAgentcyPayment(type){
+	dojo.query("#showrecord").append('');
+	if(type==1){
+		agency_id  = dijit.byId('invoice').get('value');
+	}else{
+		agency_id  = dijit.byId('agency').get('value');
+	}
+	if(agency_id==0 || agency_id==''){
+		return false;
+	}
+	fund_title=0;
+	temp='';
+	tmp='<table id="t_amountmoneytype" width="100%" style=" margin-top: 20px; border-collapse: collapse;border:1px solid #bdbdbd;" border="" >';
+	tmp+='<tr  style="background:#eee;border:1px solid #bdbdbd;  font-size: 12px; height: 40px;font-weight: bold; margin-bottom: 10px;text-align: center;" id="head_title" class="head-title"></tr>';
+	tmp+='</table>';
+	dojo.query("#showrecord").append(tmp);
 	dojo.xhrPost({
-	    url: urlcommissionagent,
+		url: url_getagentcy,
+		content:{
+			'agency_id':agency_id,
+			'type':type
+		},
+		handleAs:"json",
+		load: function(data){
+			//alert(data);
+			dijit.byId('record_row').attr('value','');
+			dijit.byId('row_id').attr('value','');
+			if(data==''){
+				thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
+				thead+='<th><?php echo $tr->translate("NUM");?></th>';
+				thead+='<th nowrap><?php echo $tr->translate("BOOKING_NO");?></th>';
+				thead+='<th ><?php echo $tr->translate("DELIVERY_DATE");?></th>';
+				thead+='<th nowrap><?php echo $tr->translate("DELIVERY_TIME");?></th>';
+				thead+='<th nowrap><?php echo $tr->translate("CUSTOMER_NAME");?></th>';
+				thead+='<th><?php echo $tr->translate("All Total");?></th>';
+				thead+='<th><?php echo $tr->translate("Commission");?></th>';
+				thead+='<th><?php echo $tr->translate("Company Price");?></th>';
+				thead+='<th><?php echo $tr->translate("PAID");?></th>';
+				thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
+				thead+='<th><?php echo $tr->translate("OTHER");?></th>';
+				thead+='<th><?php echo $tr->translate("STATUS");?></th>';
+				fund_title=1;
+				dojo.query("#head_title").append(thead);
+			}
+			agency_total=0;
+			owner_total=0;
+			label='';
+			for(i=0;i<data.length;i++){  
+				r++;
+				if(fund_title!=1){
+					thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
+					thead+='<th><?php echo $tr->translate("NUM");?></th>';
+					thead+='<th nowrap><?php echo $tr->translate("BOOKING_NO");?></th>';
+					thead+='<th ><?php echo $tr->translate("DELIVERY_DATE");?></th>';
+					thead+='<th nowrap><?php echo $tr->translate("DELIVERY_TIME");?></th>';
+					thead+='<th nowrap><?php echo $tr->translate("CUSTOMER_NAME");?></th>';
+					thead+='<th><?php echo $tr->translate("All Total");?></th>';
+					thead+='<th><?php echo $tr->translate("Commission");?></th>';
+					thead+='<th><?php echo $tr->translate("Company Price");?></th>';
+					thead+='<th><?php echo $tr->translate("PAID");?></th>';
+					thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
+					thead+='<th><?php echo $tr->translate("OTHER");?></th>';
+					thead+='<th><?php echo $tr->translate("STATUS");?></th>';
+					fund_title=1;
+					dijit.byId("agency_old").attr("value",data[i].agency_id); 
+					dojo.query("#head_title").append(thead);
+				}
+				if(data[i].paid_status==1){
+					owner_total=data[i].paid_after;
+				}else{
+					owner_total=0;
+				}
+				if(data[i].paid_status==2){
+					agency_total=data[i].paid_after;
+				}else{
+					agency_total=0;
+				}
+
+				if(data[i].paid_after >0 && data[i].balance_after >0){
+					 label=' / ';
+				}else{
+					label='';
+				}
+				temp='<td><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+				temp+='<td >'+r+'</td>';
+				temp+='<td  aling="left" >&nbsp'+data[i].booking_no+'<input type="hidden"  value="'+data[i].id+'"   name="carbooking_id'+r+'" id="carbooking_id'+r+'" dojoType="dijit.form.TextBox" /></td>';
+				temp+='<td  aling="left" >&nbsp'+data[i].date_delivey+'<input type="hidden"  value="'+data[i].customer_id+'"   name="customer_id_'+r+'" id="customer_id_'+r+'" dojoType="dijit.form.TextBox" /></td>';
+				temp+='<td  aling="left" >&nbsp'+data[i].time+'</td>';
+				temp+='<td  aling="left" >'+data[i].last_name+'</td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].total_after+'"    name="all_total_'+r+'" id="all_total_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].commision_fee_after+'"    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
+
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].paid_after+'"    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
+				temp+='<td><input type="text"  value=""   name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" /></td>';
+				temp+='<td nowrap style="text-align:left;">&nbsp'+data[i].status_paid+label+data[i].status_balance+'<input type="hidden"  value="'+data[i].paid_status+'"   name="paid_status_'+r+'" id="paid_status_'+r+'" dojoType="dijit.form.TextBox" />';
+				temp+='<input type="hidden"  value="'+data[i].balance_status+'"   name="balance_status_'+r+'" id="balance_status_'+r+'" dojoType="dijit.form.TextBox" /> </td>';
+				 
+				tmp='<tr style="border:1px solid #bdbdbd; font-size:12px;height:37px; !important;text-align:center;background:#ffff" id="row_capital'+r+'" >'
+				tmp+="</tr>";
+				dojo.query("#t_amountmoneytype").append(tmp);
+				dojo.html.set(dojo.byId("row_capital"+r),temp, {
+					parseContent: true,
+				});
+				if(dijit.byId("record_row").get('value')!="") {
+					var ids = dijit.byId("record_row").get("value");
+					dijit.byId("record_row").attr('value',ids+','+r);
+				}
+				else { dijit.byId("record_row").attr('value',r);
+				}
+
+				if(dijit.byId("row_id").get('value')!="") {
+					var old_id = dijit.byId("row_id").get("value");
+					dijit.byId("row_id").attr('value',old_id+','+data[i].id);
+				}
+				else { dijit.byId("row_id").attr('value',data[i].id);
+				}
+				//calculateAllTotle(r);
+			}
+
+			netTotal();
+			getAgencyPaid();
+		},error: function(err) {
+		}
+	});
+	
+}
+
+urlagent_paid = '<?php echo $this->url(array('module'=>'bookings','controller'=>'agentcypayment','action'=>'get-agentcy-paid'));?>';
+function getAgencyPaid(){
+	var type=dijit.byId("payment_by").get("value");
+	if(type==1){
+		var id = dijit.byId('invoice').get('value');
+	}else{
+		var id = dijit.byId('agency').get('value');
+	}
+	var identity = $('#row_id').val();
+	if(identity==''){
+		dijit.byId("total_commission_fee").attr("value",0);
+		dijit.byId("total_alls").attr("value",0);
+		dijit.byId("agency_paid").attr("value",0);
+		dijit.byId("agency_balance").attr("value",0);
+		dijit.byId("total_alls").attr("value",0);
+		dijit.byId("paid_agen").attr("value",0);
+		dijit.byId("total_agen_recived").attr("value",0);
+	}
+	dojo.xhrPost({
+	    url: urlagent_paid,
 	    content:{
-	     'agency':id,'keyindex':keyindex,'start_date':start_date,'end_date':end_date,'payment_id':payment_id
+	     'agency':id,
+	     'row_id':identity,
+	     'type':type
 	     },
 	    handleAs:"json",
 	    load: function(data) {
-	    	keyindex=data.keyindex;
-
-	    	if(type==1){
-				$("#identity").val(data.identitycheck);
-			}
-			
-	    	$("#old_identity").val(data.identity);
-	    	dojo.html.set(dojo.byId("table_row"),data.stringrow , {
-			     parseContent: true,
-				});
-	    	
-			document.getElementsByClassName("overlay")[0].style.display="none";
+		   if(data){
+			total_agency=Number(data.agency_paid)+Number(data.agency_balance);
+	    	dijit.byId("agency_paid").attr("value",data.agency_paid);
+			dijit.byId("agency_balance").attr("value",data.agency_balance);
+			dijit.byId("total_agen_recived").attr("value",total_agency);
+			//dijit.byId("paid_agen").attr("value",total_agency);
+			if(dijit.byId("total_commission_fee").get("value") < dijit.byId("total_agen_recived").get("value")){
+				 $('#lb_name_agency').text("<?php echo $tr->translate("Agency Paid");?>");
+				 dijit.byId("paid_agen").attr("value",Number(dijit.byId("total_agen_recived").get("value"))-Number(dijit.byId("total_commission_fee").get("value")));
+				 dijit.byId("paid_type").attr("value",1);
+		    }else{
+		    	$('#lb_name_agency').text("<?php echo $tr->translate("Payment To Agency");?>");
+		    	dijit.byId("paid_agen").attr("value",Number(dijit.byId("total_commission_fee").get("value"))-Number(dijit.byId("total_agen_recived").get("value")));
+		    	dijit.byId("paid_type").attr("value",2);
+		    }
+		   } 
 	    },
 	    error: function(err) {
-	     alert(err);
+	    // alert(err);
 	    }
 	   });
 }
-function CheckAllTotal(index){
-	var total = 0;
-	var descriptionr="";
-	var old_identity = $("#old_identity").val();
-	if(index==0){
-			if($('#check_all').is(":checked")){
-				$('.checkbox').each(function() { //loop through each checkbox
-		            this.checked = true;  
-				});
-				$("#identity").val(old_identity);
-			}else{
-				$('.checkbox').each(function() { //loop through each checkbox
-		            this.checked = false;  
-				});
-				ResetPayment();
-				$("#identity").val('');
-			}
+
+function calCulatePrice(){
+	var total_comission=dijit.byId("total_commission_fee").get("value");
+	var total_age_re=dijit.byId("total_agen_recived").get("value");
+	var rs=0;
+	if(total_comission<total_age_re){
+		rs=Number(total_age_re)-Number(total_comission);
+		dijit.byId("paid_agen").attr("value",rs);
 	}else{
-		 $('#check_all').attr('checked', false); // Unchecks it
-		var a = $("input:checked").val();
-		 var identity = [];
-	     $(':checkbox:checked').each(function(i){
-	    	 identity[i] = $(this).val();
-	     });
-	    
-	     $("#identity").val(identity);
-	     var newIdentity = $("#identity").val();
+		rs=Number(total_comission)-Number(total_age_re);
+		dijit.byId("paid_agen").attr("value",rs);
+	}
+}
 
-			if(old_identity == newIdentity ){
-				$('#check_all').attr('checked', true); // checks it
-			}
-		if($('#mfdid_'+index).is(":checked")){
-			
-		}else{
-			dijit.byId('payment_amount'+index).set('value',0);
-			calculateAmountCheckByKeyup();
-			ResetPayment();
-		}
-	}
-	calculateAmountCheck();
-	calBalance();
-}
-function ResetPayment(){
-	var old_identity = $("#old_identity").val();
-	var rowIDArray = old_identity.split(',');
-	for(var n = 0; n < rowIDArray.length; n++) {
-		dijit.byId('payment_amount'+rowIDArray[n]).set('value',0);
-		amountrow = parseFloat(dijit.byId('commision_fee'+rowIDArray[n]).get('value'));
-		
-		amountrow = parseFloat(dijit.byId('remain'+rowIDArray[n]).set('value',amountrow.toFixed(2)));
-	}
-}
-function calBalance() {
-	var balance=0;
-	var rowId = $('#old_identity').val();
-	if(rowId==""){
+var urldriver_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getagencyinfo'));?>";
+function getDriverInfoByid(){
+	var id = dijit.byId('agency').get('value');
+	alert(id);
+	if(id==''){
 		return false;
 	}
-	var rowIDArray = rowId.split(',');
-	for(var n = 0; n < rowIDArray.length; n++) {
-		//balance+= parseFloat(dijit.byId('due_val'+rowIDArray[n]).get('value'));
-		if($('#mfdid_'+rowIDArray[n]).is(":checked")){
-			amountrow = parseFloat(dijit.byId('commision_fee'+rowIDArray[n]).get('value'));
-			balance = balance + parseFloat(amountrow);
-		}
-	}
-	dijit.byId('balance').attr('value',balance.toFixed(2));
-
-}
-function checkAmout(){
-	amount_paid = parseFloat(dijit.byId('amount').get('value'));
-	balance = parseFloat(dijit.byId('balance').get('value'));
-	if(amount_paid>=balance){
-		dijit.byId('amount').set('value',balance.toFixed(2))
-	}
-	calculateAmountCheck();
-}
-function calculateAmountCheck(){
-	ResetPayment();
-	amount_paid = parseFloat(dijit.byId('amount').get('value'));
-	var rowId = $('#identity').val();
-	if(rowId==""){
-		return false;
-	}
-	var payment=0;
-	var amount = 0;
-	var due = 0;
-	var amountrow = 0;
-	var rowIDArray = rowId.split(',');
-	if(amount_paid>0){
-		var paid=0;
-		for(var n = 0; n < rowIDArray.length; n++) {
-			
-			amountrow = parseFloat(dijit.byId('commision_fee'+rowIDArray[n]).get('value'));
-
-			amount_paid = amount_paid - parseFloat(amountrow);
-			
-			if(amount_paid>=0){
-				payment+= amountrow;
-				dijit.byId('payment_amount'+rowIDArray[n]).set('value',amountrow.toFixed(2));
-				dijit.byId('remain'+rowIDArray[n]).set('value',0);
-				due+= 0;
-			}else{
-				remain = Math.abs(amount_paid);
-				paid = parseFloat(dijit.byId('commision_fee'+rowIDArray[n]).get('value')) - parseFloat(remain);
-				dijit.byId('payment_amount'+rowIDArray[n]).set('value',paid.toFixed(2));
-				dijit.byId('remain'+rowIDArray[n]).set('value',remain.toFixed(2));
-				payment+= paid;
-				due+= remain;
-				break;
-			}
-			
-		}
-	}
-	calculateLastTotal();
-}
-function calculateLastTotal(){
-	var rowId = $('#identity').val();
-	if(rowId==""){
-		return false;
-	}
-	var payment=0;
-	var due = 0;
-	var rowIDArray = rowId.split(',');
-	for(var n = 0; n < rowIDArray.length; n++) {
-		payment+= parseFloat(dijit.byId('payment_amount'+rowIDArray[n]).get('value'));
-		due+= parseFloat(dijit.byId('remain'+rowIDArray[n]).get('value'));
-	}
-	dijit.byId('total_paid').attr('value',payment.toFixed(2));
-	dijit.byId('total_due').attr('value',due.toFixed(2));
-}
-function calculateamount(index){
-	var due = dijit.byId('commision_fee'+index).get('value');
-	var payment = dijit.byId('payment_amount'+index).get('value');
-	var paid =0;
-	var subtotal=0;
-	paid = parseFloat(payment);
-	subtotal= parseFloat(due);
-	
-	if(paid > subtotal){
-		dijit.byId('payment_amount'+index).set('value',subtotal.toFixed(2));
-		dijit.byId('remain'+index).set('value',0);
-	}else{
-		dijit.byId('remain'+index).set('value',(subtotal-paid).toFixed(2));
-	}
-	calBalance();
-	calculateAmountCheckByKeyup();
-}
-function calculateAmountCheckByKeyup(){
-	var rowId = $('#identity').val();
-	if(rowId==""){
-		return false;
-	}
-	var payment=0;
-	var amount = 0;
-	var due = 0;
-	var amountrow = 0;
-	var rowIDArray = rowId.split(',');
-		for(var n = 0; n < rowIDArray.length; n++) {
-			payment+= parseFloat(dijit.byId('payment_amount'+rowIDArray[n]).get('value'));
-			due+= parseFloat(dijit.byId('remain'+rowIDArray[n]).get('value'));
-		}
-	amount = parseFloat(payment).toFixed(2);
-	dijit.byId('total_paid').attr('value',payment.toFixed(2));
-	dijit.byId('total_due').attr('value',due.toFixed(2));
-	dijit.byId('amount').attr('value',parseFloat(amount).toFixed(2));
+	//loading();
+	dojo.xhrPost({
+	    url: urldriver_car,
+	    content:{
+	     'id':id,
+	     },
+	    handleAs:"json",
+	    load: function(data) {
+		    alert(data);
+	    	document.getElementById('driver_html').innerHTML =data.agency;
+	    	if(dijit.byId('agency').get('value')==data.agency_id ){
+	    		document.getElementsByClassName("overlay")[0].style.display="none";
+	    	}
+	    	//dijit.byId('driver').set('value',data.driver_id);
+	    },
+	    error: function(err) {
+	     //alert(err);
+	    }
+   });
 }
 
 </script>

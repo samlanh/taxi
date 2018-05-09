@@ -11,10 +11,12 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 	}
 	 
 	function getAllAgencyPayment($search){
+		$tr = Application_Form_FrmLanguages::getCurrentlanguage();
 		$db = $this->getAdapter();
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$lang = $_db->getCurrentLang();
 		$array = array(1=>"name_en",2=>"name_kh");
+		$print=$tr->translate("PRINT");
 		$sql=" SELECT d.id,d.`payment_no`,
 			   (SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_agencyclear_payment_detail` AS pd WHERE pd.clearagency_id=d.id LIMIT 1)  ) AS booking_nos,
 		       (SELECT CONCAT(n.`last_name`,'(',n.`customer_code`,')') 
@@ -22,7 +24,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
  	           d.`payment_date`, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
 		       d.`total_commission`,d.`total_agen_recived`,d.`paid_agen` ,
 		       (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=13 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
-		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,d.`status`
+		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,d.`status`,'$print'
 		      FROM `ldc_agencyclear_payment` AS d  ";
 		$where =' ';
 		$from_date =(empty($search['start_date']))? '1': "d.`payment_date` >= '".$search['start_date']." 00:00:00'";
@@ -130,6 +132,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 						'all_total'		=>$_data['all_total_'.$i],
 						'paid_status'	=>$_data['paid_status_'.$i],
 						'balance_satatus'=>$_data['balance_status_'.$i],
+						'note'			=>$_data['note_'.$i],
 						'is_clear'		=>1,
 						'user_id'      	=> $this->getUserId(),
 						'status'		=>1,
@@ -314,7 +317,14 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
         	  cb.paid_status,cb.balance_status,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.paid_status AND v.type=18 AND cb.paid_after!=0 LIMIT 1),'') AS status_paid,
         	  COALESCE((SELECT ".$array[$lang]." FROM tb_view AS v WHERE v.key_code=cb.balance_status AND v.type=19 AND cb.balance_after!=0 LIMIT 1),'') AS status_balance,
-        	  cb.`is_paid_commission`,cb.`agency_id`
+        	  cb.`is_paid_commission`,cb.`agency_id`,
+        	  
+        	  cb.booking_no,DATE_FORMAT(cb.`delivey_date`, '%d-%b-%Y') AS date_delivey,TIME_FORMAT(cb.`delivey_time`,'%H:%i')AS `time`,
+        	  (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`from_location`) AS from_loc ,
+        	  (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`to_location`) AS to_loc ,
+        	  (SELECT c.`title` FROM `ldc_vechicletye` AS c WHERE c.id=cb.`vehicletype_id`) AS car_type ,
+        	  cb.`paid`,cb.`driver_fee`      
+        	  
 			FROM  ldc_carbooking AS cb,ldc_customer AS c
 			WHERE cb.customer_id=c.id 
 			AND cb.is_paid_commission=0";
@@ -324,7 +334,8 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 		}else{
 			$and=" AND cb.agency_id=".$id;
 		}
-		return $db->fetchAll($sql.$and);
+		$order=" ORDER BY cb.`booking_no`,cb.`delivey_date` ASC ";
+		return $db->fetchAll($sql.$and.$order);
 	}
 	
 	function getAgencyPayment($agency_id,$row_id,$type){
