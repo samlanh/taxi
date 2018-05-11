@@ -54,11 +54,11 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 			$data = $this->getRequest()->getPost();
 			$booking_id=$db->addDriverPayment($data);
 			if(isset($data['save_new'])){
-				$this->_redirect("/bookings/driverpayments/add");
+				Application_Form_FrmMessage::redirectUrl("/bookings/driverpayments/add");
 			}else{
-				$this->_redirect("/bookings/driverpayments");
+				Application_Form_FrmMessage::redirectUrl("/bookings/driverpayments");
 			}
-// 			Application_Form_FrmMessage::redirectUrl("/booking/carrentalbooking/add");
+			Application_Form_FrmMessage::redirectUrl("/bookings/driverpayments");
 		}
 		$frm = new Bookings_Form_FrmDriverPaymentNew();
 		$form = $frm->FormBooking();
@@ -124,7 +124,7 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 		if($this->getRequest()->isPost()){
 			$data=$this->getRequest()->getPost();
 			$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
-			$gty= $db->getAllAgentcyBooking($data['driver_id'],$data['type']);
+			$gty= $db->getAllAgentcyBooking($data['driver_id'],$data['type'],$data);
 			print_r(Zend_Json::encode($gty));
 			exit();
 		}

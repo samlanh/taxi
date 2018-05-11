@@ -356,5 +356,29 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 		return $db->fetchRow($sql.$and);
 	}
 	
+	function getAgetncyClearByID($id){
+		$db = $this->getAdapter();
+		$sql="SELECT * FROM ldc_agencyclear_payment WHERE id=$id LIMIT 1";
+		return $db->fetchRow($sql);
+	}
+	
+	function getAgetncyClearDetail($id){
+		$db = $this->getAdapter();
+		$sql=" SELECT apd.`all_total`,apd.`gency_fee`,apd.`conpany_price`,apd.paid,apd.`balance`,
+            apd.`note`,apd.`paid_status`,apd.`balance_satatus`,
+       
+            cb.booking_no,DATE_FORMAT(cb.`delivey_date`, '%d-%b-%Y') AS date_delivey,TIME_FORMAT(cb.`delivey_time`,'%H:%i')AS `time`,
+            (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`from_location`) AS from_loc ,
+            (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`to_location`) AS to_loc ,
+            (SELECT c.`title` FROM `ldc_vechicletye` AS c WHERE c.id=cb.`vehicletype_id`) AS car_type 
+      
+	      FROM `ldc_agencyclear_payment_detail`  AS apd,
+	      `ldc_agencyclear_payment` AS ap,`ldc_carbooking` AS cb
+	      WHERE  ap.`id`=apd.`clearagency_id`
+	      AND cb.`id`=apd.`booking_id`
+	      AND apd.clearagency_id=$id ";
+		return $db->fetchAll($sql);
+	}
+	
 }
 ?>

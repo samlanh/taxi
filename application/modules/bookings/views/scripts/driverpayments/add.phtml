@@ -184,32 +184,34 @@ td {
 	       			</div>
 	       		</div>
 	       		<div class="x_content">
-	       		<!-- 
+	       		
+
 	       			<div class="col-md-12 col-sm-12 col-xs-12 bg" style="background: #dbe8f9;    padding: 10px;    margin: 10px 0;    border: solid 1px #ccc;">
 		                  	
 		                  	 <div class="col-md-12 col-sm-12 col-xs-12">
 			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('DATE')?></label>
 			                	<div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('booking_date_start');?>
+			                    	<?php echo $frm->getElement('fil_start_date');?>
 			                   </div>
-			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('TO')?></label>
+			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('TO_DATE')?></label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('booking_date_end');?>
+			                    	<?php echo $frm->getElement('fil_end_date');?>
 			                   </div>
 			                    <div class="col-md-2 col-sm-2 col-xs-2">
 			                    <input type="button" value="go" label="<?php echo $tr->translate('GO');?>" id="go_search" dojoType="dijit.form.Button" 
-												iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="getCommissionAgent();" />
+												iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="getPaymentBy();" />
 			                    </div>
 		                   </div>
-		                   
+		                   <!-- 
 		                   <div class="col-md-12 col-sm-12 col-xs-12">
 			                   	<div class="col-md-2 col-sm-2 col-xs-2">
 			                   		<input type="checkbox" class="checkbox"  name="check_all" id="check_all" value="all" OnChange="CheckAllTotal(0);" style=" height: initial; display: inline-block;"  />&nbsp;
 									<span style="vertical-align: top;"><?php echo $tr->translate('ALL');?></span>
 			                   	</div>
 		                   </div>
-		                  
-	             	   </div>  -->
+		                   -->
+	             	   </div>  
+	             	   
 		                 
 						<table id="table_parent" class="table" style="margin: 0 auto; width: 100%;  " >
 							<thead>
@@ -494,6 +496,8 @@ function getPaymentBy(){
 url_getagentcy = '<?php echo $this->url(array('module'=>'bookings','controller'=>'driverpayments','action'=>'get-driver-payments'));?>';
 r=0;
 function getAllAgentcyPayment(type){
+	var fil_start_date=dijit.byId("fil_start_date").get("value");
+	var fil_end_date=dijit.byId("fil_end_date").get("value");
 	dojo.query("#showrecord").append('');
 	if(type==1){
 		driver  = dijit.byId('invoice').get('value');
@@ -503,6 +507,7 @@ function getAllAgentcyPayment(type){
 	if(driver==0 || driver==''){
 		return false;
 	}
+     
 	fund_title=0;
 	temp='';
 	tmp='<table id="t_amountmoneytype" width="100%" style=" margin-top: 20px; border-collapse: collapse;border:1px solid #bdbdbd;" border="" >';
@@ -513,10 +518,13 @@ function getAllAgentcyPayment(type){
 		url: url_getagentcy,
 		content:{
 			'driver_id':driver,
-			'type':type
+			'type':type,
+			'fil_start_date':fil_start_date,
+			'fil_end_date':fil_end_date
 		},
 		handleAs:"json",
 		load: function(data){
+			
 			//alert(data);
 			dijit.byId('record_row').attr('value','');
 			dijit.byId('row_id').attr('value','');
@@ -589,12 +597,12 @@ function getAllAgentcyPayment(type){
 				temp+='<td  >'+data[i].from_loc+'</td>';
 				temp+='<td  >'+data[i].to_loc+'</td>';
 				temp+='<td nowrap>'+data[i].car_type+'</td>';
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].total_after+'"    name="all_total_'+r+'" id="all_total_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].driver_fee_after+'"    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
-				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"  value="'+data[i].total_after+'"    name="all_total_'+r+'" id="all_total_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].driver_fee_after+'"    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" /></td>';
+				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
 
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].paid_after+'"    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
-				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].paid_after+'"    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
 				temp+='<td nowrap style="text-align:left;">&nbsp<input type="hidden"  value="'+data[i].paid_status+'"   name="paid_status_'+r+'" id="paid_status_'+r+'" dojoType="dijit.form.TextBox" />';//'+data[i].status_paid+label+data[i].status_balance+'
 				temp+='<input type="text"  value=""   name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" /><input type="hidden"  value="'+data[i].balance_status+'"   name="balance_status_'+r+'" id="balance_status_'+r+'" dojoType="dijit.form.TextBox" /> </td>';
 				 
@@ -696,4 +704,6 @@ function calCulatePrice(){
 		dijit.byId("paid_agen").attr("value",rs);
 	}
 }
+
+
 </script>

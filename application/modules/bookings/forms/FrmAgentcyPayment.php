@@ -269,16 +269,34 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$status->setMultiOptions($opt_status);
 		
 		if (!empty($data)){
+			print_r($data);
+			
+			
+// 			$_reciept_no->setValue($data['payment_no']);
+// 			$agency->setValue($data['agency_id']);
+// 			$payment_date->setValue(date("Y-m-d",strtotime($data['payment_date'])));
+// 			$remark->setValue($data['note']);
+// 			$_amount->setValue($data['amount']);
+// 			$payment_method->setValue($data['payment_method']);
+// // 			$total_payment->setValue($data['booking_no']);
+// 			$balance->setValue($data['balance']);
+// 			$total_paid->setValue($data['paid']);
+// 			$total_due->setValue($data['total_due']);
+			
+			$payment_by->setValue($data['payment_method']);
 			$_reciept_no->setValue($data['payment_no']);
+		//	$invoice->setValue($data['payment_no']);
 			$agency->setValue($data['agency_id']);
-			$payment_date->setValue(date("Y-m-d",strtotime($data['payment_date'])));
+			$payment_date->setValue($data['payment_date']);
+			$payment_method->setValue($data['payment_type']);
 			$remark->setValue($data['note']);
-			$_amount->setValue($data['amount']);
-			$payment_method->setValue($data['payment_method']);
-// 			$total_payment->setValue($data['booking_no']);
-			$balance->setValue($data['balance']);
-			$total_paid->setValue($data['paid']);
-			$total_due->setValue($data['total_due']);
+			$status->setValue($data['status']);
+			
+			$total_commission->setValue($data['total_commission']);
+			$total_agen_recived->setValue($data['total_agen_recived']);
+			$paid_agen->setValue($data['paid_agen']);
+			$total_alls->setValue($data['total_alls']);
+				
 			
 		}
 		

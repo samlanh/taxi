@@ -597,12 +597,12 @@ function OldgetAllAgentcyPayment(){
 				temp+='<td  ><?php echo $rs['from_loc']?> </td>';
 				temp+='<td  ><?php echo $rs['to_loc']?> </td>';
 				temp+='<td nowrap><?php echo $rs['car_type']?> </td>';
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value=""    name="all_total_'+r+'" id="all_total_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value=""    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
-				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value=""    name="all_total_'+r+'" id="all_total_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value=""    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
+				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
 
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value=" "    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
-				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value=" "    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
 				temp+='<td nowrap style="text-align:left;">&nbsp<input type="hidden"  value=" "   name="paid_status_'+r+'" id="paid_status_'+r+'" dojoType="dijit.form.TextBox" />';//'+data[i].status_paid+label+data[i].status_balance+'
 				temp+='<input type="text"  value=""   name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" /><input type="hidden"  value=" "   name="balance_status_'+r+'" id="balance_status_'+r+'" dojoType="dijit.form.TextBox" /> </td>';
 				 

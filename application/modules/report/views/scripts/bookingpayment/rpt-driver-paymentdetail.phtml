@@ -97,12 +97,12 @@ span.label_value {
 							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0"   >
 								<tr class="header" style="background: #e4e4e4">
 									<td class="row-value" style="width: 3%;"><?php echo $tr->translate("NUM");?></td>
-									<td class="row-value"><?php echo $tr->translate("BOOKING_NO");?></td>
+									 
 									<td class="row-value"><?php echo $tr->translate("DELIVERY_DATE");?></td>
 									<td class="row-value one-td"><?php echo $tr->translate("FROM_LOCATION");?></td>
 									<td class="row-value"><?php echo $tr->translate("TO_LOCATION");?></td>
 									<td class="row-value"><?php echo $tr->translate("Driver Fee");?> </td>
-									<td class="row-value"><?php echo $tr->translate("ប្រាក់នៅអ្នកបើកបរ");?> </td>
+									<td class="row-value"><?php echo $tr->translate("Driver Recieve");?> </td>
 									<td class="row-value one-td"><?php echo $tr->translate("REMARK");?> </td>​
 								</tr>
 								<?php $i=0; 
@@ -120,7 +120,7 @@ span.label_value {
 								?>
 								<tr>
 									<td  class="row-td" align="center" >&nbsp;<?php echo $i;?></td>
-									<td  class="row-td" >&nbsp;<?php echo $com['booking_no'];?></td>
+									 
 									<td  class="row-td" >&nbsp;<?php echo date("d-M-Y",strtotime($com['delivey_date']));?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['from_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
@@ -134,13 +134,11 @@ span.label_value {
 									<td colspan="2" align="right"><span class="label_title">Total Driver Fee&nbsp;</span></td>
 									<td  class="one-td" >&nbsp;<?php echo "$ ".number_format($total_commistion,2);?></td>
 									<td class="one-td"></td>
-									<td class="one-td"></td>
 								</tr>
 								<tr>
 									<td colspan="3">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">ប្រាក់នៅអ្នកបើកបរសរុប&nbsp;</span></td>
+									<td colspan="2" align="right"><span class="label_title">Total Driver Recieve&nbsp;</span></td>
 									<td class="one-td">&nbsp;<?php echo "$ ".number_format($total_all_a_re,2);?></td>
-									<td class="one-td"></td>
 									<td class="one-td"></td>
 								</tr>
 								<tr>
@@ -157,20 +155,20 @@ span.label_value {
 									<td colspan="2" align="right" ><span class="label_title"><?php echo $str;?>&nbsp;</span></td>
 									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($paid,2);?></td>
 									<td class="one-td"></td>
-									<td class="one-td"></td>
+									 
 								</tr>
 								<tr>
 									<td colspan="3">&nbsp;</td>
 									<td colspan="2" align="right"><span class="label_title">Balance&nbsp;</span></td>
 									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($paid-$this->commision_payment['paid_driver'],2);?></td>
 									<td class="one-td"></td>
-									<td class="one-td"></td>
+									 
 								</tr>
 								<tr>
 								    <td height="100px;"></td>
 								</tr>
 								<tr>
-				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="center"​ colspan="3" >
+				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="center"​ colspan="2" >
 				                     <?php //$session_user=new Zend_Session_Namespace('auth');
 								           //$last_name=$session_user->username;
 								           //$username = $session_user->fullname;
@@ -178,11 +176,11 @@ span.label_value {
 				                       <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
 				                   			<!--   ហត្ថលេខា និងឈ្មោះអ្នកបើកបរ<br/> --> 
 				                   			<hr>
-				                       		​​Driver's Signature and full name <br/>
-				                       <?php echo 'កាលបរិច្ឆេទ Date: ថ្ងៃទី......ខែ.........ឆ្នាំ............'?>
+				                       		​​Driver's Signature<br/>
+				                       <?php  echo $tr->translate("DATE").':.......................................'?>
 				                       
 				                   </td>
-				                   <td colspan="2"></td>
+				                   <td colspan="3"></td>
 				                   <td  style="padding-left: 100px;line-height: normal;" align="center"  colspan="3">
 				                     <?php $session_user=new Zend_Session_Namespace('auth');
 								           //$last_name=$session_user->username;
@@ -191,8 +189,8 @@ span.label_value {
 				                        <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
 				                       		<!--  ហត្ថលេខា និងឈ្មោះអ្នកគិតលុយ<br/> --> 
 				                       		<hr>
-				                       		Accounter's Signature and full name <br/>
-				                       <?php echo 'កាលបរិច្ឆេទ Date: ថ្ងៃទី......ខែ.........ឆ្នាំ............'?>
+				                       		Accounter's Signature<br/>
+				                       <?php  echo $tr->translate("DATE").':.......................................'?>
 				                   </td>
 				                </tr>
 								

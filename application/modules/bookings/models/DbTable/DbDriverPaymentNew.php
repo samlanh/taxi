@@ -300,7 +300,8 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 		return $db->fetchAll($sql);
 	}
 	
-	function getAllAgentcyBooking($id,$type){
+	function getAllAgentcyBooking($id,$type,$data){
+		//return $data['fil_start_date'].'aaa';
 		$db=$this->getAdapter();
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$lang = $_db->getCurrentLang();
@@ -322,11 +323,18 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 			  WHERE cb.customer_id=c.id 
 			  AND cb.is_paid_to_driver=0 AND cb.`status_working`=1 AND cb.status =1 ";
 		$and='';
+		
 		if($type==1){
 			$and=" AND cb.id=".$id;
 		}else{
 			$and=" AND cb.driver_id=".$id;
+// 			if(!empty($data)){
+// 				$from_date =(empty($data['fil_start_date']))? '1': " cb.`delivey_date` >= '".$data['fil_start_date']." 00:00:00'";
+// 				$to_date = (empty($data['fil_end_date']))? '1': " cb.`delivey_date` <= '".$data['fil_end_date']." 23:59:59'";
+// 				$and.="  AND".$from_date." AND ".$to_date;;
+// 			}
 		}
+		
 		$order=" ORDER BY cb.`booking_no`,cb.`delivey_date` ASC ";
 		return $db->fetchAll($sql.$and.$order);
 	}

@@ -284,12 +284,12 @@ td {
 	                    	<div class="col-md-12 col-sm-12 col-xs-12">
 	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php //echo $tr->translate('status')?>
 			                   </label>
-			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display:none">
+			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display:">
 			                    	<?php //echo $frm->getElement('paid_type');?>
 			                    	
 			                    	<select name="paid_type" id="paid_type"  class="fullside" dojoType="dijit.form.FilteringSelect"  >
-										<option value="1"><?php echo $tr->translate('Agency Paid')?></option>
-										<option value="2"><?php echo $tr->translate('Payment To Agency')?></option>
+										<option value="1" <?php if($this->row['paid_type']==1) echo "selected='selected'";?>><?php echo $tr->translate('Agency Paid')?></option>
+										<option value="2" <?php if($this->row['paid_type']==2) echo "selected='selected'";?>><?php echo $tr->translate('Payment To Agency')?></option>
 									</select>
 			                   </div>
 			                    
@@ -318,6 +318,7 @@ dojo.require("dojo.html");
 require(["dojo/ready"], function(ready){
 	ready(function(){
 		getPaymentBy();
+		OldgetAllAgentcyPayment();
 	});
 });
 
@@ -584,7 +585,81 @@ function getAllAgentcyPayment(type){
 		},error: function(err) {
 		}
 	});
-	
+}
+
+
+
+function OldgetAllAgentcyPayment(){
+	dojo.query("#showrecord").append('');
+	 
+	fund_title=0;
+	temp='';
+	tmp='<table id="t_amountmoneytype" width="100%" style=" margin-top: 20px; border-collapse: collapse;border:1px solid #bdbdbd;" border="" >';
+	tmp+='<tr  style="background:#eee;border:1px solid #bdbdbd;  font-size: 12px; height: 40px;font-weight: bold; margin-bottom: 10px;text-align: center;" id="head_title" class="head-title"></tr>';
+	tmp+='</table>';
+	dojo.query("#showrecord").append(tmp);
+
+	  <?php  if(!empty($this->row_detail)) foreach($this->row_detail As $rs){?>
+				r++;
+				if(fund_title!=1){
+					thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
+					thead+='<th><?php echo $tr->translate("NUM");?></th>';
+					thead+='<th nowrap><?php echo $tr->translate("BOOKING_NO");?></th>';
+					thead+='<th ><?php echo $tr->translate("DELIVERY_DATE");?></th>';
+					thead+='<th nowrap><?php echo $tr->translate("DELIVERY_TIME");?></th>';
+					thead+='<th nowrap><?php echo $tr->translate("CUSTOMER_NAME");?></th>';
+					thead+='<th><?php echo $tr->translate("All Total");?></th>';
+					thead+='<th><?php echo $tr->translate("Commission");?></th>';
+					thead+='<th><?php echo $tr->translate("Company Price");?></th>';
+					thead+='<th><?php echo $tr->translate("PAID");?></th>';
+					thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
+					thead+='<th><?php echo $tr->translate("OTHER");?></th>';
+					thead+='<th><?php echo $tr->translate("STATUS");?></th>';
+					fund_title=1;
+					dijit.byId("agency_old").attr("value",data[i].agency_id); 
+					dojo.query("#head_title").append(thead);
+				}
+			  
+				temp='<td><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+				temp+='<td >'+r+'</td>';
+				temp+='<td  aling="left" >&nbsp<input type="hidden"  value=""   name="carbooking_id'+r+'" id="carbooking_id'+r+'" dojoType="dijit.form.TextBox" /></td>';
+				temp+='<td  aling="left" >&nbsp<input type="hidden"  value=""   name="customer_id_'+r+'" id="customer_id_'+r+'" dojoType="dijit.form.TextBox" /></td>';
+				temp+='<td  aling="left" >&nbsp</td>';
+				temp+='<td  aling="left" ></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value=""    name="all_total_'+r+'" id="all_total_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value=""    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value=""    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
+
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value=""    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text" data-dojo-props="constraints:{places:0}" value="" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
+				temp+='<td><input type="text"  value=""   name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" /></td>';
+				temp+='<td nowrap style="text-align:left;">&nbsp <input type="hidden"  value=""   name="paid_status_'+r+'" id="paid_status_'+r+'" dojoType="dijit.form.TextBox" />';
+				temp+='<input type="hidden"  value=""   name="balance_status_'+r+'" id="balance_status_'+r+'" dojoType="dijit.form.TextBox" /> </td>';
+				 
+				tmp='<tr style="border:1px solid #bdbdbd; font-size:12px;height:37px; !important;text-align:center;background:#ffff" id="row_capital'+r+'" >'
+				tmp+="</tr>";
+				dojo.query("#t_amountmoneytype").append(tmp);
+				dojo.html.set(dojo.byId("row_capital"+r),temp, {
+					parseContent: true,
+				});
+				if(dijit.byId("record_row").get('value')!="") {
+					var ids = dijit.byId("record_row").get("value");
+					dijit.byId("record_row").attr('value',ids+','+r);
+				}
+				else { dijit.byId("record_row").attr('value',r);
+				}
+
+				if(dijit.byId("row_id").get('value')!="") {
+					var old_id = dijit.byId("row_id").get("value");
+					dijit.byId("row_id").attr('value',old_id+','+<?php echo $rs['id']?>);
+				}
+				else { dijit.byId("row_id").attr('value',<?php echo $rs['id']?>);
+				}
+		 
+            <?php } ?>
+			//netTotal();
+			//getAgencyPaid();
+		 
 }
 
 urlagent_paid = '<?php echo $this->url(array('module'=>'bookings','controller'=>'agentcypayment','action'=>'get-agentcy-paid'));?>';

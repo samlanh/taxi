@@ -653,7 +653,6 @@ function calCulatePrice(){
 var urldriver_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getagencyinfo'));?>";
 function getDriverInfoByid(){
 	var id = dijit.byId('agency').get('value');
-	alert(id);
 	if(id==''){
 		return false;
 	}
@@ -665,7 +664,7 @@ function getDriverInfoByid(){
 	     },
 	    handleAs:"json",
 	    load: function(data) {
-		    alert(data);
+		    
 	    	document.getElementById('driver_html').innerHTML =data.agency;
 	    	if(dijit.byId('agency').get('value')==data.agency_id ){
 	    		document.getElementsByClassName("overlay")[0].style.display="none";

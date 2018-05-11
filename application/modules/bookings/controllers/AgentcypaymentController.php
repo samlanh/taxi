@@ -68,19 +68,26 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	
 	public function editAction()
 	{
+		$id=$this->getRequest()->getParam('id');
 		$db = new Bookings_Model_DbTable_DbAgentcyPayment();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$booking_id=$db->updateCommissionPayment($data);
-				$this->_redirect("/bookings/agentcypayment");
+			$booking_id=$db->addAgencyPayment($data);
+			if(isset($data['save_new'])){
+				Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment/add");
+			}else{
+				Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment");
+			}
+			Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment");
 		}
-		$id=$this->getRequest()->getParam('id');
-		$this->view->id = $id;
-		$row = $db->getCommissionPaymentByID($id);
-		$this->view->row =$row;
-		if (empty($row)){
-			$this->_redirect("/bookings/agentcypayment");
+		
+		$row=$db->getAgetncyClearByID($id);
+		if(empty($row)){
+			Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment");
 		}
+		$this->view->row_detail=$db->getAgetncyClearDetail($id);
+		$this->view->row=$row;
+		
 		$frm = new Bookings_Form_FrmAgentcyPayment();
 		$form = $frm->FormBooking($row);
 		Application_Model_Decorator::removeAllDecorator($form);

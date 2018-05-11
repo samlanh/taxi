@@ -18,7 +18,7 @@ class Bookings_BookingclearedController extends Zend_Controller_Action {
 			}
 			else{
 				$search = array(
-						'to_book_date'   => date("2019-03-15"),
+						'to_book_date'   => date("Y-m-d"),
 						'from_book_date' => date("Y-m-01"),
 						'search_text'    => "",
 						'customer'       =>0,
@@ -34,6 +34,7 @@ class Bookings_BookingclearedController extends Zend_Controller_Action {
 						'status'       =>1,
 				);
 			}
+			$this->view->search=$search;
 			$rs_rows= $db->getAllBookingClearedPayment($search);
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);

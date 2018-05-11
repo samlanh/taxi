@@ -41,6 +41,7 @@ dojo.ready(function(){
 	 $('select[name="datatable-responsive_length"]').val('50');
 	 $('select[name="datatable-responsive_length"]').change();
 	 //dijit.byId("date_type").attr("value",2);
+	 dijit.byId("to_book_date").set("value",'<?php echo $this->search['to_book_date']?>');
 	 dijit.byId("status").set("value",1);
 });
 dojo.require("dojo.data.ItemFileWriteStore");  
