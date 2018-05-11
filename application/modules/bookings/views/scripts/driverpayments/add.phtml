@@ -189,7 +189,7 @@ td {
 	       			<div class="col-md-12 col-sm-12 col-xs-12 bg" style="background: #dbe8f9;    padding: 10px;    margin: 10px 0;    border: solid 1px #ccc;">
 		                  	
 		                  	 <div class="col-md-12 col-sm-12 col-xs-12">
-			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('DATE')?></label>
+			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('START_DATE')?></label>
 			                	<div class="col-md-3 col-sm-3 col-xs-3">
 			                    	<?php echo $frm->getElement('fil_start_date');?>
 			                   </div>
@@ -496,8 +496,8 @@ function getPaymentBy(){
 url_getagentcy = '<?php echo $this->url(array('module'=>'bookings','controller'=>'driverpayments','action'=>'get-driver-payments'));?>';
 r=0;
 function getAllAgentcyPayment(type){
-	var fil_start_date=dijit.byId("fil_start_date").get("value");
-	var fil_end_date=dijit.byId("fil_end_date").get("value");
+	var fil_start_date=convert(dijit.byId("fil_start_date").get("value"));
+	var fil_end_date=convert(dijit.byId("fil_end_date").get("value"));
 	dojo.query("#showrecord").append('');
 	if(type==1){
 		driver  = dijit.byId('invoice').get('value');
@@ -705,5 +705,11 @@ function calCulatePrice(){
 	}
 }
 
+function convert(str) {
+    var date = new Date(str),
+        mnth = ("0" + (date.getMonth()+1)).slice(-2),
+        day  = ("0" + date.getDate()).slice(-2);
+    return [ date.getFullYear(), mnth, day ].join("-");
+}
 
 </script>

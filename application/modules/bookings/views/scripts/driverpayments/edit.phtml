@@ -185,32 +185,23 @@ td {
 	       			</div>
 	       		</div>
 	       		<div class="x_content">
-	       		<!-- 
+	       		 
 	       			<div class="col-md-12 col-sm-12 col-xs-12 bg" style="background: #dbe8f9;    padding: 10px;    margin: 10px 0;    border: solid 1px #ccc;">
-		                  	
-		                  	 <div class="col-md-12 col-sm-12 col-xs-12">
-			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('DATE')?></label>
+		                  	  <div class="col-md-12 col-sm-12 col-xs-12">
+			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('START_DATE')?></label>
 			                	<div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('booking_date_start');?>
+			                    	<?php echo $frm->getElement('fil_start_date');?>
 			                   </div>
-			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('TO')?></label>
+			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('TO_DATE')?></label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('booking_date_end');?>
+			                    	<?php echo $frm->getElement('fil_end_date');?>
 			                   </div>
 			                    <div class="col-md-2 col-sm-2 col-xs-2">
 			                    <input type="button" value="go" label="<?php echo $tr->translate('GO');?>" id="go_search" dojoType="dijit.form.Button" 
-												iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="getCommissionAgent();" />
+												iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="getPaymentBy();" />
 			                    </div>
 		                   </div>
-		                   
-		                   <div class="col-md-12 col-sm-12 col-xs-12">
-			                   	<div class="col-md-2 col-sm-2 col-xs-2">
-			                   		<input type="checkbox" class="checkbox"  name="check_all" id="check_all" value="all" OnChange="CheckAllTotal(0);" style=" height: initial; display: inline-block;"  />&nbsp;
-									<span style="vertical-align: top;"><?php echo $tr->translate('ALL');?></span>
-			                   	</div>
-		                   </div>
-		                  
-	             	   </div>  -->
+	             	   </div>  
 		                 
 						<table id="table_parent" class="table" style="margin: 0 auto; width: 100%;  " >
 							<thead>

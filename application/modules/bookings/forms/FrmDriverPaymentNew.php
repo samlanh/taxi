@@ -297,7 +297,7 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 		$fil_start_date= new Zend_Dojo_Form_Element_DateTextBox("fil_start_date");
 		$fil_start_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
 		));
-		$fil_start_date->setValue($f_date);
+		//$fil_start_date->setValue($f_date);
 		
 		$fil_end_date= new Zend_Dojo_Form_Element_DateTextBox("fil_end_date");
 		$fil_end_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
@@ -322,6 +322,10 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 			$profit->setValue($data['total_profit']);
 			$agency_paid->setValue($data['driver_paid']);
 			
+			$fil_start_date->setValue($data['fil_start_date']);
+			$fil_end_date->setValue($data['fil_end_date']);
+			$fil_start_date->setAttribs(array('readonly'=>'readonly',));
+			$fil_end_date->setAttribs(array('readonly'=>'readonly',));
 			$driver->setAttribs(array('readonly'=>'readonly',));
 			$invoice->setAttribs(array('readonly'=>'readonly',));
 			$payment_by->setAttribs(array('readonly'=>'readonly',));

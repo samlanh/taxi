@@ -54,14 +54,16 @@ span.label_value {
 							<table width="100%" style=" line-height: 18px;font-size: 14px;margin-bottom: 0px;background: #e4e4e4;color: #000;" >
 								<tr>
 									<td width="40%" valign="middle">
-										<h2 style="margin: 10px 0; padding-left: 0px; font-weight: 700; vertical-align: middle;  font-size: 30px;">RECIEPT</h2>
+										<h2 style="margin: 10px 0; padding-left: 0px; font-weight: 700; vertical-align: middle;  font-size: 30px;"><?php echo $tr->translate("RECIEPT");?></h2>
 									</td>
 									<td width="35%" valign="top" >
-										012 999 888 / 010 999 888<br />
-										carrental@gmail.com
+									    <?php echo $this->tel['value'];?><br/>
+										<!-- 012 999 888 / 010 999 888<br /> carrental@gmail.com-->
+										<?php echo $this->email['value'];?>
 									</td>
 									<td width="25%" valign="top">
-										Porsen Chey, Dang Kor, Phnom Penh Cambodia.
+									<?php echo $this->address['value'];?>
+									<!-- Porsen Chey, Dang Kor, Phnom Penh Cambodia. -->	
 									</td>
 								</tr>
 							</table>
@@ -130,42 +132,36 @@ span.label_value {
 								</tr>
 								<?php }?>
 								<tr>
-									<td colspan="3">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">Total Driver Fee&nbsp;</span></td>
+									<td colspan="4">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Driver Fee");?>&nbsp;</span></td>
 									<td  class="one-td" >&nbsp;<?php echo "$ ".number_format($total_commistion,2);?></td>
-									<td class="one-td"></td>
 								</tr>
 								<tr>
-									<td colspan="3">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">Total Driver Recieve&nbsp;</span></td>
+									<td colspan="4">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Driver Recieve");?>&nbsp;</span></td>
 									<td class="one-td">&nbsp;<?php echo "$ ".number_format($total_all_a_re,2);?></td>
-									<td class="one-td"></td>
 								</tr>
 								<tr>
 								<?php $paid=0;
 								    if($total_commistion<$total_all_a_re){
-								    	$str='Driver Paid';
+								    	$str=$tr->translate("Driver Paid");
 								    	$paid=$total_all_a_re-$total_commistion;
 								    }else{
-								    	$str='Payment To Driver';
+								    	$str=$tr->translate("Payment To Driver");
 								    	$paid=$total_commistion-$total_all_a_re;
 								    }
 								?>
-									<td colspan="3">&nbsp;</td>
+									<td colspan="4">&nbsp;</td>
 									<td colspan="2" align="right" ><span class="label_title"><?php echo $str;?>&nbsp;</span></td>
 									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($paid,2);?></td>
-									<td class="one-td"></td>
-									 
 								</tr>
 								<tr>
-									<td colspan="3">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">Balance&nbsp;</span></td>
+									<td colspan="4">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Balance");?>&nbsp;</span></td>
 									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($paid-$this->commision_payment['paid_driver'],2);?></td>
-									<td class="one-td"></td>
-									 
 								</tr>
 								<tr>
-								    <td height="100px;"></td>
+								    <td height="50px;"></td>
 								</tr>
 								<tr>
 				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="center"​ colspan="2" >

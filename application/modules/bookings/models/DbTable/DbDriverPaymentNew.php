@@ -72,6 +72,9 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 					'create_date'	  => date("Y-m-d H:i:s"),
 					'modify_date'  	  => date("Y-m-d H:i:s"),
 					
+					'fil_start_date'  	  => $_data['fil_start_date'],
+					'fil_end_date'  	  => $_data['fil_end_date'],
+					
 					'total_driver_fee'      => $_data['total_commission_fee'],
 					'total_driver_recived'  => $_data['total_agen_recived'],
 					'paid_driver'      	  	=> $_data['paid_agen'],
@@ -323,20 +326,17 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 			  WHERE cb.customer_id=c.id 
 			  AND cb.is_paid_to_driver=0 AND cb.`status_working`=1 AND cb.status =1 ";
 		$and='';
-		
+		$date='';
 		if($type==1){
 			$and=" AND cb.id=".$id;
 		}else{
 			$and=" AND cb.driver_id=".$id;
-// 			if(!empty($data)){
-// 				$from_date =(empty($data['fil_start_date']))? '1': " cb.`delivey_date` >= '".$data['fil_start_date']." 00:00:00'";
-// 				$to_date = (empty($data['fil_end_date']))? '1': " cb.`delivey_date` <= '".$data['fil_end_date']." 23:59:59'";
-// 				$and.="  AND".$from_date." AND ".$to_date;;
-// 			}
+			if(!empty($data['fil_start_date'])){
+				$date="  AND cb.`delivey_date` BETWEEN '".$data['fil_start_date']."' AND '".$data['fil_end_date']."'";
+			}
 		}
-		
-		$order=" ORDER BY cb.`booking_no`,cb.`delivey_date` ASC ";
-		return $db->fetchAll($sql.$and.$order);
+		$order="  ORDER BY cb.`booking_no`,cb.`delivey_date` ASC ";
+		return $db->fetchAll($sql.$and.$date.$order);
 	}
 	
 	function getAgencyPayment($agency_id,$row_id,$type){
@@ -362,7 +362,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 		$db = $this->getAdapter();
 		$sql=" SELECT cd.id,cd.`payment_method`,cdd.`booking_id`,cd.`payment_no`,cd.driver_id,cd.payment_date,cd.payment_type,cd.note,cd.total_driver_fee,
 	    cd.total_driver_recived,cd.paid_driver,cd.total_alls,cd.total_profit,cd.paid_type,cd.driver_paid,
-        cd.`status`
+        cd.`status`,fil_start_date,fil_end_date
         FROM `ldc_driverclear_payment` AS cd ,`ldc_driverclear_payment_detail` AS cdd
         WHERE  cd.`id`=cdd.`driverclear_id` AND cd.id=$id GROUP BY cd.`id`";
 		return $db->fetchRow($sql);

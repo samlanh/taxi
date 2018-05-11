@@ -98,6 +98,13 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	}
 	  	$this->view->commision_payment = $row;
 	  	$this->view->commision_detail = $db->getDriverPaymentDetail($id);
+	  	
+	  	$db_gs = new Application_Model_DbTable_DbGlobalSelect();
+	  	$row =array();
+	  	$this->view->tel= $db_gs->getWebsiteSetting('tel');
+	    $this->view->email= $db_gs->getWebsiteSetting('email');
+	  	 $this->view->address= $db_gs->getWebsiteSetting('address');
+	  	 
 	  }
 	  
 	  function rptCommissionpaymentAction(){
