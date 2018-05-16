@@ -54,7 +54,7 @@ span.label_value {
 							<table width="100%" style=" line-height: 18px;font-size: 14px;margin-bottom: 0px;background: #e4e4e4;color: #000;" >
 								<tr>
 									<td width="40%" valign="middle">
-										<h2 style="margin: 10px 0; padding-left: 0px; font-weight: 700; vertical-align: middle;  font-size: 30px;"><?php echo $tr->translate("RECIEPT");?></h2>
+										<h2 style="margin: 10px 0; padding-left: 0px; font-weight: 700; vertical-align: middle;  font-size: 30px;"><?php echo $tr->translate("INVOICE");?></h2>
 									</td>
 									<td width="35%" valign="top" >
 									    <?php echo $this->tel['value'];?><br/>
@@ -84,7 +84,7 @@ span.label_value {
 									</td>
 									<td width="20%" valign="top" style=" line-height: 18px;" valign="top">
 										<span class="label_title">Receipt N<sup>o</sup>&nbsp;:&nbsp;&nbsp;<?php echo $commission['payment_no'];?></span><br />
-										<span class="label_title">Payment Date&nbsp;:&nbsp;&nbsp;<?php echo date("d-M-Y",strtotime($commission['payment_date']));?></span><br />
+										<span class="label_title"><?php echo $tr->translate("DATE_​PAYMENT");?>&nbsp;:&nbsp;&nbsp;<?php echo date("d-M-Y",strtotime($commission['payment_date']));?></span><br />
 									</td>
 									
 								</tr>

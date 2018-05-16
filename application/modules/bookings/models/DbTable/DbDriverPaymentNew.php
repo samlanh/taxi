@@ -46,7 +46,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 			$where.=" AND d.driver_id=".$search['driver_search'];
 		}
 		$order=' ORDER BY d.id DESC';
-		return $db->fetchAll($sql.$where.$order);
+		return $db->fetchAll($sql.$where);
 	}
 	
 	public function addDriverPayment($_data){
@@ -335,7 +335,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 				$date="  AND cb.`delivey_date` BETWEEN '".$data['fil_start_date']."' AND '".$data['fil_end_date']."'";
 			}
 		}
-		$order="  ORDER BY cb.`booking_no`,cb.`delivey_date` ASC ";
+		$order="  ORDER BY cb.`delivey_date`,cb.`booking_no` ASC ";
 		return $db->fetchAll($sql.$and.$date.$order);
 	}
 	
@@ -379,7 +379,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
         WHERE  cd.`id`=cdd.`driverclear_id` AND cd.status=1
         AND cb.`id`=cdd.`booking_id`
         AND cdd.`driverclear_id`=$id";
-		$order=" ORDER BY cb.`booking_no`,cb.`delivey_date` ASC ";
+		$order=" ORDER BY cb.`delivey_date`,cb.`booking_no` ASC ";
 		return $db->fetchAll($sql.$order);
 	}
 	 

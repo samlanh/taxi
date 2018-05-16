@@ -171,7 +171,7 @@ td {
                               			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref.No :')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref No.')?></span> : <span class="span_value"></span>
                               		</li>
                               		<li>
                               			<span class="span_title"><?php echo $tr->translate('ប្រភេទរថយន្ដ')?></span> : <span class="span_value"></span>
@@ -594,8 +594,8 @@ function getAllAgentcyPayment(type){
 				temp+='<td>'+data[i].booking_no+'<input type="hidden"  value="'+data[i].id+'"   name="carbooking_id'+r+'" id="carbooking_id'+r+'" dojoType="dijit.form.TextBox" /></td>';
 				temp+='<td nowrap>'+data[i].date_delivey+'<input type="hidden"  value="'+data[i].customer_id+'"   name="customer_id_'+r+'" id="customer_id_'+r+'" dojoType="dijit.form.TextBox" /></td>';
 				temp+='<td nowrap>'+data[i].time+'</td>';
-				temp+='<td  >'+data[i].from_loc+'</td>';
-				temp+='<td  >'+data[i].to_loc+'</td>';
+				temp+='<td align="left" >'+data[i].from_loc+'</td>';
+				temp+='<td  align="left" >'+data[i].to_loc+'</td>';
 				temp+='<td nowrap>'+data[i].car_type+'</td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"  value="'+data[i].total_after+'"    name="all_total_'+r+'" id="all_total_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"/></td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].driver_fee_after+'"    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" /></td>';
