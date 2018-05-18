@@ -12,6 +12,8 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 	
 	public function indexAction(){
 		try{
+			$session_user=new Zend_Session_Namespace('authcar');
+			$level = $session_user->level;
 			$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
 			if($this->getRequest()->isPost()){
 				$search=$this->getRequest()->getPost();
@@ -28,15 +30,25 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("RECIEPT_NO","DRIVER_NAME","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_DRIVER_FEE","Total Driver Recieved","PAID","PAID_STATUS","USER_NAME","STATUS","ACTION");
+			$collumns = array("RECIEPT_NO","DRIVER_NAME","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_DRIVER_FEE","Total Driver Recieved","PAID","PAID_STATUS","USER_NAME","DELETE_INVOICE","ACTION","STATUS");
 			$link=array(
 					'module'=>'bookings','controller'=>'driverpayments','action'=>'edit',
 			);
 			$link_print=array( 
 					'module'=>'report','controller'=>'bookingpayment','action'=>'rpt-driver-paymentdetail',
 			);
+			
+			if($level==1){
+				$link_delete=array(
+					'module'=>'bookings','controller'=>'driverpayments','action'=>'delete');
+			}else{
+				$link_delete=array(
+					'module'=>'bookings','controller'=>'driverpayments','action'=>'delete');
+			}
+			
+			$delete_inv=$this->tr->translate("DELETE_INVOICE");
 			$print=$this->tr->translate("PRINT");
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'driver_name'=>$link,'payment_date'=>$link,$print=>$link_print,));
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'driver_name'=>$link,'payment_date'=>$link,$print=>$link_print,$delete_inv=>$link_delete));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -151,5 +163,30 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 			exit();
 		}
 	}
+	
+	public function deleteAction(){
+		$id = $this->getRequest()->getParam("id");
+		$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
+		echo "<script language='javascript'>
+		var txt;
+		var r = confirm('តើលោកអ្នកពិតចង់លុបវិក្កយបត្រនេះឫ?');
+		if (r == true) {";
+		//$db->deleteSale($id);
+		echo "window.location ='".Zend_Controller_Front::getInstance()->getBaseUrl()."/bookings/driverpayments/deleteitem/id/".$id."'";
+		echo"}";
+		echo"else {";
+		echo "window.location ='".Zend_Controller_Front::getInstance()->getBaseUrl()."/bookings/driverpayments/'";
+		echo"}
+		</script>";
+	}
+	
+	function deleteitemAction(){
+		$id = $this->getRequest()->getParam("id");
+		
+		$db = new Bookings_Model_DbTable_DbDriverPaymentNew();
+		$db->deleteInvoice($id);
+		$this->_redirect("bookings/driverpayments");
+	}
+	
 }
 

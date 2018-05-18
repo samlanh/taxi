@@ -133,7 +133,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		    	          <th><?php echo $tr->translate("VEHICLE_TYPE")?></th> 
 		    	          <th><?php echo $tr->translate("NoPay")?> </th> 
 		    	          <th><?php echo $tr->translate("Company Price")?> </th> 
-		    	          <th><?php echo $tr->translate("CARPRICE")?> </th> 
+		    	        
+		    	        <!--  <th><?php echo $tr->translate("CARPRICE")?> </th>  --> 
 		    	          <th><?php echo $tr->translate("BALANCE")?> </th> 
 		    	           <th><?php echo $tr->translate("Other Service Type")?> </th> 
 		    	          <th><?php echo $tr->translate("GRAND_TOTAL")?> </th> 
@@ -241,11 +242,13 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center" <?php //echo $paid_color;?>> <?php echo ($rs['paid']==0)?"":"$&nbsp;".number_format($rs["paid"],2);?> </td>
 				       <td class="text-center"> <?php echo ($rs['total']==0)?"":"$&nbsp;".number_format($rs["total"],2);?> </td>
 				       <td class="text-center"> <?php echo ($rs['price']==0)?"":"$&nbsp;".number_format($rs["price"],2);?> </td>
-				       <td class="text-center"> <?php echo ($rs['balance_after']==0)?"":"$&nbsp;".number_format($rs["balance_after"],2);?></td> 
+				      
+				        <!-- <td class="text-center"> <?php echo ($rs['balance_after']==0)?"":"$&nbsp;".number_format($rs["balance_after"],2);?></td> -->
+				       
 				        <td class="text-center"><?php echo ($rs['total_service']==0)?"":"$&nbsp;".number_format($rs["total_service"],2);?> </td>
 				       <td class="text-center">  <?php echo ($rs['grand_total']==0)?"":"$&nbsp;".number_format($rs["grand_total"],2);?></td> 
 				       <td class="text-center" <?php echo $agen_color;?>><?php echo $rs['agency_name']?> </td>
-				       <td class="text-center"> <?php echo ($rs['commision_fee_after']==0)?"":"$&nbsp;".number_format($rs["commision_fee_after"],2);?></td> 
+				       <td class="text-center"> <?php echo ($rs['commision_fee']==0)?"":"$&nbsp;".number_format($rs["commision_fee"],2);?></td> 
 				       <td class="text-center" <?php echo $drive_color;?>> <?php echo $rs['driver']?></td>
 				       <td class="text-center"><?php echo ($rs['driver_fee_after']==0)?"":"$&nbsp;".number_format($rs["driver_fee_after"],2);?> </td>
 				       <td class="text-center" style="background:#fff"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"> <?php echo $rs['book_status']?></a></td>
@@ -254,8 +257,17 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				        <a  target="_blank" style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/index/edit/id/<?php echo $rs["id"]?>"><span style="color: blue;line-height:0px;">Edit</span></a>&nbsp;|
 				        <a   style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/index/delete/id/<?php echo $rs["id"]?>"><span style="color: red;line-height:0px;">Delete</span></a>
 				        </td>
-				        <td class="text-center"> <?php echo $rs['user_name']?></td>
-				        <td class="text-center"> <?php echo $rs['status']?></td>
+				        <td style="text-align:left;"> <div class="dropdown" >
+									  <span class="glyphicon glyphicon-triangle-bottom"></span>
+									  <div class="dropdown-content"><br/>
+									      <?php echo $tr->translate("USER_INPUT")?>&nbsp;:<?php echo $rs['user_name'];?><br/><br/>
+									      <?php echo $tr->translate("USER_EDIT")?>&nbsp;:<?php echo $rs['edit_neme'];?><br/><br/>
+									      <?php echo $tr->translate("USER_PREPARE")?>&nbsp;:<?php echo $rs['user_prepare'];?>
+									      <br/><br/>
+									  </div>
+									</div> <?php echo $rs['user_name']?>
+				        </td>
+				        <td class="text-center"> <?php echo ($rs['status_working']==2)?"":"".$rs['status']?></td>
 				     </tr>
 				     <?php }?>
 			     </tbody>

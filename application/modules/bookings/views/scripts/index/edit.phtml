@@ -216,7 +216,7 @@ h4.car_title {
 		               		<h4><i class="fa  fa-money" aria-hidden="true"></i> <?php echo $tr->translate('PRICE_INFORMATION')?></h4>
 		               </div>
 		               <div class="form-group">
-		               	   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("GRAND_TOTAL")?>
+		               	   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Company Price")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('total');?>
@@ -263,7 +263,7 @@ h4.car_title {
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('payment_note');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("TOTAL_PAID")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("NoPay")?>
 		                   </label>
 		                   <div class="col-md-2 col-sm-2 col-xs-12">
 		                   <?php echo $frm->getElement('total_paid');?>
@@ -488,14 +488,27 @@ function getDriver(type){
 function CalculateTotal(){
 	var total = dijit.byId('total').get('value');
 	var other_fee = dijit.byId('other_fee').get('value');
-	var price = dijit.byId('price').get('value');
+	//var price = dijit.byId('price').get('value');
 	var commision_fee = dijit.byId('commision_fee').get('value');
     totals=Number(total)+Number(other_fee);
-
-    dijit.byId("price").attr("value",totals);
+   // dijit.byId("price").attr("value",totals);
     dijit.byId("total_payment").attr("value",totals);
-    getPice();
-    netTotal();
+
+    var total_paid = dijit.byId('total_paid').get('value');
+    var company_pric=dijit.byId('total').get("value");
+    if(company_pric < total_paid){
+    	var total_commission=Number(total_paid)-Number(company_pric);
+    	dijit.byId('commision_fee').attr('value',total_commission);
+    	dijit.byId('balance').attr('value',0);
+    }else{
+    	dijit.byId('commision_fee').attr('value',0);
+    	var total_balance=Number(company_pric)-Number(total_paid);
+    	dijit.byId('balance').attr('value',total_balance);
+    }
+    
+   // getPice();
+   netTotal();
+   // calculatebalance();
 }
 
 function getPice(){
@@ -508,19 +521,18 @@ function getPice(){
 	 calculatebalance();
 }
 
-function netTotal() {
-	var netTotal=0;
-	total=0;
-	var rowId = $('#record_row').val();
-	var rowIDArray = rowId.split(',');
-	for(var n = 0; n < rowIDArray.length; n++) {
-		netTotal += dijit.byId('price_'+rowIDArray[n]).get('value');
+function settotal(){
+	var other_fee = dijit.byId('other_fee').get('value');
+	var total = dijit.byId('total').get('value');
+	dijit.byId('total_payment').set('value',total.toFixed(2));
+	total = total -other_fee;
+	if(total<0){
+		total = 0;
 	}
-	total=Number(dijit.byId("total").get("value"))+Number(dijit.byId("other_fee").get("value"));
-	netTotal=Number(netTotal)+Number(total);
-	dijit.byId('total_payment').attr('value',netTotal);
-	dijit.byId('balance').attr('value',netTotal);
- }
+	dijit.byId('price').set('value',total.toFixed(2));
+	dijit.byId('commision_fee').set('value',0);
+	netTotal();
+}
 
 function calculatebalance(){
 	var total = dijit.byId('total_payment').get('value');

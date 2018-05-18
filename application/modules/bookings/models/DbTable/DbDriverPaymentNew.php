@@ -17,7 +17,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 		$lang = $_db->getCurrentLang();
 		$array = array(1=>"name_en",2=>"name_kh");
 		$print=$tr->translate("PRINT");
-		$edit=$tr->translate("EDIT");
+		$delete=$tr->translate("DELETE_INVOICE");
 		$sql=" SELECT d.id,d.`payment_no`,
 				 
 				(SELECT CONCAT(n.`last_name`,'(',n.`driver_id`,')') 
@@ -25,12 +25,12 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
  	           DATE_FORMAT(d.`payment_date`, '%d-%b-%Y')As payment_date, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
 		       d.`total_driver_fee`,d.`total_driver_recived`,d.`paid_driver` ,
 		      (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=12 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
-		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,d.`status`,d.`status`,'$print'
-		      FROM `ldc_driverclear_payment` AS d ";
+		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,'$delete','$print',d.`status`
+		      FROM `ldc_driverclear_payment` AS d Where  d.status=1 ";
 		$where = '';
 		$from_date =(empty($search['start_date']))? '1': "d.`payment_date` >= '".$search['start_date']." 00:00:00'";
 		$to_date = (empty($search['end_date']))? '1': " d.`payment_date` <= '".$search['end_date']." 23:59:59'";
-		$where = " where ".$from_date." AND ".$to_date;
+		$where = " AND ".$from_date." AND ".$to_date;
 		if($search["search_text"] !=""){
 			$s_search=addslashes(trim($search['search_text']));
 			$s_search = str_replace(' ', '', $s_search);
@@ -84,7 +84,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 					'total_alls'      	  	=> $_data['total_alls'],
 					'total_profit'			=> ($_data['total_alls'])-($_data['total_commission_fee']),
 					'paid_type'       		=> $_data['paid_type'],
-					'status'      	  		=> $_data['status'],
+					'status'      	  		=> 1,
 					'user_id'      	  		=> $this->getUserId(),
 			);
 			$this->_name="ldc_driverclear_payment";
@@ -266,6 +266,58 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 				$this->_name ='ldc_driverclear_payment_detail';
 				$this->insert($arrs);
 			}
+			$db->commit();
+		}catch(exception $e){
+			Application_Form_FrmMessage::message("Application Error");
+			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			$db->rollBack();
+		}
+	}
+	
+	public function deleteInvoice($id){
+		$db = $this->getAdapter();
+		$db->beginTransaction();
+		try{
+			 
+			$row_detail=$this->getDriverClearDetail($id);
+			
+			if(!empty($row_detail)){
+				foreach ($row_detail As $row){
+					$driver_fee = $this->getCarbookingById($row['booking_id']);
+					$paid=$this->getAgencyPaidById($row['booking_id']);
+					$array=array();
+					if (!empty($driver_fee)){
+						$dueafter =$driver_fee['driver_fee_after']+$row['driver_fee'];
+						if(!empty($paid)){
+							$paid_after=$paid['paid_after']+$row['paid'];
+							$array['paid_after']=$paid_after;
+						}
+						$array['is_paid_to_driver']=0;
+						$array['driver_fee_after']=$dueafter;
+						$this->_name="ldc_carbooking";
+						$where = " id =".$row['booking_id'];
+						$this->update($array, $where);
+					}
+				}
+			}
+	
+			$_gency=array(
+					'modify_date'  	  => date("Y-m-d H:i:s"),
+					'status'      	  		=> 0,
+					'user_id'      	  		=> $this->getUserId(),
+			);
+			$this->_name="ldc_driverclear_payment";
+			$where=" id=".$id;
+			$this->update($_gency, $where);
+			
+			$_detail=array(
+					'status'      	  		=> 0,
+					'user_id'      	  		=> $this->getUserId(),
+			);
+			$this->_name="ldc_driverclear_payment_detail";
+			$where=" driverclear_id=".$id;
+			$this->update($_detail, $where);
+			
 			$db->commit();
 		}catch(exception $e){
 			Application_Form_FrmMessage::message("Application Error");

@@ -212,6 +212,9 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 			if ($search['driver_search']>0){
 				$where.=" AND d.driver_id=".$search['driver_search'];
 			}
+			if ($search['status']>-1){
+				$where.=" AND d.status=".$search['status'];
+			}
 			$order=' ORDER BY d.id DESC';
 			return $db->fetchAll($sql.$where.$order);
 		}
@@ -223,7 +226,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 			$array = array(1=>"name_en",2=>"name_kh");
 			$sql=" SELECT d.id,d.`payment_no`,
 					(SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_driverclear_payment_detail` AS pd WHERE pd.driverclear_id=d.id LIMIT 1)  ) AS booking_nos,
-					(SELECT CONCAT(n.`last_name`,'(',n.`driver_id`,')') 
+					(SELECT CONCAT(n.`last_name`) 
 	 	           FROM `ldc_driver` AS n WHERE n.`status` =1 AND n.id=d.`driver_id` LIMIT 1) AS driver_name,
 	 	            d.`payment_date`, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
 			       d.`total_driver_fee`,d.`total_driver_recived`,d.`paid_driver` ,
@@ -232,7 +235,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 			      (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=2 AND v.`status`=d.`status` LIMIT 1) AS `status`,
 			      (SELECT reffer FROM `ldc_vehicle` WHERE `ldc_vehicle`.id=(SELECT n.vehicle_id FROM `ldc_driver` AS n WHERE n.`status` =1 AND n.id=d.`driver_id` LIMIT 1)) AS car_no,
  (SELECT n.tel FROM `ldc_driver` AS n WHERE n.`status` =1 AND n.id=d.`driver_id` LIMIT 1) AS driver_phone
-			      FROM `ldc_driverclear_payment` AS d Where  d.id=$id";
+			      FROM `ldc_driverclear_payment` AS d  Where  d.id=$id  AND d.status=1";
       	return $db->fetchRow($sql);
       }
       

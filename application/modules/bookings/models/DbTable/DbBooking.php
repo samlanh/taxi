@@ -585,7 +585,10 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 			cb.`status`,
 			(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_id LIMIT 1) AS user_name,
 			REPLACE(cb.payment_booking_no,' ','') AS numbooking,
-			(SELECT SUM(sd.total_amount)  FROM ldc_booking_service_detial  AS sd WHERE sd.carbooking_id=cb.id) AS total_service
+			(SELECT SUM(sd.total_amount)  FROM ldc_booking_service_detial  AS sd WHERE sd.carbooking_id=cb.id) AS total_service,
+			(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_edit LIMIT 1) AS edit_neme,
+			(SELECT first_name FROM rms_users WHERE rms_users.id=cb.user_prepare_care LIMIT 1) AS user_prepare
+			
 			FROM `ldc_carbooking` AS cb,
 			`ldc_package_location` AS l,
 			`ldc_package_location` AS tl,
@@ -892,7 +895,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'is_customer_paid'=> 0,
 					'create_date'	  => date("Y-m-d H:i:s"),
 					'modify_date'  	  => date("Y-m-d H:i:s"),
-					'user_id'      	  => $this->getUserId(),
+					'user_edit'       => $this->getUserId(),
 			);
 			$this->_name="ldc_carbooking";
 			$where = " id = ".$_data['booking_id'];
@@ -1075,7 +1078,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'remark'	  	  => $_data['remark'],
 					'note'	  	      => $_data['note'],
 					'modify_date'  	  =>date("Y-m-d H:i:s"),
-					'user_id'      	  => $this->getUserId(),
+					'user_prepare_care'=> $this->getUserId(),
 			);
 			$this->_name="ldc_carbooking";
 			$where=" id=".$_data['id'];

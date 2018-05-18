@@ -70,13 +70,14 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 			}
 			else{
 				$search = array(
-						'start_date' => date("Y-m-d"),
+						'start_date' => date("Y-m-01"),
 						'end_date' => date("Y-m-d"),
 						'search_text' => "",
 						'driver_search'=>0,
+						'status'=>1
 				);
 		}
-	  
+	    $this->view->search=$search;
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
 	  	$this->view->d_payment = $db->getAllDriverPyment($search);
 	  

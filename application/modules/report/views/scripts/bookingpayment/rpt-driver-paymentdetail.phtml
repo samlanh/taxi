@@ -46,6 +46,13 @@ span.label_value {
 					    border-left: solid 1px #000;
 						border-bottom: solid 1px #000;
 					}
+					
+				table { page-break-inside:auto }
+                tr{ page-break-inside:avoid; page-break-after:auto }
+			   #header {
+					  display: table-header-group;
+					  page-break-inside:avoid; page-break-after:auto;
+					}
  
 				</style>
 				<table width="100%"  class="print" cellspacing="0"  cellpadding="0" style=" font-family: 'Khmer OS Battambang' !important; white-space:nowrap;background: #fff;">
@@ -53,15 +60,15 @@ span.label_value {
 						<td colspan="3"  style="" align="center" valign="top">
 							<table width="100%" style=" line-height: 18px;font-size: 14px;margin-bottom: 0px;background: #e4e4e4;color: #000;" >
 								<tr>
-									<td width="40%" valign="middle">
+									<td width="20%" valign="middle">
 										<h2 style="margin: 10px 0; padding-left: 0px; font-weight: 700; vertical-align: middle;  font-size: 30px;"><?php echo $tr->translate("INVOICE");?></h2>
 									</td>
-									<td width="35%" valign="top" >
+									<td width="50%" valign="top" align="center">
 									    <?php echo $this->tel['value'];?><br/>
 										<!-- 012 999 888 / 010 999 888<br /> carrental@gmail.com-->
 										<?php echo $this->email['value'];?>
 									</td>
-									<td width="25%" valign="top">
+									<td width="30%" valign="top"  align="center">
 									<?php echo $this->address['value'];?>
 									<!-- Porsen Chey, Dang Kor, Phnom Penh Cambodia. -->	
 									</td>
@@ -97,16 +104,17 @@ span.label_value {
 					<tr>
 						<td colspan="3" valign="top" id="exportExcel">
 							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0"   >
+								<thead>
 								<tr class="header" style="background: #e4e4e4">
 									<td class="row-value" style="width: 3%;"><?php echo $tr->translate("NUM");?></td>
-									 
 									<td class="row-value"><?php echo $tr->translate("DELIVERY_DATE");?></td>
-									<td class="row-value one-td"><?php echo $tr->translate("FROM_LOCATION");?></td>
+									<td class="row-value "><?php echo $tr->translate("FROM_LOCATION");?></td>
 									<td class="row-value"><?php echo $tr->translate("TO_LOCATION");?></td>
 									<td class="row-value"><?php echo $tr->translate("Driver Fee");?> </td>
 									<td class="row-value"><?php echo $tr->translate("Driver Recieve");?> </td>
-									<td class="row-value one-td"><?php echo $tr->translate("REMARK");?> </td>​
+									<td class="row-value " style="border-right: solid 1px #000;"><?php echo $tr->translate("OTHER");?> </td>​
 								</tr>
+								</thead>
 								<?php $i=0; 
 								$total_paid=0;
 								$total_remain=0;$total_commistion=0;$total_all_a_re=0;
@@ -127,7 +135,7 @@ span.label_value {
 									<td  class="row-td" >&nbsp;<?php echo $com['from_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo "$ ".number_format($com['driver_fee'],2);?></td>
-									<td  class="row-td one-td">&nbsp;<?php echo "$ ".number_format($total_agency_re,2);?></td>
+									<td  class="row-td">&nbsp;<?php echo "$ ".number_format($total_agency_re,2);?></td>
 									<td  class="one-td" >&nbsp;<?php echo $com['note'];?></td>
 								</tr>
 								<?php }?>

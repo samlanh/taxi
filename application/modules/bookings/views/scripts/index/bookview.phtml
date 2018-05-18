@@ -67,11 +67,7 @@ body{
                         dijit.byId("delivery_time").focus();
 						return false;
 					}
-					if(dijit.byId("driver").get("value")==0){
-						alert("<?php echo $tr->translate('PLEASE_SELECT_DRIVER')?>");
-						dijit.byId('driver').focus(); 
-						return false;
-					}
+					
 					loading();
 					return true;
 				} else {

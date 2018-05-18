@@ -137,7 +137,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$price->setAttribs(
 				array('dojoType'=>$this->number,
 					'class'=>"fullside",
-					'onKeyup'=>'getPice();',
+					//'onKeyup'=>'getPice();',
+					'onKeyup'=>'CalculateTotal()'
 				));
 		$price->setValue(0);
 		
@@ -197,7 +198,8 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$total_paid->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
-						'onKeyup'=>'calculatebalance();',
+						'onKeyup'=>'CalculateTotal();'
+						//'onKeyup'=>'calculatebalance();',
 				));
 		$total_paid->setValue(0);
 		
@@ -247,7 +249,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		$driver_fee->setAttribs(
 				array('dojoType'=>$this->number,
 						'class'=>"fullside",
-						'required'=>true
+						//'required'=>true
 				));
 		$driver_fee->setValue(0);
 		

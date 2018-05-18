@@ -329,6 +329,7 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 			$driver->setAttribs(array('readonly'=>'readonly',));
 			$invoice->setAttribs(array('readonly'=>'readonly',));
 			$payment_by->setAttribs(array('readonly'=>'readonly',));
+			$status->setAttribs(array('readonly'=>'readonly',));
 			 
 		}
 		

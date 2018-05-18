@@ -60,11 +60,11 @@ td {
 		<form action="" method="post" id="addbookingrental" dojoType="dijit.form.Form">
 			<script type="dojo/method" event="onSubmit">			
 				if(this.validate()) {
-					 var rowId = dijit.byId('record_row').get("value");
+					/* var rowId = dijit.byId('record_row').get("value");
                      if(rowId=='' || rowId==0){ 
 		            	 alert("Recode not found!");
 						 return false;
-					}
+					}*/
 					var total_paid = dijit.byId('total_paid').get('value');
 					if(total_paid>0){
 						var payment_method = dijit.byId('payment_method').get('value');
