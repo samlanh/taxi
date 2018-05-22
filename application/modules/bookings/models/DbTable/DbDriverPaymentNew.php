@@ -23,7 +23,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 				(SELECT CONCAT(n.`last_name`,'(',n.`driver_id`,')') 
  	           FROM `ldc_driver` AS n WHERE n.`status` =1 AND n.id=d.`driver_id` LIMIT 1) AS driver_name,
  	           DATE_FORMAT(d.`payment_date`, '%d-%b-%Y')As payment_date, (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=11 AND v.`key_code`=d.`payment_method` LIMIT 1) AS `payment_method`,
-		       d.`total_driver_fee`,d.`total_driver_recived`,d.`paid_driver` ,
+		       d.`total_driver_fee`,d.`total_driver_recived`,d.`paid_driver` ,d.`balance` ,
 		      (SELECT v.".$array[$lang]." AS `name` FROM `ldc_view` AS v WHERE  v.`type`=12 AND v.`key_code`=d.`paid_type` LIMIT 1) AS `paid_type`,
 		      (SELECT u.`first_name` FROM `rms_users` AS u WHERE u.id=d.`user_id` LIMIT 1 )AS user_name,'$delete','$print',d.`status`
 		      FROM `ldc_driverclear_payment` AS d Where  d.status=1 ";
@@ -84,6 +84,8 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 					'total_alls'      	  	=> $_data['total_alls'],
 					'total_profit'			=> ($_data['total_alls'])-($_data['total_commission_fee']),
 					'paid_type'       		=> $_data['paid_type'],
+					'total_expense'			=> $_data['total_expense'],
+					'balance'				=> $_data['balance'],
 					'status'      	  		=> 1,
 					'user_id'      	  		=> $this->getUserId(),
 			);
@@ -128,7 +130,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 						'driverclear_id'=>$driver_id,
 						'booking_id'	=>$_data['carbooking_id'.$i],
 						'driver_fee'	=>$_data['gency_fee_'.$i],
-						//'conpany_price'	=>$_data['conpany_price_'.$i],
+						'expense'		=>$_data['expense_'.$i],
 						'paid'			=>$_data['paid_after_'.$i],
 						//'balance'		=>$_data['balance_after_'.$i],
 				        'note'			=>$_data['note_'.$i],
@@ -196,6 +198,8 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 					'modify_date'  	  => date("Y-m-d H:i:s"),
 						
 					'total_driver_fee'      => $_data['total_commission_fee'],
+					'total_expense'			=> $_data['total_expense'],
+					'balance'				=> $_data['balance'],
 					'total_driver_recived'  => $_data['total_agen_recived'],
 					'paid_driver'      	  	=> $_data['paid_agen'],
 						
@@ -252,6 +256,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 						'driverclear_id'=>$_data['hidden_id'],
 						'booking_id'	=>$_data['carbooking_id'.$i],
 						'driver_fee'	=>$_data['gency_fee_'.$i],
+						'expense'		=>$_data['expense_'.$i],
 						//'conpany_price'	=>$_data['conpany_price_'.$i],
 						'paid'			=>$_data['paid_after_'.$i],
 						//'balance'		=>$_data['balance_after_'.$i],
@@ -414,7 +419,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 		$db = $this->getAdapter();
 		$sql=" SELECT cd.id,cd.`payment_method`,cdd.`booking_id`,cd.`payment_no`,cd.driver_id,cd.payment_date,cd.payment_type,cd.note,cd.total_driver_fee,
 	    cd.total_driver_recived,cd.paid_driver,cd.total_alls,cd.total_profit,cd.paid_type,cd.driver_paid,
-        cd.`status`,fil_start_date,fil_end_date
+        cd.`status`,fil_start_date,fil_end_date,cd.`total_expense`,cd.balance
         FROM `ldc_driverclear_payment` AS cd ,`ldc_driverclear_payment_detail` AS cdd
         WHERE  cd.`id`=cdd.`driverclear_id` AND cd.id=$id GROUP BY cd.`id`";
 		return $db->fetchRow($sql);
@@ -426,7 +431,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
         (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`from_location`) AS from_loc ,
         (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`to_location`) AS to_loc ,
         (SELECT c.`title` FROM `ldc_vechicletye` AS c WHERE c.id=cb.`vehicletype_id`) AS car_type ,
-        cdd.`all_total`,cdd.`driver_fee`, cdd.`paid`,cdd.`note`,cdd.`paid_status`,cdd.`balance_satatus`
+        cdd.`all_total`,cdd.`driver_fee`, cdd.`paid`,cdd.`note`,cdd.`paid_status`,cdd.`balance_satatus`,cdd.`expense`
         FROM `ldc_driverclear_payment` AS cd ,`ldc_driverclear_payment_detail` AS cdd,`ldc_carbooking` AS cb
         WHERE  cd.`id`=cdd.`driverclear_id` AND cd.status=1
         AND cb.`id`=cdd.`booking_id`

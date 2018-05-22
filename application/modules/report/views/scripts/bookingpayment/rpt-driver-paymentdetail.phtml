@@ -103,15 +103,16 @@ span.label_value {
 					</tr>
 					<tr>
 						<td colspan="3" valign="top" id="exportExcel">
-							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0"   >
+							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0"  >
 								<thead>
 								<tr class="header" style="background: #e4e4e4">
-									<td class="row-value" style="width: 3%;"><?php echo $tr->translate("NUM");?></td>
-									<td class="row-value"><?php echo $tr->translate("DELIVERY_DATE");?></td>
-									<td class="row-value "><?php echo $tr->translate("FROM_LOCATION");?></td>
-									<td class="row-value"><?php echo $tr->translate("TO_LOCATION");?></td>
-									<td class="row-value"><?php echo $tr->translate("Driver Fee");?> </td>
-									<td class="row-value"><?php echo $tr->translate("Driver Recieve");?> </td>
+									<td class="row-value"  style="width: 2%;"><?php echo $tr->translate("NUM");?></td>
+									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("DELIVERY_DATE");?></td>
+									<td class="row-value " style="width: 20%;" ><?php echo $tr->translate("FROM_LOCATION");?></td>
+									<td class="row-value"  style="width: 20%;" ><?php echo $tr->translate("TO_LOCATION");?></td>
+									<td class="row-value"   nowrap><?php echo $tr->translate("Driver Fee");?> </td>
+									<td class="row-value"  style="width: 5%;" nowrap><?php echo $tr->translate("Driver Recieve");?> </td>
+									<td class="row-value"  style="width: 5%;" nowrap><?php echo $tr->translate("Other Expense");?> </td>
 									<td class="row-value " style="border-right: solid 1px #000;"><?php echo $tr->translate("OTHER");?> </td>​
 								</tr>
 								</thead>
@@ -121,33 +122,37 @@ span.label_value {
 								foreach ($this->commision_detail as $com){ $i++;
 								$total_agency_re=0;
 								$total_commistion=$total_commistion+$com['driver_fee'];
-								//$total_remain = $total_remain + $com['remain'];
-								//$total_paid = $total_paid + $com['paid'];
-								if($com['paid_status']==1 || $com['balance_satatus']==1){
-									$total_agency_re=$com['paid']+$com['balance'];
+								if($com['paid_status']==1){
+									$total_agency_re=$com['paid'];
 									$total_all_a_re=$total_all_a_re+$total_agency_re;
 								}
 								?>
 								<tr>
 									<td  class="row-td" align="center" >&nbsp;<?php echo $i;?></td>
 									 
-									<td  class="row-td" >&nbsp;<?php echo date("d-M-Y",strtotime($com['delivey_date']));?></td>
+									<td  class="row-td" nowrap>&nbsp;<?php echo date("d-M-Y",strtotime($com['delivey_date']));?>&nbsp;</td>
 									<td  class="row-td" >&nbsp;<?php echo $com['from_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
-									<td  class="row-td" >&nbsp;<?php echo "$ ".number_format($com['driver_fee'],2);?></td>
-									<td  class="row-td">&nbsp;<?php echo "$ ".number_format($total_agency_re,2);?></td>
+									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['driver_fee']==0)?"":"$&nbsp;".number_format($com['driver_fee'],2);?> </td>
+									<td  class="row-td"  >&nbsp;<?php echo ($total_agency_re==0)?"":"$&nbsp;".number_format($total_agency_re,2);?> </td>
+									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['expense']==0)?"":"$&nbsp;".number_format($com['expense'],2);?></td>
 									<td  class="one-td" >&nbsp;<?php echo $com['note'];?></td>
 								</tr>
 								<?php }?>
 								<tr>
-									<td colspan="4">&nbsp;</td>
+									<td colspan="5">&nbsp;</td>
 									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Driver Fee");?>&nbsp;</span></td>
 									<td  class="one-td" >&nbsp;<?php echo "$ ".number_format($total_commistion,2);?></td>
 								</tr>
 								<tr>
-									<td colspan="4">&nbsp;</td>
+									<td colspan="5">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Expense");?>&nbsp;</span></td>
+									<td  class="one-td" >&nbsp;<?php echo "$ ".number_format($this->commision_payment['total_expense'],2);?></td>
+								</tr>
+								<tr>
+									<td colspan="5">&nbsp;</td>
 									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Driver Recieve");?>&nbsp;</span></td>
-									<td class="one-td">&nbsp;<?php echo "$ ".number_format($total_all_a_re,2);?></td>
+									<td class="one-td">&nbsp;<?php echo "$ ".number_format($this->commision_payment['total_driver_recived'],2);?></td>
 								</tr>
 								<tr>
 								<?php $paid=0;
@@ -159,33 +164,27 @@ span.label_value {
 								    	$paid=$total_commistion-$total_all_a_re;
 								    }
 								?>
-									<td colspan="4">&nbsp;</td>
+									<td colspan="5">&nbsp;</td>
 									<td colspan="2" align="right" ><span class="label_title"><?php echo $str;?>&nbsp;</span></td>
-									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($paid,2);?></td>
+									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($this->commision_payment['paid_driver'],2);?></td>
 								</tr>
 								<tr>
-									<td colspan="4">&nbsp;</td>
+									<td colspan="5">&nbsp;<?php echo ($this->commision_payment['paid_driver']+$this->commision_payment['total_expense'])?></td>
 									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Balance");?>&nbsp;</span></td>
-									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($paid-$this->commision_payment['paid_driver'],2);?></td>
+									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['balance'],2);?></td>
 								</tr>
 								<tr>
-								    <td height="50px;"></td>
+								    <td height="50px;"  colspan="8"></td>
 								</tr>
 								<tr>
-				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="center"​ colspan="2" >
-				                     <?php //$session_user=new Zend_Session_Namespace('auth');
-								           //$last_name=$session_user->username;
-								           //$username = $session_user->fullname;
-						       			?>
-				                       <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
-				                   			<!--   ហត្ថលេខា និងឈ្មោះអ្នកបើកបរ<br/> --> 
+				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="left"​ colspan="3" >
 				                   			<hr>
-				                       		​​Driver's Signature<br/>
+				                       		​​Driver's Signature<br/><br/><br/><br/>  
 				                       <?php  echo $tr->translate("DATE").':.......................................'?>
 				                       
 				                   </td>
 				                   <td colspan="3"></td>
-				                   <td  style="padding-left: 100px;line-height: normal;" align="center"  colspan="3">
+				                   <td  style="padding-left: 100px;line-height: normal;" align="left"  colspan="3" nowrap>
 				                     <?php $session_user=new Zend_Session_Namespace('auth');
 								           //$last_name=$session_user->username;
 								           $username = $session_user->fullname;
@@ -193,7 +192,7 @@ span.label_value {
 				                        <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
 				                       		<!--  ហត្ថលេខា និងឈ្មោះអ្នកគិតលុយ<br/> --> 
 				                       		<hr>
-				                       		Accounter's Signature<br/>
+				                       		Accounter's Signature<br/><br/><br/><br/>  
 				                       <?php  echo $tr->translate("DATE").':.......................................'?>
 				                   </td>
 				                </tr>

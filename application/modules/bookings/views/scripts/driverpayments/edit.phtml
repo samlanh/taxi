@@ -225,14 +225,53 @@ td {
 							</thead>
 						</table>
 				    
+				      <div class="form-group">
+					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
+	                    <div class="col-md-9 col-sm-9 col-xs-9">
+	                    	<div class="col-md-12 col-sm-12 col-xs-12">
+	                    	
+	                    	<label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_DRIVER_FEE')?>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-3">
+			                    	<?php echo $frm->getElement('total_commission_fee');?>
+			                   </div>
+	                    	
+			                   <label class="control-label col-md-3 col-sm-2col-xs-3" for="first-name" align="right">
+			                         <label id="lb_name_agency"></label>
+			                   </label>
+			                   <div class="col-md-1 col-sm-1 col-xs-1">
+			                    	<?php echo $frm->getElement('paid_agen');?>
+			                    	 
+			                   </div>
+			                    <label class="control-label col-md-1 col-sm-2col-xs-1" for="first-name" align="right"><?php echo $tr->translate('BALANCE')?></label>
+			                    <div class="col-md-1 col-sm-1 col-xs-1">
+			                    	<?php echo $frm->getElement('balance');?>
+			                   </div>
+			                   <label class="control-label col-md-9 col-sm-2col-xs-9" for="first-name" align="right">
+			                   </label>
+			                   <div class="col-md-2 col-sm-2 col-xs-2" >
+			                       <select name="paid_type" id="paid_type"  class="fullside" dojoType="dijit.form.FilteringSelect" style="display: ;" readonly="readonly" >
+										<option value="1" <?php if($this->row['paid_type']==1) echo 'selected="selected"';?>><?php echo $tr->translate('Driver Paid')?></option>
+										<option value="2" <?php if($this->row['paid_type']==2) echo 'selected="selected"';?>><?php echo $tr->translate('Payment To Driver')?></option>
+									</select>
+			                   </div>
+			                  
+			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display: none;">
+			                    
+			                    	<?php echo $frm->getElement('agency_balance');?>
+			                   </div>
+	                   		</div>
+	                   	</div> 
+	                  </div>
+				    
                     <div class="form-group">
 					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
 	                    <div class="col-md-9 col-sm-9 col-xs-9">
 	                    	<div class="col-md-12 col-sm-12 col-xs-12">
-	                    	 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_DRIVER_FEE')?>
+	                    	 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('Total Expense')?>
 			                   </label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('total_commission_fee');?>
+			                    	<?php echo $frm->getElement('total_expense');?>
 			                   </div>
 	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_AMOUNT')?>
 			                   </label>
@@ -263,21 +302,6 @@ td {
 	                   		</div>
 	                   	</div> 
 	                  </div>
-	                  <div class="form-group">
-					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
-	                    <div class="col-md-9 col-sm-9 col-xs-9">
-	                    	<div class="col-md-12 col-sm-12 col-xs-12">
-			                   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name" align="right"> <label id="lb_name_agency"></label>
-			                   </label>
-			                   <div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('paid_agen');?>
-			                   </div>
-			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display: none;">
-			                    	<?php echo $frm->getElement('agency_balance');?>
-			                   </div>
-	                   		</div>
-	                   	</div> 
-	                  </div>
 			        
 	                  <div class="form-group">
 					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
@@ -288,10 +312,7 @@ td {
 			                   <div class="col-md-3 col-sm-3 col-xs-3" >
 			                    	<?php //echo $frm->getElement('paid_type');?>
 			                    	
-			                    	<select name="paid_type" id="paid_type"  class="fullside" dojoType="dijit.form.FilteringSelect" style="display: ;" readonly="readonly" >
-										<option value="1" <?php if($this->row['paid_type']==1) echo 'selected="selected"';?>><?php echo $tr->translate('Driver Paid')?></option>
-										<option value="2" <?php if($this->row['paid_type']==2) echo 'selected="selected"';?>><?php echo $tr->translate('Payment To Driver')?></option>
-									</select>
+			                    	
 			                   </div>
 			                    
 	                   		</div>
@@ -456,9 +477,9 @@ function deleteRecord(index) {
 	$("#row_capital"+index).remove();
 	
 	deleteRecordId(index);
-	getAgencyPaid();
+	//getAgencyPaid();
 	netTotal();
-	 
+	getExpense();
 }
 
 function deleteRecordId(index) {
@@ -558,8 +579,8 @@ function OldgetAllAgentcyPayment(){
 	tmp+='<tr  style="background:#eee;border:1px solid #bdbdbd;  font-size: 12px; height: 40px;font-weight: bold; margin-bottom: 10px;text-align: center;" id="head_title" class="head-title"></tr>';
 	tmp+='</table>';
 	dojo.query("#showrecord").append(tmp);
-	thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
-	thead+='<th><?php echo $tr->translate("NUM");?></th>';
+	//thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
+	thead='<th><?php echo $tr->translate("NUM");?></th>';
 	thead+='<th nowrap><?php echo $tr->translate("BOOKING_NO");?></th>';
 	thead+='<th ><?php echo $tr->translate("DELIVERY_DATE");?></th>';
 	thead+='<th nowrap><?php echo $tr->translate("DELIVERY_TIME");?></th>';
@@ -573,6 +594,7 @@ function OldgetAllAgentcyPayment(){
 	//thead+='<th><?php //echo $tr->translate("Company Price");?></th>';
 	thead+='<th><?php echo $tr->translate("PAID");?></th>';
 	//thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
+	thead+='<th><?php echo $tr->translate("EXPENSE");?></th>';
 	thead+='<th><?php echo $tr->translate("OTHER");?></th>';
 	//thead+='<th><?php //echo $tr->translate("STATUS");?></th>';
 	fund_title=1;
@@ -580,8 +602,8 @@ function OldgetAllAgentcyPayment(){
 	     <?php if(!empty($this->rows)) foreach ($this->rows As $rs){?>
 				r++;
 				 
-				temp='<td><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
-				temp+='<td>'+r+'</td>';
+				//temp='<td><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+				temp='<td>'+r+'</td>';
 				temp+='<td><?php echo $rs['booking_no']?><input type="hidden"  value=""   name="carbooking_id'+r+'" id="carbooking_id'+r+'" dojoType="dijit.form.TextBox" /></td>';
 				temp+='<td nowrap><?php echo $rs['date_delivey']?> <input type="hidden"  value=" "   name="customer_id_'+r+'" id="customer_id_'+r+'" dojoType="dijit.form.TextBox" /></td>';
 				temp+='<td nowrap><?php echo $rs['time']?> </td>';
@@ -593,6 +615,8 @@ function OldgetAllAgentcyPayment(){
 				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
 
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value=" "    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value=" "    name="expense_'+r+'" id="expense_'+r+'" dojoType="dijit.form.NumberTextBox"   onkeyup="getExpense()" /></td>';
+				
 				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
 				temp+='<td nowrap style="text-align:left;">&nbsp<input type="hidden"  value=" "   name="paid_status_'+r+'" id="paid_status_'+r+'" dojoType="dijit.form.TextBox" />';//'+data[i].status_paid+label+data[i].status_balance+'
 				temp+='<input type="text"  value=""   name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" /><input type="hidden"  value=" "   name="balance_status_'+r+'" id="balance_status_'+r+'" dojoType="dijit.form.TextBox" /> </td>';
@@ -622,6 +646,8 @@ function OldgetAllAgentcyPayment(){
 				dijit.byId("all_total_"+r).attr("value",<?php echo $rs['all_total']?>);
 				dijit.byId("gency_fee_"+r).attr("value",<?php echo $rs['driver_fee']?>);
 				dijit.byId("paid_after_"+r).attr("value",<?php echo $rs['paid']?>);
+				dijit.byId("expense_"+r).attr("value",<?php echo $rs['expense']?>);
+				
 		 
 	<?php }?>
 				 
@@ -631,7 +657,6 @@ function OldgetAllAgentcyPayment(){
 urlagent_paid = '<?php echo $this->url(array('module'=>'bookings','controller'=>'driverpayments','action'=>'get-agentcy-paid'));?>';
 function getAgencyPaid(){
 	var type=dijit.byId("payment_by").get("value");
-	 
 	if(type==1){
 		var id = dijit.byId('invoice').get('value');
 	}else{
@@ -649,6 +674,8 @@ function getAgencyPaid(){
 		dijit.byId("total_alls").attr("value",0);
 		dijit.byId("paid_agen").attr("value",0);
 		dijit.byId("total_agen_recived").attr("value",0);
+		dijit.byId("total_expense").attr("value",0);
+		dijit.byId("balance").attr("value",0);
 	}
 	dojo.xhrPost({
 	    url: urlagent_paid,
@@ -662,6 +689,7 @@ function getAgencyPaid(){
 	    	//alert(data);
 		   if(data){
 			total_agency=Number(data.driver_paid);
+			alert(total_agency);
 			
 			total_profit=Number(dijit.byId('total_alls').get("value"))-Number(dijit.byId('total_commission_fee').get("value"));
 			dijit.byId("profit").attr("value",total_profit);
@@ -669,15 +697,17 @@ function getAgencyPaid(){
 			//dijit.byId("agency_balance").attr("value",data.driver_balance);
 			dijit.byId("total_agen_recived").attr("value",total_agency);
 			//dijit.byId("paid_agen").attr("value",total_agency);
+			var total_driver_fee=Number(dijit.byId("total_commission_fee").get("value"))+Number(dijit.byId("total_expense").get("value"));
 			
-			if(dijit.byId("total_commission_fee").get("value") < dijit.byId("total_agen_recived").get("value")){
+			
+			if( total_driver_fee < dijit.byId("total_agen_recived").get("value")){
 				 $('#lb_name_agency').text("<?php echo $tr->translate("Driver Paid");?>");
-				 dijit.byId("paid_agen").attr("value",Number(dijit.byId("total_agen_recived").get("value"))-Number(dijit.byId("total_commission_fee").get("value")));
+				 dijit.byId("paid_agen").attr("value",Number(dijit.byId("total_agen_recived").get("value"))-Number(total_driver_fee));
 				 dijit.byId("paid_type").attr("value",1);
 				 
 		    }else{
 		    	$('#lb_name_agency').text("<?php echo $tr->translate("Payment To Driver");?>");
-		    	dijit.byId("paid_agen").attr("value",Number(dijit.byId("total_commission_fee").get("value"))-Number(dijit.byId("total_agen_recived").get("value")));
+		    	dijit.byId("paid_agen").attr("value",Number(total_driver_fee)-Number(dijit.byId("total_agen_recived").get("value")));
 		    	dijit.byId("paid_type").attr("value",2);
 		    	
 		    }
@@ -689,17 +719,42 @@ function getAgencyPaid(){
 	   });
 }
 
+function getExpense(){
+	dijit.byId('paid_agen').attr('value',0);
+	var rowId = $('#record_row').val();
+	var total_expense=0;
+	var rowIDArray = rowId.split(',');
+	for(var n = 0; n < rowIDArray.length; n++) {
+		var tal=dijit.byId('expense_'+rowIDArray[n]).get('value');
+		if(isNaN(tal)) {
+			var tal = 0;
+			}
+		    total_expense+=parseFloat(tal);
+	}
+	//alert(total_expense);
+	dijit.byId('total_expense').attr('value',parseFloat(total_expense).toFixed(2));
+	//getAgencyPaid();
+	calCulatePrice();
+}
+
 function calCulatePrice(){
-	var total_comission=dijit.byId("total_commission_fee").get("value");
+	var total_driver_fee=Number(dijit.byId("total_commission_fee").get("value"))+Number(dijit.byId("total_expense").get("value"));
 	var total_age_re=dijit.byId("total_agen_recived").get("value");
 	var rs=0;
-	if(total_comission<total_age_re){
-		rs=Number(total_age_re)-Number(total_comission);
-		dijit.byId("paid_agen").attr("value",rs);
+	if(total_driver_fee<total_age_re){
+		rs=Number(total_age_re)-Number(total_driver_fee);
 	}else{
-		rs=Number(total_comission)-Number(total_age_re);
-		dijit.byId("paid_agen").attr("value",rs);
+		rs=Number(total_driver_fee)-Number(total_age_re);
 	}
-	getAgencyPaid();
+	dijit.byId("balance").attr("value",rs);
+	if(dijit.byId("balance").get("value")<dijit.byId("paid_agen").get("value")){
+		alert("Price Cannot Bigger Then Total Paid");
+		dijit.byId("paid_agen").attr("value",0);
+		dijit.byId("balance").attr("value",rs);
+		return false;
+	}else{
+		dijit.byId("balance").attr("value",Number(dijit.byId("balance").get("value"))-Number(dijit.byId("paid_agen").get("value")));
+	}
+	//getAgencyPaid();
 }
 </script>

@@ -304,6 +304,15 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 		));
 		$fil_end_date->setValue($f_date);
 		
+		$total_expense = new Zend_Dojo_Form_Element_NumberTextBox("total_expense");
+		$total_expense->setAttribs(
+				array('dojoType'=>$this->number,
+						'class'=>"fullside",
+						'readonly'=>'readonly',
+						//'onKeyup'=>'calCulatePrice()'
+				));
+		$total_expense->setValue(0);
+		
 		if (!empty($data)){
 			 
 			$_reciept_no->setValue($data['payment_no']);
@@ -321,6 +330,8 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 			$total_alls->setValue($data['total_alls']);
 			$profit->setValue($data['total_profit']);
 			$agency_paid->setValue($data['driver_paid']);
+			$total_expense->setValue($data['total_expense']);
+			$balance->setValue($data['balance']);
 			
 			$fil_start_date->setValue($data['fil_start_date']);
 			$fil_end_date->setValue($data['fil_end_date']);
@@ -369,6 +380,7 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 				$total_comission,
 				$fil_start_date,
 				$fil_end_date,
+				$total_expense,
 			));
 		return $this;
 	}

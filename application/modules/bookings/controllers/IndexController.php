@@ -47,7 +47,7 @@ class Bookings_indexController extends Zend_Controller_Action {
 			$book_status=array(
 					'module'=>'bookings','controller'=>'index','action'=>'bookview',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('booking_no'=>$link,'cus_name'=>$link,'book_status'=>$book_status));
+			//$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('booking_no'=>$link,'cus_name'=>$link,'book_status'=>$book_status));
 		    $this->view->rows=$rs_rows;
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");

@@ -30,7 +30,7 @@ class Bookings_DriverpaymentsController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("RECIEPT_NO","DRIVER_NAME","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_DRIVER_FEE","Total Driver Recieved","PAID","PAID_STATUS","USER_NAME","DELETE_INVOICE","ACTION","STATUS");
+			$collumns = array("RECIEPT_NO","DRIVER_NAME","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_DRIVER_FEE","Total Driver Recieved","PAID","BALANCE","PAID_STATUS","USER_NAME","DELETE_INVOICE","ACTION","STATUS");
 			$link=array(
 					'module'=>'bookings','controller'=>'driverpayments','action'=>'edit',
 			);

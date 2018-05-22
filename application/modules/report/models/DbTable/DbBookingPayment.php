@@ -224,7 +224,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 			$_db = new Application_Model_DbTable_DbGlobal();
 			$lang = $_db->getCurrentLang();
 			$array = array(1=>"name_en",2=>"name_kh");
-			$sql=" SELECT d.id,d.`payment_no`,
+			$sql=" SELECT d.id,d.`payment_no`,d.`total_expense`,d.paid_driver,d.`balance`,
 					(SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_driverclear_payment_detail` AS pd WHERE pd.driverclear_id=d.id LIMIT 1)  ) AS booking_nos,
 					(SELECT CONCAT(n.`last_name`) 
 	 	           FROM `ldc_driver` AS n WHERE n.`status` =1 AND n.id=d.`driver_id` LIMIT 1) AS driver_name,
