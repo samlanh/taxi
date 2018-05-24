@@ -269,8 +269,6 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		$status->setMultiOptions($opt_status);
 		
 		if (!empty($data)){
-			print_r($data);
-			
 			
 // 			$_reciept_no->setValue($data['payment_no']);
 // 			$agency->setValue($data['agency_id']);
@@ -296,6 +294,11 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 			$total_agen_recived->setValue($data['total_agen_recived']);
 			$paid_agen->setValue($data['paid_agen']);
 			$total_alls->setValue($data['total_alls']);
+			$balance->setValue($data['balance']);
+			
+			$payment_by->setAttribs(array('readonly'=>'readonly',));
+			$agency->setAttribs(array('readonly'=>'readonly',));
+			$invoice->setAttribs(array('readonly'=>'readonly',));
 				
 			
 		}

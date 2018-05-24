@@ -274,6 +274,9 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 		if ($search['agency_search']>0){
 			$where.=" AND d.`agency_id`=".$search['agency_search'];
 		}
+		if ($search['status']>0){
+			$where.=" AND d.`status`=".$search['status'];
+		}
 		$order=' ORDER BY d.id DESC ';
 		return $db->fetchAll($sql.$where.$order);
 	}
@@ -336,7 +339,7 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$lang = $_db->getCurrentLang();
 		$array = array(1=>"name_en",2=>"name_kh");
-		$sql=" SELECT d.id,d.`payment_no`,
+		$sql=" SELECT d.id,d.`payment_no`,d.balance,
 			   (SELECT b.booking_no FROM `ldc_carbooking` AS b WHERE b.id=(SELECT pd.booking_id FROM `ldc_agencyclear_payment_detail` AS pd WHERE pd.clearagency_id=d.id LIMIT 1)  ) AS booking_nos,
 		       (SELECT CONCAT(n.`last_name`,'(',n.`customer_code`,')') 
  	           FROM `ldc_agency` AS n WHERE n.`status` =1 AND n.id=d.`agency_id` LIMIT 1) AS agency_name,

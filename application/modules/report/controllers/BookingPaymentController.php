@@ -115,11 +115,12 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	else{
 	  		$search = array(
 	  				'adv_search'=>'',
-	  				'status'=>-1,
+	  				'status'=>1,
 	  				'start_date'=> date('Y-m-01'),
 	  				'end_date'=>date('Y-m-d')
 	  		);
 	  	}
+	  	$this->view->search=$search;
 	  	$db = new Report_Model_DbTable_DbBookingPayment();
 	  	$row=$this->view->d_payment = $db->getAllCommission($search);
 	  	$frm = new Bookings_Form_FrmSearchBooking();
@@ -140,6 +141,11 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	}
 	  	$this->view->commision_payment = $row;
 	  	$this->view->commision_detail = $db->getCommissionPaymentDetail($id);
+	  	$db_gs = new Application_Model_DbTable_DbGlobalSelect();
+	  	$row =array();
+	  	$this->view->tel= $db_gs->getWebsiteSetting('tel');
+	  	$this->view->email= $db_gs->getWebsiteSetting('email');
+	  	$this->view->address= $db_gs->getWebsiteSetting('address');
 	  }
 	  
 	  function rptCustomerNealyPaymentAction(){

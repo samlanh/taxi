@@ -46,23 +46,31 @@ span.label_value {
 					    border-left: solid 1px #000;
 						border-bottom: solid 1px #000;
 					}
+					
+				table { page-break-inside:auto }
+                tr{ page-break-inside:avoid; page-break-after:auto }
+			   #header {
+					  display: table-header-group;
+					  page-break-inside:avoid; page-break-after:auto;
+					}
  
 				</style>
-				<table width="100%"  class="print" cellspacing="0"  cellpadding="0" style=" font-family: 'Khmer OS Battambang' !important; white-space:nowrap;">
-				
+				<table width="100%"  class="print" cellspacing="0"  cellpadding="0" style=" font-family: 'Khmer OS Battambang' !important; white-space:nowrap;background: #fff;">
 					<tr >
 						<td colspan="3"  style="" align="center" valign="top">
-							<table width="100%" style=" line-height: 18px;font-size: 14px;margin-bottom: 0px;background: #e4e4e4;    color:#000;" >
+							<table width="100%" style=" line-height: 18px;font-size: 14px;margin-bottom: 0px;background: #e4e4e4;color: #000;" >
 								<tr>
-									<td width="40%" valign="middle">
-										<h2 style="margin: 10px 0; padding-left: 20px; font-weight: 700; vertical-align: middle;  font-size: 30px;">RECIEPT</h2>
+									<td width="20%" valign="middle">
+										<h2 style="margin: 10px 0; padding-left: 0px; font-weight: 700; vertical-align: middle;  font-size: 30px;"><?php echo $tr->translate("INVOICE");?></h2>
 									</td>
-									<td width="35%" valign="top" >
-										012 999 888 / 010 999 888<br />
-										carrental@gmail.com
+									<td width="50%" valign="top" align="center">
+									    <?php echo $this->tel['value'];?><br/>
+										<!-- 012 999 888 / 010 999 888<br /> carrental@gmail.com-->
+										<?php echo $this->email['value'];?>
 									</td>
-									<td width="25%" valign="top">
-										Porsen Chey, Dang Kor, Phnom Penh Cambodia.
+									<td width="30%" valign="top"  align="center">
+									<?php echo $this->address['value'];?>
+									<!-- Porsen Chey, Dang Kor, Phnom Penh Cambodia. -->	
 									</td>
 								</tr>
 							</table>
@@ -77,7 +85,7 @@ span.label_value {
 										<span class="label_title"><?php echo $tr->translate("PHONE");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['agency_phone'];?></span><br />
 										<span class="label_title"><?php echo $tr->translate("EMAIL");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['agency_email'];?></span><br /> 
 									</td>
-									<td width="40%" valign="top" align="right" style=" line-height: 18px;">
+									<td width="30%" valign="top" align="right" style=" line-height: 18px;">
 										<span class="label_title"> </span><br />
 										<span class="label_value" style=" font-size: 20px;   font-weight: 700;    color: #0c0c0c;"><?php //echo "$ ".number_format($commission['paid'],2);?></span>
 									</td>
@@ -85,6 +93,7 @@ span.label_value {
 										<span class="label_title">Receipt N<sup>o</sup>&nbsp;:&nbsp;&nbsp;<?php echo $commission['payment_no'];?></span><br />
 										<span class="label_title">Payment Date&nbsp;:&nbsp;&nbsp;<?php echo date("d-M-Y",strtotime($commission['payment_date']));?></span><br />
 									</td>
+									
 								</tr>
 							</table>
 						</td>
@@ -93,95 +102,77 @@ span.label_value {
 						<td  valign="top" colspan="3" style="  border-top: solid 2px #8495a2;height: 0px;">&nbsp;</td>
 					</tr>
 					<tr>
-						<td colspan="3" valign="top"  id="exportExcel">
-							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0" >
+						<td colspan="3" valign="top" id="exportExcel">
+							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0"  >
+								<thead>
 								<tr class="header" style="background: #e4e4e4">
-									<td class="row-value"><?php echo $tr->translate("NUM");?></td>
-									<td class="row-value"><?php echo $tr->translate("BOOKING_NO");?></td>
-									<td class="row-value"><?php echo $tr->translate("DELIVERY_DATE");?></td>
-									<td class="row-value one-td"><?php echo $tr->translate("FROM_LOCATION");?></td>
-									<td class="row-value"><?php echo $tr->translate("TO_LOCATION");?></td>
-									<td class="row-value">Comission Fee</td>
-									<td class="row-value one-td" >ប្រាក់នៅភ្នាក់ងារ</td>
+									<td class="row-value"  style="width: 2%;"><?php echo $tr->translate("NUM");?></td>
+									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("DELIVERY_DATE");?></td>
+									<td class="row-value " style="width: 20%;" ><?php echo $tr->translate("FROM_LOCATION");?></td>
+									<td class="row-value"  style="width: 20%;" ><?php echo $tr->translate("TO_LOCATION");?></td>
+									<td class="row-value"   nowrap><?php echo $tr->translate("Agency Fee");?> </td>
+									<td class="row-value"  style="width: 5%;" nowrap><?php echo $tr->translate("Agency Recieve");?> </td>
+									<td class="row-value " style="border-right: solid 1px #000;"><?php echo $tr->translate("OTHER");?> </td>​
 								</tr>
-								<?php $i=0;  
+								</thead>
+								<?php $i=0; 
 								$total_paid=0;
-								$total_commistion=0;
-								$total_all_a_re=0;
+								$total_remain=0;$total_commistion=0;$total_all_a_re=0;
 								foreach ($this->commision_detail as $com){ $i++;
-								$total_agency_re=0;
-								$total_commistion=$total_commistion+$com['gency_fee'];
-								//$total_remain = $total_remain + $com['remain'];
-								//$total_paid = $total_paid + $com['paid'];
-								if($com['paid_status']==2 || $com['balance_satatus']==2){
-									$total_agency_re=$com['paid']+$com['balance'];
-									$total_all_a_re=$total_all_a_re+$total_agency_re;
-								}
+								 
 								?>
 								<tr>
-									<td  class="row-td" align="center" ><?php echo $i;?></td>
-									<td  class="row-td" align="left">&nbsp;<?php echo $com['booking_no'];?></td>
-									<td  class="row-td" >&nbsp;<?php echo date("d-M-Y",strtotime($com['delivey_date']));?></td>
+									<td  class="row-td" align="center" >&nbsp;<?php echo $i;?></td>
+									 
+									<td  class="row-td" nowrap>&nbsp;<?php echo date("d-M-Y",strtotime($com['delivey_date']));?>&nbsp;</td>
 									<td  class="row-td" >&nbsp;<?php echo $com['from_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
-									<td  class="row-td" align="center"><?php echo "$ ".number_format($com['gency_fee'],2);?></td>
-									<td  class="one-td" align="left">&nbsp;<?php echo "$ ".number_format($total_agency_re,2);?></td>
-									 
+									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['gency_fee']==0)?"":"$&nbsp;".number_format($com['gency_fee'],2);?> </td>
+									<td  class="row-td"  >&nbsp;<?php echo ($com['balance']==0)?"":"$&nbsp;".number_format($com['balance'],2);?>  </td>
+									<td  class="one-td" >&nbsp;<?php echo $com['note'];?></td>
 								</tr>
 								<?php }?>
-								<tr>
-									<td colspan="3">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">Total Commission&nbsp;</span></td>
-									<td align="left" class="one-td" >&nbsp;<?php echo "$ ".number_format($total_commistion,2);?></td>
-									<td class="one-td"></td>
+								 <tr>
+									<td colspan="4">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("TOTAL_COMMISSION");?>&nbsp;</span></td>
+									<td align="left" class="one-td" >&nbsp;<?php echo "$ ".number_format($this->commision_payment['total_commission'],2);?></td>
 								</tr>
 								<tr>
-									<td colspan="3">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">ប្រាក់នៅភ្នាក់ងារ&nbsp;</span></td>
-									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($total_all_a_re,2);?></td>
-									<td class="one-td"></td>
+									<td colspan="4">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Agency Receive");?>&nbsp;</span></td>
+									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['total_agen_recived'],2);?></td>
 								</tr>
 								<tr>
 								<?php $paid=0;
-								    if($total_commistion<$total_all_a_re){
-								    	$str='Agency Paid';
-								    	$paid=$total_all_a_re-$total_commistion;
-								    }else{
-								    	$str='Payment To Agency';
-								    	$paid=$total_commistion-$total_all_a_re;
-								    }
+// 								    if($total_commistion<$total_all_a_re){
+// 								    	$str='Agency Paid';
+// 								    	$paid=$total_all_a_re-$total_commistion;
+// 								    }else{
+// 								    	$str='Payment To Agency';
+// 								    	$paid=$total_commistion-$total_all_a_re;
+// 								    }
 								?>
-									<td colspan="3">&nbsp;</td>
-									<td colspan="2" align="right" ><span class="label_title"><?php echo $str;?>&nbsp;</span></td>
-									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($paid,2);?></td>
-									<td class="one-td"></td>
+									<td colspan="4">&nbsp;</td>
+									<td colspan="2" align="right" ><span class="label_title"><?php echo $this->commision_payment['paid_type'];?>&nbsp;</span></td>
+									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($this->commision_payment['paid_agen'],2);?></td>
 								</tr>
 								<tr>
-									<td colspan="3">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title">Balance&nbsp;</span></td>
-									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($paid-$this->commision_payment['paid_agen'],2);?></td>
-									<td class="one-td"></td>
-								</tr>
-								
-								
-								<tr>
-								    <td height="100px;"></td>
+									<td colspan="4">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("BALANCE");?>&nbsp;</span></td>
+									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['balance'],2);?></td>
 								</tr>
 								<tr>
-				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="center"​ colspan="3" >
-				                     <?php //$session_user=new Zend_Session_Namespace('auth');
-								           //$last_name=$session_user->username;
-								           //$username = $session_user->fullname;
-						       			?>
-				                       <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
-				                   			<!--   ហត្ថលេខា និងឈ្មោះអ្នកបើកបរ<br/> --> 
+								    <td height="50px;"  colspan="8"></td>
+								</tr>
+								<tr>
+				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="left"​ colspan="3" >
 				                   			<hr>
-				                       		Agency's Signature and full name <br/>
-				                       <?php echo 'កាលបរិច្ឆេទ Date: ថ្ងៃទី......ខែ.........ឆ្នាំ............'?>
+				                       		​​Agency's Signature<br/><br/><br/><br/>  
+				                       <?php  echo $tr->translate("DATE").':.......................................'?>
 				                       
 				                   </td>
-				                   <td colspan="2"></td>
-				                   <td  style="padding-left: 100px;line-height: normal;" align="center"  colspan="3">
+				                   <td colspan="3"></td>
+				                   <td  style="padding-left: 100px;line-height: normal;" align="left"  colspan="3" nowrap>
 				                     <?php $session_user=new Zend_Session_Namespace('auth');
 								           //$last_name=$session_user->username;
 								           $username = $session_user->fullname;
@@ -189,8 +180,8 @@ span.label_value {
 				                        <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
 				                       		<!--  ហត្ថលេខា និងឈ្មោះអ្នកគិតលុយ<br/> --> 
 				                       		<hr>
-				                       		Accounter's Signature and full name <br/>
-				                       <?php echo 'កាលបរិច្ឆេទ Date: ថ្ងៃទី......ខែ.........ឆ្នាំ............'?>
+				                       		Accounter's Signature<br/><br/><br/><br/>  
+				                       <?php  echo $tr->translate("DATE").':.......................................'?>
 				                   </td>
 				                </tr>
 								
@@ -198,7 +189,6 @@ span.label_value {
 						</td>
 					</tr>
 				</table>
-				 
 			</div>
 		</div>
 	</div>

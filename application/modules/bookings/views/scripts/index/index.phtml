@@ -250,7 +250,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center" <?php echo $agen_color;?>><?php echo $rs['agency_name']?> </td>
 				       <td class="text-center"> <?php echo ($rs['commision_fee']==0)?"":"$&nbsp;".number_format($rs["commision_fee"],2);?></td> 
 				       <td class="text-center" <?php echo $drive_color;?>> <?php echo $rs['driver']?></td>
-				       <td class="text-center"><?php echo ($rs['driver_fee_after']==0)?"":"$&nbsp;".number_format($rs["driver_fee_after"],2);?> </td>
+				       <td class="text-center"><?php echo ($rs['driver_fee']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>
 				       <td class="text-center" style="background:#fff"><a style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/bookings/index/bookview/id/<?php echo $rs["id"]?>"> <?php echo $rs['book_status']?></a></td>
 				       <td align="left"> <?php 	echo(empty($rs['note']))?"":"".substr($rs['note'],0,30)."..."?></td>
 				       <td class="text-center" nowrap="nowrap">

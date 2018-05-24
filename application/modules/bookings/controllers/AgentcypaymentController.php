@@ -12,6 +12,8 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 	
 	public function indexAction(){
 		try{
+			$session_user=new Zend_Session_Namespace('authcar');
+			$level = $session_user->level;
 			$db = new Bookings_Model_DbTable_DbAgentcyPayment();
 			if($this->getRequest()->isPost()){
 				$search=$this->getRequest()->getPost();
@@ -28,15 +30,25 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 			$glClass = new Application_Model_GlobalClass();
 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("RECIEPT_NO","BOOKING_NO","AGENCY","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_COMMISSION","Total Agency Recieved","PAID","PAID_STATUS","USER_NAME","STATUS","ACTION");
+			$collumns = array("RECIEPT_NO","BOOKING_NO","AGENCY","PAYMENT_DATE","PAYMENT_METHOD","TOTAL_COMMISSION","Total Agency Recieved","PAID","BALANCE","PAID_STATUS","USER_NAME","STATUS","DELETE_INVOICE","ACTION");
 			$link=array(
 					'module'=>'bookings','controller'=>'agentcypayment','action'=>'edit',
 			);
 			$link_print=array(
 					'module'=>'report','controller'=>'bookingpayment','action'=>'rpt-commissionpaymentdetail',
 			);
+			
+			if($level==1){
+				$link_delete=array(
+						'module'=>'bookings','controller'=>'agentcypayment','action'=>'delete');
+			}else{
+				$link_delete=array(
+						'module'=>'bookings','controller'=>'agentcypayment','action'=>'delete');
+			}
+			
 			$print=$this->tr->translate("PRINT");
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'agentcy'=>$link,$print=>$link_print,));
+			$delete_inv=$this->tr->translate("DELETE_INVOICE");
+			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('payment_no'=>$link,'booking_nos'=>$link,$print=>$link_print,$delete_inv=>$link_delete,'booking_nos'=>$link,'agency_name'=>$link,));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -72,9 +84,10 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 		$db = new Bookings_Model_DbTable_DbAgentcyPayment();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
-			$booking_id=$db->addAgencyPayment($data);
+			$data['id']=$id;
+			$booking_id=$db->updateAgencyPayment($data);
 			if(isset($data['save_new'])){
-				Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment/add");
+				Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment");
 			}else{
 				Application_Form_FrmMessage::redirectUrl("/bookings/agentcypayment");
 			}
@@ -144,6 +157,28 @@ class Bookings_AgentcypaymentController extends Zend_Controller_Action {
 			exit();
 		}
 	
+	}
+	
+	public function deleteAction(){
+		$id = $this->getRequest()->getParam("id");
+		echo "<script language='javascript'>
+		var txt;
+		var r = confirm('តើលោកអ្នកពិតចង់លុបវិក្កយបត្រនេះឫ?');
+		if (r == true) {";
+		//$db->deleteSale($id);
+		echo "window.location ='".Zend_Controller_Front::getInstance()->getBaseUrl()."/bookings/agentcypayment/deleteitem/id/".$id."'";
+		echo"}";
+		echo"else {";
+		echo "window.location ='".Zend_Controller_Front::getInstance()->getBaseUrl()."/bookings/agentcypayment/'";
+		echo"}
+		</script>";
+	}
+	
+	function deleteitemAction(){
+		$id = $this->getRequest()->getParam("id");
+		$db = new Bookings_Model_DbTable_DbAgentcyPayment();
+		$db->deleteInvoice($id);
+		$this->_redirect("bookings/agentcypayment");
 	}
 }
 
