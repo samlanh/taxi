@@ -240,11 +240,13 @@ td {
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
 			                    	<?php echo $frm->getElement('total_commission_fee');?>
 			                   </div>
+	                   		<!-- 
 	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_AMOUNT')?>
 			                   </label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
 			                    	<?php echo $frm->getElement('total_alls');?>
 			                   </div>
+			                    -->
 	                   		</div>
 	                   	</div> 
 	                  </div>
@@ -709,7 +711,7 @@ function oldgetAllAgentcyPayment(type){
 				thead+='<th ><?php echo $tr->translate("VEHICLE_TYPE");?></th>';
 				thead+='<th nowrap><?php echo $tr->translate("Company Price");?></th>';
 				thead+='<th nowrap><?php echo $tr->translate("NoPay");?></th>';
-				thead+='<th><?php echo $tr->translate("Commission");?></th>';
+				thead+='<th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
 				thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
 				thead+='<th nowrap><?php echo $tr->translate("OTHER");?></th>';
 				fund_title=1;

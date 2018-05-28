@@ -74,7 +74,8 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 					'note'  		  => $_data['remark'],
 					'create_date'	  => date("Y-m-d H:i:s"),
 					'modify_date'  	  => date("Y-m-d H:i:s"),
-					
+					'fil_start_date'  	  => $_data['fil_start_date'],
+					'fil_end_date'  	  => $_data['fil_end_date'],
 					'total_commission'    => $_data['total_commission_fee'],
 					'total_agen_recived'  => $_data['total_agen_recived'],
 					'paid_agen'      	  => $_data['paid_agen'],
@@ -474,7 +475,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 		return $db->fetchAll($sql);
 	}
 	
-	function getAllAgentcyBooking($id,$type){
+	function getAllAgentcyBooking($id,$type,$data){
 		$db=$this->getAdapter();
 		$_db = new Application_Model_DbTable_DbGlobal();
 		$lang = $_db->getCurrentLang();
@@ -492,15 +493,19 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 	        	cb.`paid`,cb.`driver_fee_after`      
 		FROM  ldc_carbooking AS cb,ldc_customer AS c
 		WHERE cb.customer_id=c.id 
-		AND cb.is_paid_commission=0 AND cb.`balance_status`=2 AND cb.`status`=1 ";
+		AND cb.is_paid_commission=0  AND cb.`status`=1 ";
 		$and='';
+		$date='';
 		if($type==1){
 			$and=" AND cb.id=".$id;
 		}else{
 			$and=" AND cb.agency_id=".$id;
+			if(!empty($data['fil_start_date'])){
+				$date="  AND cb.`delivey_date` BETWEEN '".$data['fil_start_date']."' AND '".$data['fil_end_date']."'";
+			}
 		}
 		$order=" ORDER BY cb.`delivey_date`,cb.`booking_no` ASC ";
-		return $db->fetchAll($sql.$and.$order);
+		return $db->fetchAll($sql.$and.$date.$order);
 	}
 	
 	function getAgencyPayment($agency_id,$row_id,$type){

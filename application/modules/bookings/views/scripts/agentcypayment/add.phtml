@@ -92,6 +92,9 @@ td {
                		<div class="clearfix"></div>
           		</div>
 	       		<div class="x_content">
+	       		
+	       		
+	       		
 	       			<div class="col-md-8 col-sm-8 col-xs-12">
 	       			
 	       				<div class="form-group">
@@ -182,32 +185,32 @@ td {
 	       			</div>
 	       		</div>
 	       		<div class="x_content">
-	       		<!-- 
-	       			<div class="col-md-12 col-sm-12 col-xs-12 bg" style="background: #dbe8f9;    padding: 10px;    margin: 10px 0;    border: solid 1px #ccc;">
-		                  	
+	       		
+	       		<div class="col-md-12 col-sm-12 col-xs-12 bg" style="background: #dbe8f9;    padding: 10px;    margin: 10px 0;    border: solid 1px #ccc;">
 		                  	 <div class="col-md-12 col-sm-12 col-xs-12">
-			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('DATE')?></label>
+			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('START_DATE')?></label>
 			                	<div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('booking_date_start');?>
+			                    	<?php echo $frm->getElement('fil_start_date');?>
 			                   </div>
-			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('TO')?></label>
+			                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="first-name"><?php echo $tr->translate('TO_DATE')?></label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('booking_date_end');?>
+			                    	<?php echo $frm->getElement('fil_end_date');?>
 			                   </div>
 			                    <div class="col-md-2 col-sm-2 col-xs-2">
 			                    <input type="button" value="go" label="<?php echo $tr->translate('GO');?>" id="go_search" dojoType="dijit.form.Button" 
-												iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="getCommissionAgent();" />
+												iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="getPaymentBy();" />
 			                    </div>
 		                   </div>
-		                   
+		                   <!-- 
 		                   <div class="col-md-12 col-sm-12 col-xs-12">
 			                   	<div class="col-md-2 col-sm-2 col-xs-2">
 			                   		<input type="checkbox" class="checkbox"  name="check_all" id="check_all" value="all" OnChange="CheckAllTotal(0);" style=" height: initial; display: inline-block;"  />&nbsp;
 									<span style="vertical-align: top;"><?php echo $tr->translate('ALL');?></span>
 			                   	</div>
 		                   </div>
-		                  
-	             	   </div>  -->
+		                   -->
+	             	   </div>  
+	       		
 		                 
 						<table id="table_parent" class="table" style="margin: 0 auto; width: 100%;  " >
 							<thead>
@@ -239,10 +242,20 @@ td {
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
 			                    	<?php echo $frm->getElement('total_commission_fee');?>
 			                   </div>
+	                   		 <!-- 
 	                   		 <label class="control-label col-md-3 col-sm-3 col-xs-3 for="first-name" align="right"><?php echo $tr->translate('TOTAL_AMOUNT')?>
 			                   </label>
 			                   <div class="col-md-3 col-sm-3 col-xs-3">
 			                    	<?php echo $frm->getElement('total_alls');?>
+			                   </div>
+			                    -->
+			                   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name" align="right"> <label id="lb_name_agency"></label>
+			                   </label>
+			                   <div class="col-md-3 col-sm-3 col-xs-3">
+			                    	<?php echo $frm->getElement('paid_agen');?>
+			                   </div>
+			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display:none">
+			                    	<?php echo $frm->getElement('agency_balance');?>
 			                   </div>
 	                   		</div>
 	                   	</div> 
@@ -272,14 +285,7 @@ td {
 					   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name"> </label>
 	                    <div class="col-md-9 col-sm-9 col-xs-9">
 	                    	<div class="col-md-12 col-sm-12 col-xs-12">
-			                   <label class="control-label col-md-3 col-sm-3 col-xs-3" for="first-name" align="right"> <label id="lb_name_agency"></label>
-			                   </label>
-			                   <div class="col-md-3 col-sm-3 col-xs-3">
-			                    	<?php echo $frm->getElement('paid_agen');?>
-			                   </div>
-			                   <div class="col-md-3 col-sm-3 col-xs-3" style="display:none">
-			                    	<?php echo $frm->getElement('agency_balance');?>
-			                   </div>
+			                   
 	                   		</div>
 	                   	</div> 
 	                  </div>
@@ -450,6 +456,8 @@ function getPaymentBy(){
 url_getagentcy = '<?php echo $this->url(array('module'=>'bookings','controller'=>'agentcypayment','action'=>'get-agentcy-payments'));?>';
 r=0;
 function getAllAgentcyPayment(type){
+	var fil_start_date=convert(dijit.byId("fil_start_date").get("value"));
+	var fil_end_date=convert(dijit.byId("fil_end_date").get("value"));
 	dojo.query("#showrecord").append('');
 	if(type==1){
 		agency_id  = dijit.byId('invoice').get('value');
@@ -469,7 +477,9 @@ function getAllAgentcyPayment(type){
 		url: url_getagentcy,
 		content:{
 			'agency_id':agency_id,
-			'type':type
+			'type':type,
+			'fil_start_date':fil_start_date,
+			'fil_end_date':fil_end_date
 		},
 		handleAs:"json",
 		load: function(data){
@@ -488,7 +498,7 @@ function getAllAgentcyPayment(type){
 				thead+='<th ><?php echo $tr->translate("VEHICLE_TYPE");?></th>';
 				thead+='<th nowrap><?php echo $tr->translate("Company Price");?></th>';
 				thead+='<th nowrap><?php echo $tr->translate("NoPay");?></th>';
-				thead+='<th><?php echo $tr->translate("Commission");?></th>';
+				thead+='<th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
 				thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
 				thead+='<th nowrap><?php echo $tr->translate("OTHER");?></th>';
 				fund_title=1;
@@ -511,7 +521,7 @@ function getAllAgentcyPayment(type){
 					thead+='<th ><?php echo $tr->translate("VEHICLE_TYPE");?></th>';
 					thead+='<th nowrap><?php echo $tr->translate("Company Price");?></th>';
 					thead+='<th nowrap><?php echo $tr->translate("NoPay");?></th>';
-					thead+='<th><?php echo $tr->translate("Commission");?></th>';
+					thead+='<th><?php echo $tr->translate("COMMISSION_FEE");?></th>';
 					thead+='<th><?php echo $tr->translate("BALANCE");?></th>';
 					thead+='<th nowrap><?php echo $tr->translate("OTHER");?></th>';
 					
@@ -680,6 +690,13 @@ function getDriverInfoByid(){
 	     //alert(err);
 	    }
    });
+}
+
+function convert(str) {
+    var date = new Date(str),
+        mnth = ("0" + (date.getMonth()+1)).slice(-2),
+        day  = ("0" + date.getDate()).slice(-2);
+    return [ date.getFullYear(), mnth, day ].join("-");
 }
 
 </script>

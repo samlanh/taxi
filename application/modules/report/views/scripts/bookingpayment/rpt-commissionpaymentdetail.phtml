@@ -91,7 +91,7 @@ span.label_value {
 									</td>
 									<td width="20%" valign="top" style=" line-height: 18px;" valign="top">
 										<span class="label_title">Receipt N<sup>o</sup>&nbsp;:&nbsp;&nbsp;<?php echo $commission['payment_no'];?></span><br />
-										<span class="label_title">Payment Date&nbsp;:&nbsp;&nbsp;<?php echo date("d-M-Y",strtotime($commission['payment_date']));?></span><br />
+										<span class="label_title"><?php echo $tr->translate("DATE_​PAYMENT");?>&nbsp;:&nbsp;&nbsp;<?php echo date("d-M-Y",strtotime($commission['payment_date']));?></span><br />
 									</td>
 									
 								</tr>
@@ -110,7 +110,7 @@ span.label_value {
 									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("DELIVERY_DATE");?></td>
 									<td class="row-value " style="width: 20%;" ><?php echo $tr->translate("FROM_LOCATION");?></td>
 									<td class="row-value"  style="width: 20%;" ><?php echo $tr->translate("TO_LOCATION");?></td>
-									<td class="row-value"   nowrap><?php echo $tr->translate("Agency Fee");?> </td>
+									<td class="row-value"   nowrap><?php echo $tr->translate("COMMISSION_FEE");?> </td>
 									<td class="row-value"  style="width: 5%;" nowrap><?php echo $tr->translate("Agency Recieve");?> </td>
 									<td class="row-value " style="border-right: solid 1px #000;"><?php echo $tr->translate("OTHER");?> </td>​
 								</tr>

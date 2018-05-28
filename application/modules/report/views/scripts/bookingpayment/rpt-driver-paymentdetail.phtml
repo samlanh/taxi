@@ -5,6 +5,7 @@ $url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=
 $frm=$this->frm;
 $commission = $this->commision_payment;
 //print_r($commission);
+
 ?>
 <meta charset="utf-8">
 <title><?php echo $tr->translate("RPT_COMMISSION_DETAIL");?></title>
@@ -134,7 +135,7 @@ span.label_value {
 									<td  class="row-td" >&nbsp;<?php echo $com['from_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
 									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['driver_fee']==0)?"":"$&nbsp;".number_format($com['driver_fee'],2);?> </td>
-									<td  class="row-td"  >&nbsp;<?php echo ($total_agency_re==0)?"":"$&nbsp;".number_format($total_agency_re,2);?> </td>
+									<td  class="row-td"  >&nbsp;<?php echo ($com['paid']==0)?"":"$&nbsp;".number_format($com['paid'],2);?> </td>
 									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['expense']==0)?"":"$&nbsp;".number_format($com['expense'],2);?></td>
 									<td  class="one-td" >&nbsp;<?php echo $com['note'];?></td>
 								</tr>

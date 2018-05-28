@@ -748,9 +748,9 @@ function calCulatePrice(){
 	}
 	dijit.byId("balance").attr("value",rs);
 	if(dijit.byId("balance").get("value")<dijit.byId("paid_agen").get("value")){
-		alert("Price Cannot Bigger Then Total Paid");
-		dijit.byId("paid_agen").attr("value",0);
-		dijit.byId("balance").attr("value",rs);
+		//alert("Price Cannot Bigger Then Total Paid");
+		//dijit.byId("paid_agen").attr("value",0);
+		dijit.byId("balance").attr("value",Number(dijit.byId("balance").get("value"))-Number(dijit.byId("paid_agen").get("value")));
 		return false;
 	}else{
 		dijit.byId("balance").attr("value",Number(dijit.byId("balance").get("value"))-Number(dijit.byId("paid_agen").get("value")));

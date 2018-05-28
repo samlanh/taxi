@@ -268,6 +268,17 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		}
 		$status->setMultiOptions($opt_status);
 		
+		$f_date = date("Y-m-d");
+		$fil_start_date= new Zend_Dojo_Form_Element_DateTextBox("fil_start_date");
+		$fil_start_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
+		));
+		//$fil_start_date->setValue($f_date);
+		
+		$fil_end_date= new Zend_Dojo_Form_Element_DateTextBox("fil_end_date");
+		$fil_end_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
+		));
+		$fil_end_date->setValue($f_date);
+		
 		if (!empty($data)){
 			
 // 			$_reciept_no->setValue($data['payment_no']);
@@ -333,7 +344,9 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 				$paid_agen,
 				$status,
 				$payment_by,
-				$invoice
+				$invoice,
+				$fil_start_date,
+				$fil_end_date
 			));
 		return $this;
 	}
