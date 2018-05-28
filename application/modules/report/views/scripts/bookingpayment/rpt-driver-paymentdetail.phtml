@@ -171,7 +171,7 @@ span.label_value {
 								</tr>
 								<tr>
 									<td colspan="5">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Balance");?>&nbsp;</span></td>
+									<td colspan="2" align="right"><span class="label_title"><?php if($this->commision_payment['balance']<0){echo  $tr->translate("Driver Balance"); }else{echo $tr->translate("Balance");}?>&nbsp;</span></td>
 									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['balance'],2);?></td>
 								</tr>
 								<tr>
