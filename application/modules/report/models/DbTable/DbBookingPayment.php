@@ -357,6 +357,9 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
       	$db = $this->getAdapter();
       	$sql="SELECT pd.*,
 		(SELECT c.booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_no,
+		(SELECT c.payment_booking_no FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS payment_booking_no,
+		(SELECT v.title FROM `ldc_vechicletye` AS v WHERE v.id=(SELECT c.vehicletype_id FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1)) AS vehicle_type,
+		
 		(SELECT c.booking_date FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS booking_date,
 		
 		(SELECT c.delivey_date FROM `ldc_carbooking` AS c WHERE c.id = pd.booking_id LIMIT 1) AS delivey_date ,

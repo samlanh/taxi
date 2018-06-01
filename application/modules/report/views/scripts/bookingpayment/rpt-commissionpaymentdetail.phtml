@@ -108,39 +108,49 @@ span.label_value {
 								<tr class="header" style="background: #e4e4e4">
 									<td class="row-value"  style="width: 2%;"><?php echo $tr->translate("NUM");?></td>
 									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("DELIVERY_DATE");?></td>
+									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("CUS_BOOKING_NO");?></td>
+									
 									<td class="row-value " style="width: 20%;" ><?php echo $tr->translate("FROM_LOCATION");?></td>
 									<td class="row-value"  style="width: 20%;" ><?php echo $tr->translate("TO_LOCATION");?></td>
+									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("VEHICLE_TYPE");?></td>
+									
+									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("NoPay");?></td>
+									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("Company Price");?></td>
 									<td class="row-value"   nowrap><?php echo $tr->translate("COMMISSION_FEE");?> </td>
-									<td class="row-value"  style="width: 5%;" nowrap><?php echo $tr->translate("Agency Recieve");?> </td>
 									<td class="row-value " style="border-right: solid 1px #000;"><?php echo $tr->translate("OTHER");?> </td>​
 								</tr>
 								</thead>
 								<?php $i=0; 
 								$total_paid=0;
 								$total_remain=0;$total_commistion=0;$total_all_a_re=0;
+								$paid=0;$com_price=0;
 								foreach ($this->commision_detail as $com){ $i++;
-								 
+								$paid=$paid+$com['paid'];
+								$com_price=$com_price+$com['conpany_price'];
 								?>
 								<tr>
 									<td  class="row-td" align="center" >&nbsp;<?php echo $i;?></td>
 									 
 									<td  class="row-td" nowrap>&nbsp;<?php echo date("d-M-Y",strtotime($com['delivey_date']));?>&nbsp;</td>
+									<td  class="row-td" >&nbsp;<?php echo $com['payment_booking_no'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['from_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
+									<td  class="one-td" >&nbsp;<?php echo $com['vehicle_type'];?></td>
+									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['paid']==0)?"":"$&nbsp;".number_format($com['paid'],2);?> </td>
+									<td  class="row-td"  >&nbsp;<?php echo ($com['conpany_price']==0)?"":"$&nbsp;".number_format($com['conpany_price'],2);?>  </td>
 									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['gency_fee']==0)?"":"$&nbsp;".number_format($com['gency_fee'],2);?> </td>
-									<td  class="row-td"  >&nbsp;<?php echo ($com['balance']==0)?"":"$&nbsp;".number_format($com['balance'],2);?>  </td>
 									<td  class="one-td" >&nbsp;<?php echo $com['note'];?></td>
 								</tr>
 								<?php }?>
 								 <tr>
-									<td colspan="4">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("TOTAL_COMMISSION");?>&nbsp;</span></td>
-									<td align="left" class="one-td" >&nbsp;<?php echo "$ ".number_format($this->commision_payment['total_commission'],2);?></td>
+									<td colspan="6">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("TOTAL_NOPAY");?>&nbsp;</span></td>
+									<td colspan="2" align="left" class="one-td" >&nbsp;<?php echo "$ ".number_format($paid,2);?></td>
 								</tr>
 								<tr>
-									<td colspan="4">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Agency Receive");?>&nbsp;</span></td>
-									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['total_agen_recived'],2);?></td>
+									<td colspan="6">&nbsp;</td>
+									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("TOTAL_COMPANY_PRICE");?>&nbsp;</span></td>
+									<td colspan="2" align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format( $com_price,2);?></td>
 								</tr>
 								<tr>
 								<?php $paid=0;
@@ -152,14 +162,14 @@ span.label_value {
 // 								    	$paid=$total_commistion-$total_all_a_re;
 // 								    }
 								?>
-									<td colspan="4">&nbsp;</td>
+									<td colspan="6">&nbsp;</td>
 									<td colspan="2" align="right" ><span class="label_title"><?php echo $this->commision_payment['paid_type'];?>&nbsp;</span></td>
-									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($this->commision_payment['paid_agen'],2);?></td>
+									<td colspan="2" align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($this->commision_payment['paid_agen'],2);?></td>
 								</tr>
 								<tr>
-									<td colspan="4">&nbsp;</td>
+									<td colspan="6">&nbsp;</td>
 									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("BALANCE");?>&nbsp;</span></td>
-									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['balance'],2);?></td>
+									<td colspan="2" align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['balance'],2);?></td>
 								</tr>
 								<tr>
 								    <td height="50px;"  colspan="8"></td>
