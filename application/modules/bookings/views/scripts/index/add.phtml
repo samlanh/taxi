@@ -64,14 +64,7 @@ h4.car_title {
 					}
 					
 					var total_paid = dijit.byId('total_paid').get('value');
-					if(total_paid>0){
-						var payment_method = dijit.byId('payment_method').get('value');
-						if(payment_method==0){
-							alert("<?php echo $tr->translate('PLEASE_SELECT_PAYMENT_METHOD')?>");
-							dijit.byId('payment_method').focus(); 
-							return false;
-						}
-					}
+					 
 					if(dijit.byId("from_location").get("value")==0){
                       	alert("<?php echo $tr->translate('CHOOSE_LOCTION')?>");
 							dijit.byId('from_location').focus();
@@ -83,7 +76,8 @@ h4.car_title {
 							return false;
 					}
 					var rowId = $('#record_row').val();
-    				if(rowId!=''){ 
+    			/*	
+					if(rowId!=''){ 
 						var rowIDArray = rowId.split(',');
 						for(var n = 0; n < rowIDArray.length; n++){
 						var service = dijit.byId('service'+rowIDArray[n]).get('value');
@@ -93,7 +87,8 @@ h4.car_title {
 							return false;
 							}
 						}
-					}
+					}*/
+
 					loading();
 					return true;
 				} else {
@@ -236,10 +231,10 @@ h4.car_title {
 		               		<h4><i class="fa  fa-money" aria-hidden="true"></i> <?php echo $tr->translate('PAYMENT_INFORMATION')?></h4>
 		               </div>
 		                <div class="form-group">
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("PAYMENT_METHOD")?>
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php //echo $tr->translate("PAYMENT_METHOD")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('payment_method');?>
+		                    	<?php //echo $frm->getElement('payment_method');?>
 		                   </div>
 		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("TOTAL_PAYMENT")?>
 		                   </label>
@@ -501,6 +496,10 @@ function CalculateTotal(){
    // getPice();
    netTotal();
    // calculatebalance();
+
+   if(dijit.byId("total_payment").get("value")>dijit.byId("total_paid").get("value") ){
+	   dijit.byId('balance').attr('value',Number(dijit.byId("total_payment").get("value"))-Number(dijit.byId("total_paid").get("value")));
+   }
 }
 
 function getPice(){
@@ -519,7 +518,9 @@ function netTotal() {
 	var rowId = $('#record_row').val();
 	var rowIDArray = rowId.split(',');
 	for(var n = 0; n < rowIDArray.length; n++) {
+		if(dijit.byId("service"+rowIDArray[n]).get("value")!=0){
 		netTotal += dijit.byId('price_'+rowIDArray[n]).get('value');
+		}
 	}
 	total=Number(dijit.byId("total").get("value"))+Number(dijit.byId("other_fee").get("value"));
 	netTotal=Number(netTotal)+Number(total);
@@ -578,7 +579,7 @@ function addNewRecord(){
 	fund_title=1;
 	dojo.query("#head_title").append(thead);	
 	dijit.byId('record_row').attr('value','');
-	//addPockage();
+	addPockage();
 }
 
 r=0;
@@ -590,7 +591,7 @@ function addPockage(){
 
 	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+');CalculateTotal()" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"  ></td>';	
 	temp+='<td align="center">'+r+'</td>';
-	temp+='<td><select  style="width:120px !important;" id="service'+r+'" name="service'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getServicePopup('+r+')">'+service_booking+'</select></td>';
+	temp+='<td><select  style="width:120px !important;" id="service'+r+'" name="service'+r+'" dojoType="dijit.form.FilteringSelect" onchange="getServicePopup('+r+');CalculateTotal()">'+service_booking+'</select></td>';
 	temp+='<td><input   dojoType="dijit.form.NumberTextBox" class="fullside" required="true" name="price_'+r+'" id="price_'+r+'" value="0" type="text" onkeyup="CalculateTotal()" ></td>';
 	temp+='<td><input   dojoType="dijit.form.TextBox" class="fullside"  name="note_'+r+'" id="note_'+r+'" value="" type="text" ></td>';
 	

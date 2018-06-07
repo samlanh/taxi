@@ -449,6 +449,8 @@ function netTotal(){
 		for(var n = 0; n < rowIDArray.length; n++) {
 			total_alls+= parseFloat(dijit.byId('all_total_'+rowIDArray[n]).get('value'));
 			commission_fee+= parseFloat(dijit.byId('gency_fee_'+rowIDArray[n]).get('value'));
+
+			total_paid+= parseFloat(dijit.byId('paid_after_'+rowIDArray[n]).get('value'));
 			
 	/*		total_commission_fee+= parseFloat(dijit.byId('total_commission_fee_'+rowIDArray[n]).get('value'));
 			total_alls+= parseFloat(dijit.byId('total_'+rowIDArray[n]).get('value'));
@@ -459,6 +461,7 @@ function netTotal(){
 		}
 	dijit.byId('total_alls').attr('value',parseFloat(total_alls).toFixed(2));
 	dijit.byId('total_commission_fee').attr('value',parseFloat(commission_fee).toFixed(2));
+	dijit.byId('total_agen_recived').attr('value',parseFloat(total_paid).toFixed(2));
 	 
 /*
 	dijit.byId('total_paid_commission').attr('value',parseFloat(total_commission_fee).toFixed(2));
@@ -482,7 +485,7 @@ function getExpense(){
 		    total_expense+=parseFloat(tal);
 	}
 	dijit.byId('total_expense').attr('value',parseFloat(total_expense).toFixed(2));
-	getAgencyPaid();
+	CalcualteDriverPaid();
 	 
 }
 
@@ -497,7 +500,7 @@ function deleteRecord(index) {
 	$("#row_capital"+index).remove();
 	
 	deleteRecordId(index);
-	getAgencyPaid();
+	CalcualteDriverPaid();
 	netTotal();
 	getExpense();
 }
@@ -587,6 +590,7 @@ function getAllAgentcyPayment(type){
 			}
 			agency_total=0;
 			owner_total=0;
+			var paid=0;
 			label='';
 			for(i=0;i<data.length;i++){  
 				r++;
@@ -626,6 +630,15 @@ function getAllAgentcyPayment(type){
 				}else{
 					label='';
 				}
+
+				if(data[i].total_servic==null ){
+					data[i].total_servic=0;
+				}
+				if(data[i].paid_after==null ){
+					data[i].paid_after=0;
+				}
+				paid=Number(data[i].total_servic)+Number(data[i].paid_after);
+				
 				temp='<td><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
 				temp+='<td>'+r+'</td>';
 				temp+='<td>'+data[i].booking_no+'<input type="hidden"  value="'+data[i].id+'"   name="carbooking_id'+r+'" id="carbooking_id'+r+'" dojoType="dijit.form.TextBox" /></td>';
@@ -638,7 +651,7 @@ function getAllAgentcyPayment(type){
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].driver_fee_after+'"    name="gency_fee_'+r+'" id="gency_fee_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" /></td>';
 				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].price+'"    name="conpany_price_'+r+'" id="conpany_price_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
 
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].paid_after+'"    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+paid+'"    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup=" " readonly="true"/></td>';
 				//temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true" onkeyup=" "  /></td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value=""    name="expense_'+r+'" id="expense_'+r+'" dojoType="dijit.form.NumberTextBox" onkeyup="getExpense();" /></td>';
 				
@@ -668,7 +681,7 @@ function getAllAgentcyPayment(type){
 			}
 			dijit.byId("total_expense").attr("value",0);
 			netTotal();
-			getAgencyPaid();
+			CalcualteDriverPaid();
 		},error: function(err) {
 		}
 	});
@@ -735,6 +748,26 @@ function getAgencyPaid(){
 	   });
 }
 
+
+function CalcualteDriverPaid(){
+	dijit.byId("balance").attr("value",0);
+	var total_driver_fee=0;
+	var total_profit=0;
+	    total_driver_fee=Number(dijit.byId("total_commission_fee").get("value"))+Number(dijit.byId("total_expense").get("value"));
+	if(  total_driver_fee  < dijit.byId("total_agen_recived").get("value")){
+		 $('#lb_name_agency').text("<?php echo $tr->translate("Driver Paid");?>");
+		 dijit.byId("paid_agen").attr("value",Number(dijit.byId("total_agen_recived").get("value"))-Number(total_driver_fee));
+		 dijit.byId("paid_type").attr("value",1);
+    }else{
+    	$('#lb_name_agency').text("<?php echo $tr->translate("Payment To Driver");?>");
+    	dijit.byId("paid_agen").attr("value",Number(total_driver_fee)-Number(dijit.byId("total_agen_recived").get("value")));
+    	dijit.byId("paid_type").attr("value",2);
+    }
+
+	total_profit=Number(dijit.byId('total_alls').get("value"))-Number(dijit.byId('total_commission_fee').get("value"));
+	dijit.byId("profit").attr("value",total_profit);
+}
+
 function calCulatePrice(){
 	var total_driver_fee=Number(dijit.byId("total_commission_fee").get("value"))+Number(dijit.byId("total_expense").get("value"));
 	var total_age_re=dijit.byId("total_agen_recived").get("value");
@@ -761,5 +794,8 @@ function convert(str) {
         day  = ("0" + date.getDate()).slice(-2);
     return [ date.getFullYear(), mnth, day ].join("-");
 }
+
+
+
 
 </script>

@@ -165,7 +165,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 		$db=$this->getAdapter();
 		$lang= $this->getCurrentLang();
 		$array = array(1=>"name_en",2=>"name_kh");
-		$sql="SELECT key_code,".$array[$lang]." as name_en FROM tb_view WHERE `type`=$type";
+		$sql="SELECT key_code,".$array[$lang]." as name_en FROM tb_view WHERE `type`=$type AND status=1";
 		return $db->fetchAll($sql);
 	}
 	

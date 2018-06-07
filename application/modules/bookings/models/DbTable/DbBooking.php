@@ -740,7 +740,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'booking_date'	  => $_data['booking_date'],
 					'delivey_date'	  => $_data['delivery_date'],
 					'delivey_time'	  => $_data['delivery_time'],
-					'fly_no'	  	  => $_data['fly_no'],
+					//'fly_no'	  	  => $_data['fly_no'],
 					'from_location'	  => $_data['from_location'],
 					'to_location'	  => $_data['to_location'],
 					'qty'	  		  => 1,
@@ -789,7 +789,9 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 							'status'      	=> 1,
 					);
 					$this->_name='ldc_booking_service_detial';
-					$this->insert($data_item);
+					if($_data['service'.$i]!=0){
+						$this->insert($data_item);
+					}
 				}
 			}
 			
@@ -865,7 +867,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'booking_date'	  => $_data['booking_date'],
 					'delivey_date'	  => $_data['delivery_date'],
 					'delivey_time'	  => $_data['delivery_time'],
-					'fly_no'	  	  => $_data['fly_no'],
+					//'fly_no'	  	  => $_data['fly_no'],
 					'from_location'	  => $_data['from_location'],
 					'to_location'	  => $_data['to_location'],
 					'qty'	  		  => 1,
@@ -919,7 +921,9 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 							'status'      	=> 1,
 					);
 					$this->_name='ldc_booking_service_detial';
+					if($_data['service'.$i]!=0){
 					$this->insert($data_item);
+					}
 				}
 			}
 
@@ -1009,7 +1013,7 @@ class Bookings_Model_DbTable_DbBooking extends Zend_Db_Table_Abstract
 					'customer_id'	  => $_data['customer'],
 					'payment_date'	  => $_data['booking_date'],
 					'payment_type'	  => $_data['agency'],
-					'payment_method'  => $_data['payment_method'],
+					'payment_method'  => 1,
 					'paid'	  		  => $_data['total_paid'],
 					'balance'	  	  => $_data['balance'],
 					'grand_total'	  => $_data['total'],
