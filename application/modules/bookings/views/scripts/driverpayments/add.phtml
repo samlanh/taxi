@@ -637,7 +637,7 @@ function getAllAgentcyPayment(type){
 				if(data[i].paid_after==null ){
 					data[i].paid_after=0;
 				}
-				paid=Number(data[i].total_servic)+Number(data[i].paid_after);
+				paid=Number(data[i].paid_after);
 				
 				temp='<td><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
 				temp+='<td>'+r+'</td>';

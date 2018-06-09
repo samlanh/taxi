@@ -423,7 +423,7 @@ function deleteRecord(index) {
 	$("#row_capital"+index).remove();
 	
 	deleteRecordId(index);
-	getAgencyPaid();
+	CalcualteDriverPaid();
 	netTotal();
 }
 
@@ -506,6 +506,7 @@ function getAllAgentcyPayment(type){
 			}
 			agency_total=0;
 			owner_total=0;
+			var balance=0;
 			label='';
 			for(i=0;i<data.length;i++){  
 				r++;
@@ -546,6 +547,17 @@ function getAllAgentcyPayment(type){
 				}else{
 					label='';
 				}
+
+
+
+				if(data[i].total_servic==null ){
+					data[i].total_servic=0;
+				}
+				if(data[i].balance_after==null ){
+					data[i].balance_after=0;
+				}
+				balance=Number(data[i].balance_after)+Number(data[i].total_servic);
+				
 				temp='<td><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
 				temp+='<td >'+r+'</td>';
 				temp+='<td  aling="left" >&nbsp'+data[i].booking_no+'<input type="hidden"  value="'+data[i].id+'"   name="carbooking_id'+r+'" id="carbooking_id'+r+'" dojoType="dijit.form.TextBox" /></td>';
@@ -560,7 +572,7 @@ function getAllAgentcyPayment(type){
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].paid_after+'"    name="paid_after_'+r+'" id="paid_after_'+r+'" dojoType="dijit.form.NumberTextBox"   readonly="true"/></td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].total+'" name="company_price_'+r+'" id="company_price_'+r+'" dojoType="dijit.form.NumberTextBox" readonly="true"   /></td>';
 				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].commision_fee_after+'"    name="commission_fee_'+r+'" id="commission_fee_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"/></td>';
-				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+data[i].balance_after+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"  />';
+				temp+='<td><input  style="margin-left:0px;width:90px;"  type="text"   value="'+balance+'" name="balance_after_'+r+'" id="balance_after_'+r+'" dojoType="dijit.form.NumberTextBox"  readonly="true"  />';
 				temp+='<td><input type="text"  value=""   name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" /> <input type="hidden"  value="'+data[i].paid_status+'"   name="paid_status_'+r+'" id="paid_status_'+r+'" dojoType="dijit.form.TextBox" />';
 				temp+='<input type="hidden"  value="'+data[i].balance_status+'"   name="balance_status_'+r+'" id="balance_status_'+r+'" dojoType="dijit.form.TextBox" /> </td>';//'+data[i].status_paid+label+data[i].status_balance+'
 				 
@@ -587,7 +599,7 @@ function getAllAgentcyPayment(type){
 			}
 
 			netTotal();
-			getAgencyPaid();
+			CalcualteDriverPaid();
 		},error: function(err) {
 		}
 	});
@@ -642,6 +654,23 @@ function getAgencyPaid(){
 	    // alert(err);
 	    }
 	   });
+}
+
+function CalcualteDriverPaid(){
+	dijit.byId("balance").attr("value",0);
+	var total_driver_fee=0;
+	var total_profit=0;
+	    //total_driver_fee=Number(dijit.byId("total_commission_fee").get("value"))+Number(dijit.byId("total_expense").get("value"));
+	    if(dijit.byId("total_commission_fee").get("value") < dijit.byId("total_agen_recived").get("value")){
+			 $('#lb_name_agency').text("<?php echo $tr->translate("Agency Paid");?>");
+			 dijit.byId("paid_agen").attr("value",Number(dijit.byId("total_agen_recived").get("value"))-Number(dijit.byId("total_commission_fee").get("value")));
+			 dijit.byId("paid_type").attr("value",1);
+	    }else{
+	    	$('#lb_name_agency').text("<?php echo $tr->translate("Payment To Agency");?>");
+	    	dijit.byId("paid_agen").attr("value",Number(dijit.byId("total_commission_fee").get("value"))-Number(dijit.byId("total_agen_recived").get("value")));
+	    	dijit.byId("paid_type").attr("value",2);
+	    }
+
 }
 
 function calCulatePrice(){
@@ -699,5 +728,7 @@ function convert(str) {
         day  = ("0" + date.getDate()).slice(-2);
     return [ date.getFullYear(), mnth, day ].join("-");
 }
+
+
 
 </script>

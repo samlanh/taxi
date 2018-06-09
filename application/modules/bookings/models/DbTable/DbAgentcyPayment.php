@@ -490,7 +490,8 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 		       (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`from_location`) AS from_loc ,
 		       (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=cb.`to_location`) AS to_loc ,
 		       (SELECT c.`title` FROM `ldc_vechicletye` AS c WHERE c.id=cb.`vehicletype_id`) AS car_type ,
-	        	cb.`paid`,cb.`driver_fee_after`      
+	        	cb.`paid`,cb.`driver_fee_after`,
+	        	(SELECT SUM(sd.`total_amount`) FROM `ldc_booking_service_detial` AS sd WHERE sd.carbooking_id=cb.`id`) AS total_servic      
 		FROM  ldc_carbooking AS cb,ldc_customer AS c
 		WHERE cb.customer_id=c.id 
 		AND cb.is_paid_commission=0  AND cb.`status`=1 ";
