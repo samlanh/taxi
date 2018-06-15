@@ -366,8 +366,8 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
 		(SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=
 		(SELECT cb.from_location FROM `ldc_carbooking` AS cb WHERE cb.id =pd.`booking_id`) LIMIT 1 ) AS from_loc ,
                 (SELECT l.`location_name` FROM `ldc_package_location` AS l WHERE l.id=
-		(SELECT cb.to_location FROM `ldc_carbooking` AS cb WHERE cb.id =pd.`booking_id`) LIMIT 1 ) AS to_loc 
-		
+		(SELECT cb.to_location FROM `ldc_carbooking` AS cb WHERE cb.id =pd.`booking_id`) LIMIT 1 ) AS to_loc,
+          (SELECT TIME_FORMAT(cb.`delivey_time`,'%H:%i') FROM `ldc_carbooking` AS cb WHERE cb.id= pd.booking_id LIMIT 1)  AS `time`
 		FROM `ldc_agencyclear_payment_detail` AS pd ,`ldc_agencyclear_payment` AS a
 		WHERE pd.`clearagency_id`=a.`id`
 		AND pd.`clearagency_id`=$commission_payment_id";
