@@ -871,16 +871,16 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
           // 	    if ($search['driver_search']>0){
           // 	        $where.=" AND cb.`driver_id`=".$search['driver_search'];
           // 	    }
-          if ($search['agency_search']>0){
-              $where.=" AND cb.`agency_id`=".$search['agency_search'];
+          if ($search['driver_search']>0){
+              $where.=" AND cb.`driver_id`=".$search['driver_search'];
           }
           if ($search['is_paid']>-1){
-              $where.=" AND cb.`is_paid_commission`=".$search['is_paid'];
+              $where.=" AND cb.`is_paid_to_driver`=".$search['is_paid'];
           }
           if ($search['status']>-1){
               $where.=" AND cb.`status`=".$search['status'];
           }
-          // AND cb.`is_paid_commission`=1
+          // AND cb.`is_paid_to_driver`=0
           $order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
           //echo $sql.$where;
           return $db->fetchAll($sql.$where.$order);

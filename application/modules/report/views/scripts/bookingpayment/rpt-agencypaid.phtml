@@ -154,8 +154,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['to_location'];?></td>
 										 -->
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['vehicle_type'];?></td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['total'];?></td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['price'];?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['paid']!=0) echo '$&nbsp;'.number_format($row['paid'],2);?> </td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['total']!=0) echo '$&nbsp;'.number_format($row['total'],2);?> </td>
 											
 										<td align="left" style="line-height:15px;background-color: #fefbd8;">&nbsp;<?php if($row['balance_after']!=0) echo '$&nbsp;'.number_format($row['balance_after'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['total_service']!=0) echo '$&nbsp;'.number_format($row['total_service'],2);?></td>	

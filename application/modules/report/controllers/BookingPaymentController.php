@@ -402,9 +402,10 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	      else{
 	          $search = array(
 	              'search_text'=>'',
-	              'agency_search'=>0,
+	              //'agency_search'=>0,
 	              'status'=>1,
 	              'is_paid'=>1,
+	              'driver_search'=>0,
 	              'start_date'=> date('Y-m-01'),
 	              'end_date'=>date('Y-m-d')
 	          );

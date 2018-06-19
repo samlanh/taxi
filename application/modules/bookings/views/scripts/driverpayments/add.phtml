@@ -519,6 +519,8 @@ function deleteRecordId(index) {
 }
 
 function getPaymentBy(){
+	dojo.query("#showrecord").append('');
+	dijit.byId('record_row').attr('value','');
 	payment_by=dijit.byId("payment_by").get("value");
 	if(payment_by==1){
 		dijit.byId("driver").attr("disabled",true); 
@@ -528,6 +530,7 @@ function getPaymentBy(){
 		getAllAgentcyPayment(2);
 		dijit.byId("driver").attr("disabled",false); 
 		dijit.byId("invoice").attr("disabled",true); 
+		
 	}
 }
 
@@ -536,10 +539,15 @@ r=0;
 function getAllAgentcyPayment(type){
 	var fil_start_date=convert(dijit.byId("fil_start_date").get("value"));
 	var fil_end_date=convert(dijit.byId("fil_end_date").get("value"));
-	dojo.query("#showrecord").append('');
+	
 	if(type==1){
 		driver  = dijit.byId('invoice').get('value');
+// 		dijit.byId('record_row').attr('value','');
+// 		dijit.byId('row_id').attr('value','');
 	}else{
+		dojo.query("#showrecord").append('');
+		dijit.byId('record_row').attr('value','');
+		dijit.byId('row_id').attr('value','');
 		driver  = dijit.byId('driver').get('value');
 	}
 	if(driver==0 || driver==''){
@@ -564,8 +572,7 @@ function getAllAgentcyPayment(type){
 		load: function(data){
 			
 			//alert(data);
-			dijit.byId('record_row').attr('value','');
-			dijit.byId('row_id').attr('value','');
+			
 			if(data==''){
 				thead='<th style="margin-bottom: 20px;"><?php echo $tr->translate("DEL");?></th>';
 				thead+='<th><?php echo $tr->translate("NUM");?></th>';

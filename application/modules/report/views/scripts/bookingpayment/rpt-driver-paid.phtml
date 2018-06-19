@@ -39,7 +39,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 					  <?php echo $frm->getElement("search_text");?>
 					</div>
 					<div class="col-md-2 col-xs-12 mg-10">
-					  <?php echo $frm->getElement("agency_search");?>
+					  <?php echo $frm->getElement("driver_search");?>
 					</div>
 					<div class="col-md-2 col-xs-12 mg-10">
 					  <?php echo $frm->getElement('start_date');?>
@@ -115,7 +115,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				                 <tr class="header">
 				                    <td>&nbsp;<?php echo $tr->translate("NUM");?>&nbsp;</td>
 				                    <td><?php echo $tr->translate("BOOKING_NO");?></td>
-				                    <th><?php echo $tr->translate("AGENCY_NAME")?> </th> 
+				                    <th><?php echo $tr->translate("DRIVER_NAME")?> </th> 
 				                    <td><?php echo $tr->translate("Date");?></td>
 				                    <td><?php echo $tr->translate("Time");?></td>
 				                   <!-- 
@@ -128,7 +128,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				                    <td><?php echo $tr->translate("BALANCE");?></td>
 				                   <th><?php echo $tr->translate("Other Service Type")?> </th> 
         		    	           <th><?php echo $tr->translate("GRAND_TOTAL")?> </th> 
-		    	          		   <th><?php echo $tr->translate("COMMISSION_FEE")?></th>
+		    	          		   <th><?php echo $tr->translate("DRIVER_FEE")?></th>
 				                   <td><?php echo $tr->translate("USER_NAME");?></td>
 				                  <td><?php echo $tr->translate("STATUS");?></td>
 				                </tr>
@@ -144,7 +144,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 									<tr align="center" style="line-height: 18px; background: #fff;">
 										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['booking_no'];?></td>	
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['agency_name'];?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['driver'];?></td>
 										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo date("d-m-Y",strtotime($row['delivey_date']))?>&nbsp;</td>
 										
 										
@@ -154,13 +154,13 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['to_location'];?></td>
 										 -->
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['vehicle_type'];?></td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['paid']!=0) echo '$&nbsp;'.number_format($row['paid'],2);?></td>
 										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['total'];?></td>
-										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['price'];?></td>
 											
 										<td align="left" style="line-height:15px;background-color: #fefbd8;">&nbsp;<?php if($row['balance_after']!=0) echo '$&nbsp;'.number_format($row['balance_after'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['total_service']!=0) echo '$&nbsp;'.number_format($row['total_service'],2);?></td>	
 										<td align="left" style="line-height:15px;">&nbsp;<?php if($row['grand_total']!=0) echo '$&nbsp;'.number_format($row['grand_total'],2);?></td>
-										<td align="center" style="line-height:15px; background-color: #fefbd8;">&nbsp;<?php if($row['commision_fee_after']!=0) echo '$&nbsp;'.number_format($row['commision_fee_after'],2);?></td>
+										<td align="center" style="line-height:15px; background-color: #fefbd8;">&nbsp;<?php if($row['driver_fee_after']!=0) echo '$&nbsp;'.number_format($row['driver_fee_after'],2);?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['user_name'];?></td>
 										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['status'];?></td>
 									</tr>
