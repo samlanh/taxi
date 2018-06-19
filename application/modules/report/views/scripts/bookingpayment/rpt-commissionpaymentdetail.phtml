@@ -115,8 +115,8 @@ span.label_value {
 									<td class="row-value"  style="width: 20%;" ><?php echo $tr->translate("To");?></td>
 									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("Car");?></td>
 									
-									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("Pay");?></td>
-									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("NOPAY");?></td>
+									<td class="row-value"  nowrap style="width: 5%;"><?php echo $tr->translate("Pay");?></td>
+									<td class="row-value"  nowrap style="width: 5%;"><?php echo $tr->translate("NOPAY");?></td>
 									<td class="row-value"   nowrap><?php echo $tr->translate("COMMISSION_FEE");?> </td>
 									<td class="row-value " style="border-right: solid 1px #000;"><?php echo $tr->translate("Remark");?> </td>​
 								</tr>
@@ -137,7 +137,7 @@ span.label_value {
 									<td  class="row-td" >&nbsp;<?php echo $com['payment_booking_no'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['from_loc'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
-									<td  class="one-td" >&nbsp;<?php echo $com['vehicle_type'];?></td>
+									<td  class="row-td" >&nbsp;<?php echo $com['vehicle_type'];?></td>
 									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['paid']==0)?"":"$&nbsp;".number_format($com['paid'],2);?> </td>
 									<td  class="row-td"  >&nbsp;<?php echo ($com['conpany_price']==0)?"":"$&nbsp;".number_format($com['conpany_price'],2);?>  </td>
 									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['gency_fee']==0)?"":"$&nbsp;".number_format($com['gency_fee'],2);?> </td>
@@ -145,13 +145,11 @@ span.label_value {
 								</tr>
 								<?php }?>
 								 <tr>
-									<td colspan="7">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("TOTAL_NOPAY");?>&nbsp;</span></td>
+									<td colspan="9" align="right"><span class="label_title"><?php echo $tr->translate("TOTAL_NOPAY");?>&nbsp;</span></td>
 									<td colspan="2" align="left" class="one-td" >&nbsp;<?php echo "$ ".number_format($paid,2);?></td>
 								</tr>
 								<tr>
-									<td colspan="7">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("TOTAL_COMPANY_PRICE");?>&nbsp;</span></td>
+									<td colspan="9" align="right"><span class="label_title"><?php echo $tr->translate("TOTAL_COMPANY_PRICE");?>&nbsp;</span></td>
 									<td colspan="2" align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format( $com_price,2);?></td>
 								</tr>
 								<tr>
@@ -164,39 +162,35 @@ span.label_value {
 // 								    	$paid=$total_commistion-$total_all_a_re;
 // 								    }
 								?>
-									<td colspan="7">&nbsp;</td>
-									<td colspan="2" align="right" ><span class="label_title"><?php echo $this->commision_payment['paid_type'];?>&nbsp;</span></td>
+									<td colspan="9" align="right" ><span class="label_title"><?php echo $this->commision_payment['paid_type'];?>&nbsp;</span></td>
 									<td colspan="2" align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($this->commision_payment['paid_agen'],2);?></td>
 								</tr>
 								<tr>
-									<td colspan="7">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Debit");?>&nbsp;</span></td>
+									<td colspan="9" align="right"><span class="label_title"><?php echo $tr->translate("Debit");?>&nbsp;</span></td>
 									<td colspan="2" align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['balance'],2);?></td>
 								</tr>
+								
+							</table><br/><br/>
+							<table style="width: 100%">
+								 
 								<tr>
-								    <td height="50px;"  colspan="8"></td>
-								</tr>
-								<tr>
-				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="left"​ colspan="3" >
-				                   			<hr>
-				                       		Customer's signature<br/><br/><br/><br/>  
-				                       <?php  echo $tr->translate("DATE").':.......................................'?>
+				                   <td   nowrap style="width: 10%;padding-left: 60px;line-height: normal;" align="left"​ colspan="3" >
+				                       		Customer's signature<br/><br/><br/><br/>  <hr>
+				                       <?php  echo $tr->translate(" Date").':.......................................'?>
 				                       
 				                   </td>
-				                   <td colspan="4"></td>
-				                   <td  style="padding-left: 100px;line-height: normal;" align="left"  colspan="3" nowrap>
+				                   <td colspan="4" style="width: 70%;"></td>
+				                   <td  style="width: 10%;padding-left: 100px;line-height: normal;" align="left"  colspan="3" nowrap>
 				                     <?php $session_user=new Zend_Session_Namespace('auth');
 								           //$last_name=$session_user->username;
 								           $username = $session_user->fullname;
 						       			?>
 				                        <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
 				                       		<!--  ហត្ថលេខា និងឈ្មោះអ្នកគិតលុយ<br/> --> 
-				                       		<hr>
-				                       		 Receiver's Signature<br/><br/><br/><br/>  
-				                       <?php  echo $tr->translate("DATE").':.......................................'?>
+				                       		 Receiver's Signature<br/><br/><br/><br/>  <hr>
+				                       <?php  echo $tr->translate(" Date").':.......................................'?>
 				                   </td>
 				                </tr>
-								
 							</table>
 						</td>
 					</tr>

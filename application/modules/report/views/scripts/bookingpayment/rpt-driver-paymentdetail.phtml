@@ -79,7 +79,7 @@ span.label_value {
 					</tr>
 					<tr>
 						<td colspan="3"  valign="top">
-							<table width="100%" style=" line-height: 18px; font-size: 14px; margin: 5px 0; " >
+							<table width="100%" style=" line-height: 18px; font-size: 14px; margin: 5px 0; "  >
 								<tr>
 									<td width="40%" style=" line-height: 18px;" valign="top">
 										<span class="label_title"><?php echo $tr->translate("DRIVER_NAME");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['driver_name'];?></span><br />
@@ -104,17 +104,20 @@ span.label_value {
 					</tr>
 					<tr>
 						<td colspan="3" valign="top" id="exportExcel">
-							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0"  >
+							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0"   >
 								<thead>
 								<tr class="header" style="background: #e4e4e4">
 									<td class="row-value"  style="width: 2%;"><?php echo $tr->translate("NUM");?></td>
 									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("DELIVERY_DATE");?></td>
-									<td class="row-value " style="width: 20%;" ><?php echo $tr->translate("FROM_LOCATION");?></td>
-									<td class="row-value"  style="width: 20%;" ><?php echo $tr->translate("TO_LOCATION");?></td>
+									<td class="row-value "  ><?php echo $tr->translate("Time");?></td>
+									
+									<td class="row-value " nowrap style="width: 20%;" ><?php echo $tr->translate("FROM_LOCATION");?></td>
+									<td class="row-value" nowrap  style="width: 20%;" ><?php echo $tr->translate("TO_LOCATION");?></td>
+									<td class="row-value "  nowrap><?php echo $tr->translate("VEHICLE_TYPE");?></td>
 									<td class="row-value"   nowrap><?php echo $tr->translate("Driver Fee");?> </td>
 									<td class="row-value"  style="width: 5%;" nowrap><?php echo $tr->translate("Driver Recieve");?> </td>
 									<td class="row-value"  style="width: 5%;" nowrap><?php echo $tr->translate("Other Expense");?> </td>
-									<td class="row-value " style="border-right: solid 1px #000;"><?php echo $tr->translate("OTHER");?> </td>​
+									<td class="row-value " style="border-right: solid 1px #000;"><?php echo $tr->translate("Remark");?> </td>​
 								</tr>
 								</thead>
 								<?php $i=0; 
@@ -130,29 +133,30 @@ span.label_value {
 								?>
 								<tr>
 									<td  class="row-td" align="center" >&nbsp;<?php echo $i;?></td>
-									 
 									<td  class="row-td" nowrap>&nbsp;<?php echo date("d-M-Y",strtotime($com['delivey_date']));?>&nbsp;</td>
+									<td  class="row-td" >&nbsp;<?php echo $com['time'];?></td>
 									<td  class="row-td" >&nbsp;<?php echo $com['from_loc'];?></td>
-									<td  class="row-td" >&nbsp;<?php echo $com['to_loc'];?></td>
-									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['driver_fee']==0)?"":"$&nbsp;".number_format($com['driver_fee'],2);?> </td>
+									<td  class="row-td"  >&nbsp;<?php echo $com['to_loc'];?></td>
+									<td  class="row-td" >&nbsp;<?php echo $com['car_type'];?></td>
+									<td  class="row-td" >&nbsp;<?php echo ($com['driver_fee']==0)?"":"$&nbsp;".number_format($com['driver_fee'],2);?> </td>
 									<td  class="row-td"  >&nbsp;<?php echo ($com['paid']==0)?"":"$&nbsp;".number_format($com['paid'],2);?> </td>
-									<td  class="row-td" nowrap>&nbsp;<?php echo ($com['expense']==0)?"":"$&nbsp;".number_format($com['expense'],2);?></td>
+									<td  class="row-td"  >&nbsp;<?php echo ($com['expense']==0)?"":"$&nbsp;".number_format($com['expense'],2);?></td>
 									<td  class="one-td" >&nbsp;<?php echo $com['note'];?></td>
 								</tr>
 								<?php }?>
 								<tr>
-									<td colspan="5">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Driver Fee");?>&nbsp;</span></td>
+									 
+									<td   colspan="9" align="right"><span class="label_title"><?php echo $tr->translate("Total Driver Fee");?>&nbsp;</span></td>
 									<td  class="one-td" >&nbsp;<?php echo "$ ".number_format($total_commistion,2);?></td>
 								</tr>
 								<tr>
-									<td colspan="5">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Expense");?>&nbsp;</span></td>
+									 
+									<td   colspan="9" align="right"><span class="label_title"><?php echo $tr->translate("Total Expense");?>&nbsp;</span></td>
 									<td  class="one-td" >&nbsp;<?php echo "$ ".number_format($this->commision_payment['total_expense'],2);?></td>
 								</tr>
 								<tr>
-									<td colspan="5">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php echo $tr->translate("Total Driver Recieve");?>&nbsp;</span></td>
+									 
+									<td    colspan="9" align="right"><span class="label_title"><?php echo $tr->translate("Total Driver Recieve");?>&nbsp;</span></td>
 									<td class="one-td">&nbsp;<?php echo "$ ".number_format($this->commision_payment['total_driver_recived'],2);?></td>
 								</tr>
 								<tr>
@@ -165,39 +169,34 @@ span.label_value {
 								    	$paid=$total_commistion-$total_all_a_re;
 								    }
 								?>
-									<td colspan="5">&nbsp;</td>
-									<td colspan="2" align="right" ><span class="label_title"><?php echo $str;?>&nbsp;</span></td>
+									 
+									<td   colspan="9" align="right" ><span class="label_title"><?php echo $str;?>&nbsp;</span></td>
 									<td align="left" class="one-td">&nbsp;<?php echo "$ ".number_format($this->commision_payment['paid_driver'],2);?></td>
 								</tr>
 								<tr>
-									<td colspan="5">&nbsp;</td>
-									<td colspan="2" align="right"><span class="label_title"><?php if($this->commision_payment['balance']<0){echo  $tr->translate("Driver Balance"); }else{echo $tr->translate("Balance");}?>&nbsp;</span></td>
+									 
+									<td   colspan="9" align="right"><span class="label_title"><?php if($this->commision_payment['balance']<0){echo  $tr->translate("Driver Balance"); }else{echo $tr->translate("Balance");}?>&nbsp;</span></td>
 									<td align="left" class="one-td"> &nbsp;<?php echo "$ ".number_format($this->commision_payment['balance'],2);?></td>
 								</tr>
+							</table><br/><br/>
+							<table width="100%"  >
 								<tr>
-								    <td height="50px;"  colspan="8"></td>
-								</tr>
-								<tr>
-				                   <td nowrap style="padding-left: 60px;line-height: normal;" align="left"​ colspan="3" >
-				                   			<hr>
-				                       		​​Driver's Signature<br/><br/><br/><br/>  
-				                       <?php  echo $tr->translate("DATE").':.......................................'?>
-				                       
+				                   <td nowrap style="width: 10%;padding-left: 60px;line-height: normal;" align="left"​  >
+				                       		​​Driver's Signature<br/><br/><br/><br/>  <hr>
+				                       <?php  echo $tr->translate(" Date").':.......................................'?>
 				                   </td>
-				                   <td colspan="3"></td>
-				                   <td  style="padding-left: 100px;line-height: normal;" align="left"  colspan="3" nowrap>
+				                   <td style="width: 70%" colspan="6"></td>
+				                   <td  style="width: 10%;padding-left: 100px;line-height: normal;" align="left"    nowrap>
 				                     <?php $session_user=new Zend_Session_Namespace('auth');
 								           //$last_name=$session_user->username;
 								           $username = $session_user->fullname;
 						       			?>
 				                        <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
 				                       		<!--  ហត្ថលេខា និងឈ្មោះអ្នកគិតលុយ<br/> --> 
-				                       		<hr>
-				                       		Accounter's Signature<br/><br/><br/><br/>  
-				                       <?php  echo $tr->translate("DATE").':.......................................'?>
+				                       		 Receiver's Signature<br/><br/><br/><br/>  <hr>
+				                       <?php  echo $tr->translate(" Date").':.......................................'?>
 				                   </td>
 				                </tr>
-								
 							</table>
 						</td>
 					</tr>

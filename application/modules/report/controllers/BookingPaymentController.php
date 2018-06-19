@@ -104,7 +104,7 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	$row =array();
 	  	$this->view->tel= $db_gs->getWebsiteSetting('tel');
 	    $this->view->email= $db_gs->getWebsiteSetting('email');
-	  	 $this->view->address= $db_gs->getWebsiteSetting('address');
+	  	$this->view->address= $db_gs->getWebsiteSetting('address');
 	  	 
 	  }
 	  
@@ -114,8 +114,9 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	}
 	  	else{
 	  		$search = array(
-	  				'adv_search'=>'',
-	  				'status'=>1,
+	  		        'search_text'=>'',
+	  				'agency_search'=>0,
+	  		        'status'=>1,
 	  				'start_date'=> date('Y-m-01'),
 	  				'end_date'=>date('Y-m-d')
 	  		);
@@ -370,5 +371,52 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	  	Application_Model_Decorator::removeAllDecorator($frm);
 	  	$this->view->frm_search = $frm;
 	  }
+	  
+	  function rptAgencypaidAction(){
+	      if($this->getRequest()->isPost()){
+	          $search = $this->getRequest()->getPost();
+	      }
+	      else{
+	          $search = array(
+	              'search_text'=>'',
+	              'agency_search'=>0,
+	              'status'=>1,
+	              'is_paid'=>1,
+	              'start_date'=> date('Y-m-01'),
+	              'end_date'=>date('Y-m-d')
+	          );
+	      }
+	      $this->view->search=$search;
+	      $db = new Report_Model_DbTable_DbBookingPayment();
+	      $row=$this->view->d_payment = $db->getAllAgencyPaid($search);
+	      $frm = new Bookings_Form_FrmSearchBooking();
+	      $frm =$frm->FormSearch();
+	      Application_Model_Decorator::removeAllDecorator($frm);
+	      $this->view->frm_search = $frm;
+	  }
+	  
+	  function rptDriverPaidAction(){
+	      if($this->getRequest()->isPost()){
+	          $search = $this->getRequest()->getPost();
+	      }
+	      else{
+	          $search = array(
+	              'search_text'=>'',
+	              'agency_search'=>0,
+	              'status'=>1,
+	              'is_paid'=>1,
+	              'start_date'=> date('Y-m-01'),
+	              'end_date'=>date('Y-m-d')
+	          );
+	      }
+	      $this->view->search=$search;
+	      $db = new Report_Model_DbTable_DbBookingPayment();
+	      $row=$this->view->d_payment = $db->getAllADriverPaid($search);
+	      $frm = new Bookings_Form_FrmSearchBooking();
+	      $frm =$frm->FormSearch();
+	      Application_Model_Decorator::removeAllDecorator($frm);
+	      $this->view->frm_search = $frm;
+	  }
+	  
 }
 

@@ -427,6 +427,7 @@ class Bookings_Model_DbTable_DbBookingCleared extends Zend_Db_Table_Abstract
         AND cdd.`driverclear_id`=$id";
 		return $db->fetchAll($sql);
 	}
+	
 	 
 }
 ?>

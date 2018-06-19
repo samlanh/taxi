@@ -122,6 +122,13 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$status->setMultiOptions($opt_s);
 		$status->setValue($request->getParam("status"));
 		
+		
+		$opt_s = array('1'=>$this->tr->translate("Is Paid"),'0'=>$this->tr->translate("Not Paid"));
+		$is_paid = new Zend_Dojo_Form_Element_FilteringSelect("is_paid");
+		$is_paid->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
+		$is_paid->setMultiOptions($opt_s);
+		$is_paid->setValue($request->getParam("is_paid"));
+		
 		/*$delivery_time = new Zend_Form_Element_Text("delivery_time");
 		$delivery_time->setAttribs(array('dojoType'=>'dijit.form.TimeTextBox','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
 		$working_status->setValue($request->getParam("delivery_time"));
@@ -180,7 +187,7 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 			$end_date->setValue($request->getParam("end_date"));
 		}
 		
-		$this->addElements(array($end_date,$start_date,$start_time,$status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
+		$this->addElements(array($is_paid,$end_date,$start_date,$start_time,$status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
 				 $driver_search,$vehicle_search,$agency_search,$payment_method_search,
 				$working_status
 				));
