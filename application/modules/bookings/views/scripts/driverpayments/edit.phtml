@@ -118,7 +118,7 @@ td {
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER_NAME")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('driver');?>
+		                    	<?php echo $frm->getElement('driver_edit');?>
 		                    	<input type="hidden"  id="driver_old" name="driver_old" value=""  dojoType="dijit.form.TextBox" />
 		                   </div>
 		                </div>
@@ -367,7 +367,7 @@ function getDriver(){
 
 var urldriver_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getdrivercar'));?>";
 function getDriverInfoByid(){
-	var id = dijit.byId('driver').get('value');
+	var id = dijit.byId('driver_edit').get('value');
 	if(id==''){
 		return false;
 	}
@@ -380,7 +380,7 @@ function getDriverInfoByid(){
 	    handleAs:"json",
 	    load: function(data) {
 	    	document.getElementById('driver_html').innerHTML =data.driver;
-	    	if(dijit.byId('driver').get('value')==data.driver_id ){
+	    	if(dijit.byId('driver_edit').get('value')==data.driver_id ){
 	    		document.getElementsByClassName("overlay")[0].style.display="none";
 	    	}
 	    	//dijit.byId('driver').set('value',data.driver_id);
@@ -499,12 +499,12 @@ function deleteRecordId(index) {
 function getPaymentBy(){
 	payment_by=dijit.byId("payment_by").get("value");
 	if(payment_by==1){
-		dijit.byId("driver").attr("disabled",true); 
+		dijit.byId("driver_edit").attr("disabled",true); 
 		dijit.byId("invoice").attr("disabled",false); 
 		//getAllAgentcyPayment(1);
 	}else{
 		//getAllAgentcyPayment(2);
-		dijit.byId("driver").attr("disabled",false); 
+		dijit.byId("driver_edit").attr("disabled",false); 
 		dijit.byId("invoice").attr("disabled",true); 
 	}
 }
@@ -516,7 +516,7 @@ function getAllAgentcyPayment(type){
 	if(type==1){
 		driver  = dijit.byId('invoice').get('value');
 	}else{
-		driver  = dijit.byId('driver').get('value');
+		driver  = dijit.byId('driver_edit').get('value');
 	}
 	if(driver==0 || driver==''){
 		return false;
@@ -660,7 +660,7 @@ function getAgencyPaid(){
 	if(type==1){
 		var id = dijit.byId('invoice').get('value');
 	}else{
-		var id = dijit.byId('driver').get('value');
+		var id = dijit.byId('driver_edit').get('value');
 	}
 
 	 

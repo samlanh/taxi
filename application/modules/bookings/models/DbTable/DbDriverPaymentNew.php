@@ -190,7 +190,7 @@ class Bookings_Model_DbTable_DbDriverPaymentNew extends Zend_Db_Table_Abstract
 				
 			$_gency=array(
 					'payment_no'	  => $_data['reciept_no'],
-					'driver_id'	  	  => $_data['driver'],
+					'driver_id'	  	  => $_data['driver_edit'],
 					'payment_date'	  => $_data['payment_date'],
 					'payment_method'  => $_data['payment_by'],
 					'payment_type'	  => $_data['payment_method'],

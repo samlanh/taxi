@@ -56,6 +56,18 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 		}
 		$agency->setMultiOptions($opt_agen);
 		
+		$row_agens = $_db->getAllAgencys();
+		$agency_edit = array(0=>$this->tr->translate("SELECT_AGENCY"));
+		$agency_edit = new Zend_Dojo_Form_Element_FilteringSelect("agency_edit");
+		$agency_edit->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+		    'autoComplete'=>"false",
+		    'queryExpr'=>'*${0}*',
+		    'onChange'=>'getAllAgentcyPayment(2);getDriverInfoByid();'));//getAllAgentcyPayment()
+		foreach ($row_agens as $rs){
+		    $opt_agen[$rs["id"]] = $rs["name"];
+		}
+		$agency_edit->setMultiOptions($opt_agen);
+		
 		$remark = new Zend_Dojo_Form_Element_TextBox("remark");
 		$remark->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 		
@@ -295,7 +307,7 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 			$payment_by->setValue($data['payment_method']);
 			$_reciept_no->setValue($data['payment_no']);
 		//	$invoice->setValue($data['payment_no']);
-			$agency->setValue($data['agency_id']);
+			$agency_edit->setValue($data['agency_id']);
 			$payment_date->setValue($data['payment_date']);
 			$payment_method->setValue($data['payment_type']);
 			$remark->setValue($data['note']);
@@ -308,7 +320,7 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 			$balance->setValue($data['balance']);
 			
 			$payment_by->setAttribs(array('readonly'=>'readonly',));
-			$agency->setAttribs(array('readonly'=>'readonly',));
+			$agency_edit->setAttribs(array('readonly'=>'readonly',));
 			$invoice->setAttribs(array('readonly'=>'readonly',));
 				
 			
@@ -346,7 +358,8 @@ class Bookings_Form_FrmAgentcyPayment extends Zend_Dojo_Form{
 				$payment_by,
 				$invoice,
 				$fil_start_date,
-				$fil_end_date
+				$fil_end_date,
+		    $agency_edit
 			));
 		return $this;
 	}

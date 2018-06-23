@@ -463,6 +463,7 @@ function getAllAgentcyPayment(type){
 	var fil_end_date=convert(dijit.byId("fil_end_date").get("value"));
 	
 	if(type==1){
+		dojo.query("#head_title").append('');
 		agency_id  = dijit.byId('invoice').get('value');
 	}else{
 		dojo.query("#showrecord").append('');

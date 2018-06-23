@@ -65,6 +65,18 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 		}
 		$driver->setMultiOptions($opt_dri);
 		
+		$row_dri = $_db->getAllDrivers();
+		$opt_dri = array(0=>$this->tr->translate("SELECT_DRIVER"));
+		$driver_edit = new Zend_Dojo_Form_Element_FilteringSelect("driver_edit");
+		$driver_edit->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+		    'autoComplete'=>"false",
+		    'queryExpr'=>'*${0}*',
+		    'onChange'=>'getAllAgentcyPayment(2);getDriverInfoByid()'));
+		foreach ($row_dri as $rs){
+		    $opt_dri[$rs["id"]] = $rs["name"];
+		}
+		$driver_edit->setMultiOptions($opt_dri);
+		
 		$remark = new Zend_Dojo_Form_Element_TextBox("remark");
 		$remark->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 		
@@ -319,7 +331,7 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 			$payment_by->setValue($data['payment_method']);
 			$_reciept_no->setValue($data['payment_no']);
 			$invoice->setValue($data['booking_id']);
-			$driver->setValue($data['driver_id']);
+			$driver_edit->setValue($data['driver_id']);
 			$payment_date->setValue($data['payment_date']);
 			$payment_method->setValue($data['payment_type']);
 			$remark->setValue($data['note']);
@@ -337,7 +349,7 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 			$fil_end_date->setValue($data['fil_end_date']);
 			$fil_start_date->setAttribs(array('readonly'=>'readonly',));
 			$fil_end_date->setAttribs(array('readonly'=>'readonly',));
-			$driver->setAttribs(array('readonly'=>'readonly',));
+			$driver_edit->setAttribs(array('readonly'=>'readonly',));
 			$invoice->setAttribs(array('readonly'=>'readonly',));
 			$payment_by->setAttribs(array('readonly'=>'readonly',));
 			$status->setAttribs(array('readonly'=>'readonly',));
@@ -381,6 +393,7 @@ class Bookings_Form_FrmDriverPaymentNew extends Zend_Dojo_Form{
 				$fil_start_date,
 				$fil_end_date,
 				$total_expense,
+		    $driver_edit,
 			));
 		return $this;
 	}

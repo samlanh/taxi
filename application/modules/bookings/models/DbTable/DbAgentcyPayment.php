@@ -164,7 +164,7 @@ class Bookings_Model_DbTable_DbAgentcyPayment extends Zend_Db_Table_Abstract
 				
 			$_gency=array(
 					'payment_no'	  => $_data['reciept_no'],
-					'agency_id'	  	  => $_data['agency'],
+					'agency_id'	  	  => $_data['agency_edit'],
 					'payment_date'	  => $_data['payment_date'],
 					'payment_method'  => $_data['payment_by'],
 					'payment_type'	  => $_data['payment_method'],

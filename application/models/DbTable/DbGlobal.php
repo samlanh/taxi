@@ -941,12 +941,39 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   public function getAllDriver(){
   	$db= $this->getAdapter();
   	$sql="SELECT d.`id`,CONCAT(d.`last_name`,'(',d.`driver_id`,')') AS `name`
- 	FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`last_name`!='' ";
+ 	FROM `ldc_driver` AS d ,`ldc_carbooking` AS cb
+ 	WHERE d.`status` =1 
+ 	AND cb.`driver_id`=d.`id`
+ 	AND cb.`is_paid_to_driver`=0
+ 	AND d.`last_name`!='' ";
   	return $db->fetchAll($sql);
   }
+  
+  public function getAllDrivers(){
+      $db= $this->getAdapter();
+      $sql="SELECT d.`id`,CONCAT(d.`last_name`,'(',d.`driver_id`,')') AS `name`
+ 	FROM `ldc_driver` AS d WHERE d.`status` =1 AND d.`last_name`!='' ";
+      return $db->fetchAll($sql);
+  }
+  
   public function getAllAgency(){
-  	$sql="SELECT c.id,CONCAT(last_name,'(',c.`customer_code`,')') AS `name` FROM ldc_agency AS c WHERE c.`status`=1 AND c.`last_name` !='' ORDER BY c.`last_name` ASC";
+  	$sql="SELECT c.id,CONCAT(last_name,'(',c.`customer_code`,')') AS `name` 
+       FROM ldc_agency AS c,`ldc_carbooking` AS cb
+       WHERE c.`status`=1 
+       AND c.`last_name` !=''  
+       AND cb.`agency_id`=c.`id`
+       AND cb.`is_paid_commission`=0
+       ORDER BY c.`last_name` ASC";
   	return $this->getAdapter()->fetchAll($sql);
+  }
+  
+  public function getAllAgencys(){
+      $sql="SELECT c.id,CONCAT(last_name,'(',c.`customer_code`,')') AS `name`
+       FROM ldc_agency AS c 
+       WHERE c.`status`=1
+       AND c.`last_name` !=''
+       ORDER BY c.`last_name` ASC";
+      return $this->getAdapter()->fetchAll($sql);
   }
 
   public function getAlertBookingBefor2hour($php=null){
