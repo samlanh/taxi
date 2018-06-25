@@ -29,7 +29,7 @@ class Bookings_CarrentalController extends Zend_Controller_Action {
 			$link=array(
 					'module'=>'bookings','controller'=>'carrental','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns, $rs_rows,array('rent_no'=>$link,'name'=>$link));
+			$this->view->list=$list->getCheckList(10, $collumns, $rs_rows,array('rent_no'=>$link,'name'=>$link));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
@@ -39,8 +39,8 @@ class Bookings_CarrentalController extends Zend_Controller_Action {
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm_search = $frm;
 	}
+	
 	public function addAction(){
-		
 		$db = new Bookings_Model_DbTable_DbCarrental();
 		if($this->getRequest()->isPost()){
 			$data = $this->getRequest()->getPost();
@@ -52,7 +52,7 @@ class Bookings_CarrentalController extends Zend_Controller_Action {
 			}
 		}
 		$frm = new Bookings_Form_FrmCarrental();
-		$form = $frm->FormCarrental();
+		$form = $frm->FormRenntCarental();
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
 	}

@@ -941,10 +941,8 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   public function getAllDriver(){
   	$db= $this->getAdapter();
   	$sql="SELECT d.`id`,CONCAT(d.`last_name`,'(',d.`driver_id`,')') AS `name`
- 	FROM `ldc_driver` AS d ,`ldc_carbooking` AS cb
+ 	FROM `ldc_driver` AS d  
  	WHERE d.`status` =1 
- 	AND cb.`driver_id`=d.`id`
- 	AND cb.`is_paid_to_driver`=0
  	AND d.`last_name`!='' ";
   	return $db->fetchAll($sql);
   }

@@ -255,6 +255,7 @@ class Bookings_Model_DbTable_DbCarrental extends Zend_Db_Table_Abstract
 		";
 		return $db->fetchRow($sql);
 	}
+	
 	public function addCarrental($_data){
 		$db = $this->getAdapter();
 		$db->beginTransaction();
@@ -305,6 +306,7 @@ class Bookings_Model_DbTable_DbCarrental extends Zend_Db_Table_Abstract
 			$db->rollBack();
 		}
 	}
+	
 	public function updateCarBooking($_data){
 		$db = $this->getAdapter();
 		$db->beginTransaction();

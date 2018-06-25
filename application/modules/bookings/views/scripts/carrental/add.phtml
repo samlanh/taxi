@@ -44,6 +44,15 @@ h4.car_title {
     text-align: center;
 }
 </style>
+<style>
+ 
+.image-box {
+    display: inherit;
+    position: relative;
+    text-align: center;
+	width:100px;
+}
+</style>
 <div class="clearfix"></div>
 <div class="x_panel">
 	<div class="row">
@@ -83,55 +92,142 @@ h4.car_title {
                		<div class="clearfix"></div>
           		</div>
 	       		<div class="x_content">
+	       		
 	       			<div class="col-md-8 col-sm-8 col-xs-12">
-		                <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("RENT_NO")?>
+	                 <div class="title_form_blog">
+	               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate("Customer's Document")?></h4>
+	                 </div>
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Rent Number')?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('booking_no');?>
+		                    	<?php echo $frm->getElement('rent_no');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("CUSTOMER")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name" nowrap><?php echo $tr->translate("Cus Name")?> 
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('customer');?>
 		                   </div>
 		                </div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("RENT_DATE")?>
+		                <div class="clearfix"></div>
+		                 <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Rent Date")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('rent_date');?>
 		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Phone Number")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('agency');?>
+		                    	<?php echo $frm->getElement('phone');?>
 		                   </div>
 		                </div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("START_DATE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('start_date');?>
-		                   </div>
-		                </div>
-		                  <div class="form-group">
+		                
+		                <div class="clearfix"></div>
+		                 <div class="form-group">
 		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("RETURN_DATE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('return_date');?>
 		                   </div>
-		                  
-		                </div>
-		                 <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("RETURN_TIME")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Time")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('return_time');?>
+		                    	<?php echo $frm->getElement('time');?>
 		                   </div>
-		                 
+		                </div>
+		                
+		                 <div class="clearfix"></div>
+		                 <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Expired Date")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('expired_date');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Address")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('address');?>
+		                   </div>
+		                </div>
+		                <div class="clearfix"></div>
+		                
+		                <div class="title_form_blog">
+	               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate("CAR_INFO")?></h4>
+	                   </div>
+		               <div class="clearfix"></div>
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Vehicle Type')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('vehicle_type');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Vehicle No")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('vehicle_ref_no');?>
+		                   </div>
+		                </div>
+		                <div class="clearfix"></div>
+		                 <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Color")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('color');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Repair Date")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('repair_date');?>
+		                   </div>
+		                </div>
+		                <div class="clearfix"></div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("កាជួសជុល")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('fix_name');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Total Amount")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('toatal_amount_fix');?>
+		                   </div>
+		                </div>
+		                
+		                <div class="clearfix"></div>
+		                <div class="title_form_blog">
+	               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate("Customer Paid Information")?></h4>
+	                   </div>
+		               <div class="clearfix"></div>
+		               
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Return Money')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('return_money');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Payment date")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('payment_date');?>
+		                   </div>
+		                </div>
+		               <div class="clearfix"></div>
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Paid')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('paid');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Price/Month")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('cost_month');?>
+		                   </div>
 		                </div>
 	       			</div>
+	       			
 	       			<div class="col-md-4 col-sm-4 col-xs-12">
 	       				<div class="title_form_blog " style=" margin: 0;">
 	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('CUSTOMER_INFO')?></h4>
@@ -161,7 +257,7 @@ h4.car_title {
 						</div>
 						<div class="clearfix"></div>
 						<div class="title_form_blog " style=" margin: 0;">
-	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('AGENCY_INFO')?></h4>
+	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('VEHICLE_INFOR')?></h4>
 	       				</div>
 	       				<div id="agent_info" class="cus_info col-md-12 col-sm-12 col-xs-12">
 		       				<div class="col-md-4 col-sm-4 col-xs-12">
@@ -187,50 +283,31 @@ h4.car_title {
 							</div>
 						</div>
 						<div class="clearfix"></div>
+						
+						<div id="agent_info" class="cus_info col-md-12 col-sm-12 col-xs-12">
+		       				<div class="account-image">
+								<div class="image-box">
+									<img id="bong_wiew" src="<?php //echo $this->baseUrl().'/images/profile.jpg';?>" alt=""  />
+								</div>
+								<div class="button_browse">
+								<div id='preview'></div>	
+										<span>Upload Image Bong<span ><i class="fa fa-camera" aria-hidden="true"></i></span></span>
+										<input class="btn_borwse_image fullside" type="file" id="photo" name="photo"  onchange="loadFile(event)"/>
+								</div>
+							</div>​
+						</div>
+						<div class="clearfix"></div>
 	       			</div>
 	       		</div>
+	       		
 	       		<div class="x_content">
-	       			<div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("SELECT_VEHICLE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('vehicle');?>
-		                   </div>
-		                 	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("REFUNDABLE_DEPOSIT")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('refundable_deposit');?>
-		                   </div>
-		                </div>
-	       			<table id="table_parent" style="margin: 0 auto; width: 100%;  " >
-						<thead>
-							<tr>
-								<td colspan="8">
-									<table class="table">
-										<thead>
-											<tr id="head-title" class="head-td" align="right" style="border: solid 1px #eee;">
-												<th><?php echo $tr->translate("NUM");?></th>
-												<th ><?php //echo $tr->translate("VEHICLE");?></th>
-												<th ><?php echo $tr->translate("VEHICLE");?></th>
-												<th ><?php echo $tr->translate("RENT_PRICE");?></th>
-												<th ><?php echo $tr->translate("OTHER_FEE");?></th>
-												<th ><?php echo $tr->translate("AMOUNT");?></th>
-												<th><?php echo $tr->translate("DEL");?></th>
-											</tr>
-										</thead>
-										<tbody id="table_row">
-										<tbody>
-									</table>
-									<input type="hidden" name="identity" id="identity"  value="" >
-								</td>
-							</tr>
-						</thead>
-					</table>
 					<div class="form-group">
-	                   <div class="col-md-6 col-sm-6 col-xs-12">
+						<label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name"><?php echo $tr->translate('Remark')?>
+			            </label>​​​​
+	                   <div class="col-md-4 col-sm-4 col-xs-12">
 	                    	<?php echo $frm->getElement('remark');?>
                     	</div>
-                    	<div class="col-md-6 col-sm-6 col-xs-12">
+                    	<div class="col-md-7 col-sm-7 col-xs-12">
                     		<div class="col-md-12 col-sm-12 col-xs-12">
 	                   			<div class="col-md-2 col-sm-2 col-xs-12">
 	                   			</div>
@@ -252,19 +329,19 @@ h4.car_title {
 			                <div class="col-md-12 col-sm-12 col-xs-12">
 			                	<div class="col-md-2 col-sm-2 col-xs-12">
 	                   			</div>
-			                	<label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('TOTAL_PAID')?>
+			                	<label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('សរុបកាជួសជុល')?>
 			                   </label>
 			                   <div class="col-md-6 col-sm-6 col-xs-12">
-			                    	<?php echo $frm->getElement('total_paid');?>
+			                    	<?php echo $frm->getElement('total_maintenance');?>
 			                   </div>
 			                </div>
 			                <div class="col-md-12 col-sm-12 col-xs-12">
 			                	<div class="col-md-2 col-sm-2 col-xs-12">
 	                   			</div>
-			                	<label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('BALANCE')?>
+			                	<label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><?php echo $tr->translate('សរុបលុយចំនេញ')?>
 			                   </label>
 			                   <div class="col-md-6 col-sm-6 col-xs-12">
-			                    	<?php echo $frm->getElement('balance');?>
+			                    	<?php echo $frm->getElement('profit');?>
 			                   </div>
 			                </div>
 			             </div>
@@ -424,4 +501,10 @@ function calculateTotal(){
 	dijit.byId('total_payment').set('value',g_total.toFixed(2));
 	dijit.byId('balance').set('value',g_total.toFixed(2));
 }
+
+var loadFile = function(event) {
+    var output = document.getElementById('bong_wiew');
+    output.src = URL.createObjectURL(event.target.files[0]);
+  };
+  
 </script>
