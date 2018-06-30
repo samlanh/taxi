@@ -187,15 +187,15 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 // 	        'style'=>'color:red',
 	        'placeholder'=>$this->tr->translate("Rent No")
 	    ));
-	    $rent_no->setValue($booking_code);
+	    $_db = new Application_Model_DbTable_DbGlobal();
+	    $rent_code = $_db->getCarrentalNO();
+	    $rent_no->setValue($rent_code);
 	    
 	    $fix_name = new Zend_Dojo_Form_Element_ValidationTextBox('fix_name');
 	    $fix_name->setAttribs(array(
 	        'dojoType'=>'dijit.form.ValidationTextBox',
 	        'class'=>'fullside',
-	        // 	        'required'=>true,
-	    // 	        'readonly'=>true,
-	    // 	        'style'=>'color:red',
+	        'onkeyup'=>'getTotalAllPaid()',
 	        'placeholder'=>$this->tr->translate("Rent No")
 	    ));
 	    
@@ -232,10 +232,7 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	    ));
 	    $return_date->setValue($c_date);
 	    
-	    $repair_date= new Zend_Dojo_Form_Element_DateTextBox("repair_date");
-	    $repair_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
-	    ));
-	    $repair_date->setValue($c_date);
+	   
 	    
 	    $payment_date= new Zend_Dojo_Form_Element_DateTextBox("payment_date");
 	    $payment_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
@@ -257,13 +254,15 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	    $agency->setMultiOptions($opt_agen);
 	    
 	    $row_agen = $_db->getAllAgency();
-	    $time = array(0=>$this->tr->translate("SELECT_TIME"));
-	    $time = new Zend_Dojo_Form_Element_FilteringSelect("time");
-	    $time->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getAgent();'));
-// 	    foreach ($row_agen as $rs){
-// 	        $opt_agen[$rs["id"]] = $rs["name"];
-// 	    }
-// 	    $time->setMultiOptions($opt_agen);
+	    
+	    $db_glob=new Application_Model_GlobalClass();
+	    $time=$db_glob->getTime();
+	    $delivery_time = new Zend_Form_Element_Select("time");
+	    $delivery_time->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",
+	        'autoComplete'=>"false",
+	        'queryExpr'=>'*${0}*'
+	    ));
+	    $delivery_time->setMultiOptions($time);
 	    
 	    $total_paid = new Zend_Dojo_Form_Element_NumberTextBox("total_paid");
 	    $total_paid->setAttribs(
@@ -279,14 +278,14 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	        
 	    }
 	    
-	  //  $row_veh = $_db->getVehicleHasDriver();
-	    $opt_vehi = array(0=>$this->tr->translate("SELECT_CUSTOMER"));
+	    $cus = $_db->getAllCustomer();
+	    $opt_vehi = array(0=>$this->tr->translate("SELECT_CUSTOMER"),'-1'=>$this->tr->translate("ADD_NEW"));
 	    $customer = new Zend_Dojo_Form_Element_FilteringSelect("customer");
-	    $customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getVehicleInfo();'));
-// 	    foreach ($row_veh as $rs){
-// 	        $opt_vehi[$rs["id"]] = $rs["name"];
-// 	    }
-// 	    $vehicle->setMultiOptions($opt_vehi);
+	    $customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCustomer();'));
+	    foreach ($cus as $rs){
+	        $opt_vehi[$rs["id"]] = $rs["name"];
+	    }
+	    $customer->setMultiOptions($opt_vehi);
 
 	    $row_veh = $_db->getVehicleHasDriver();
 	    $opt_vehi = array(0=>$this->tr->translate("SELECT_VEHICLE"));
@@ -309,7 +308,7 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	    $paid->setAttribs(
 	        array('dojoType'=>$this->number,
 	            'class'=>"fullside",
-	            
+	            'onkeyup'=>'getTotalAllPaid()'
 	        ));
 	    $paid->setValue(0);
 	    
@@ -321,16 +320,14 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	        ));
 	    $cost_month->setValue(0);
 	    
-	    
-	    
 	    $remark = new Zend_Dojo_Form_Element_TextBox("remark");
 	    $remark->setAttribs(array('dojoType'=>$this->textareas,'class'=>"fullside",));
 	    
 	    $total_payment = new Zend_Dojo_Form_Element_NumberTextBox("total_payment");
 	    $total_payment->setAttribs(
 	        array('dojoType'=>$this->number,
-	            'readonly'=>'readonly',
 	            'class'=>"fullside",
+	            'readonly'=>'readonly',
 	        ));
 	    $total_payment->setValue(0);
 	    
@@ -378,7 +375,7 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	    $toatal_amount_fix->setAttribs(
 	        array('dojoType'=>$this->number,
 	            'class'=>"fullside",
-	            'readonly'=>'readonly',
+	            'onkeyup'=>'getTotalAllPaid()'
 	        ));
 	    $toatal_amount_fix->setValue(0);
 	    
@@ -387,21 +384,88 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	    $opt_payment = array(0=>$this->tr->translate("SELECT_VECHICLE_TYPE"),-1=>$this->tr->translate("Add Vehicle Type"));
 	    $vehicle_type = new Zend_Dojo_Form_Element_FilteringSelect("vehicle_type");
 	    $vehicle_type->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
-	        'onchange'=>'getPopupFormVehicleType()'
+	        'onchange'=>'getDriverInfor();'
 	    ));
 	    foreach ($rows_veh_typ as $rs){
 	        $opt_payment[$rs["id"]] = $rs["title"];
 	    }
 	    $vehicle_type->setMultiOptions($opt_payment);
 	    
-	    $vehicle_ref_no = new Zend_Dojo_Form_Element_TextBox('vehicle_ref_no');
+	    $passport = new Zend_Dojo_Form_Element_TextBox('passport');
+	    $passport->setAttribs(array(
+	        'dojoType'=>'dijit.form.ValidationTextBox',
+	        'class'=>'fullside',
+	    ));
+	    
+	    $rent_no->setAttribs(array(
+	        'dojoType'=>'dijit.form.ValidationTextBox',
+	        'class'=>'fullside',
+	        'placeholder'=>$this->tr->translate("ID card/Passport"),
+	        'readonly'=>'readonly',
+	    ));
+	    
+	    $vehicle_ref_no = new Zend_Dojo_Form_Element_ValidationTextBox('vehicle_ref_no');
 	    $vehicle_ref_no->setAttribs(array(
 	        'dojoType'=>'dijit.form.ValidationTextBox',
 	        'class'=>'fullside',
-	        'required'=>true
+	        'placeholder'=>$this->tr->translate("Rent No")
 	    ));
 	    
+	    $repair_date= new Zend_Dojo_Form_Element_DateTextBox("repair_date");
+	    $repair_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
+	    ));
+	    $repair_date->setValue($c_date);
 	    
+	    $deposit = new Zend_Dojo_Form_Element_NumberTextBox("deposit");
+	    $deposit->setAttribs(
+	        array('dojoType'=>$this->number,
+	            'class'=>"fullside",
+	            'onkeyup'=>'getTotalAllPaid()'
+	            
+	        ));
+	    $deposit->setValue(0);
+	    
+	    $validity_date= new Zend_Dojo_Form_Element_DateTextBox("validity_date");
+	    $validity_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
+	    ));
+	    $validity_date->setValue($c_date);
+	    if($data!=null){
+	        
+	       // print_r($data);exit();
+	        $rent_no->setValue($data['rent_no']);
+	        $customer->setValue($data['customer_id']);
+	        $rent_date->setValue($data['rent_date']);
+	        //$phone->setValue($data['balance']);
+	    //    $return_date->setValue($data['balance']);
+	   //     $address->setValue($data['balance']);
+	        
+	        $return_money->setValue($data['return_date']);
+	        $validity_date->setValue($data['start_date']);
+	        $cost_month->setValue($data['cost_month']);
+	        
+//	        $payment_by->setAttribs(array('readonly'=>'readonly',));
+// 	        $paid,
+// 	        $payment_date,
+// 	        $remark,
+// 	        $total_payment,
+// 	        $total_paid,
+// 	        $balance,
+// 	        $total_rent_fee,
+// 	        $total_rent_fee,
+// 	        $profit,
+// 	        $total_maintenance,
+// 	        $vehicle_type,
+// 	        $vehicle_ref_no,
+// 	        $color,
+// 	        $repair_date,
+// 	        $fix_name,
+// 	        $toatal_amount_fix,
+// 	        $passport,
+// 	        $repair_date,
+// 	        $deposit,
+// 	        $expired_date,
+//	        $delivery_time->setValue($data['balance']);
+	    }
 	    $this->addElements(array(
 	        $rent_no,
 	        $customer,
@@ -410,7 +474,7 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	        $return_date,
 	        $expired_date,
 	        $address,
-	        $time,
+	        $delivery_time,
 	        $return_money,
 	        $paid,
 	        $cost_month,
@@ -428,8 +492,11 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	        $color,
 	        $repair_date,
 	        $fix_name,
-	        $toatal_amount_fix
-	        
+	        $toatal_amount_fix,
+	        $passport,
+	        $repair_date,
+	        $deposit,
+	        $validity_date
 	    ));
 	    return $this;
 	}

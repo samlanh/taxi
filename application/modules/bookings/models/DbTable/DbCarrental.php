@@ -223,22 +223,22 @@ class Bookings_Model_DbTable_DbCarrental extends Zend_Db_Table_Abstract
 			c.id = cr.`customer_id`
 			AND cr.`status`>-1 AND cr.`rent_date`>='$from_date' AND cr.`rent_date`<='$to_date' ";
 		$where = '';
-		if($search["search_text"] !=""){
-			$s_where=array();
-			$s_search=addslashes(trim($search['search_text']));
-			$s_where[]=" CONCAT(c.`first_name`,' ',c.`last_name`) LIKE '%{$s_search}%'";
-			$s_where[]=" cr.`rent_no` LIKE '%{$s_search}%'";
-			$s_where[]=" cr.`total_payment` LIKE '%{$s_search}%'";
-			$s_where[]=" cr.`total_rent_fee` LIKE '%{$s_search}%'";
-			$s_where[]=" cr.`refundable_deposit` LIKE '%{$s_search}%'";
-			$s_where[]=" cr.`paid` LIKE '%{$s_search}%'";
-			$s_where[]=" cr.`balance` LIKE '%{$s_search}%'";
-			$s_where[]=" cr.`return_time` LIKE '%{$s_search}%'";
-			$where.=' AND ('.implode(' OR ',$s_where).')';
-		}
-		if ($search['customer']>0){
-			$where.=" AND cr.`customer_id`=".$search['customer'];
-		}
+// 		if($search["search_text"] !=""){
+// 			$s_where=array();
+// 			$s_search=addslashes(trim($search['search_text']));
+// 			$s_where[]=" CONCAT(c.`first_name`,' ',c.`last_name`) LIKE '%{$s_search}%'";
+// 			$s_where[]=" cr.`rent_no` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cr.`total_payment` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cr.`total_rent_fee` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cr.`refundable_deposit` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cr.`paid` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cr.`balance` LIKE '%{$s_search}%'";
+// 			$s_where[]=" cr.`return_time` LIKE '%{$s_search}%'";
+// 			$where.=' AND ('.implode(' OR ',$s_where).')';
+// 		}
+// 		if ($search['customer']>0){
+// 			$where.=" AND cr.`customer_id`=".$search['customer'];
+// 		}
 		$order=' ORDER BY cr.id DESC';
 		return $db->fetchAll($sql.$where.$order);
 	}
@@ -256,47 +256,129 @@ class Bookings_Model_DbTable_DbCarrental extends Zend_Db_Table_Abstract
 		return $db->fetchRow($sql);
 	}
 	
+	function checkedCustomer($id){
+	    $db = $this->getAdapter();
+	    $sql=" SELECT id FROM `ldc_carrental_customer` WHERE id=$id AND `status`=1 AND `customer`!='' LIMIT 1";
+	    return $db->fetchOne($sql);
+	}
+	
 	public function addCarrental($_data){
+	   // print_r($_data);exit();
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
+		if(!empty($_data['customer'])){
+		    $cus=$this->checkedCustomer($_data['customer']);
+		        $cus_data=array(
+		            'phone'	      => $_data['phone'],
+		            'passport'	  => $_data['passport'],
+		            'address'	  => $_data['address'],
+		            'user_id'     => $this->getUserId(),
+		            'status'      => 1,
+		        );
+		        $this->_name="ldc_carrental_customer";
+		        if(!empty($cus)){
+		            $cus_data['modify_date']=date("Y-m-d H:i:s");
+		            $where=" id=".$cus;
+		            $cus_id=$cus;
+		            $this->update($cus_data, $where);
+		        }else{
+		            $cus_data['create_date']=date("Y-m-d H:i:s");
+		            $cus_id=$this->insert($cus_data);
+		        }
+		   }
+		   
+		   if(!empty($_data['vehicle_type'])){
+		       $veh_data=array(
+		           'reffer'	      => $_data['vehicle_ref_no'],
+		           'color'	      => $_data['color'],
+		           'modify_date'  => date("Y-m-d H:i:s"),
+		           'user_currental'=> $this->getUserId(),
+		           'status'        => 1,
+		       );
+		       $this->_name="ldc_vehicle";
+		       $where=" car_type=".$_data['vehicle_type'];
+		       $this->update($veh_data, $where);
+		   }
+		   
 			$_db = new Application_Model_DbTable_DbGlobal();
-			$rent_code = $_db->getNewCarrentalNO();
+			$rent_code = $_db->getCarrentalNO();
 			$_arrbooking=array(
-					'customer_id'	  => $_data['customer'],
-					'agency_id'	  => $_data['agency'],
-					'rent_no'	  => $rent_code,
-					'rent_date'	  => $_data['rent_date'],
-					'start_date'	  => $_data['start_date'],
-					'return_date'	  => $_data['return_date'],
-					'return_time'	  => $_data['return_time'],
-					'total_payment'	  => $_data['total_payment'],
-					'paid'	  => $_data['total_paid'],
-					'balance'	  => $_data['balance'],
-					'refundable_deposit'	  => $_data['refundable_deposit'],
-					'refundable_deposit_after'	  => $_data['refundable_deposit'],
-					'remark'	  => $_data['remark'],
-					'status'	  => 1,
-					'create_date'=> date("Y-m-d H:i:s"),
-					'modify_date'  =>date("Y-m-d H:i:s"),
-					'user_id'      => $this->getUserId(),
-					'is_return_car'	  => 0,
+			        'customer_id'  => $cus_id,
+			        'rent_no'	   => $rent_code,
+			        'rent_date'	   => date("Y-m-d H:i:s",strtotime($_data['rent_date'])),
+			        'start_date'   => date("Y-m-d H:i:s",strtotime($_data['validity_date'])),
+			        'return_date'  => date("Y-m-d H:i:s",strtotime($_data['return_date'])),
+					 
+					'vehicle_type' => $_data['vehicle_type'],
+					'color'	       => $_data['color'],
+					'deposit'	   => $_data['deposit'],
+					'return_money' => $_data['return_money'],
+					'cost_month'   => $_data['cost_month'],
+			    
+			        'total_rent_num'=> $_data['total_rent_fee'],
+			        'total_maintenance'=> $_data['total_maintenance'],
+			        'total_payment'	=> $_data['total_payment'],
+			        'profit'	    => $_data['profit'],
+			    
+			        'is_return_car'	=> 0,
+					'create_date'   => date("Y-m-d H:i:s"),
+					'modify_date'   =>date("Y-m-d H:i:s"),
+					'user_id'       => $this->getUserId(),
+			        'status'        => 1,
 					
 			);
 			$this->_name="ldc_carrental";
 			$idcarrental = $this->insert($_arrbooking);
 			
-			$ids = explode(',', $_data['identity']);
-			foreach ($ids as $i){
-				$arrs = array(
-						'carrental_id'=>$idcarrental,
-						'vehicle_id'=>$_data['vehicle_id'.$i],
-						'rent_price'=>$_data['rent_price'.$i],
-						'other_fee'=>$_data['other_fee'.$i],
-						'amount'=>$_data['amount'.$i],
-					);
-				$this->_name ='ldc_carrental_detail';
-				$this->insert($arrs);
+			$_car_detail=array(
+			    'carrental_id'  => $idcarrental,
+			    'time'	        => $_data['time'],
+			    'fix_name'	    => $_data['fix_name'],
+			    'repair_date'	=> $_data['repair_date'],
+			    'payment_date'	=> $_data['payment_date'],
+			    'toatal_amount_fix'=> $_data['toatal_amount_fix'],
+			    'paid'	        => $_data['paid'],
+			    'remark'	    => $_data['first-name'],
+			    'create_date'   => date("Y-m-d H:i:s"),
+			    'user_id'       => $this->getUserId(),
+			    'status'        => 1,
+			    
+			);
+			$this->_name="ldc_carrental_detail";
+			$carr_detail_id = $this->insert($_car_detail);
+			
+// 			$row=$this->getAllPaidMonth($id);
+			
+			$part= PUBLIC_PATH.'/images/imgbong/';
+			if (!file_exists($part)) {
+			    mkdir($part, 0777, true);
+			}
+			$photoname = str_replace(" ", "_", $_data['fix_name']);
+			$ids = explode(',', $_data['record_row']);
+			$image_name="";
+			if(!empty($_data['record_row'])){
+			    foreach ($ids as $i){
+			        if (!empty($_FILES['photo'.$i]['name'])){
+			            $ss = 	explode(".", $_FILES['photo'.$i]['name']);
+			            $new_image_name = $photoname.$i.".".end($ss);
+			            $tmp = $_FILES['photo'.$i]['tmp_name'];
+			            if(move_uploaded_file($tmp, $part.$new_image_name)){
+			                $image_name = $new_image_name;
+			            }
+			        }else{
+			            $image_name ="";
+			        }
+			        
+			        $arr = array(
+			            'carr_detail_id' =>$carr_detail_id,
+			            'pic_title'      =>$image_name,
+			            'status'         =>$_data['status'],
+			            'date'           =>date("Y-m-d")
+			        );
+			        $this->_name='ldc_carrental_img';
+			        $this->insert($arr);
+			    }
 			}
 			
 			$db->commit();
@@ -486,5 +568,39 @@ class Bookings_Model_DbTable_DbCarrental extends Zend_Db_Table_Abstract
 // 			$db->rollBack();
 		}
 	}
+	
+	function getAllPaidMonth($id){
+	    $db = $this->getAdapter();
+	    $sql=" SELECT cd.`toatal_amount_fix`,cd.`paid` 
+               FROM `ldc_carrental` AS c,`ldc_carrental_detail` AS cd
+               WHERE c.`id`=cd.`carrental_id`
+               AND cd.`carrental_id`=$id";
+	    return $db->fetchRow($sql);
+	}
+	
+	function getAllCustomer(){
+	    $db = $this->getAdapter();
+	    $sql=" SELECT c.`customer` AS `name`,c.* FROM `ldc_carrental_customer` AS c WHERE c.`status`=1 ";
+	    return $db->fetchAll($sql);
+	}
+	
+	function getAllCustomerById($id){
+	    $db = $this->getAdapter();
+	    $sql=" SELECT c.`customer` AS `name`,c.*,
+        (SELECT v.name_en FROM `tb_view` AS v WHERE v.key_code=c.`sex` AND v.type=13 LIMIT 1)AS gender 
+        FROM `ldc_carrental_customer` AS c WHERE c.`status`=1 AND id=".$id;
+	    return $db->fetchRow($sql);
+	}
+	
+	function getVehcleInfor($vehicle_id){
+	    $db = $this->getAdapter();
+	    $sql="SELECT v.`car_type`,v.reffer as car_no,v.`color`,
+	    (SELECT veh.title FROM `ldc_vechicletye` AS veh WHERE veh.id=v.`car_type`  LIMIT 1) AS vehicle_type
+	    FROM `ldc_vehicle` AS v
+	    WHERE v.`status`=1
+	    AND v.`car_type`=$vehicle_id";
+	    return $db->fetchRow($sql);
+	}
+	
 }
 ?>

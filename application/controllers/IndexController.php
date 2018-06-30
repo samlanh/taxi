@@ -119,7 +119,7 @@ class IndexController extends Zend_Controller_Action
         /* set this to login page to change the character charset of browsers to Utf-8  ...*/ 
     	$session_user=new Zend_Session_Namespace('authcar');
     	if (!empty($session_user->user_id)){
-    		$this->_redirect("/group");
+    		$this->_redirect("/home");
     	}
     	$this->_helper->layout()->disableLayout();
 		$form=new Application_Form_FrmLogin();				
@@ -188,7 +188,7 @@ class IndexController extends Zend_Controller_Action
 						}
 					}
 					
-					Application_Form_FrmMessage::redirectUrl("/group");	
+					Application_Form_FrmMessage::redirectUrl("/home");	
 					exit();
 				}
 				else{					

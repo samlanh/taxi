@@ -163,6 +163,26 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		$vehicle_type->setMultiOptions($opt_payment);
 		$vehicle_type->setValue($request->getParam("vehicle_type"));
 		
+		$rows_plate=$db->getAllPlatenNo();
+		$opt_payment = array(0=>$this->tr->translate("Plate Number"),);
+		$plate_number = new Zend_Dojo_Form_Element_FilteringSelect("plate_number");
+		$plate_number->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*', ));
+		foreach ($rows_plate as $rs){
+		    $opt_payment[$rs["id"]] = $rs["title"];
+		}
+		$plate_number->setMultiOptions($opt_payment);
+		$plate_number->setValue($request->getParam("plate_number"));
+		
+		$rows_plate=$db->getAllCustomerCarrental();
+		$opt_payment = array(0=>$this->tr->translate("Lessee Name"),);
+		$lessee_name = new Zend_Dojo_Form_Element_FilteringSelect("lessee_name");
+		$lessee_name->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*', ));
+		foreach ($rows_plate as $rs){
+		    $opt_payment[$rs["id"]] = $rs["name"];
+		}
+		$lessee_name->setMultiOptions($opt_payment);
+		$lessee_name->setValue($request->getParam("lessee_name"));
+		
 		$opt_s = array('2'=>$this->tr->translate("DATE_TO_RECEIVE"),'1'=>$this->tr->translate("BOOKING_DATE"),);
 		$date_type = new Zend_Dojo_Form_Element_FilteringSelect("date_type");
 		$date_type->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
@@ -187,7 +207,14 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 			$end_date->setValue($request->getParam("end_date"));
 		}
 		
-		$this->addElements(array($is_paid,$end_date,$start_date,$start_time,$status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
+		 
+		$opt_s = array('-1'=>$this->tr->translate("Select All"),'1'=>$this->tr->translate("Stop"),'0'=>$this->tr->translate("Renting"),);
+		$is_return = new Zend_Dojo_Form_Element_FilteringSelect("is_return");
+		$is_return->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
+		$is_return->setMultiOptions($opt_s);
+		$is_return->setValue($request->getParam("is_return"));
+		
+		$this->addElements(array($lessee_name,$plate_number,$is_return,$is_paid,$end_date,$start_date,$start_time,$status,$date_type,$vehicle_type,$delivery_time,$from_book_date,$to_book_date,$search_tex,$customer,
 				 $driver_search,$vehicle_search,$agency_search,$payment_method_search,
 				$working_status
 				));

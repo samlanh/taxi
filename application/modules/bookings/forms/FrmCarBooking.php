@@ -122,7 +122,7 @@ class Bookings_Form_FrmCarBooking extends Zend_Dojo_Form{
 		}
 		$vehicle->setMultiOptions($opt_vehi);
 		
-		$row_agen = $_db->getAllAgency();
+		$row_agen = $_db->getAllAgencys();
 		$opt_agen = array(0=>$this->tr->translate("SELECT_AGENCY"),'-1'=>$this->tr->translate("ADD_NEW"));
 		$agency = new Zend_Dojo_Form_Element_FilteringSelect("agency");
 		$agency->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*','onChange'=>'getAgent();getAgencyPopUp()'));

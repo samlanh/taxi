@@ -1,6 +1,6 @@
 <?php 
    $tr = Application_Form_FrmLanguages::getCurrentlanguage();
-   echo $this->headTitle($tr->translate("BOOKING"));
+   echo $this->headTitle($tr->translate("CARRENTAL"));
    $frm = $this->frm;
 ?>
 <script type="text/javascript">
@@ -12,6 +12,7 @@ dojo.require("dijit.form.DateTextBox");
 dojo.require("dijit.form.Textarea");
 dojo.require("dijit.form.TimeTextBox");
 dojo.require("dojo.parser");
+dojo.require("dojo.NodeList-manipulate");
 require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 </script>
 <style>
@@ -39,28 +40,39 @@ h4.car_title {
     text-align: center;
     padding: 2px 0;
 }
+.head-td th {
+    text-align: center;
+}
+</style>
+<style>
+ 
+.image-box {
+    display: inherit;
+    position: relative;
+    text-align: center;
+	width:100px;
+}
 </style>
 <div class="clearfix"></div>
 <div class="x_panel">
 	<div class="row">
-		<form action="" method="post" id="addbookingrental" dojoType="dijit.form.Form">
+		<form action="" method="post" id="addbookingrental" dojoType="dijit.form.Form"  enctype="multipart/form-data">
 			<script type="dojo/method" event="onSubmit">			
 				if(this.validate()) {
 					var customer = dijit.byId('customer').get('value');
-					if(customer==0){
+					if(customer==0 || vehicle_type==-1){
 						alert("<?php echo $tr->translate('PLEASE_SELECT_CUSTOMER')?>");
 						dijit.byId('customer').focus(); 
 						return false;
 					}
-					var total_paid = dijit.byId('total_paid').get('value');
-					if(total_paid>0){
-						var payment_method = dijit.byId('payment_method').get('value');
-						if(payment_method==0){
-							alert("<?php echo $tr->translate('PLEASE_SELECT_PAYMENT_METHOD')?>");
-							dijit.byId('payment_method').focus(); 
-							return false;
-						}
-					}
+                    
+                    var vehicle_type = dijit.byId('vehicle_type').get('value');
+					if(vehicle_type==0 || vehicle_type==-1){
+						alert("<?php echo $tr->translate('PLEASE_VEHICLE_TYPE')?>");
+						dijit.byId('vehicle_type').focus(); 
+						return false;
+					}					 
+
 					loading();
 					return true;
 				} else {
@@ -70,7 +82,7 @@ h4.car_title {
       	 <div class="col-md-12 col-xs-12 forms_padding">
 	          <div class="x_panel">
 	              <div class="x_title">
-	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('CARRENTALBOOKING')?></h2>
+	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('CARRENTAL')?></h2>
 	                 <ul class="nav navbar-right panel_toolbox">
 	                    <li>
 	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -79,167 +91,199 @@ h4.car_title {
                		<div class="clearfix"></div>
           		</div>
 	       		<div class="x_content">
+	       		
 	       			<div class="col-md-8 col-sm-8 col-xs-12">
-		                <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("BOOKING_NO")?>
+	                 <div class="title_form_blog">
+	               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate("Customer's Document")?></h4>
+	                 </div>
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Rent Number')?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('booking_no');?>
-		                    	<input type="hidden" dojoType="dijit.form.TextBox" name="booking_id" id="booking_id" value="<?php echo $this->row['id'];?>" >
-		                    	<input type="hidden" dojoType="dijit.form.TextBox" name="is_commssion_paid" id="is_commssion_paid" value="<?php echo $this->row['is_paid_commission'];?>" >
+		                    	<?php echo $frm->getElement('rent_no');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("CUSTOMER")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name" nowrap><?php echo $tr->translate("Lessee Name")?> 
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('customer');?>
 		                   </div>
 		                </div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("BOOKING_DATE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('booking_date');?>
-		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("FLY_NO")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('fly_no');?>
-		                   </div>
-		                </div>
-		                <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DELIVERY_DATE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('delivery_date');?>
-		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("AGENCY")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('agency');?>
-		                   </div>
-		                  
-		                </div>
+		                <div class="clearfix"></div>
 		                 <div class="form-group">
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DELIVERY_TIME")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Rent Date")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('delivery_time');?>
+		                    	<?php echo $frm->getElement('rent_date');?>
 		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Phone Number")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('driver');?>
-		                   </div>
-		                 
-		                </div>
-		                <div class="form-group">
-		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("FROM_LOCATION")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('from_location');?>
-		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("VEHICLE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('vehicle');?>
+		                    	<?php echo $frm->getElement('phone');?>
 		                   </div>
 		                </div>
+		                
+		                <div class="clearfix"></div>
 		                 <div class="form-group">
-		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("TO_LOCATION")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("RETURN_DATE")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('to_location');?>
+		                    	<?php echo $frm->getElement('validity_date');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("DRIVER_FEE")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("IDCard/Passport")?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('driver_fee');?>
+		                    	<?php echo $frm->getElement('passport');?>
 		                   </div>
 		                </div>
-		                <div class="form-group">
-		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("REMARK")?>
+		                
+		                 <div class="clearfix"></div>
+		                 <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Return Date")?>
 		                   </label>
-		                   <div class="col-md-10 col-sm-10 col-xs-12">
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('return_date');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Time")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('time');?>
+		                   </div>
+		                </div>
+		                <div class="clearfix"></div>
+		                 <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Address")?>
+		                   </label>
+		                   <div class="col-md-10 col-md-10 col-xs-12">
+		                    	<?php echo $frm->getElement('address');?>
+		                   </div>
+		                </div>
+		                
+		                <div class="title_form_blog">
+	               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate("CAR_INFO")?></h4>
+	                   </div>
+		               <div class="clearfix"></div>
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Vehicle Type')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('vehicle_type');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Vehicle No")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('vehicle_ref_no');?>
+		                   </div>
+		                </div>
+		                <div class="clearfix"></div>
+		                 <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Color")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('color');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Repair Date")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('repair_date');?>
+		                   </div>
+		                </div>
+		                <div class="clearfix"></div>
+		                <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Fixing Car")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('fix_name');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Total Amount")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('toatal_amount_fix');?>
+		                   </div>
+		                </div>
+		                
+		                <div class="clearfix"></div>
+		                <div class="title_form_blog">
+	               		<h4><i class="fa  fa-file" aria-hidden="true"></i> <?php echo $tr->translate("Customer Paid Information")?></h4>
+	                   </div>
+		               <div class="clearfix"></div>
+		               
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Paid')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('paid');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Paid Date")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('payment_date');?>
+		                   </div>
+		                </div>
+		               <div class="clearfix"></div>
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Return Money')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('return_money');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Price/Month")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('cost_month');?>
+		                   </div>
+		                </div>
+		                
+		                <div class="clearfix"></div>
+		               <div class="form-group">
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Deposit')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php echo $frm->getElement('deposit');?>
+		                   </div>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("Remark")?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('remark');?>
 		                   </div>
 		                </div>
-		                <div class="title_form_blog">
-		               		<h4><i class="fa  fa-money" aria-hidden="true"></i> <?php echo $tr->translate('PRICE_INFORMATION')?></h4>
-		               </div>
+						  
 		               <div class="form-group">
-		               	   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("GRAND_TOTAL")?>
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Total Rent No')?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('total');?>
+		                    	<?php echo $frm->getElement('total_rent_fee');?>
 		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("CAR_RENT_FEE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('price');?>
-		                   </div>
-		                   
-		                  
+		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('Total Fix Fee')?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm->getElement('total_maintenance');?>
+			                   </div>
 		                </div>
-		                <div class="form-group">
-		                	<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("OTHER_FEE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('other_fee');?>
-		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("COMMISSION_FEE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('commision_fee');?>
-		                   </div>
-		                   
-		                </div>
-		                <div class="title_form_blog">
-		               		<h4><i class="fa  fa-money" aria-hidden="true"></i> <?php echo $tr->translate('PAYMENT_INFORMATION')?></h4>
-		               </div>
-		                <div class="form-group">
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("PAYMENT_METHOD")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('payment_method');?>
-		                   </div>
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("TOTAY_PAYMENT")?>
+		                <div class="clearfix"></div>
+		               <div class="form-group">
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('សរុបលុយដែលបានទទួល')?>
 		                   </label>
 		                   <div class="col-md-4 col-sm-4 col-xs-12">
 		                    	<?php echo $frm->getElement('total_payment');?>
 		                   </div>
+		                   
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('សរុបលុយចំនេញ')?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm->getElement('profit');?>
+			                   </div>
 		                </div>
-		               <div class="form-group">
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("PAYMENT_NOTE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('payment_note');?>
-		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("TOTAL_PAID")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                   <?php echo $frm->getElement('total_paid');?>
-		                   </div>
-		                </div>
-		                <div class="form-group">
-		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php //echo $tr->translate("")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	
-		                   </div>
-		                   <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate("BALANCE")?>
-		                   </label>
-		                   <div class="col-md-4 col-sm-4 col-xs-12">
-		                    	<?php echo $frm->getElement('balance');?>
-		                   </div>
-		                </div>
-		                <div class="text-center">
-							<input type="button" value="GO_BACK" label="<?php echo $tr->translate('GO_BACK');?>" id="back" dojoType="dijit.form.Button" 
-										iconClass="dijitIconUndo" onclick="window.history.back();" />
-							<input class="button_success" type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVE_CLOSE');?>" id="save_close" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 	
-							<input class="button_success" type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVE_NEW');?>" id="save_new" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
-									
-						</div>
+		                
+		                <div class="x_content">
+        	       			<div class="text-center">
+        						<input type="button" value="GO_BACK" label="<?php echo $tr->translate('GO_BACK');?>" id="back" dojoType="dijit.form.Button" 
+        									iconClass="dijitIconUndo" onclick="window.history.back();" />
+        						<input class="button_success" type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVE_CLOSE');?>" id="save_close" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 	
+        						<input class="button_success" type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVE_NEW');?>" id="save_new" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+        					</div>
+        	       		</div>
 	       			</div>
+	       			
 	       			<div class="col-md-4 col-sm-4 col-xs-12">
 	       				<div class="title_form_blog " style=" margin: 0;">
 	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('CUSTOMER_INFO')?></h4>
@@ -253,23 +297,23 @@ h4.car_title {
 							<div class="col-md-8 col-sm-8 col-xs-12">
 								<ul class="list-unstyled">
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <label id="lbl_name"></label>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <label id="lbl_gender"></label>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <label id="lbl_nationality"></label>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <label id="lbl_phone"></label>
                               		</li>
                               	</ul>
 							</div>
 						</div>
 						<div class="clearfix"></div>
 						<div class="title_form_blog " style=" margin: 0;">
-	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('AGENCY_INFO')?></h4>
+	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('Vehicle Information')?></h4>
 	       				</div>
 	       				<div id="agent_info" class="cus_info col-md-12 col-sm-12 col-xs-12">
 		       				<div class="col-md-4 col-sm-4 col-xs-12">
@@ -280,123 +324,134 @@ h4.car_title {
 							<div class="col-md-8 col-sm-8 col-xs-12">
 								<ul class="list-unstyled">
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Vehicle Type')?></span> : <span id="lb_vehicle_type"></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref.No')?></span> : <span id="lb_plate_no"></span>
                               		</li>
                               		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <span class="span_value"></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"></span>
+                              			<span class="span_title"><?php echo $tr->translate('Color')?></span> : <span id="lb_color"></span>
                               		</li>
                               	</ul>
 							</div>
 						</div>
 						<div class="clearfix"></div>
-						<div class="title_form_blog " style=" margin: 0;">
-	       					<h4 style=" font-size: 14px;"><i class="fa  fa-user" aria-hidden="true"></i> <?php echo $tr->translate('Driver Infomation')?></h4>
-	       				</div>
-	       				<div id="driver_html" class="cus_info col-md-12 col-sm-12 col-xs-12">
-		       				<div class="col-md-4 col-sm-4 col-xs-12">
-				               	<div class="image-box infor">
-				               		<?php 
-				               		$profile = $this->baseUrl().'/images/profile.jpg';
-					               		if (!empty($this->driver_info['photo'])){
-					               			$profile = $this->baseUrl().'/images/driverphoto/'.$this->driver_info['photo'];
-					               		}
-				               		?>
-									<img id="profile_wiew" src="<?php echo $profile;?>" alt=""  />
-								</div>
-							</div>
-							<div class="col-md-8 col-sm-8 col-xs-12">
-								<ul class="list-unstyled">
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('NAME')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['first_name'])){ echo $this->driver_info['first_name']." ".$this->driver_info['last_name'];}?></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Gender')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['sexs'])){ echo $this->driver_info['sexs'];}?></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Nationality')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['nationality'])){ echo $this->driver_info['nationality'];}?></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('PHONE')?></span> : <span class="span_value"><?php if (!empty($this->driver_info['tel'])){ echo $this->driver_info['tel'];}?></span>
-                              		</li>
-                              	</ul>
-							</div>
-						</div>
-						<div class="clearfix"></div>
-						<div class="title_form_blog " style=" margin: 0;">
-	       					<h4 style=" font-size: 14px;"><i class="fa  fa-car" aria-hidden="true"></i> <?php echo $tr->translate('Vehicle Infomation')?></h4>
-	       				</div>
-	       				<div id="vehiclesss" class="cus_info col-md-12 col-sm-12 col-xs-12">
-	       					<h4 class="car_title">
-	       						<?php if (!empty($this->vehicle_info['make'])){ echo $this->vehicle_info['make'];}?>&nbsp;
-	       						<?php if (!empty($this->vehicle_info['model'])){ echo $this->vehicle_info['model'];}?>&nbsp;
-	       						<?php if (!empty($this->vehicle_info['sub_model'])){ echo $this->vehicle_info['sub_model'];}?>&nbsp;
-	       					</h4>
-		       				<div class="col-md-4 col-sm-4 col-xs-12">
-				               	<div class="image-box infor">
-				               		<?php 
-				               		$images = $this->baseUrl().'/images/no_car.png';
-				               		if (!empty($this->vehicle_info['img_front'])){ 
-				               			$images = $this->baseUrl().'/images/vehicle/'.$this->vehicle_info['img_front'];
-				               		}?>
-									<img id="profile_wiew" src="<?php echo $images;?>" alt=""  />
-								</div>
-							</div>
-							<div class="col-md-8 col-sm-8 col-xs-12">
-								<ul class="list-unstyled">
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Vehicle Ref.No.')?></span> : <span class="span_value"><?php if (!empty($this->vehicle_info['reffer'])){ echo $this->vehicle_info['reffer'];}?></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('YEAR')?></span> : <span class="span_value"><?php if (!empty($this->vehicle_info['year'])){ echo $this->vehicle_info['year'];}?></span>
-                              		</li>
-                              		<li>
-                              			<span class="span_title"><?php echo $tr->translate('Color')?></span> : <span class="span_value"><?php if (!empty($this->vehicle_info['color'])){ echo $this->vehicle_info['color'];}?></span>
-                              		</li>
-                              	</ul>
-							</div>
+						
+						<div id="agent_info" class="cus_info col-md-12 col-sm-12 col-xs-12">
+		       				 
+		       				 
+		       				 <div class="x_panel">
+                	              <div class="x_title">
+                	                 <h2><i class="fa  fa-info-circle" aria-hidden="true"></i> <?php echo $tr->translate('Image Location')?></h2>
+                	                 <ul class="nav navbar-right panel_toolbox">
+                	                    <li>
+                	                    	<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                	                    </li>
+                	               	</ul>
+                	               <div class="clearfix"></div>
+                	               <div class="x_content">
+                	               		<div style="clear: both;"></div>
+                							<input type="text" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
+                							<div  id="store_record"></div>
+                							<input iconClass="dijitIconClear " type="button" onClick="addNewSeason();" label="Add Record Photo" dojoType="dijit.form.Button"/>
+                	               </div>
+                	             </div>
+                	          </div>
+		       				 ​
 						</div>
 						<div class="clearfix"></div>
 	       			</div>
 	       		</div>
+	       		
        		</div>
   		 </div>
      </form>
 </div>
 </div>
-
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-props="title:'<?php echo $tr->translate("DO_YOU_WANT_TO_DEL")?>'"  id="deleteForm" style="width:350px;" >
+		<div style=" text-align: center;">
+			<h4><?php echo $tr->translate("DO_YOU_WANT_TO_DEL")?></h4>
+			<input type="hidden" name="recorddelete" id="recorddelete" dojoType="dijit.form.TextBox" />
+			<button onclick="closeForm();" dojoType="dijit.form.Button" showLabel="true" type="button"><?php echo $tr->translate("CANCEL");?></button>
+			<button onclick="newdeleteRecord('',1);" iconclass="dijitIconDelete" dojoType="dijit.form.Button" showLabel="true" type="button"><?php echo $tr->translate("DELETE");?></button>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 require(["dojo/ready"], function(ready){
 	ready(function(){
+		addNewRecord();
 		getCustomer();
-		getAgent();
 	});
 });
-var url="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getcustomer'));?>";
+
+var url_cus="<?php echo $this->url(array('module'=>'bookings','controller'=>'carrental','action'=>'getcustomer'));?>";
 function getCustomer(){
 	var id = dijit.byId('customer').get('value');
-	loading();
 	dojo.xhrPost({
-	    url: url,
+	    url: url_cus,
 	    content:{
-	     'customer':id
+	     'cus_id':id
 	     },
 	    handleAs:"json",
 	    load: function(data) {
-	    	document.getElementById('cus_info').innerHTML =data;
-			document.getElementsByClassName("overlay")[0].style.display="none";
+		    if(data){
+			    dijit.byId('phone').attr("value",data.phone);
+			    dijit.byId('passport').attr("value",data.passport);
+			    dijit.byId('address').attr("value",data.address);
+			    $('#lbl_name').text(data.name);      
+			    $('#lbl_gender').text(data.gender);
+			    $('#lbl_nationality').text(data.nationality);
+			    $('#lbl_phone').text(data.phone);
+			    
+		    }else{
+		    	dijit.byId('phone').attr("value",'');
+				dijit.byId('passport').attr("value",'');
+				$('#lbl_name').text('');      
+			    $('#lbl_gender').text('');  
+			    $('#lbl_nationality').text('');  
+			    $('#lbl_phone').text('');  
+		    }
 	    },
 	    error: function(err) {
 	     alert(err);
 	    }
 	   });
 }
-var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getagent'));?>";
+
+var url_v="<?php echo $this->url(array('module'=>'bookings','controller'=>'carrental','action'=>'getvehicleinfor'));?>";
+function getDriverInfor(){
+	var vehicle_type = dijit.byId('vehicle_type').get('value');
+	dojo.xhrPost({
+	    url: url_v,
+	    content:{
+	     'vehicle_id':vehicle_type
+	     },
+	    handleAs:"json",
+	    load: function(data) {
+		    if(data){
+			    dijit.byId('vehicle_ref_no').attr("value",data.car_no);
+			    dijit.byId('color').attr("value",data.color);
+			    $('#lb_vehicle_type').text(data.vehicle_type);      
+			    $('#lb_plate_no').text(data.car_no);
+			    $('#lb_color').text(data.color);
+			    
+		    }else{
+		    	dijit.byId('vehicle_ref_no').attr("value","");
+			    dijit.byId('color').attr("value","");
+			    $('#lb_vehicle_type').text("");      
+			    $('#lb_plate_no').text("");
+			    $('#lb_color').text('');
+		    }
+	    },
+	    error: function(err) {
+	     alert(err);
+	    }
+	   });
+}
+
+var urlagent="<?php echo $this->url(array('module'=>'bookings','controller'=>'carrental','action'=>'getagent'));?>";
 function getAgent(){
 	var id = dijit.byId('agency').get('value');
 	loading();
@@ -415,94 +470,109 @@ function getAgent(){
 	    }
 	   });
 }
+function newdeleteRecord(index,type=''){
+	 if(type==''){
+		 dijit.byId("recorddelete").attr('value',index);
+		 dijit.byId('deleteForm').show();
+	 }else{
 
-var urldriver_car="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'getdrivercar'));?>";
-function getDriver(type){
-	if(type==1){
-		var id = dijit.byId('driver').get('value');
-	}else if(type=2){
-		var id = dijit.byId('vehicle').get('value');
-	}
-	loading();
-	dojo.xhrPost({
-	    url: urldriver_car,
-	    content:{
-	     'id':id,'type':type
-	     },
-	    handleAs:"json",
-	    load: function(data) {
-	    	
-	    	document.getElementById('driver_html').innerHTML =data.driver;
-	    	document.getElementById('vehiclesss').innerHTML =data.vehicle;
-	    	if(dijit.byId('driver').get('value')==data.driver_id && dijit.byId('vehicle').get('value')==data.vehicle_id){
-	    		document.getElementsByClassName("overlay")[0].style.display="none";
-	    	}
-	    	if(type==1){
-	    		 dijit.byId('vehicle').set('value',data.vehicle_id);
-	    	}else if(type=2){
-	    		dijit.byId('driver').set('value',data.driver_id);
-	    	}
-	    	
-			
-	    	
-	    },
-	    error: function(err) {
-	     alert(err);
-	    }
-   });
+		index = dijit.byId("recorddelete").get('value');
+		var new_identity = $('#identity').val();
+		var arrays = new_identity.split(',');
+		
+		for(var i=0;i<arrays.length;i++) {
+			if(arrays[i] == index) arrays.splice(i,1);
+		}
+		var strings = arrays.join(',');
+		$('#identity').val(strings);
+		dojo.query("#row"+index).remove();
+		dijit.byId('deleteForm').hide();
+	 }
+	 calculateTotal();
+}
+var record_no=1;
+
+function calculateamount(index){
+	var rent_price = dijit.byId('rent_price'+index).get('value');
+	var other_fee = dijit.byId('other_fee'+index).get('value');
+	var total  = rent_price + other_fee;
+	dijit.byId('amount'+index).set('value',total.toFixed(2));
+	calculateTotal();
 }
 
-function CalculateTotal(){
-	var is_commssion_paid = dijit.byId('is_commssion_paid').get('value');
-	
-	var price = dijit.byId('price').get('value');
-	var commision_fee = dijit.byId('commision_fee').get('value');
-	var other_fee = dijit.byId('other_fee').get('value');
-	var total = dijit.byId('total').get('value');
-	total = total + other_fee;
-	if(total>0){
-		if(price > total){
-			total = price + other_fee;
-		}
-		if(is_commssion_paid==1){
-			price = total - other_fee;
-			dijit.byId('price').set('value',price.toFixed(2));
+
+var loadFile = function(event) {
+    var output = document.getElementById('bong_wiew');
+    output.src = URL.createObjectURL(event.target.files[0]);
+  };
+
+  function addNewRecord(){
+		dojo.query("#store_record").append('');
+		tmp='<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">';
+		tmp+='<tr style="background:#eee; font-size: 12px; height: 30px;margin-bottom: 10px;" id="head_title" class="head-title" align="center"></tr>';
+		tmp+='</table>';
+		dojo.query("#store_record").append(tmp);
+		thead='<th style="padding: 0 20px;">Delete</th>';
+		thead+='<th style="padding: 0 20px;">Images Name</th>';
+		thead+='<th style="padding: 0 20px;"></th>';
+		fund_title=1;
+		dojo.query("#head_title").append(thead);	
+		dijit.byId('record_row').attr('value','');
+		addNewSeason();
+	}
+  
+  r=0;
+  function addNewSeason(){
+  	r++;
+  	tmp='<tr style="border:1px solid #ccc; font-size:12px;" id="row_guide'+r+'">'
+  	tmp+="</tr>";
+  		dojo.query("#t_amountmoneytype").append(tmp);
+  		
+  	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+  	temp+='<td style="text-align: center; padding: 2px 0;width:30px" ><img class="image_view" id="image_view'+r+'" src="<?php echo $this->baseUrl().'/images/no-image.png';?>" alt=""  /></td>';
+  	temp+='<td><div class="button_browse"><span>Upload <span><i class="fa fa-camera" aria-hidden="true"></i></span></span><input class="btn_borwse_image"  type="file" name="photo'+r+'" id="photo'+r+'" onchange="loadImage('+r+')"></div></td>';
+  	
+  		dojo.html.set(dojo.byId("row_guide"+r),temp, {
+  	    parseContent: true,
+  	     
+  	});
+  	if(dijit.byId("record_row").get('value')!="") {
+  		var ids = dijit.byId("record_row").value;
+  		dijit.byId("record_row").attr('value',ids+','+r);
+  	} else { dijit.byId("record_row").attr('value',r);}
+  }
+
+  function deleteRecord(index){
+		var ids =dijit.byId('record_row').value;
+		if(ids.length=='' || ids.length==null){
+			dijit.byId('record_row').attr('value','');
+			dojo.query("#row_guide"+ids).remove();
 		}else{
-			var  commision_fee  = total - price - other_fee;
-			dijit.byId('commision_fee').set('value',commision_fee.toFixed(2));
+			var arrays = ids.split(',');
+			for(var i=0;i<arrays.length;i++) {
+				if(arrays[i] == index) arrays.splice(i,1);
+			}
+			var strings = arrays.join(',');
+			dijit.byId('record_row').attr('value',strings);
+			dojo.query("#row_guide"+index).remove();
 		}
 	}
-	dijit.byId('total').set('value',total);
-	dijit.byId('total_payment').set('value',total.toFixed(2));
-	calculatebalance();
-}
-function calculatebalance(){
-	var total = dijit.byId('total_payment').get('value');
-	var total_paid = dijit.byId('total_paid').get('value');
-	if(total_paid>total){
-		total_paid = total;
-		dijit.byId('total_paid').set('value',total.toFixed(2));
+    function loadImage(index){
+		 var output = document.getElementById('image_view'+index);
+	  output.src = URL.createObjectURL(event.target.files[0]);
 	}
-	var balance = total - total_paid;
-	dijit.byId('balance').set('value',balance.toFixed(2));
-}
-function settotal(){
-	var is_commssion_paid = dijit.byId('is_commssion_paid').get('value');
-	var other_fee = dijit.byId('other_fee').get('value');
-	var total = dijit.byId('total').get('value');
-	dijit.byId('balance').set('value',total.toFixed(2));
-	dijit.byId('total_payment').set('value',total.toFixed(2));
-	total = total -other_fee;
-	if(is_commssion_paid==1){
-		var commision_fee = dijit.byId('commision_fee').get('value');
-		dijit.byId('price').set('value',(total-commision_fee).toFixed(2));
-	}else{
-		if(total<0){
-			total = 0;
-		}
-		dijit.byId('price').set('value',total.toFixed(2));
-		dijit.byId('commision_fee').set('value',0);
+
+	function getTotalAllPaid(){
+		var total_fix=0;
+		var paid=0;
+		var total_profit=0;
+		total_fix=dijit.byId("toatal_amount_fix").get('value');
+		paid=dijit.byId("paid").get('value');
+		total_profit=Number(paid)-Number(total_fix);
+		
+		dijit.byId('total_maintenance').attr("value",total_fix.toFixed(2));
+		dijit.byId('total_payment').attr("value",paid.toFixed(2));
+		dijit.byId('profit').attr("value",total_profit.toFixed(2));
 	}
 	
-}
 </script>

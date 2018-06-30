@@ -1,50 +1,217 @@
 <?php $tr = Application_Form_FrmLanguages::getCurrentlanguage();?>
-<?php $frm =  $this->frm_search;?>
-<title><?php echo $tr->translate("CARRENTAL");?></title>
+<?php $frm =  $this->frm_search;
+
+$db_s=new Bookings_Model_DbTable_DbServiceType();
+?>
+
+<title><?php echo $tr->translate("Car Booking");?></title>
+
+
+<style>
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 60px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+</style>
 <script type="text/javascript">
 dojo.ready(function(){
+	 $('select[name="datatable-responsive_length"]').val('50');
+	 $('select[name="datatable-responsive_length"]').change();
+	 
+	  
 });
 dojo.require("dojo.data.ItemFileWriteStore");  
 dojo.require("dijit.form.NumberTextBox");
 dojo.require("dijit.form.DateTextBox");
 dojo.require("dijit.form.Textarea");
+dojo.require("dijit.form.TimeTextBox");
+ 
 require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 </script>
+<script type="text/javascript">
+   
+ 
+
+ </script>
 <div class="row">
 	<div class="x_panel" >
 		 <div class="blog_form_title">
-		 	<h4><i class="fa fa-book" aria-hidden="true"></i> <?php echo $tr->translate("CARRENTAL")?></h4>
+		 	<h4><i class="fa fa-book" aria-hidden="true"></i> <?php echo $tr->translate("Car Booking")?></h4>
 		 </div>
-			<form id="list" name="list" action="<?php echo $this->url(array('module'=>'bookings','controller'=>'index','action'=>'index')); ?>" dojoType="dijit.form.Form" method="post">
+			<form id="list" name="list" action="" dojoType="dijit.form.Form" method="post">
 			  	<div class="clearfix"></div>
 				  <div class="form-group">
-					<div class="col-md-2 col-xs-12 mg-10">
+					<div class="col-md-3 col-xs-12 mg-12">
 					  <?php echo $frm->getElement("search_text");?>
 					</div>
-					<div class="col-md-1 col-xs-12 ">
-						<label class="control-label" style="padding-left: 5px;"><?php echo $tr->translate('Booking From')?>
-			            </label>
+					<div class="col-md-3 col-xs-12 mg-12">
+					   <?php echo $frm->getElement("lessee_name");?>
 					</div>
-					<div class="col-md-2 col-xs-12 mg-10">
-					  <?php echo $frm->getElement('from_book_date');?>
+					<div class="col-md-3 col-xs-12 mg-12"> 
+					   <?php echo $frm->getElement("vehicle_type");?>
 					</div>
-					<div class="col-md-1 col-xs-12">
-						<label class="control-label" style="padding-left: 5px;"><?php echo $tr->translate('To Booking')?>
-			            </label>
-					</div>
-					<div class="col-md-2 col-xs-12 mg-10">
-					  <?php echo $frm->getElement('to_book_date');?>
+					<div class="col-md-3 col-xs-12 mg-12">
+					 <?php echo $frm->getElement("plate_number");?>
 					</div>
 				  </div>
+				  <div class="clearfix"></div>
 				  <div class="form-group">
-					  	<div class="col-md-2 col-xs-12 mg-10">
-						  <?php echo $frm->getElement("customer");?>
-						</div>
-						<div class="col-md-1 col-xs-12">
+					<div class="col-md-3 col-xs-12 mg-12">
+					 <?php echo $frm->getElement('start_date');?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12">
+					   <?php echo $frm->getElement('end_date');?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12">
+					   <?php echo $frm->getElement('is_return');?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12">
+					   <?php echo $frm->getElement("status");?>
+					</div>
+					<div class="col-md-1 mg-12"  >
 							<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
-						</div>
+					</div>
 				  </div>
+				   <div class="clearfix"></div>
 			</form>
-			<?php echo $this->list;?>
+    	 <div class="x_panel">
+    	 
+	    	<div class="x_content">
+	    		<table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+		    		<thead>
+		    		  <tr>  
+		    		  	  <th><?php echo $tr->translate("NUM")?></th> 
+		    		      <th><?php echo $tr->translate("Paid Date")?></th> 
+		    		      <th><?php echo $tr->translate("Rent Number")?> </th> 
+		    		      <th><?php echo $tr->translate("Lessee Name")?> </th> 
+		    	          <th><?php echo $tr->translate("Vehicle Type")?></th> 
+		    	          <th><?php echo $tr->translate("Vehicle Ref No.")?> </th>
+		    	          <th><?php echo $tr->translate("Color")?></th> 
+		    	          <th><?php echo $tr->translate("Price/Month")?></th> 
+		    	          <th><?php echo $tr->translate("Rent Date")?> </th>
+		    	          <th><?php echo $tr->translate("Return Date")?></th> 
+		    	          <th><?php echo $tr->translate("Deposit")?></th> 
+		    	          <th><?php echo $tr->translate("Action")?></th> 
+		    	          <th><?php echo $tr->translate("User")?></th> 
+		    	          <th><?php echo $tr->translate("Status")?></th> 
+		             </tr>
+		             </thead>
+			     <tbody>
+				     <?php 
+				     $date_late=''; $is_return='';$day_paid_color='';$is_return='';
+				    if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
+				        $rent_date = $rs['rent_date'];
+				        $rent_date = str_replace('-', '/', $rent_date);
+				        $add_month = date('d-m-Y',strtotime($rent_date . "+1 Months"));
+				        $paid_date =date('d-m-Y',strtotime($add_month . "-1 days"));
+				        
+				        $date_now =date('2018-07-28');
+				        if(strtotime($paid_date) <= strtotime($date_now))
+				        {
+				            $day_paid_color='style="background: #f55050 !important;"';
+				            if(strtotime($add_month)<strtotime($date_now) && $rs['is_paid']==0){
+				                $day_paid_color='style="background: #ff0f0f57 !important;"';
+				            }
+				            if(strtotime($add_month)<strtotime($date_now) && $rs['is_paid']==1){
+				                $day_paid_color='style="background: #33FF6E !important;"';
+				            }
+				        }
+				        
+				        if($rs['is_return']==1){
+				            $day_paid_color='style="background: #a59e9e !important;"';
+				        }
+				         
+				        if($rs['is_return']==1){
+				            $is_return=$tr->translate("Stop");
+				        }elseif ($rs['is_return']==0){
+				            $is_return=$tr->translate("Using");
+				        }else {
+				            
+				        }
+				     	?>
+				     <tr class=" alternate  normal"    <?php echo $day_paid_color;?>>
+				       <td class="text-center"> <?php echo $key+1?></td>
+				       <td class="text-center"> <?php echo  $paid_date;?> </td>
+				       <td > <?php echo $rs['rent_no']?></td> 
+				       <td > <?php echo $rs['lessee']?></td> 
+				       <td > <?php echo $rs['vehicle_type']?></td> 
+				       <td > <?php echo $rs['feffer']?></td>
+				       <td > <?php echo $rs['color']?></td> 
+				       <td class="text-center"> <?php echo ( $rs['cost_month']==0)?"":"$&nbsp;".number_format($rs['cost_month'],2);?></td> 
+				       <td class="text-center"> <?php echo date("d-M-Y",strtotime($rs['rent_date']));?> </td> 
+				       <td class="text-center"> <?php echo date("d-M-Y",strtotime($rs['return_date']));?> </td> 
+				       <td class="text-center"> <?php echo ( $rs['deposit']==0)?"":"$&nbsp;".number_format($rs['deposit'],2);?></td> 
+				       <td class="text-center"> <?php echo  $is_return;?>&nbsp;&nbsp;|<a style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/carrental/edit/id/<?php echo $rs["id"]?>"><span style="color: blue;line-height:0px;">Edit</span></a>&nbsp;|</td> 
+				       <td class="text-center"> <?php echo $rs['user_name']?></td> 
+				       <td class="text-center"> <?php echo $rs['status']?></td> 
+				     </tr>
+				     <?php }?>
+			     </tbody>
+			     </table>
+			   </div>
+			   <table>
+			     <tr>
+			       
+			        <td style="background:#ff0f0f57;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;<?php echo $tr->translate("Late Payment");?></td>
+			        <td width="5%"></td>
+			        <td style="background:#33FF6E;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;<?php echo $tr->translate("Already Payment");?></td>
+			        <td width="5%"></td>
+			        <td style="background:#a59e9e;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp; <?php echo $tr->translate("Stop Renting");?></td>
+			     </tr>
+			   </table>
+			</div>
+			</div>
+	
 		</div>
-	</div>
+			
+	
+<script>
+function setColor(el, BG1, BG2) {
+	el.style.background = (el.style.background == BG1) ? BG2 : BG1;
+	}
+
+</script>
+
+<?php
+    $rent_date = "2018-06-29";
+    $rent_date = str_replace('-', '/', $rent_date);
+    $add_month = date('m/d/Y',strtotime($rent_date . "+1 Months"));
+    $paid_date =date('m/d/Y',strtotime($add_month . "-1 days"));
+    echo  $add_month.'='.$paid_date;
+    
+    $dateA = date('Y-m-d');
+    $dateB = date('Y/m/01');
+//     if(strtotime($dateA) > strtotime($dateB))
+//     {
+//         echo "dateA is newer";
+//     }else{
+//         echo "dateB is newer";
+//     }
+?>

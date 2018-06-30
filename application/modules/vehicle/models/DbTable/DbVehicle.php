@@ -248,6 +248,25 @@ class Vehicle_Model_DbTable_DbVehicle extends Zend_Db_Table_Abstract
     	$order=' ORDER BY id DESC';
     	return $db->fetchAll($sql.$order);
     }
+    
+    function getAllPlatenNo(){
+        $db=$this->getAdapter();
+        $sql="SELECT v.id,v.`reffer` AS title
+             FROM ldc_vechicletye AS vt,`ldc_vehicle` AS v
+             WHERE v.`status`= 1   
+             AND vt.`id`=v.`car_type`
+             AND v.`reffer`!=''";
+        $order=' GROUP BY v.car_type ORDER BY v.reffer ASC';
+        return $db->fetchAll($sql.$order);
+    }
+    
+    function getAllCustomerCarrental(){
+        $db=$this->getAdapter();
+        $sql=" SELECT c.id,c.customer AS `name` FROM `ldc_carrental_customer` AS c WHERE c.status=1";
+        $order=' ORDER BY c.customer ASC';
+        return $db->fetchAll($sql.$order);
+    }
+    
     function getAllVehicleTypeAsName(){
     	$db=$this->getAdapter();
     	$sql="SELECT id,title As name FROM ldc_vechicletye WHERE `status`= 1 ";
