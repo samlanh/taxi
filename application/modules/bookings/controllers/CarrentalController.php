@@ -73,17 +73,18 @@ class Bookings_CarrentalController extends Zend_Controller_Action {
 	    $db = new Bookings_Model_DbTable_DbCustomerCarrental();
 	    if($this->getRequest()->isPost()){
 	        $data = $this->getRequest()->getPost();
-	        $booking_id=$db->addCarrental($data);
+	        $data['id']=$id;
+	        $booking_id=$db->updateCarrental($data);
 	        if(isset($data['save_new'])){
-	            Application_Form_FrmMessage::redirectUrl("/bookings/carrental/add");
+	            Application_Form_FrmMessage::redirectUrl("/bookings/carrental/index");
 	        }else{
-	            Application_Form_FrmMessage::redirectUrl("/bookings/carrental");
+	            Application_Form_FrmMessage::redirectUrl("/bookings/carrental/index");
 	        }
 	        Application_Form_FrmMessage::redirectUrl("/bookings/carrental");
 	    }
-	    
 	    $row=$db->getCarrentalById($id);
-	    
+	    $pic_id=$db->getIdDetailByCarr($id);
+	    $this->view->pic_all=$db->getImgBongById($pic_id);
 	    $frm = new Bookings_Form_FrmCarrental();
 	    $form = $frm->FormRenntCarental($row);
 	    Application_Model_Decorator::removeAllDecorator($form);

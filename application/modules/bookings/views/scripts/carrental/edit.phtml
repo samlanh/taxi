@@ -1,7 +1,9 @@
-<?php 
+ <?php 
    $tr = Application_Form_FrmLanguages::getCurrentlanguage();
    echo $this->headTitle($tr->translate("CARRENTAL"));
    $frm = $this->frm;
+   $pic=$this->pic_all;
+ //  echo(abs(-3-4));
 ?>
 <script type="text/javascript">
 dojo.ready(function(){
@@ -274,12 +276,25 @@ h4.car_title {
 			                   </div>
 		                </div>
 		                
+		                <div class="form-group">
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php //echo $tr->translate('សរុបលុយដែលបានទទួល')?>
+		                   </label>
+		                   <div class="col-md-4 col-sm-4 col-xs-12">
+		                    	<?php //echo $frm->getElement('total_payment');?>
+		                   </div>
+		                   
+		                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"><?php echo $tr->translate('ACTION')?>
+			                   </label>
+			                   <div class="col-md-4 col-sm-4 col-xs-12">
+			                    	<?php echo $frm->getElement('is_return');?>
+			                   </div>
+		                </div>
+		                
 		                <div class="x_content">
         	       			<div class="text-center">
         						<input type="button" value="GO_BACK" label="<?php echo $tr->translate('GO_BACK');?>" id="back" dojoType="dijit.form.Button" 
         									iconClass="dijitIconUndo" onclick="window.history.back();" />
         						<input class="button_success" type="submit" value="save_close" name="save_close" label="<?php echo $tr->translate('SAVE_CLOSE');?>" id="save_close" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 	
-        						<input class="button_success" type="submit" value="save_new" name="save_new" label="<?php echo $tr->translate('SAVE_NEW');?>" id="save_new" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
         					</div>
         	       		</div>
 	       			</div>
@@ -351,7 +366,7 @@ h4.car_title {
                 	               <div class="clearfix"></div>
                 	               <div class="x_content">
                 	               		<div style="clear: both;"></div>
-                							<input type="text" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
+                							<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
                 							<div  id="store_record"></div>
                 							<input iconClass="dijitIconClear " type="button" onClick="addNewSeason();" label="Add Record Photo" dojoType="dijit.form.Button"/>
                 	               </div>
@@ -382,6 +397,7 @@ h4.car_title {
 require(["dojo/ready"], function(ready){
 	ready(function(){
 		addNewRecord();
+		getDriverInfor();
 		getCustomer();
 	});
 });
@@ -518,7 +534,8 @@ var loadFile = function(event) {
 		fund_title=1;
 		dojo.query("#head_title").append(thead);	
 		dijit.byId('record_row').attr('value','');
-		addNewSeason();
+		//addNewSeason();
+		oldNewSeason();
 	}
   
   r=0;
@@ -540,6 +557,28 @@ var loadFile = function(event) {
   		var ids = dijit.byId("record_row").value;
   		dijit.byId("record_row").attr('value',ids+','+r);
   	} else { dijit.byId("record_row").attr('value',r);}
+  }
+
+  function oldNewSeason(){
+	  <?php if(!empty($pic)) foreach ($pic As $rs){?>
+	  	r++;
+	  	tmp='<tr style="border:1px solid #ccc; font-size:12px;" id="row_guide'+r+'">'
+	  	tmp+="</tr>";
+	  		dojo.query("#t_amountmoneytype").append(tmp);
+	  		
+	  	temp='<td style="width:30px !important;text-align:center;" ><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+	  	temp+='<td style="text-align: center; padding: 2px 0;width:30px" ><img class="image_view" id="image_view'+r+'" src="<?php echo $this->baseUrl().'/images/imgbong/'.$rs['pic_title']?>" alt=""  /> <input   type="hidden" name="old_photo'+r+'" id="old_photo'+r+'" value="<?php echo $rs['pic_title']?>" ></td>';
+	  	temp+='<td><div class="button_browse"><span>Upload <span><i class="fa fa-camera" aria-hidden="true"></i></span></span><input class="btn_borwse_image"  type="file" name="photo'+r+'" id="photo'+r+'" onchange="loadImage('+r+')"></div></td>';
+	  	
+	  		dojo.html.set(dojo.byId("row_guide"+r),temp, {
+	  	    parseContent: true,
+	  	     
+	  	});
+	  	if(dijit.byId("record_row").get('value')!="") {
+	  		var ids = dijit.byId("record_row").value;
+	  		dijit.byId("record_row").attr('value',ids+','+r);
+	  	} else { dijit.byId("record_row").attr('value',r);}
+	  <?php }?>
   }
 
   function deleteRecord(index){

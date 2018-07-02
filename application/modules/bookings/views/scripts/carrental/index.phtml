@@ -127,12 +127,12 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				     <?php 
 				     $date_late=''; $is_return='';$day_paid_color='';$is_return='';
 				    if(!empty($this->rows)) foreach ($this->rows As $key=>$rs){
-				        $rent_date = $rs['rent_date'];
+				        $rent_date = $rs['rent_dates'];
 				        $rent_date = str_replace('-', '/', $rent_date);
 				        $add_month = date('d-m-Y',strtotime($rent_date . "+1 Months"));
 				        $paid_date =date('d-m-Y',strtotime($add_month . "-1 days"));
 				        
-				        $date_now =date('2018-07-28');
+				        $date_now =date('d-m-Y');
 				        if(strtotime($paid_date) <= strtotime($date_now))
 				        {
 				            $day_paid_color='style="background: #f55050 !important;"';
@@ -165,8 +165,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td > <?php echo $rs['feffer']?></td>
 				       <td > <?php echo $rs['color']?></td> 
 				       <td class="text-center"> <?php echo ( $rs['cost_month']==0)?"":"$&nbsp;".number_format($rs['cost_month'],2);?></td> 
-				       <td class="text-center"> <?php echo date("d-M-Y",strtotime($rs['rent_date']));?> </td> 
-				       <td class="text-center"> <?php echo date("d-M-Y",strtotime($rs['return_date']));?> </td> 
+				       <td class="text-center"> <?php echo date("d-m-Y",strtotime($rs['rent_dates']));?> </td> 
+				       <td class="text-center"> <?php echo date("d-m-Y",strtotime($rs['return_dates']));?> </td> 
 				       <td class="text-center"> <?php echo ( $rs['deposit']==0)?"":"$&nbsp;".number_format($rs['deposit'],2);?></td> 
 				       <td class="text-center"> <?php echo  $is_return;?>&nbsp;&nbsp;|<a style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/carrental/edit/id/<?php echo $rs["id"]?>"><span style="color: blue;line-height:0px;">Edit</span></a>&nbsp;|</td> 
 				       <td class="text-center"> <?php echo $rs['user_name']?></td> 
@@ -178,7 +178,8 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 			   </div>
 			   <table>
 			     <tr>
-			       
+			        <td style="background:#f55050;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;<?php echo $tr->translate("Nearly Day Payment");?></td>
+			        <td width="5%"></td>
 			        <td style="background:#ff0f0f57;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;<?php echo $tr->translate("Late Payment");?></td>
 			        <td width="5%"></td>
 			        <td style="background:#33FF6E;height:30px;width: 30px;border:1px solid #000;">  </td><td valign="bottom">&nbsp;=&nbsp;<?php echo $tr->translate("Already Payment");?></td>

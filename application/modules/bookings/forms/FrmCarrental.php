@@ -429,42 +429,49 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	    $validity_date->setAttribs(array('dojoType'=>$this->date,'constraints'=>"{datePattern:'dd/MM/yyyy'}",'class'=>"fullside",
 	    ));
 	    $validity_date->setValue($c_date);
+	    
+	    $opt_s = array('1'=>$this->tr->translate("Stop"),'0'=>$this->tr->translate("Renting"),);
+	    $is_return = new Zend_Dojo_Form_Element_FilteringSelect("is_return");
+	    $is_return->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',));
+	    $is_return->setMultiOptions($opt_s);
+	    $is_return->setValue($request->getParam("is_return"));
+	    
 	    if($data!=null){
-	        
-	       // print_r($data);exit();
+// 	       print_r($data);
 	        $rent_no->setValue($data['rent_no']);
 	        $customer->setValue($data['customer_id']);
-	        $rent_date->setValue($data['rent_date']);
-	        //$phone->setValue($data['balance']);
-	    //    $return_date->setValue($data['balance']);
-	   //     $address->setValue($data['balance']);
-	        
-	        $return_money->setValue($data['return_date']);
 	        $validity_date->setValue($data['start_date']);
+	        $vehicle_type->setValue($data['vehicle_type']);
+	        $deposit->setValue($data['deposit']);
+	        $return_money->setValue($data['return_money']);
 	        $cost_month->setValue($data['cost_month']);
-	        
+	        $total_rent_fee->setValue($data['total_rent_num']);
+	        $total_maintenance->setValue($data['total_maintenance']);
+	        $total_payment->setValue($data['total_payment']);
+	        $profit->setValue($data['total_profit']);
+	        $rent_date->setValue($data['rent_dates']);
+	        $return_date->setValue($data['return_dates']);
+	        $repair_date->setValue($data['repair_date']);
+	        $payment_date->setValue($data['payment_date']);
+	       // $validity_date->setValue($data['payment_date']);
+	     // $phone->setValue($data['balance']);
+	   //   $address->setValue($data['balance']);
 //	        $payment_by->setAttribs(array('readonly'=>'readonly',));
-// 	        $paid,
-// 	        $payment_date,
-// 	        $remark,
-// 	        $total_payment,
+	        $delivery_time->setValue($data['time']);
+	        $fix_name->setValue($data['fix_name']);
+	        $repair_date->setValue($data['repair_date']);
+	        $payment_date->setValue($data['payment_date']);
+	        $toatal_amount_fix->setValue($data['toatal_amount_fix']);
+	        $paid->setValue($data['paid']);
+	        $remark->setValue($data['remark']);
+	        $is_return->setValue($data['is_return']);
 // 	        $total_paid,
 // 	        $balance,
 // 	        $total_rent_fee,
-// 	        $total_rent_fee,
-// 	        $profit,
-// 	        $total_maintenance,
-// 	        $vehicle_type,
 // 	        $vehicle_ref_no,
 // 	        $color,
-// 	        $repair_date,
-// 	        $fix_name,
-// 	        $toatal_amount_fix,
 // 	        $passport,
-// 	        $repair_date,
-// 	        $deposit,
 // 	        $expired_date,
-//	        $delivery_time->setValue($data['balance']);
 	    }
 	    $this->addElements(array(
 	        $rent_no,
@@ -496,7 +503,8 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	        $passport,
 	        $repair_date,
 	        $deposit,
-	        $validity_date
+	        $validity_date,
+	        $is_return
 	    ));
 	    return $this;
 	}
