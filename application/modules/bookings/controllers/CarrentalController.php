@@ -1,12 +1,14 @@
 <?php
 class Bookings_CarrentalController extends Zend_Controller_Action {
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
+	protected $tr = null;
     public function init()
     {    	
      /* Initialize action controller here */
     	header('content-type: text/html; charset=utf8');
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
-	}
+    	$this->tr = Application_Form_FrmLanguages::getCurrentlanguage();
+    }
 	
 	public function indexAction(){
 	    try{
@@ -65,6 +67,15 @@ class Bookings_CarrentalController extends Zend_Controller_Action {
 		$form = $frm->FormRenntCarental();
 		Application_Model_Decorator::removeAllDecorator($form);
 		$this->view->frm = $form;
+		
+		$db=new Vehicle_Model_DbTable_DbVehicle();
+		$rows_veh_typ=$db->getAllVehicleTypestore();
+		array_unshift($rows_veh_typ,array('id' => -1,'name' => $this->tr->translate("ADD_NEW"),));
+		$this->view->vehicle_type=$rows_veh_typ;
+		$db_cus=new Application_Model_DbTable_DbGlobal();
+		$rs=$db_cus->getAllCustomer();
+		array_unshift($rs,array('id' => -1,'name' => $this->tr->translate("ADD_NEW"),));
+		$this->view->cusrow=$rs;
 	}
 	
 	public function editAction()
@@ -89,6 +100,16 @@ class Bookings_CarrentalController extends Zend_Controller_Action {
 	    $form = $frm->FormRenntCarental($row);
 	    Application_Model_Decorator::removeAllDecorator($form);
 	    $this->view->frm = $form;
+	    
+	    $db=new Vehicle_Model_DbTable_DbVehicle();
+	    $rows_veh_typ=$db->getAllVehicleTypestore();
+	    array_unshift($rows_veh_typ,array('id' => -1,'name' => $this->tr->translate("ADD_NEW"),));
+	    $this->view->vehicle_type=$rows_veh_typ;
+	    
+	    $db_cus=new Application_Model_DbTable_DbGlobal();
+	    $rs=$db_cus->getAllCustomer();
+	    array_unshift($rs,array('id' => -1,'name' => $this->tr->translate("ADD_NEW"),));
+	    $this->view->cusrow=$rs;
 	}
 	
 	function getcustomerAction(){
@@ -128,6 +149,26 @@ class Bookings_CarrentalController extends Zend_Controller_Action {
 			print_r(Zend_Json::encode($row));
 			exit();
 		}
+	}
+	
+	function addvehicletypeAction(){
+	    if($this->getRequest()->isPost()){
+	        $db = new Bookings_Model_DbTable_DbCustomerCarrental();
+	        $data = $this->getRequest()->getPost();
+	        $code = $db->addAVehicleType($data);
+	        print_r(Zend_Json::encode($code));
+	        exit();
+	    }
+	}
+	
+	function addcustomersAction(){
+	    if($this->getRequest()->isPost()){
+	        $db = new Bookings_Model_DbTable_DbCustomerCarrental();
+	        $data = $this->getRequest()->getPost();
+	        $code = $db->addCustomer($data);
+	        print_r(Zend_Json::encode($code));
+	        exit();
+	    }
 	}
 	
 }

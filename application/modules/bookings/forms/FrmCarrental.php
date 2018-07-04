@@ -281,7 +281,7 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	    $cus = $_db->getAllCustomer();
 	    $opt_vehi = array(0=>$this->tr->translate("SELECT_CUSTOMER"),'-1'=>$this->tr->translate("ADD_NEW"));
 	    $customer = new Zend_Dojo_Form_Element_FilteringSelect("customer");
-	    $customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCustomer();'));
+	    $customer->setAttribs(array('dojoType'=>$this->filter,'class'=>"fullside",'onChange'=>'getCustomer();getCustoemrPopUp()'));
 	    foreach ($cus as $rs){
 	        $opt_vehi[$rs["id"]] = $rs["name"];
 	    }
@@ -384,7 +384,7 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	    $opt_payment = array(0=>$this->tr->translate("SELECT_VECHICLE_TYPE"),-1=>$this->tr->translate("Add Vehicle Type"));
 	    $vehicle_type = new Zend_Dojo_Form_Element_FilteringSelect("vehicle_type");
 	    $vehicle_type->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect','class'=>"fullside",'autoComplete'=>'false', 'queryExpr'=>'*${0}*',
-	        'onchange'=>'getDriverInfor();'
+	        'onchange'=>'getVehicleTypePopUp();'
 	    ));
 	    foreach ($rows_veh_typ as $rs){
 	        $opt_payment[$rs["id"]] = $rs["title"];

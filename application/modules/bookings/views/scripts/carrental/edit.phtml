@@ -5,7 +5,9 @@
    $pic=$this->pic_all;
  //  echo(abs(-3-4));
 ?>
+<script src="<?php echo $this->baseUrl();?>/js/help.js"  type="text/javascript"></script>
 <script type="text/javascript">
+
 dojo.ready(function(){
 });
 dojo.require("dojo.data.ItemFileWriteStore");  
@@ -613,5 +615,156 @@ var loadFile = function(event) {
 		dijit.byId('total_payment').attr("value",paid.toFixed(2));
 		dijit.byId('profit').attr("value",total_profit.toFixed(2));
 	}
+
+	function getVehicleTypePopUp(){
+		dijit.byId("a_save").attr("disabled",false);
+		if(dijit.byId('vehicle_type').get('value')==-1){
+			dijit.byId("pop_frm_vehiletype").show();
+		}
+	}
+
+	var agency_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->vehicle_type));?> );
+	var url_vehicle_type = '<?php echo $this->url(array('module'=>'bookings','controller'=>'carrental','action'=>'addvehicletype')); ?>';
+	function addVehicleType(){
+		if(dijit.byId('frm_vehicle_type').validate()){
+			dijit.byId("a_save").attr("disabled",true);
+			dojo.xhrPost({
+				url:url_vehicle_type,
+				form: dojo.byId("frm_vehicle_type"),
+				handleAs:"json",
+				load: function(data) {
+					 
+					var Itemmake = {					
+							id: data,
+						    name:dijit.byId('vehicle_name').get('value'),
+					};			
+					addDataToSelectbox(dijit.byId('vehicle_type'), agency_store, Itemmake, data);
+					dijit.byId('frm_vehicle_type').reset();
+					dijit.byId("pop_frm_vehiletype").hide();
+				},
+				error: function(err) {
+					alert(err);
+				}
+			});
+		}
+	}
+
+	var cus_store  = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->cusrow));?> );
+	var url_customer = '<?php echo $this->url(array('module'=>'bookings','controller'=>'carrental','action'=>'addcustomers')); ?>';
+	function addCustomer(){
+		if(dijit.byId('frm_customer').validate()){
+			dijit.byId("c_save").attr("disabled",true);
+			dojo.xhrPost({
+				url:url_customer,
+				form: dojo.byId("frm_customer"),
+				handleAs:"json",
+				load: function(data) {
+					
+					var Itemmake = {					
+							id: data,
+						    name:dijit.byId('customers').get('value'),
+					};			
+					addDataToSelectbox(dijit.byId('customer'), cus_store, Itemmake, data);
+					dijit.byId('frm_customer').reset();
+					dijit.byId("pop_frm_customer").hide();
+				},
+				error: function(err) {
+					alert(err);
+				}
+			});
+		}
+	}
+
+	function vehiclePopUp(){
+		dijit.byId("pop_frm_vehiletype").hide();
+	}
+
+	function getCustoemrPopUp(){
+		dijit.byId("c_save").attr("disabled",false);
+		if(dijit.byId('customer').get('value')==-1){
+			dijit.byId("pop_frm_customer").show();
+		}
+	}
+
+	function CustomerPopUp(){
+		dijit.byId("pop_frm_customer").hide();
+	}
 	
 </script>
+
+<!-- popup Vehicle -->
+<div class="dijitHidden" >
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_vehiletype" title="<?php echo $tr->translate("ADD_VEHICLE_TYPE")?>">
+		<form id='frm_vehicle_type' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table  style="width:400px;">
+		    <tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("Plate Number")?> </td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="plate_number" name="plate_number" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("Vehicle Name")?> </td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="vehicle_name" name="vehicle_name" value="" type="text" class="fullside"></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("Color")?> </td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="color_name" name="color_name" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button" name="a_cancel" id="a_cancel" label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
+					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="vehiclePopUp()"/>
+				  	<input type="button" name="a_save" id="a_save" label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addVehicleType();"/>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+</div>
+<!--End popup Vehicle -->
+
+
+<!-- popup Vehicle -->
+<div class="dijitHidden" >
+	<div data-dojo-type="dijit.Dialog" data-dojo-type="dijit.Dialog" id="pop_frm_customer" title="<?php echo $tr->translate("ADD_CUSTOMER")?>">
+		<form id='frm_customer' dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<table  style="width:400px;">
+		    <tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("Customer")?> </td>
+				<td><input dojoType="dijit.form.ValidationTextBox" required="true" id="customers" name=customers value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("Phone Number")?> </td>
+				<td><input dojoType="dijit.form.ValidationTextBox"   id="phone_numbers" name="phone_numbers" value="" type="text" class="fullside"></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("IDCard/Passport")?> </td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="passports" name="passports" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td><?php echo $tr->translate("Address")?> </td>
+				<td><input dojoType="dijit.form.TextBox" required="true" id="addresss" name="addresss" value="" type="text" class="fullside"><br/></td>
+			</tr>
+			
+			<tr><td colspan="2" style="height: 5px;" ></td></tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button" name="c_cancel" id="c_cancel" label="<?php echo $tr->translate("CANCEL");?>" id="cancelButton" 
+					dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel" onclick="CustomerPopUp()"/>
+				  	<input type="button" name="c_save" id="c_save" label="<?php echo $tr->translate("SAVE")?>" dojoType="dijit.form.Button" 
+				 	iconClass="dijitEditorIcon dijitEditorIconSave" onclick="addCustomer();"/>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+</div>
+<!--End popup Vehicle -->

@@ -105,7 +105,7 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 		           'car_type'	  => $_data['vehicle_type'],
 		           'color'	      => $_data['color'],
 		           'modify_date'  => date("Y-m-d H:i:s"),
-		           'user_currental'=> $this->getUserId(),
+		           'user_id'      => $this->getUserId(),
 		           'status'        => 1,
 		       );
 		       $this->_name="ldc_vehicle";
@@ -241,10 +241,10 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 	            $vehicle_t=$this->checkCar($_data['vehicle_type']);
 	            $veh_data=array(
 	                'reffer'	      => $_data['vehicle_ref_no'],
-	                'car_type'	  => $_data['vehicle_type'],
-	                'color'	      => $_data['color'],
+	                'car_type'	   => $_data['vehicle_type'],
+	                'color'	       => $_data['color'],
 	                'modify_date'  => date("Y-m-d H:i:s"),
-	                'user_currental'=> $this->getUserId(),
+	                'user_id'      => $this->getUserId(),
 	                'status'        => 1,
 	            );
 	            $this->_name="ldc_vehicle";
@@ -437,5 +437,46 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 	    $sql="SELECT id  FROM `ldc_carrental_detail` WHERE `carrental_id`=$id  ORDER BY id ASC LIMIT 1";
 	    return $db->fetchOne($sql);
 	}
+	
+	function addAVehicleType($data){
+	    $veh_data=array(
+	        'title'	        => $data['vehicle_name'],
+	        'user_id'       => $this->getUserId(),
+	        'status'        => 1,
+	    );
+	    $this->_name="ldc_vechicletye";
+	    $car_type=$this->insert($veh_data);
+	    $car_data=array(
+	        'reffer'	    => $data['plate_number'],
+	        'car_type'	    => $car_type,
+	        'color'	        => $data['color_name'],
+	        'modify_date'   => date("Y-m-d H:i:s"),
+	        'user_id'       => $this->getUserId(),
+	        'status'        => 1,
+	    );
+	    $this->_name="ldc_vehicle";
+	    return  $this->insert($car_data);
+	}
+	
+	function addCustomer($data){
+	    $db = new Application_Model_DbTable_DbGlobal();
+	    $client_code = $db->getcustomerno();
+	    $_arr=array(
+	        'cus_no'      => $client_code,
+	        'customer'    => $data['customers'],
+	        'sex'         => 1,
+	        //'nationality' => $_data['nationality'],
+	        'phone'	      => $data['phone_numbers'],
+	        'passport'	  => $data['passports'],
+	        'address'	  => $data['addresss'],
+	        'create_date' => date("Y-m-d H:i:s"),
+	        'modify_date' => date("Y-m-d H:i:s"),
+	        'status'      => 1,
+	        'user_id'	  => $this->getUserId(),
+	    );
+	    $this->_name="ldc_carrental_customer";
+	    return  $this->insert($_arr);
+	}
+	
 }
 ?>
