@@ -249,9 +249,22 @@ class Vehicle_Model_DbTable_DbVehicle extends Zend_Db_Table_Abstract
     	return $db->fetchAll($sql.$order);
     }
     
+    function getAllVehicleNo(){
+        $db=$this->getAdapter();
+        $sql="SELECT id,reffer AS title FROM `ldc_vehicle` WHERE `status`= 1  AND reffer!=''";
+        $order=' ORDER BY id DESC';
+        return $db->fetchAll($sql.$order);
+    }
+    
     function getAllVehicleTypestore(){
         $db=$this->getAdapter();
         $sql="SELECT id,title As name FROM ldc_vechicletye WHERE `status`= 1  AND title!=''";
+        return $db->fetchAll($sql);
+    }
+    
+    function getAllVehiclePlate(){
+        $db=$this->getAdapter();
+        $sql=" SELECT id,reffer AS name FROM `ldc_vehicle` WHERE `status`= 1  AND reffer!=''";
         return $db->fetchAll($sql);
     }
     

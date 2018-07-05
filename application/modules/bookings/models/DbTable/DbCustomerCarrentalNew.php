@@ -1,6 +1,6 @@
 <?php
 
-class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
+class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstract
 {
 	protected $_name ="ldc_stuff";
 	public static function getUserId(){
@@ -142,10 +142,10 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 					
 			);
 			$this->_name="ldc_carrental";
-			$idcarrental = $this->insert($_arrbooking);
+			//$idcarrental = $this->insert($_arrbooking);
 			
 			$_car_detail=array(
-			    'carrental_id'  => $idcarrental,
+			    'carrental_id'  => $_data['id'],
 			    'rent_date'	    => date("Y-m-d",strtotime($_data['rent_date'])),
 			    'return_date'   => date("Y-m-d",strtotime($_data['return_date'])),
 			    'time'	        => $_data['time'],
@@ -164,7 +164,7 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 			$this->_name="ldc_carrental_detail";
 			$carr_detail_id = $this->insert($_car_detail);
 			
-// 			$row=$this->getAllPaidMonth($id);
+			$row=$this->getAllPaidMonth($id);
 			
 			$part= PUBLIC_PATH.'/images/imgbong/';
 			if (!file_exists($part)) {

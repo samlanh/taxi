@@ -1,5 +1,5 @@
 <?php
-class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
+class Bookings_Form_FrmCarrentalnew extends Zend_Dojo_Form{
 	protected $tr = null;
 	protected $btn =null;//text validate
 	protected $filter = null;
@@ -468,7 +468,7 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	       // $validity_date->setValue($data['payment_date']);
 	     // $phone->setValue($data['balance']);
 	   //   $address->setValue($data['balance']);
-//	        $payment_by->setAttribs(array('readonly'=>'readonly',));
+//	        
 	        $delivery_time->setValue($data['time']);
 	        $fix_name->setValue($data['fix_name']);
 	        $repair_date->setValue($data['repair_date']);
@@ -478,6 +478,10 @@ class Bookings_Form_FrmCarrental extends Zend_Dojo_Form{
 	        $remark->setValue($data['remark']);
 	        $is_return->setValue($data['is_return']);
 	        $vehicle->setValue($data['vehicle_id']);
+	        
+	        $vehicle->setAttribs(array('readonly'=>'readonly',));
+	        $vehicle_type->setAttribs(array('readonly'=>'readonly',));
+	        $customer->setAttribs(array('readonly'=>'readonly',));
 // 	        $total_paid,
 // 	        $balance,
 // 	        $total_rent_fee,
