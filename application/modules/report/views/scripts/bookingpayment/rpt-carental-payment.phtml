@@ -1,0 +1,199 @@
+<?php  
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+$frm=$this->frm_search;
+//print_r($this->d_payment);
+?>
+<script type="text/javascript">
+dojo.ready(function(){
+	 
+});
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.Textarea");
+require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
+</script>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("Report Carental Payment");?></title>
+<form method="post">
+	
+	</form>
+<div class="row">
+	<div class="x_panel " >
+	 
+		<div style=" width:28cm;min-height:28cm; margin:0 auto; border: 1px dotted #ccc; padding:0px 0.2cm">
+			 <form id="list" name="list" action="" dojoType="dijit.form.Form" method="post">
+			  	<div class="clearfix"></div>
+				  <div class="form-group">
+					<div class="col-md-3 col-xs-12 mg-12">
+					  <?php echo $frm->getElement("search_text");?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12">
+					   <?php echo $frm->getElement("lessee_name");?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12"> 
+					   <?php echo $frm->getElement("vehicle_type");?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12">
+					 <?php echo $frm->getElement("plate_number");?>
+					</div>
+				  </div>
+				  <div class="clearfix"></div>
+				  <div class="form-group">
+					<div class="col-md-3 col-xs-12 mg-12">
+					 <?php echo $frm->getElement('start_date');?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12">
+					   <?php echo $frm->getElement('end_date');?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12">
+					   <?php echo $frm->getElement('is_return');?>
+					</div>
+					<div class="col-md-3 col-xs-12 mg-12">
+					   <?php echo $frm->getElement("status");?>
+					</div>
+					<div class="col-md-1 mg-12"  >
+							<button iconclass="dijitIconSearch" dojoType="dijit.form.Button" showLabel="true" type="submit"><?php echo $tr->translate("SEARCH");?></button>
+					</div>
+				  </div>
+				   <div class="clearfix"></div>
+			</form>
+			<div id="divPrint" style="width: 100%;">
+				<style>
+				.style{
+					line-height: 20px;font-size: 10px !important;
+					font-family: 'Khmer OS Battambang';
+				}
+				th{padding: 5px;}
+				tr.header {
+				    font-weight: bold;
+				    line-height: 14px;
+				    font-size: 12px;
+				    background: #eee;
+				    text-align: center;
+				}
+				tr.header td {
+				    padding: 5px;
+				}
+				</style>
+				<table style="font-family: 'Khmer OS Content'; width:100%;">
+					<tr>
+				    	<td align="center">
+				    		<table width="100%" style="font-family: 'Khmer OS Battambang';" style="margin:0; padding:0;border:none;">
+				            	<tr>
+				                	<td width="20%"  valign="top"><img src="<?php echo $this->baseUrl()?>/images/lang/logo.png" height="70px"></td>
+				                	<td width="60%" valign="top">
+				                	<h2 style="text-align:center; font-size:18px; font-family:'Khmer MEF2'"><label><?php echo $tr->translate("BRANCH_TITLE");?></label></h2>
+				                	<h2 style="text-align:center; font-size:16px; font-family:'Khmer MEF2'"><?php echo $tr->translate("Report Carental Payment");?></h2>
+				                	</td>
+				                    <td width="20%"></td>
+				                </tr> 
+				                <tr>
+				                	<td colspan="3">
+						              </td>
+						           </tr>   
+				            </table>
+				        </td>
+				    </tr>
+				    <tr>
+				    	<td id="exportExcel">
+				    	<br/>
+				            <table  border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;" width="100%" cellspacing="0">
+        				     <tr class="header">  
+        		    		  	  <th>&nbsp;<?php echo $tr->translate("NUM")?></th> 
+        		    		      <th><?php echo $tr->translate("Rent Number")?> </th> 
+        		    		      <th><?php echo $tr->translate("Lessee Name")?> </th> 
+        		    	          <th><?php echo $tr->translate("Vehicle Type")?></th> 
+        		    	          <th><?php echo $tr->translate("Vehicle Ref No.")?> </th>
+        		    	          <th><?php echo $tr->translate("Color")?></th> 
+        		    	          <th><?php echo $tr->translate("Price/Month")?></th> 
+        		    	    
+        		    	          <th><?php echo $tr->translate("Rent Date")?> </th>
+        		    	       <!--       <th><?php echo $tr->translate("Return Date")?></th> 
+        		    	      -->     
+        		    	          <th><?php echo $tr->translate("Total​ Payment")?></th> 
+        		    	          <th><?php echo $tr->translate("Total Maintenance")?></th> 
+        		    	          <th><?php echo $tr->translate("Total Profit")?></th> 
+        		    	          
+        		    	          <th><?php echo $tr->translate("Deposit")?></th> 
+        		    	          <th><?php echo $tr->translate("Number")?></th> 
+        		    	          <th><?php echo $tr->translate("Action")?></th> 
+        		    	          <th><?php echo $tr->translate("User")?></th> 
+        		    	          <th><?php echo $tr->translate("Status")?></th> 
+        		             </tr>
+				                
+				               <?php  $status_drinver=''; $total_paid=0;$total_maintenance=0;$total_deprofit=0;
+				               if(!empty($this->rs_carental)) foreach($this->rs_carental as $key =>$row){
+				                   if($row['is_return']==1){
+				                       $is_return=$tr->translate("Stop");
+				                   }elseif ($row['is_return']==0){
+				                       $is_return=$tr->translate("Using");
+				                   }else {
+				                       
+				                   }
+				                   $total_paid=$total_paid+$row['total_payment'];
+				                   $total_maintenance=$total_maintenance+$row['total_maintenance'];
+				                   $total_deprofit=$total_deprofit+$row['total_profit'];
+				               	?>
+									<tr align="center" style="line-height: 18px; background: #fff;">
+										<td>&nbsp;<?php echo $key+1; ?>&nbsp;</td>
+										<td align="left">&nbsp;<a target="_blank" style="color: #333;text-decoration: none;" href="<?php echo $this->baseUrl();?>/report/bookingpayment/rpt-carental-paymentdetail/id/<?php echo $row["id"]?>"><?php echo $row['rent_no'];?></a>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['lessee'];?></td>	
+										<td style="white-space:nowrap; text-align: right;">&nbsp;<?php echo $row['vehicle_type']?>&nbsp;</td>
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['feffer'];?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['color']?></td>	
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo $row['cost_month']?></td>	
+										
+										<td align="left" style="line-height:15px;">&nbsp;<?php echo date("d-m-Y",strtotime($row['rent_dates']));?> </td>
+									<!-- 	<td align="center" style="line-height:15px;">&nbsp;<?php //echo date("d-m-Y",strtotime($row['return_dates']));?></td>
+										 -->
+										<td class="text-center"> <?php echo ( $row['total_payment']==0)?"":"$&nbsp;".number_format($row['total_payment'],2);?></td> 
+										<td class="text-center"> <?php echo ( $row['total_maintenance']==0)?"":"$&nbsp;".number_format($row['total_maintenance'],2);?></td> 
+										<td class="text-center"> <?php echo ( $row['total_profit']==0)?"":"$&nbsp;".number_format($row['total_profit'],2);?></td> 
+										
+										<td class="text-center"> <?php echo ( $row['deposit']==0)?"":"$&nbsp;".number_format($row['deposit'],2);?></td> 
+										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['total_rent_num'];?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php echo $is_return;?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['user_name'];?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php echo $row['statuss'];?></td>
+									</tr>
+								<?php }?>
+								   
+				            </table><br/>
+				              <table   width="100%">  
+				                    <tr style="line-height: 18px; background: #fff;">
+										<td align=" " style="line-height:15px;" colspan="9">&nbsp;<?php //echo $row['total_rent_num'];?> </td>
+										<td align="right" style="line-height:15px;font-weight: 900;">&nbsp;<?php echo $tr->translate("Total​ Payment")?></td>
+										<td align="center" style="line-height:15px;font-weight: 900;">:&nbsp;<?php echo ( $total_paid==0)?"":"$&nbsp;".number_format($total_paid,2);?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php //echo $row['statuss'];?></td>
+									</tr>
+									<tr style="line-height: 18px; background: #fff;">
+										<td align=" " style="line-height:15px;" colspan="9">&nbsp;<?php //echo $row['total_rent_num'];?> </td>
+										<td align="right" style="line-height:15px;font-weight: 900;">&nbsp; <?php echo $tr->translate("Total Maintenance")?></td>
+										<td align="center" style="line-height:15px;font-weight: 900;">:&nbsp;<?php echo ( $total_maintenance==0)?"":"$&nbsp;".number_format($total_maintenance,2);?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php //echo $row['statuss'];?></td>
+									</tr>
+									<tr style="line-height: 18px; background: #fff;">
+										<td align=" " style="line-height:15px;" colspan="9">&nbsp;<?php //echo $row['total_rent_num'];?></td>
+										<td align="right" style="line-height:15px;font-weight: 900;">&nbsp; <?php echo $tr->translate("Total Profit")?></td>
+										<td align="center" style="line-height:15px;font-weight: 900;">:&nbsp;<?php echo ( $total_deprofit==0)?"":"$&nbsp;".number_format($total_deprofit,2);?></td>
+										<td align="center" style="line-height:15px;">&nbsp;<?php //echo $row['statuss'];?></td>
+									</tr>
+				              </table>
+				            <br />
+				               <table align="center" width="100%">
+								   <tr style="font-size: 12px;">
+								        <th style="width:20%;text-align:center; font-family:'Khmer MEF2'"><?php echo $tr->translate('VERIFYED BY');?></th>
+								        <th></th>
+								        <th style="width:20%;text-align:center;font-family:'Khmer MEF2'"><?php echo $tr->translate('PREPARE BY');?></th>
+								   </tr>
+							</table>
+				    	</td>
+				    </tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

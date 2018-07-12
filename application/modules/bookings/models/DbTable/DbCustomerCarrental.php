@@ -113,6 +113,9 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 		   
 			$_db = new Application_Model_DbTable_DbGlobal();
 			$rent_code = $_db->getCarrentalNO();
+			 
+			$receipt_code = $_db->getCarrInvoiceNO();
+			
 			$_arrbooking=array(
 			        'customer_id'  => $cus_id,
 			        'rent_no'	   => $rent_code,
@@ -128,7 +131,7 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 					'return_money' => $_data['return_money'],
 					'cost_month'   => $_data['cost_month'],
 			    
-			        'total_rent_num'   => $_data['total_rent_fee'],
+			        'total_rent_num'   => 1,
 			        'total_maintenance'=> $_data['total_maintenance'],
 			        'total_payment'	   => $_data['total_payment'],
 			        'total_profit'	   => $_data['profit'],
@@ -146,6 +149,7 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 			
 			$_car_detail=array(
 			    'carrental_id'  => $idcarrental,
+			    'receipt_no'    => $receipt_code,
 			    'rent_date'	    => date("Y-m-d",strtotime($_data['rent_date'])),
 			    'return_date'   => date("Y-m-d",strtotime($_data['return_date'])),
 			    'time'	        => $_data['time'],
@@ -265,6 +269,8 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 	        
 	        $_db = new Application_Model_DbTable_DbGlobal();
 	        $rent_code = $_db->getCarrentalNO();
+	        $receipt_code = $_db->getCarrInvoiceNO();
+	        
 	        $_arrbooking=array(
 	            'customer_id'  => $cus_id,
 	            'rent_no'	   => $rent_code,
@@ -299,6 +305,7 @@ class Bookings_Model_DbTable_DbCustomerCarrental extends Zend_Db_Table_Abstract
 	        
 	        $_car_detail=array(
 	            'carrental_id'  => $idcarrental,
+	           // 'receipt_no'    => $receipt_code,
 	            'rent_date'	    => date("Y-m-d",strtotime($_data['rent_date'])),
 	            'return_date'   => date("Y-m-d",strtotime($_data['return_date'])),
 	            'time'	        => $_data['time'],

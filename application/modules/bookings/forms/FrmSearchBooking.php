@@ -119,8 +119,8 @@ class Bookings_Form_FrmSearchBooking extends Zend_Dojo_Form{
 		foreach ($row_status as $rs){
 			$opt_s[$rs["key_code"]] = $rs["name_en"];
 		}
-		$status->setMultiOptions($opt_s);
 		$status->setValue($request->getParam("status"));
+		$status->setMultiOptions($opt_s);
 		
 		
 		$opt_s = array('1'=>$this->tr->translate("Is Paid"),'0'=>$this->tr->translate("Not Paid"));

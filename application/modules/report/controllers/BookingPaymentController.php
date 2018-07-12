@@ -419,5 +419,40 @@ class Report_BookingPaymentController extends Zend_Controller_Action {
 	      $this->view->frm_search = $frm;
 	  }
 	  
+	  function rptCarentalPaymentAction(){
+	      if($this->getRequest()->isPost()){
+	          $search=$this->getRequest()->getPost();
+	      }
+	      else{
+	          $search = array(
+	              'start_date'   => date("Y-m-01"),
+	              'end_date'     => date("Y-m-d"),
+	              'search_text'  => "",
+	              'lessee_name'  => 0,
+	              'vehicle_type' => -1,
+	              'plate_number' => 0,
+	              'is_return'	   => -1,
+	              'status'       => -1,
+	          );
+	      }
+	      $this->view->search=$search;
+	      $db = new Report_Model_DbTable_DbBookingPayment();
+	      $this->view->rs_carental= $db->getAllCarentalPyment($search);
+	      $frm = new Bookings_Form_FrmSearchBooking();
+	      $frm =$frm->FormSearch($search);
+	      Application_Model_Decorator::removeAllDecorator($frm);
+	      $this->view->frm_search = $frm;
+	  }
+	  
+	  function rptCarentalPaymentdetailAction(){
+	      $id = $this->getRequest()->getParam("id");
+	      if (empty($id)){
+	          $this->_redirect("/report/bookingpayment/rpt-carental-payment");
+	      }
+	      $db = new Report_Model_DbTable_DbBookingPayment();
+	      $this->view->rs_carental= $db->getCarentalById($id);
+	      $this->view->rows=$db->getCarrentalDetail($id);
+	  }
+	  
 }
 

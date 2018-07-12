@@ -53,21 +53,32 @@ class Bookings_CarrentalnewController extends Zend_Controller_Action {
 	
 	public function addAction(){
 	    $id=$this->getRequest()->getParam('id');
+	    if(empty($id)){
+	       // echo 0;exit();
+	        $this->_redirect('/bookings/carrentalnew/index');
+	        return true;
+	    }
 	    $db = new Bookings_Model_DbTable_DbCustomerCarrentalNew();
 	    if($this->getRequest()->isPost()){
 	        $data = $this->getRequest()->getPost();
 	        $data['id']=$id;
 	        $booking_id=$db->addCarrental($data);
 	        if(isset($data['save_new'])){
-	            Application_Form_FrmMessage::redirectUrl("/bookings/carrental/index");
+	            Application_Form_FrmMessage::redirectUrl("/bookings/carrentalnew/index");
 	        }else{
-	            Application_Form_FrmMessage::redirectUrl("/bookings/carrental/index");
+	            Application_Form_FrmMessage::redirectUrl("/bookings/carrentalnew/index");
 	        }
-	        Application_Form_FrmMessage::redirectUrl("/bookings/carrental");
+	        Application_Form_FrmMessage::redirectUrl("/bookings/carrentalnew");
 	    }
 	    $row=$db->getCarrentalById($id);
+	    if($row['is_return']==1){
+	        $this->_redirect('/bookings/carrental/index');
+	    }
+	    
 	    $pic_id=$db->getIdDetailByCarr($id);
+	    
 	    $this->view->pic_all=$db->getImgBongById($pic_id);
+	    
 	    $frm = new Bookings_Form_FrmCarrentalnew();
 	    $form = $frm->FormRenntCarental($row);
 	    Application_Model_Decorator::removeAllDecorator($form);
@@ -92,20 +103,25 @@ class Bookings_CarrentalnewController extends Zend_Controller_Action {
 	{
 	    $id=$this->getRequest()->getParam('id');
 	    $db = new Bookings_Model_DbTable_DbCustomerCarrentalNew();
+	    $row=$db->getCarrentalByIddetial($id);
+	    
 	    if($this->getRequest()->isPost()){
 	        $data = $this->getRequest()->getPost();
 	        $data['id']=$id;
+	        $data['receipt_no']=$row['receipt_no'];
 	        $booking_id=$db->updateCarrental($data);
 	        if(isset($data['save_new'])){
-	            Application_Form_FrmMessage::redirectUrl("/bookings/carrental/index");
+	           Application_Form_FrmMessage::redirectUrl("/bookings/carrentalnew/index");
 	        }else{
-	            Application_Form_FrmMessage::redirectUrl("/bookings/carrental/index");
+	            Application_Form_FrmMessage::redirectUrl("/bookings/carrentalnew/index");
 	        }
-	        Application_Form_FrmMessage::redirectUrl("/bookings/carrental");
+	        Application_Form_FrmMessage::redirectUrl("/bookings/carrentalnew/index");
 	    }
-	    $row=$db->getCarrentalById($id);
-	    $pic_id=$db->getIdDetailByCarr($id);
-	    $this->view->pic_all=$db->getImgBongById($pic_id);
+	    //$pic_id=$db->getIdDetailByCarr($row['id']);
+	    if (!empty($row['id'])){
+	        $s=$this->view->pic_all=$db->getImgBongById($row['id_detail']);
+	       
+	    }
 	    $frm = new Bookings_Form_FrmCarrentalnew();
 	    $form = $frm->FormRenntCarental($row);
 	    Application_Model_Decorator::removeAllDecorator($form);

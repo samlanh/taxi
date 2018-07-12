@@ -110,6 +110,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 		    		  	  <th><?php echo $tr->translate("NUM")?></th> 
 		    		      <th><?php echo $tr->translate("Paid Date")?></th> 
 		    		      <th><?php echo $tr->translate("Rent Number")?> </th> 
+		    		      <th><?php echo $tr->translate("Receipt No")?> </th> 
 		    		      <th><?php echo $tr->translate("Lessee Name")?> </th> 
 		    	          <th><?php echo $tr->translate("Vehicle Type")?></th> 
 		    	          <th><?php echo $tr->translate("Vehicle Ref No.")?> </th>
@@ -160,6 +161,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center"> <?php echo $key+1?></td>
 				       <td class="text-center"> <?php echo  $paid_date;?> </td>
 				       <td > <?php echo $rs['rent_no']?></td> 
+				        <td > <?php echo $rs['receipt_no']?></td> 
 				       <td > <?php echo $rs['lessee']?></td> 
 				       <td > <?php echo $rs['vehicle_type']?></td> 
 				       <td > <?php echo $rs['feffer']?></td>
@@ -168,7 +170,7 @@ require(["dijit/form/CheckBox","dijit/Dialog","dijit/layout/TabContainer"]);
 				       <td class="text-center"> <?php echo date("d-m-Y",strtotime($rs['rent_dates']));?> </td> 
 				       <td class="text-center"> <?php echo date("d-m-Y",strtotime($rs['return_dates']));?> </td> 
 				       <td class="text-center"> <?php echo ( $rs['deposit']==0)?"":"$&nbsp;".number_format($rs['deposit'],2);?></td> 
-				       <td class="text-center"> <?php echo  $is_return;?>&nbsp;&nbsp;|<a style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/carrental/edit/id/<?php echo $rs["id"]?>"><span style="color: blue;line-height:0px;">Edit</span></a>&nbsp;|</td> 
+				       <td class="text-center"> <?php echo  $is_return;?>&nbsp;&nbsp;|<a style="color: #333;text-decoration: none;border: 2px solid #f7eded;border-radius: 3px;background: #f9f8f8;" href="<?php echo $this->baseUrl();?>/bookings/carrentalnew/edit/id/<?php echo $rs["id"]?>"><span style="color: blue;line-height:0px;">Edit</span></a>&nbsp;|</td> 
 				       <td class="text-center"> <?php echo $rs['user_name']?></td> 
 				       <td class="text-center"> <?php echo $rs['status']?></td> 
 				     </tr>

@@ -12,18 +12,19 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 	 
 	function getAllCarrental($search=null){
 		$db = $this->getAdapter();
-		$sql="SELECT c.id,c.`rent_no`,c.`cost_month`,c.`start_date`,c.`rent_date`,c.`return_date`,c.`deposit`,c.total_rent_num,
+		$sql="SELECT cd.`id`,c.`rent_no`,cd.receipt_no,c.`cost_month`,c.`start_date`,cd.`rent_date`,cd.`return_date`,c.`deposit`,c.total_rent_num,
                vt.`title` AS vehicle_type, 
               (SELECT cd.rent_date FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id ORDER BY cd.carrental_id ASC LIMIT 1) AS  rent_dates, 
               (SELECT cd.return_date FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id ORDER BY cd.carrental_id ASC LIMIT 1) AS  return_dates, 
-               (SELECT c.customer   FROM `ldc_carrental_customer` AS c WHERE c.`id`=c.`customer_id` LIMIT 1) AS lessee, 
-               (SELECT v.reffer FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1) AS feffer,
-               (SELECT v.color FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1) AS color,
-               (SELECT first_name FROM rms_users WHERE rms_users.id=c.user_id LIMIT 1) AS user_name,
-               c.`status`,c.`is_return`,
-               (SELECT cd.is_paid FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id LIMIT 1) AS is_paid
-             FROM  ldc_carrental AS c,`ldc_vechicletye` AS vt
-             WHERE c.vehicle_type=vt.id";
+              (SELECT c.customer   FROM `ldc_carrental_customer` AS c WHERE c.`id`=c.`customer_id` LIMIT 1) AS lessee, 
+              (SELECT v.reffer FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1) AS feffer,
+              (SELECT v.color FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1) AS color,
+              (SELECT first_name FROM rms_users WHERE rms_users.id=c.user_id LIMIT 1) AS user_name,
+              c.`status`,c.`is_return`,cd.`paid`,cd.`toatal_amount_fix`,
+              (SELECT cd.is_paid FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id LIMIT 1) AS is_paid
+             FROM  ldc_carrental AS c,`ldc_vechicletye` AS vt,`ldc_carrental_detail` AS cd
+             WHERE c.vehicle_type=vt.id
+             AND c.`id`=cd.`carrental_id`";
 		$where = '';
 		$from_date =(empty($search['start_date']))? '1': "c.`rent_date` >= '".$search['start_date']." 00:00:00'";
 		$to_date = (empty($search['end_date']))? '1': " c.`rent_date` <= '".$search['end_date']." 23:59:59'";
@@ -62,8 +63,8 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 // 		    $where.=" AND c.`status`=".$search['status'];
 // 		}
 		
-		$order=' ORDER BY c.id DESC';
-		return $db->fetchAll($sql.$where.$order);
+		//$order=' ORDER BY c.id DESC';
+		return $db->fetchAll($sql.$where);
 	}
 	
 	function checkedCustomer($id){
@@ -77,6 +78,8 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 		$db = $this->getAdapter();
 		$db->beginTransaction();
 		try{
+		    $_db = new Application_Model_DbTable_DbGlobal();
+		    $receipt_code = $_db->getCarrInvoiceNO();
 		if(!empty($_data['customer'])){
 		    $cus=$this->checkedCustomer($_data['customer']);
 		        $cus_data=array(
@@ -114,27 +117,19 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 			$_db = new Application_Model_DbTable_DbGlobal();
 			$rent_code = $_db->getCarrentalNO();
 			$_arrbooking=array(
-			        'customer_id'  => $cus_id,
-			        'rent_no'	   => $rent_code,
+// 			        'customer_id'  => $cus_id,
+// 			        'rent_no'	   => $rent_code,
 			        'rent_date'	   => date("Y-m-d",strtotime($_data['rent_date'])),
 			        'start_date'   => date("Y-m-d",strtotime($_data['validity_date'])),
 			        'return_date'  => date("Y-m-d",strtotime($_data['return_date'])),
 					 
-					'vehicle_type' => $_data['vehicle_type'],
-			        'vehicle_id'   => $_data['vehicle'],
-			    
+// 					'vehicle_type' => $_data['vehicle_type'],
+// 			        'vehicle_id'   => $_data['vehicle'],
 					//'color'	   => $_data['color'],
-					'deposit'	   => $_data['deposit'],
+// 					'deposit'	   => $_data['deposit'],
 					'return_money' => $_data['return_money'],
-					'cost_month'   => $_data['cost_month'],
-			    
-			        'total_rent_num'   => $_data['total_rent_fee'],
-			        'total_maintenance'=> $_data['total_maintenance'],
-			        'total_payment'	   => $_data['total_payment'],
-			        'total_profit'	   => $_data['profit'],
-			    
+// 					'cost_month'   => $_data['cost_month'],
 			        'is_return_car'	=> 0,
-					'create_date'   => date("Y-m-d H:i:s"),
 					'modify_date'   =>date("Y-m-d H:i:s"),
 					'user_id'       => $this->getUserId(),
 			        'status'        => 1,
@@ -142,9 +137,11 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 					
 			);
 			$this->_name="ldc_carrental";
-			//$idcarrental = $this->insert($_arrbooking);
+			$where=" id=".$_data['id'];
+			$this->update($_arrbooking,$where);
 			
 			$_car_detail=array(
+			    'receipt_no'    => $receipt_code,
 			    'carrental_id'  => $_data['id'],
 			    'rent_date'	    => date("Y-m-d",strtotime($_data['rent_date'])),
 			    'return_date'   => date("Y-m-d",strtotime($_data['return_date'])),
@@ -159,13 +156,28 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 			    'user_id'       => $this->getUserId(),
 			    'status'        => 1,
 			    'is_paid'       => 0,
+			    'profit'        => $_data['profit'],
 			    
 			);
 			$this->_name="ldc_carrental_detail";
 			$carr_detail_id = $this->insert($_car_detail);
 			
-			$row=$this->getAllPaidMonth($id);
+			$row=$this->getAllPaidMonth($_data['id']);
+			$num=$this->getCountNo($_data['id']);
+			if(!empty($row)){
+			    $total=array(
+			        'total_rent_num'   => $num['id'],
+			        'total_maintenance'=> $row['total_maintenance']+$_data['toatal_amount_fix'],
+			        'total_payment'	   => $row['total_payment']+$_data['paid'],
+			        'total_profit'	   => ($row['profit'])+($_data['profit']),
+			    );
+			    $this->_name="ldc_carrental";
+			    $where=" id=".$_data['id'];
+			    $this->update($total,$where);
+			}
 			
+			$sql = "DELETE FROM ldc_carrental_img WHERE carr_detail_id=".$_data["id"];
+			$db->query($sql);
 			$part= PUBLIC_PATH.'/images/imgbong/';
 			if (!file_exists($part)) {
 			    mkdir($part, 0777, true);
@@ -189,7 +201,7 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 			        $arr = array(
 			            'carr_detail_id' =>$carr_detail_id,
 			            'pic_title'      =>$image_name,
-			            'status'         =>$_data['status'],
+			            'status'         =>1,
 			            'date'           =>date("Y-m-d")
 			        );
 			        $this->_name='ldc_carrental_img';
@@ -205,100 +217,52 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 		}
 	}
 	
-	
 	public function updateCarrental($_data){
-	    // print_r($_data);exit();
 	    $db = $this->getAdapter();
 	    $db->beginTransaction();
 	    try{
-	        if(!empty($_data['customer'])){
-	            $cus=$this->checkedCustomer($_data['customer']);
-	            $cus_data=array(
-	                'phone'	      => $_data['phone'],
-	                'passport'	  => $_data['passport'],
-	                'address'	  => $_data['address'],
-	                'user_id'     => $this->getUserId(),
-	                'status'      => 1,
-	            );
-	            $this->_name="ldc_carrental_customer";
-	            if(!empty($cus)){
-	                $cus_data['modify_date']=date("Y-m-d H:i:s");
-	                $where=" id=".$cus;
-	                $cus_id=$cus;
-	                $this->update($cus_data, $where);
-	            }else{
-	                $cus_data['create_date']=date("Y-m-d H:i:s");
-	                $cus_id=$this->insert($cus_data);
-	            }
-	        }
-	        
-	        if(!empty($_data['vehicle'])){
-	            $veh_data=array(
-	                'car_type'	  => $_data['vehicle_type'],
-	                'color'	      => $_data['color'],
-	                'modify_date'  => date("Y-m-d H:i:s"),
-	                'user_id'      => $this->getUserId(),
-	                'status'        => 1,
-	            );
-	            $this->_name="ldc_vehicle";
-	            $where=" id=".$_data['vehicle'];
-	            $this->update($veh_data, $where);
-	        }
-	        
-	        $detail_id=$this->getIdDetailByCarr($_data['id']);
-	        $row=$this->getAllPaidMonth($detail_id);
-	        if(!empty($row)){
-	            $_arrbooking=array(
-	                'customer_id'  => $cus_id,
-	               // 'total_rent_num'   => $_data['total_rent_fee'],
-	                'total_maintenance'=> abs($row['total_maintenance']-$row['toatal_amount_fix']),
-	                'total_payment'	   => abs($row['total_payment']-$row['paid']),
-	                'total_profit'	   => abs($row['total_payment']-$row['toatal_amount_fix']),
-	                'user_id'          => $this->getUserId(),
-	                'status'           => 1,
-	                'is_return'	       => 0,
+	        $rows=$this->getAllCarentDetailByid($_data['id']);
+	        if(!empty($rows)){
+	            $num=$this->getCountNo($rows['id']);
+	            $totals=array(
+	                'total_rent_num'   => $num['id']-1,
+	                'total_maintenance'=> abs($rows['total_maintenance']-$rows['toatal_amount_fix']),
+	                'total_payment'	   => abs($rows['total_payment']-$rows['paid']),
+	                'total_profit'	   => abs($rows['total_profit']-$rows['profit']),
 	            );
 	            $this->_name="ldc_carrental";
-	            $where=" id=".$_data['id'];
-	            $this->update($_arrbooking, $where);
+	            $where=" id=".$rows['id'];
+	            $db->getProfiler()->setEnabled(true);
+	            $this->update($totals,$where);
+	            Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+	            Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+	            $db->getProfiler()->setEnabled(false);
 	        }
 	        
-	        $_db = new Application_Model_DbTable_DbGlobal();
-	        $rent_code = $_db->getCarrentalNO();
 	        $_arrbooking=array(
-	            'customer_id'  => $cus_id,
-	            'rent_no'	   => $rent_code,
 	            'rent_date'	   => date("Y-m-d",strtotime($_data['rent_date'])),
 	            'start_date'   => date("Y-m-d",strtotime($_data['validity_date'])),
 	            'return_date'  => date("Y-m-d",strtotime($_data['return_date'])),
-	            
-	            'vehicle_type' => $_data['vehicle_type'],
-	            'vehicle_id'   => $_data['vehicle'],
-	            //'color'	   => $_data['color'],
-	            'deposit'	   => $_data['deposit'],
 	            'return_money' => $_data['return_money'],
-	            'cost_month'   => $_data['cost_month'],
-	            
-	            'total_rent_num'   => $_data['total_rent_fee'],
-	            'total_maintenance'=> $_data['total_maintenance'],
-	            'total_payment'	   => $_data['total_payment'],
-	            'total_profit'	   => $_data['profit'],
-	            
 	            'is_return_car'	=> 0,
-	            'create_date'   => date("Y-m-d H:i:s"),
 	            'modify_date'   =>date("Y-m-d H:i:s"),
 	            'user_id'       => $this->getUserId(),
 	            'status'        => 1,
 	            'is_return'	    => $_data['is_return'],
-	            
 	        );
+	        $db->getProfiler()->setEnabled(true);
 	        $this->_name="ldc_carrental";
-	        $where=" id=".$_data['id'];
-	        $this->update($_arrbooking, $where);
-	        $idcarrental = $_data['id'];
+	        $where=" id=".$rows['id'];
+	        $this->update($_arrbooking,$where);
+	        Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+	        Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+	        $db->getProfiler()->setEnabled(false);
 	        
+	        $sql = "DELETE FROM ldc_carrental_detail WHERE id=".$_data["id"];
+	        $db->query($sql);
 	        $_car_detail=array(
-	            'carrental_id'  => $idcarrental,
+	            'receipt_no'    => $_data['receipt_no'],
+	            'carrental_id'  => $rows['id'],
 	            'rent_date'	    => date("Y-m-d",strtotime($_data['rent_date'])),
 	            'return_date'   => date("Y-m-d",strtotime($_data['return_date'])),
 	            'time'	        => $_data['time'],
@@ -312,15 +276,34 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 	            'user_id'       => $this->getUserId(),
 	            'status'        => 1,
 	            'is_paid'       => 0,
-	            
+	            'profit'        => $_data['profit'],
 	        );
+	        $db->getProfiler()->setEnabled(true);
 	        $this->_name="ldc_carrental_detail";
-	        $where=" id=".$detail_id;
-	        $this->update($_car_detail,$where);
-	        $carr_detail_id=$detail_id;
+	        $carr_detail_id = $this->insert($_car_detail);
+	        Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+	        Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+	        $db->getProfiler()->setEnabled(false);
 	        
-	        $sql = "DELETE FROM ldc_carrental_img WHERE carr_detail_id=".$carr_detail_id;
+	        $row=$this->getAllPaidMonth($rows['id']);
+	        $num=$this->getCountNo($_data['id']);
+	        if(!empty($row)){
+	            $total=array(
+	                'total_rent_num'   => $num['id'],
+	                'total_maintenance'=> $row['total_maintenance']+$_data['toatal_amount_fix'],
+	                'total_payment'	   => $row['total_payment']+$_data['paid'],
+	                'total_profit'	   => ($row['profit'])+($_data['profit']),
+	            );
+	            $this->_name="ldc_carrental";
+	            $where=" id=".$rows['id'];
+	            $this->update($total,$where);
+	        }
+	        
+	        
+	        
+	        $sql = "DELETE FROM ldc_carrental_img WHERE carr_detail_id=".$_data["id"];
 	        $db->query($sql);
+	        
 	        $part= PUBLIC_PATH.'/images/imgbong/';
 	        if (!file_exists($part)) {
 	            mkdir($part, 0777, true);
@@ -338,7 +321,7 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 	                        $image_name = $new_image_name;
 	                    }
 	                }else{
-	                    $image_name =$_data['old_photo'.$i];
+	                    $image_name ="";
 	                }
 	                
 	                $arr = array(
@@ -347,11 +330,15 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 	                    'status'         =>1,
 	                    'date'           =>date("Y-m-d")
 	                );
+	                $db->getProfiler()->setEnabled(true);
 	                $this->_name='ldc_carrental_img';
 	                $this->insert($arr);
+	                Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+	                Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+	                $db->getProfiler()->setEnabled(false);
 	            }
 	        }
-	        
+	       // exit();
 	        $db->commit();
 	    }catch(exception $e){
 	        Application_Form_FrmMessage::message("Application Error");
@@ -368,10 +355,25 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 	
 	function getAllPaidMonth($id){
 	    $db = $this->getAdapter();
-	    $sql=" SELECT cd.`toatal_amount_fix`,cd.`paid` ,c.total_maintenance,c.total_payment
+	    $sql="  SELECT COUNT(cd.id) AS id,SUM(cd.`toatal_amount_fix`) AS toatal_amount_fix,SUM(cd.`paid`) AS paid,SUM(`profit`) AS profit,c.total_maintenance,c.total_payment,c.`total_profit`
                FROM `ldc_carrental` AS c,`ldc_carrental_detail` AS cd
                WHERE c.`id`=cd.`carrental_id`
-               AND cd.id=$id";
+               AND cd.`carrental_id`=$id LIMIT 1";
+	    return $db->fetchRow($sql);
+	}
+	
+	function getCountNo($id){
+	    $db = $this->getAdapter();
+	    $sql="  SELECT COUNT(id) as id FROM `ldc_carrental_detail` WHERE carrental_id=$id LIMIT 1";
+	    return $db->fetchRow($sql);
+	}
+	
+	function getAllCarentDetailByid($id){
+	    $db = $this->getAdapter();
+	    $sql="  SELECT c.id,cd.id AS id_detail,cd.`toatal_amount_fix`,cd.`paid`,c.total_maintenance,c.total_payment,c.`total_profit`,c.total_rent_num,cd.profit
+	    FROM `ldc_carrental` AS c,`ldc_carrental_detail` AS cd
+	    WHERE c.`id`=cd.`carrental_id`
+	    AND cd.`id`=$id";
 	    return $db->fetchRow($sql);
 	}
 	
@@ -402,10 +404,20 @@ class Bookings_Model_DbTable_DbCustomerCarrentalNew extends Zend_Db_Table_Abstra
 	function getCarrentalById($id){
 	    $db = $this->getAdapter();
 	    $sql="SELECT c.*,
-           cd.`rent_date` AS rent_dates,cd.`return_date` AS return_dates,cd.`time`,cd.`fix_name`,
+           cd.`rent_date` AS rent_dates,cd.`return_date` AS return_dates,cd.`time`,cd.`fix_name`,profit,
            cd.`repair_date`,cd.`payment_date`,cd.`toatal_amount_fix`,cd.`paid`,cd.`remark`
            FROM `ldc_carrental` AS c,`ldc_carrental_detail` AS cd
            WHERE c.`status` = 1 AND  c.`id`=cd.`carrental_id`  AND cd.`carrental_id`=$id LIMIT 1";
+	    return $db->fetchRow($sql);
+	}
+	
+	function getCarrentalByIddetial($id){
+	    $db = $this->getAdapter();
+	    $sql="SELECT cd.id as id_detail,c.*,cd.receipt_no,
+	    cd.`rent_date` AS rent_dates,cd.`return_date` AS return_dates,cd.`time`,cd.`fix_name`,profit,
+	    cd.`repair_date`,cd.`payment_date`,cd.`toatal_amount_fix`,cd.`paid`,cd.`remark`
+	    FROM `ldc_carrental` AS c,`ldc_carrental_detail` AS cd
+	    WHERE c.`status` = 1 AND  c.`id`=cd.`carrental_id`  AND cd.`id`=$id LIMIT 1";
 	    return $db->fetchRow($sql);
 	}
 	

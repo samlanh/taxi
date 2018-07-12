@@ -886,5 +886,88 @@ class Report_Model_DbTable_DbBookingPayment extends Zend_Db_Table_Abstract
           return $db->fetchAll($sql.$where.$order);
       }
       
+      function getAllCarentalPyment($search){
+          $db = $this->getAdapter();
+          $_db = new Application_Model_DbTable_DbGlobal();
+          $lang = $_db->getCurrentLang();
+          $array = array(1=>"name_en",2=>"name_kh");
+          $sql=" SELECT c.id,c.`rent_no`,c.`cost_month`,c.`start_date`,c.`rent_date`,c.`return_date`,c.`deposit`,c.total_rent_num,
+               vt.`title` AS vehicle_type,c.total_rent_num,
+              (SELECT cd.rent_date FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id ORDER BY cd.carrental_id ASC LIMIT 1) AS  rent_dates, 
+              (SELECT cd.return_date FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id ORDER BY cd.carrental_id ASC LIMIT 1) AS  return_dates, 
+               (SELECT c.customer   FROM `ldc_carrental_customer` AS c WHERE c.`id`=c.`customer_id` LIMIT 1) AS lessee, 
+               (SELECT v.reffer FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1) AS feffer,
+               (SELECT v.color FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1) AS color,
+               (SELECT first_name FROM rms_users WHERE rms_users.id=c.user_id LIMIT 1) AS user_name,
+               c.`status`,c.`is_return`,c.`cost_month`,c.total_payment,c.total_maintenance,c.total_profit,
+               (SELECT cd.is_paid FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id LIMIT 1) AS is_paid,
+                 (SELECT name_en FROM tb_view WHERE tb_view.key_code=c.status AND tb_view.type=5 LIMIT 1) AS `statuss`
+             FROM  ldc_carrental AS c,`ldc_vechicletye` AS vt
+             WHERE c.vehicle_type=vt.id";
+          $where='';
+          $from_date =(empty($search['start_date']))? '1': "c.`rent_date` >= '".$search['start_date']." 00:00:00'";
+          $to_date = (empty($search['end_date']))? '1': " c.`rent_date` <= '".$search['end_date']." 23:59:59'";
+          $where = " AND ".$from_date." AND ".$to_date;
+          
+          if($search["search_text"] !=""){
+              $s_where=array();
+              $s_search=addslashes(trim($search['search_text']));
+              $s_search = str_replace(' ', '', $s_search);
+              $s_where[]="REPLACE(c.rent_no,' ','')   LIKE '%{$s_search}%'";
+              $where.=' AND ('.implode(' OR ',$s_where).')';
+          }
+          
+          if ($search['lessee_name']>0){
+              $where.=" AND c.`customer_id`=".$search['lessee_name'];
+          }
+          
+          if ($search['vehicle_type']>0){
+              $where.=" AND c.vehicle_type=".$search['vehicle_type'];
+          }
+          
+          if ($search['plate_number']>0){
+              $where.=" AND (SELECT v.id FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1)=".$search['plate_number'];
+          }
+          
+          if ($search['is_return']>-1){
+              $where.=" AND c.`is_return`=".$search['is_return'];
+          }
+          
+      	  if ($search['status']>-1){
+      		   $where.=" AND c.`status`=".$search['status'];
+      	  }
+          $order=' ORDER BY c.id DESC';
+          return $db->fetchAll($sql.$where.$order);
+      }
+      
+      function getCarentalById($id){
+          $db = $this->getAdapter();
+          $_db = new Application_Model_DbTable_DbGlobal();
+          $lang = $_db->getCurrentLang();
+          $array = array(1=>"name_en",2=>"name_kh");
+          $sql=" SELECT c.id,c.`rent_no`,c.`cost_month`,c.`start_date`,c.`rent_date`,c.`return_date`,c.`deposit`,c.total_rent_num,
+               vt.`title` AS vehicle_type,c.total_rent_num,
+              (SELECT cd.rent_date FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id ORDER BY cd.carrental_id ASC LIMIT 1) AS  rent_dates,
+              (SELECT cd.return_date FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id ORDER BY cd.carrental_id ASC LIMIT 1) AS  return_dates,
+               (SELECT c.customer   FROM `ldc_carrental_customer` AS c WHERE c.`id`=c.`customer_id` LIMIT 1) AS lessee,
+               (SELECT v.reffer FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1) AS feffer,
+               (SELECT v.color FROM `ldc_vehicle` AS v WHERE v.car_type=vt.`id` LIMIT 1) AS color,
+               (SELECT first_name FROM rms_users WHERE rms_users.id=c.user_id LIMIT 1) AS user_name,
+               c.`status`,c.`is_return`,c.`cost_month`,c.total_payment,c.total_maintenance,c.total_profit,
+               (SELECT cd.is_paid FROM `ldc_carrental_detail` AS cd WHERE cd.carrental_id=c.id LIMIT 1) AS is_paid,
+                 (SELECT name_en FROM tb_view WHERE tb_view.key_code=c.status AND tb_view.type=5 LIMIT 1) AS `statuss`
+             FROM  ldc_carrental AS c,`ldc_vechicletye` AS vt
+             WHERE c.vehicle_type=vt.id AND c.id=$id";
+          return $db->fetchRow($sql);
+      }
+      
+      function getCarrentalDetail($id){
+          $db=$this->getAdapter();
+          $sql=" SELECT receipt_no,rent_date,return_date,payment_date, `toatal_amount_fix`,`paid`,`profit`  
+                 FROM `ldc_carrental_detail` 
+                 WHERE `carrental_id`=$id";
+          return $db->fetchAll($sql);
+      }
+      
  }
 

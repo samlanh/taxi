@@ -1,0 +1,177 @@
+<?php $filter = $this->frm_search;
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$url = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-groupmember'));
+$url_client = $this->url(array('module'=>'report','controller'=>'loan','action'=>'rpt-paymentschedules'));
+$frm=$this->frm;
+$commission = $this->rs_carental;
+//print_r($commission);
+?>
+<meta charset="utf-8">
+<title><?php echo $tr->translate("RPT_COMMISSION_DETAIL");?></title>
+<style>
+span.label_title {
+    color: #4e5e6b;
+    font-weight: 600;
+}
+span.label_value {
+    color: #000;
+    font-weight: 600;
+}
+ 
+</style>
+<div class="row">
+	<div class="x_panel " >
+		<div style=" width:28cm;min-height:28cm;margin:0 auto;border: 1px dotted #ccc;padding: 0.2cm 0.2cm;">
+			<div id="divPrint" style="width: 100%;">
+				<style>
+					tr.header td {
+					    font-weight: 700;
+					    padding: 5px;
+					    text-align: center;
+					}
+					.row-value{
+					    padding: 5px 0;
+					    border-left: solid 1px #000;
+						border-bottom: solid 1px #000;
+						border-top: solid 1px #000;
+					}
+					.one-td{
+					    padding: 5px 0;
+					    border-left: solid 1px #000;
+						border-bottom: solid 1px #000;
+						border-right: solid 1px #000;
+					}
+					.row-td{
+					    padding: 5px 0;
+					    border-left: solid 1px #000;
+						border-bottom: solid 1px #000;
+					}
+					
+				table { page-break-inside:auto }
+                tr{ page-break-inside:avoid; page-break-after:auto }
+			   #header {
+					  display: table-header-group;
+					  page-break-inside:avoid; page-break-after:auto;
+					}
+ 
+				</style>
+				<table width="100%"  class="print" cellspacing="0"  cellpadding="0" style=" font-family: 'Khmer OS Battambang' !important; white-space:nowrap;background: #fff;">
+					<tr >
+						<td colspan="3"  style="" align="center" valign="top">
+							<table width="100%" style=" line-height: 18px;font-size: 14px;margin-bottom: 0px;background: #e4e4e4;color: #000;" >
+								<tr>
+									<td width="20%" valign="middle">
+										<h2 style="margin: 10px 0; padding-left: 0px; font-weight: 700; vertical-align: middle;  font-size: 30px;"><?php echo $tr->translate("INVOICE");?></h2>
+									</td>
+									<td width="50%" valign="top" align="center">
+									    <?php echo $this->tel['value'];?><br/>
+										<!-- 012 999 888 / 010 999 888<br /> carrental@gmail.com-->
+										<?php echo $this->email['value'];?>
+									</td>
+									<td width="30%" valign="top"  align="center">
+									<?php echo $this->address['value'];?>
+									<!-- Porsen Chey, Dang Kor, Phnom Penh Cambodia. -->	
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3"  valign="top">
+							<table width="100%" style=" line-height: 18px; font-size: 14px; margin: 5px 0; "  >
+								<tr>
+									<td width="40%" style=" line-height: 18px;" valign="top">
+										<span class="label_title"><?php echo $tr->translate("Lessee Name");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['lessee'];?></span><br />
+										<span class="label_title"><?php echo $tr->translate("Vehicle Ref No.");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['feffer'];?></span><br />
+										<span class="label_title"><?php echo $tr->translate("Vehicle Type");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['vehicle_type'];?></span><br /> 
+									</td>
+									<td width="30%" valign="top" align="right" style=" line-height: 18px;">
+										<span class="label_title"> </span><br />
+										<span class="label_value" style=" font-size: 20px;   font-weight: 700;    color: #0c0c0c;"><?php //echo "$ ".number_format($commission['paid'],2);?></span>
+									</td>
+									<td width="20%" valign="top" style=" line-height: 18px;" valign="top">
+										<span class="label_title">Rent N<sup>o</sup>&nbsp;:&nbsp;&nbsp;<?php echo $commission['rent_no'];?></span><br />
+										<span class="label_title"><?php echo $tr->translate("Rent Number");?>&nbsp;:&nbsp;&nbsp;<?php echo $commission['total_rent_num'];?></span><br />
+									</td>
+									
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td  valign="top" colspan="3" style="  border-top: solid 2px #8495a2;height: 0px;">&nbsp;</td>
+					</tr>
+					<tr>
+						<td colspan="3" valign="top" id="exportExcel">
+							<table width="100%" style=" line-height: 14px; font-size: 14px; margin: 0; "    cellspacing="0"   >
+								<thead>
+								<tr class="header" style="background: #e4e4e4">
+									<td class="row-value"  style="width: 2%;"><?php echo $tr->translate("NUM");?></td>
+									<td class="row-value"  style="width: 5%;"><?php echo $tr->translate("Receipt No");?></td>
+									<td class="row-value " nowrap style="width: 20%;" ><?php echo $tr->translate("Rent Date");?></td>
+									<td class="row-value" nowrap  style="width: 20%;" ><?php echo $tr->translate("Return Date");?></td>
+									<td class="row-value "  nowrap><?php echo $tr->translate("Payment Date");?></td>
+									<td class="row-value"   nowrap><?php echo $tr->translate("Fix Amount");?> </td>
+									<td class="row-value"  style="width: 5%;" nowrap><?php echo $tr->translate("Paid");?> </td>
+									<td class="row-value"   style="width: 5%;border-right: 1px solid #000;" nowrap><?php echo $tr->translate("Profit");?> </td>
+								</tr>
+								</thead>
+								<?php $i=0; 
+								$total_paid=0;
+								$total_amount_fix=0;$total_profit=0; 
+								foreach ($this->rows as $com){$i++;
+								   $total_paid=$total_paid+$com['paid'];
+								   $total_amount_fix=$total_amount_fix+$com['toatal_amount_fix'];
+								   $total_profit=$total_profit+$com['profit'];
+								?>
+								<tr>
+									<td  class="row-td" align="center" >&nbsp;<?php echo $i;?></td>
+									<td  class="row-td" nowrap>&nbsp;<?php echo $com['receipt_no'];?>&nbsp;</td>
+									<td  class="row-td" nowrap>&nbsp;<?php echo date("d-M-Y",strtotime($com['rent_date']));?>&nbsp;</td>
+									<td  class="row-td" nowrap>&nbsp;<?php echo date("d-M-Y",strtotime($com['return_date']));?>&nbsp;</td>
+									<td  class="row-td" nowrap>&nbsp;<?php echo date("d-M-Y",strtotime($com['payment_date']));?>&nbsp;</td>
+									<td  class="row-td" >&nbsp;<?php echo ($com['toatal_amount_fix']==0)?"":"$&nbsp;".number_format($com['toatal_amount_fix'],2);?> </td>
+									<td  class="row-td" >&nbsp;<?php echo ($com['paid']==0)?"":"$&nbsp;".number_format($com['paid'],2);?> </td>
+									<td  class="one-td" >&nbsp;<?php echo ($com['profit']==0)?"":"$&nbsp;".number_format($com['profit'],2);?> </td>
+								</tr>
+								<?php }?>
+								<tr>
+									<td  colspan="7" align="right"><span class="label_title"><?php echo $tr->translate("Total Amount Fix");?>&nbsp;</span></td>
+									<td  class="one-td" >&nbsp;<?php echo "$ ".number_format($total_amount_fix,2);?></td>
+								</tr>
+								<tr>
+									<td  colspan="7" align="right"><span class="label_title"><?php echo $tr->translate("Total Paid");?>&nbsp;</span></td>
+									<td  class="one-td" >&nbsp;<?php echo "$ ".number_format($total_paid,2);?></td>
+								</tr>
+								<tr>
+									<td colspan="7" align="right"><span class="label_title"><?php echo $tr->translate("Total Profit");?>&nbsp;</span></td>
+									<td class="one-td">&nbsp;<?php echo "$ ".number_format($total_profit,2);?></td>
+								</tr>
+								
+							</table><br/><br/>
+							<table width="100%"  >
+								<tr>
+				                   <td nowrap style="width: 10%;padding-left: 60px;line-height: normal;" align="left"​  >
+				                       		Lessee Name's Signature<br/><br/><br/><br/>  <hr>
+				                       <?php  echo $tr->translate(" Date").':.......................................'?>
+				                   </td>
+				                   <td style="width: 70%" colspan="6"></td>
+				                   <td  style="width: 10%;padding-left: 100px;line-height: normal;" align="left"    nowrap>
+				                     <?php $session_user=new Zend_Session_Namespace('auth');
+								           //$last_name=$session_user->username;
+								           $username = $session_user->fullname;
+						       			?>
+				                        <?php //echo $tr->translate("USER_NAME");?><?php //echo $username ?> 
+				                       		<!--  ហត្ថលេខា និងឈ្មោះអ្នកគិតលុយ<br/> --> 
+				                       		 Receiver's Signature<br/><br/><br/><br/>  <hr>
+				                       <?php  echo $tr->translate(" Date").':.......................................'?>
+				                   </td>
+				                </tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

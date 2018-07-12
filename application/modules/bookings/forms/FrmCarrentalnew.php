@@ -458,9 +458,9 @@ class Bookings_Form_FrmCarrentalnew extends Zend_Dojo_Form{
 	        $return_money->setValue($data['return_money']);
 	        $cost_month->setValue($data['cost_month']);
 	        $total_rent_fee->setValue($data['total_rent_num']);
-	        $total_maintenance->setValue($data['total_maintenance']);
-	        $total_payment->setValue($data['total_payment']);
-	        $profit->setValue($data['total_profit']);
+	        $total_maintenance->setValue($data['toatal_amount_fix']);
+	        $total_payment->setValue($data['paid']);
+	        $profit->setValue($data['profit']);
 	        $rent_date->setValue($data['rent_dates']);
 	        $return_date->setValue($data['return_dates']);
 	        $repair_date->setValue($data['repair_date']);
@@ -482,6 +482,8 @@ class Bookings_Form_FrmCarrentalnew extends Zend_Dojo_Form{
 	        $vehicle->setAttribs(array('readonly'=>'readonly',));
 	        $vehicle_type->setAttribs(array('readonly'=>'readonly',));
 	        $customer->setAttribs(array('readonly'=>'readonly',));
+	        $cost_month->setAttribs(array('readonly'=>'readonly',));
+	        $deposit->setAttribs(array('readonly'=>'readonly',));
 // 	        $total_paid,
 // 	        $balance,
 // 	        $total_rent_fee,
