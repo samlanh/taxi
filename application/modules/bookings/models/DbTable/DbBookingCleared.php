@@ -458,22 +458,22 @@ class Bookings_Model_DbTable_DbBookingCleared extends Zend_Db_Table_Abstract
 		c.id=cb.customer_id
 		AND l.`id` = cb.`from_location`
 		AND tl.`id` = cb.`to_location`
-		AND cb.`is_paid_to_driver`=1 ";
+		 ";
 		$where = '';
 	
 		if($search['date_type']==2){
-		$from_date =(empty($search['from_book_date']))? '1': "cb.`booking_date` >= '".$search['from_book_date']." 00:00:00'";
-		$to_date = (empty($search['to_book_date']))? '1': "cb.`booking_date` <= '".$search['to_book_date']." 23:59:59'";
+		$from_date =(empty($search['from_book_date']))? '1': "cb.`delivey_date` >= '".$search['from_book_date']." 00:00:00'";
+		$to_date = (empty($search['to_book_date']))? '1': "cb.`delivey_date` <= '".$search['to_book_date']." 23:59:59'";
 			
-		$from_time =(empty($search['start_time']))? '1': "cb.`booking_date` >= '".$search['start_time']." 00:00:00'";
-		$to_time = (empty($search['delivery_time']))? '1': "cb.`booking_date` <= '".$search['delivery_time']." 23:59:59'";
+		$from_time =(empty($search['start_time']))? '1': "cb.`delivey_date` >= '".$search['start_time']." 00:00:00'";
+		$to_time = (empty($search['delivery_time']))? '1': "cb.`delivey_date` <= '".$search['delivery_time']." 23:59:59'";
 			
-		$order=' ORDER BY cb.`booking_date`,cb.delivey_time ASC';
+		$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
 		}
 		if($search['date_type']==1){
-		$from_date =(empty($search['from_book_date']))? '1': "cb.`booking_date` >= '".$search['from_book_date']." 00:00:00'";
-		$to_date = (empty($search['to_book_date']))? '1': "cb.`booking_date` <= '".$search['to_book_date']." 23:59:59'";
-		$order=' ORDER BY cb.`booking_date`,cb.delivey_time ASC';
+		$from_date =(empty($search['from_book_date']))? '1': "cb.`delivey_date` >= '".$search['from_book_date']." 00:00:00'";
+		$to_date = (empty($search['to_book_date']))? '1': "cb.`delivey_date` <= '".$search['to_book_date']." 23:59:59'";
+		$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
 		}
 		$where = "  AND ".$from_date." AND ".$to_date." AND ".$from_time." AND ".$to_time;
 		if($search["search_text"] !=""){
@@ -516,7 +516,7 @@ class Bookings_Model_DbTable_DbBookingCleared extends Zend_Db_Table_Abstract
 		$where.=" AND cb.`status`=".$search['status'];
 		}
 	
-		$order=' ORDER BY cb.`booking_date`,cb.delivey_time ASC';
+		$order=' ORDER BY cb.`delivey_date`,cb.delivey_time ASC';
 			//echo $sql.$where.$order;
 			return $db->fetchAll($sql.$where.$order);
 	}

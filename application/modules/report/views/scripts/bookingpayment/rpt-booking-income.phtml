@@ -120,20 +120,20 @@ dojo.ready(function(){
 				    <tr>
 				    	<td id="exportExcel">
 				    	<br/>
-				            <table  border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px; white-space: nowrap;background: #fff;" width="100%" cellspacing="0">
+				            <table  border="1"​ style="border-collapse:collapse;border:1px solid #000; font-size:11px;background: #fff;" width="100%" cellspacing="0">
 				               <thead>
 				    			  <tr>  
 				    		  	  <th><?php echo $tr->translate("NUM")?></th> 
-				    		      <th><?php echo $tr->translate("BOOKING_NO")?></th> 
-				    		      <th><?php echo $tr->translate("BOOKING_DATE")?> </th> 
-				    		      <!-- 
-				    	          <th><?php echo $tr->translate("DELIVERY_DATE")?></th> 
+				    		      <th><?php echo $tr->translate("DELIVERY_DATE")?></th> 
 				    	          <th><?php echo $tr->translate("DELIVERY_TIME")?></th> 
+				    		      <!-- 
+				    		       <th><?php echo $tr->translate("BOOKING_DATE")?> </th>
+				    	         
 				    	          <th><?php echo $tr->translate("OTHER_BOOKING_NO")?></th>
-				    	          
+				    	           -->
 				    		      <th><?php echo $tr->translate("FROM_LOCATION")?> </th> 
 				    	          <th><?php echo $tr->translate("TO_LOCATION")?></th> 
-				                   -->
+				                  
 				                  
 				    	          <th><?php echo $tr->translate("VEHICLE_TYPE")?></th> 
 				    	           <!-- 
@@ -149,12 +149,10 @@ dojo.ready(function(){
 				    	          <th><?php echo $tr->translate("COMMISSION_FEE")?></th> 
 				    	          -->
 				    	          <th><?php echo $tr->translate("DRIVER_FEE")?></th>
-				    	          <th><?php echo $tr->translate("DRIVER")?> </th>  
-				    	          <th><?php echo $tr->translate("BOOKING_STATUS")?> </th> 
 				    	           <!-- 
 				    	           <th><?php echo $tr->translate("NOTE")?> </th> 
 				    	            -->
-				    	          <th><?php echo $tr->translate("USER")?></th> 
+				    	         
 				    	           
 				             </tr>
 				             </thead>
@@ -171,16 +169,14 @@ dojo.ready(function(){
 				               	?>
 									 <tr class=" alternate  normal"    >
 								       <td class="text-center"> <?php echo $key+1?></td>
-								       <td class="text-center"> <?php echo $rs['booking_no']?></td> 
-								       <td><?php echo date("d-M-Y",strtotime($rs['booking_date'])).'&nbsp;'.date("H:i",strtotime($rs['create_date']));?> </td> 
-								      <!-- 
 								       <td class="text-center"> <?php echo date("D, d-M-Y",strtotime($rs['delivey_date']));?> </td>
 								       <td class="text-center"> <?php echo date("H:i:a", $d);?> </td>
+								        <!-- 
 								       <td class="text-center" style="text-align:left;  " > <?php echo $rs['payment_booking_no']?></td>
-								       
-								       <td style="width:10px;" > <?php echo $rs['from_location']?></td> 
-								       <td style="width:10px;" ><?php echo $rs['to_location']?> </td>
-								       --> 
+								        --> 
+								       <td  width="20%" >&nbsp;<?php echo $rs['from_location']?></td> 
+								       <td width="20%"  >&nbsp;<?php echo $rs['to_location']?> </td>
+								      
 								       <td class="text-center"><?php echo $rs['vehicle_type']?> </td>
 								       <td class="text-center"> <?php echo ($rs['total']==0)?"":"$&nbsp;".number_format($rs["total"],2);?> </td>
 								     <!-- 
@@ -191,25 +187,21 @@ dojo.ready(function(){
 								       <td class="text-center"  ><?php echo $rs['agency_name']?> </td>
 								       <td class="text-center"> <?php echo ($rs['commision_fee_after']==0)?"":"$&nbsp;".number_format($rs["commision_fee_after"],2);?></td> 
 								        -->
-								         <td class="text-center"><?php echo ($rs['driver_fee_after']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>
-								       <td    >&nbsp; <?php echo $rs['driver']?></td>
-								      
-								       <td class="text-center" style="background:#fff"> <?php echo $rs['book_status']?> </td>
-								       <td class="text-center"> <?php echo $rs['user_name']?></td>
+								         <td class="text-center"><?php echo ($rs['driver_fee']==0)?"":"$&nbsp;".number_format($rs["driver_fee"],2);?> </td>
 								        
 								     </tr>
 								<?php }?>
 								
 								    <tr class=" alternate  normal"    >
-								       <td class="text-right" style="font-weight: bold;text-align: right;border-bottom: 1px solid #fff;border-left: 1px solid #fff;" colspan="8"> <?php echo $tr->translate("Total Company Price")?> </td> 
+								       <td class="text-right" style="font-weight: bold;text-align: right;border-bottom: 1px solid #fff;border-left: 1px solid #fff;" colspan="7"> <?php echo $tr->translate("Total Company Price")?> </td> 
 								       <td class="text-center" style="font-weight: bold;"> <?php echo ($total_com_price ==0)?"":"$&nbsp;".number_format($total_com_price,2);?> </td>
 								     </tr>
 								     <tr class=" alternate  normal"    >
-								       <td class="text-right" colspan="8" style="font-weight: bold;text-align: right;border-bottom: 1px solid #fff;border-left: 1px solid #fff;"> <?php echo $tr->translate("Total Driver Fee")?> </td> 
+								       <td class="text-right" colspan="7" style="font-weight: bold;text-align: right;border-bottom: 1px solid #fff;border-left: 1px solid #fff;"> <?php echo $tr->translate("Total Driver Fee")?> </td> 
 								       <td class="text-center" style="font-weight: bold;"> <?php echo ($total_dri_price==0)?"":"$&nbsp;".number_format($total_dri_price,2);?> </td>
 								     </tr>
 								     <tr class=" alternate  normal"    >
-								       <td class="text-right" colspan="8" style="font-weight: bold;text-align: right;border-bottom: 1px solid #fff;border-left: 1px solid #fff;"> <?php echo $tr->translate("Total Income")?> </td> 
+								       <td class="text-right" colspan="7" style="font-weight: bold;text-align: right;border-bottom: 1px solid #fff;border-left: 1px solid #fff;"> <?php echo $tr->translate("Total Income")?> </td> 
 								       <td class="text-center" style="font-weight: bold;"> <?php echo "$&nbsp;".number_format($total_com_price-$total_dri_price,2);?> </td>
 								     </tr>
 				            </table>

@@ -2,7 +2,7 @@
 class Bookings_indexController extends Zend_Controller_Action {
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
 	protected $tr = null;
-	
+	const REDIRECT_URL_INDEX ='/bookings/index/';
     public function init()
     {    	
      /* Initialize action controller here */
@@ -126,6 +126,14 @@ class Bookings_indexController extends Zend_Controller_Action {
 		$this->view->id = $id;
 		$row = $db->getCarbookingById($id);
 		 
+		if($row['is_paid_to_driver']==1){
+			Application_Form_FrmMessage::Sucessfull($this->tr->translate("Driver Clear Already!. Can't Edit."),self::REDIRECT_URL_INDEX);
+		}
+
+		if($row['is_paid_commission']==1){
+			Application_Form_FrmMessage::Sucessfull($this->tr->translate("Agency Clear Already!. Can't Edit."),self::REDIRECT_URL_INDEX);
+		}
+		
 		$this->view->row = $row;
 		if (empty($row)){
 			$this->_redirect("/bookings/index");
